@@ -20,10 +20,10 @@ For all requests defined bellow (except for taxon-search), you can use these com
 ### Parameters
 
 * resulttype
-** NORMAL - default
-** CHILDREN - includes immediate children and children of children and so on; follows MZ.isPartOf predicate or any predicate that is subproperty of MZ.isPartOf (rdfs:subPropertyOf)
-** TREE - exactly the same as CHILDREN for format rdfxml, but for format rdfxmlabbrev direction is reversed: CHILDREN resulttype includes isPartOf predicate as it is and the resource that a child isPartOf goes deeper in the result tree. For result type TREE the parent element is almost the root element and children are added deeper using MZ.hasPart predicate. (Note: not isPartOf but hasPart!).
-** CHAIN - taxonomy chain; exists for backwards compability; exactly the same as CHILDREN, as it follows MX.isPartOf predicate which is subPropetyOf MZ.isPartOf 
+	* NORMAL - default
+	* CHILDREN - includes immediate children and children of children and so on; follows MZ.isPartOf predicate or any predicate that is subproperty of MZ.isPartOf (rdfs:subPropertyOf)
+	* TREE - exactly the same as CHILDREN for format rdfxml, but for format rdfxmlabbrev direction is reversed: CHILDREN resulttype includes isPartOf predicate as it is and the resource that a child isPartOf goes deeper in the result tree. For result type TREE the parent element is almost the root element and children are added deeper using MZ.hasPart predicate. (Note: not isPartOf but hasPart!).
+	* CHAIN - taxonomy chain; exists for backwards compability; exactly the same as CHILDREN, as it follows MX.isPartOf predicate which is subPropetyOf MZ.isPartOf 
 
 ## GET /triplestore/search
 
@@ -88,6 +88,10 @@ And parameters predicate=rdfs:label, literal="foofoo", langcode="fi" are given, 
 Similarly, if there are statements from different context than the given context, those statements are not affected.
 
 To delete a literal statement, give empty resourceliteral ("") as parameter. This (altough not very neat) also deletes objectresources of that predicate.
+
+* On success Returns HTTP 200 with the modified resource in the desired format
+* On error returns HTTP 500
+
 
 ## GET /triplestore/taxon-search/{searchword}
 
