@@ -1,18 +1,10 @@
 package fi.luomus.triplestore.utils;
 
-import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.commons.xml.XMLReader;
-import fi.luomus.commons.xml.XMLWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import org.junit.Assert;
 
@@ -66,18 +58,19 @@ public class JenaUtils {
 	}
 
 	private static String sort(String rdfXml) {
-		Document doc = new XMLReader().parse(rdfXml);
-		List<Node> childs = doc.getRootNode().getChildNodes();
-		Collections.sort(childs, new Comparator<Node>() {
-			@Override
-			public int compare(Node n1, Node n2) {
-				Qname q1 = Qname.fromURI(n1.getAttribute("rdf:about"));
-				Qname q2 = Qname.fromURI(n2.getAttribute("rdf:about"));
-				return q1.compareTo(q2);
-			}
-		});
-		String orderedXml = new XMLWriter(doc).generateXML();
-		return orderedXml;
+//		Document doc = new XMLReader().parse(rdfXml);
+//		List<Node> childs = doc.getRootNode().getChildNodes();
+//		Collections.sort(childs, new Comparator<Node>() {
+//			@Override
+//			public int compare(Node n1, Node n2) {
+//				Qname q1 = Qname.fromURI(n1.getAttribute("rdf:about"));
+//				Qname q2 = Qname.fromURI(n2.getAttribute("rdf:about"));
+//				return q1.compareTo(q2);
+//			}
+//		});
+//		String orderedXml = new XMLWriter(doc).generateXML();
+//		return orderedXml; // TODO XMLWriter muuttaa sisällön entiteeteiksi joka ei oo hyvä 
+		return rdfXml;
 	}
 
 	public static void debugStatements(Model jenaModel) {
