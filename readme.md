@@ -18,6 +18,7 @@ For all requests defined bellow (except for taxon-search), you can use these com
 * Add additional resources based on result type parameter
 
 ### Parameters
+
 * resulttype
 ** NORMAL - default
 ** CHILDREN - includes immediate children and children of children and so on; follows MZ.isPartOf predicate or any predicate that is subproperty of MZ.isPartOf (rdfs:subPropertyOf)
@@ -29,6 +30,7 @@ For all requests defined bellow (except for taxon-search), you can use these com
 * Search for resources using any combination of subjects, predicates and objects
 
 ### Parameters
+
 * subject
 * predicate
 * objectresource
@@ -53,8 +55,11 @@ Deletes a resouce.
 Inserts/updates one resource.
 
 ###Parameters
+
 * data - data in the given format (rdfxml,rdfxmlabbrev)
+
 OR to insert/update/delete one predicate
+
 * predicate_qname - required
 * objectresource - can not give objectresource AND objectliteral
 * objectliteral - can not give objectresource AND objectliteral
@@ -65,22 +70,24 @@ Will delete existing predicate, object, langcode, context -statements and replac
 
 * JA.1	rdfs:label	"foobar1"	"fi"
 * JA.1	rdfs:label	"foobar2"	"fi"
+
 And parameters predicate=rdfs:label, literal="foofoo", langcode="fi" are given, there will be only one statement:
+
 * JA.1	rdfs:label	"foofoo"	"fi"
 
 But if there are following statements
+
 * JA.1	rdfs:label	"foo"	"fi"
 * JA.1	rdfs:label	"foo"	"sv"
+
 And parameters predicate=rdfs:label, literal="foofoo", langcode="fi" are given, there will be these two statements:
+
 * JA.1	rdfs:label	"foofoo"	"fi"
 * JA.1	rdfs:label	"foo"	"sv"
  
 Similarly, if there are statements from different context than the given context, those statements are not affected.
 
-
 To delete a literal statement, give empty resourceliteral ("") as parameter. This (altough not very neat) also deletes objectresources of that predicate.
-
-
 
 ## GET /triplestore/taxon-search/{searchword}
 
