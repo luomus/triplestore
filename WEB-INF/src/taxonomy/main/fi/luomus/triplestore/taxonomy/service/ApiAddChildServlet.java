@@ -1,0 +1,53 @@
+package fi.luomus.triplestore.taxonomy.service;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.models.ValidationData;
+import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet(urlPatterns = {"/taxonomy-editor/api/addchild/*"})
+public class ApiAddChildServlet extends ApiBaseServlet {
+
+	private static final long serialVersionUID = 7393608674235660598L;
+
+	@Override
+	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		ResponseData responseData = initResponseData(req).setViewName("api-addchild");
+		
+		String checklistQname = req.getParameter("checklist");
+		String parentQname = req.getParameter("parent").replace("MX", "MX.");
+		String scientificName = req.getParameter("scientificName");
+		String author = req.getParameter("author");
+		String rank = req.getParameter("taxonRank");
+		
+		checkPermissionsToAlterTaxon(parentQname, req);
+		
+		TriplestoreDAO dao = getTriplestoreDAO(req);
+		
+		Taxon taxon = createTaxonAndFetchNextId(scientificName, dao);
+		taxon.setChecklist(new Qname(checklistQname)); 
+		taxon.setParentQname(new Qname(parentQname)); 
+		taxon.setScientificNameAuthorship(author);
+		if (given(rank)) {
+			taxon.setTaxonRank(new Qname(rank));
+		}
+		
+		dao.addTaxon(taxon);
+		getTaxonomyDAO().invalidateTaxon(new Qname(parentQname));
+		
+		responseData.setData("newTaxon", taxon);
+		
+		ValidationData validationData = new TaxonValidator(dao, getErrorReporter()).validate(taxon);
+		responseData.setData("validationResults", validationData);
+		
+		return responseData;
+	}
+
+	
+}

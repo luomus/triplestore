@@ -1,0 +1,117 @@
+.checklistTable tr:nth-child(even) {
+	background-color: #eee;
+}
+.checklistTable td {
+	padding: 5px;
+}
+
+label { 
+	display: inline-block;
+	width: 155px;
+}
+select, input, textarea {
+	width: 185px;
+}
+textarea {
+	height: 3em;
+}
+input[type="submit"] {
+	width: auto;
+}
+.requiredFieldMarker {
+	color: red;
+	font-weight: bold;
+	font-size: 120%;
+	cursor: pointer;
+}
+
+form ul li {
+	list-style: none;
+}
+
+#checklistForm .checklistName, #checklistForm textarea {
+	width: 300px;
+	height: auto;
+}
+#publicationForm .citation {
+	width: 600px;
+}
+
+#editTaxonContent .ui-button-text {
+	padding: 2px;
+	padding-left: 0;
+	padding-right: 0;
+	font-size: 80%;
+}
+#editTaxonContent .saveButton .ui-button-text {
+	font-size: 100%;
+	padding: 5px;
+}
+#editTaxonContent .saveButton {
+	margin-top: 2px;
+	margin-left: 10px;
+	display: block;
+}
+
+#vernacularNameTable label {
+	width: auto;
+}
+.languageSelector {
+	width: auto;
+}
+a.addNewItem {
+	color: rgb(20,110,20);
+}
+
+div.success {
+	display: block;
+	font-weight: bold;
+	margin: 3px;
+	margin-left: 30px;
+}
+div#taxonEditHeader {
+	display: inline-block;
+	font-size: 150%;
+	color: rgb(100,150,100);
+}
+.editor, .expert {
+	padding: 5px;
+}
+.taxonChildTools .taxonEditorExpert {
+	color: white;
+	padding: 5px;
+	font-size: 90%;
+}
+.noPermissionsToAlterTaxon {
+	margin: 10px;
+	color: rgb(131, 121, 121);
+	font-weight: bold;
+}
+.publicationSelect select, .publicationSelect input {
+	width: 350px;
+}
+.publicationSelect .chosen-drop {
+	width: 700px !important;
+}
+
+tr.errorMessage td {
+	min-width: 150px;
+}
+
+.taxonDeleteContainer {
+	padding-top: 70px;
+	text-align: right;
+}
+.taxonDeleteContainer button {
+	font-size: 15px;
+	padding: 10px;
+}
+
+.taxonWithTools.ui-draggable-dragging .taxonDropArea { 
+	visibility: hidden; 
+}
+
+.showChildrenTools {
+	display: inline-block;
+}
+

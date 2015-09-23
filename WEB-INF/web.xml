@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+
+	<display-name>Triplestore</display-name>
+	<description>LuOnto-ontologiatietokannan API ja hallinta</description>
+
+	<error-page>
+		<error-code>404</error-code>
+		<location>/static/404.html</location>
+	</error-page>
+	
+	<servlet-mapping>
+    	<servlet-name>default</servlet-name>
+    	<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+	
+	<login-config>
+		<auth-method>BASIC</auth-method>
+		<realm-name>Triplestore</realm-name>
+	</login-config>
+
+	<security-role>
+		<description>
+			The role that is required to use API calls
+    	</description>
+		<role-name>triplestore-api</role-name>
+	</security-role>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Triplestore</web-resource-name>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>triplestore-api</role-name>
+		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Exclude app pages from authentication</web-resource-name>
+			<url-pattern>/static/*</url-pattern>
+			<url-pattern>/editor/*</url-pattern>
+			<url-pattern>/taxonomy-editor/*</url-pattern>
+			<url-pattern>/greet/*</url-pattern>
+			<url-pattern>/login/*</url-pattern>
+			<url-pattern>/logout/*</url-pattern>
+			<url-pattern>/error/*</url-pattern>
+			<url-pattern>/taxon-search/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>
+	
+</web-app>

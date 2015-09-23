@@ -1,0 +1,10 @@
+ - triplestore search: hakuparametriksi literaalin kielikoodi
+
+ - testaus: ym!: kts. koodikattavuus!
+ 
+ - taulukko luokista (class) ja niiden ominaisuuksista (property) ja niiden range, min, max ja count
+ 
+  
+   
+ 
+ 

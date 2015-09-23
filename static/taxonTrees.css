@@ -1,0 +1,287 @@
+._jsPlumb_connector { opacity: 0.3; }
+
+span.error {
+	color: red;
+	font-weight: bold;
+}
+
+body, html {
+	background-color:  rgb(242, 245, 247);
+}
+
+.ui-widget {
+	font-size: 11px;
+}
+#content-wrapper {
+	padding: 0;
+}
+h3 {
+	margin: 0;
+	font-size: 100%;
+}
+#taxonTree {
+	width: 100%;
+	min-height: 250px;
+}
+#toolbox {
+	position: fixed;
+	top: 35px;
+	right: 5px;
+	padding: 3px;
+	width: 276px;
+	z-index: 10;
+}
+#toolboxToggle { cursor: pointer; }
+#toolbox > div { 
+	padding: 5px; 
+}
+#toolbox > div, #toolbox > table {
+	width: 100%;
+}
+#toolbox table tr td {
+	vertical-align: top;
+}
+#toolbox table tr td :last  {
+	text-align: center;
+}
+.switchContainer {
+	display: inline-block;
+}
+#taxonSearch input {
+	display: inline-block;
+}
+
+#editTaxon {
+	border-top: 3px double grey;
+	width: 99.9%;
+	border-bottom-style:none;
+}
+#editTaxonContent {
+	margin-left: 10px;
+	margin-right: 10px;
+	padding-bottom: 30px;
+	min-height: 150px;	
+}
+#editTaxon > * {
+	text-align: center;
+}
+
+.superdomain		{ background-color: rgb(201, 231, 255) } 
+.domain				{ background-color: rgb(201, 231, 255) } 
+
+.kingdom			{ background-color: rgb(201, 255, 253) }
+.subkingdom			{ background-color: rgb(201, 255, 253) }
+.superphylum		{ background-color: rgb(201, 255, 253) }
+.superdivision		{ background-color: rgb(201, 255, 253) }
+
+.phylum				{ background-color: rgb(201, 255, 226) }
+.division			{ background-color: rgb(201, 255, 226) }
+.subphylum			{ background-color: rgb(201, 255, 226) }
+.subdivision		{ background-color: rgb(201, 255, 226) }
+.infradivision		{ background-color: rgb(201, 255, 226) }
+
+.superclass			{ background-color: rgb(202, 255, 201) }
+.class				{ background-color: rgb(202, 255, 201) }
+.subclass			{ background-color: rgb(202, 255, 201) }
+.infraclass			{ background-color: rgb(202, 255, 201) }
+
+.superorder			{ background-color: rgb(229, 255, 201) }
+.order				{ background-color: rgb(229, 255, 201) }
+.suborder			{ background-color: rgb(229, 255, 201) }
+.infraorder			{ background-color: rgb(229, 255, 201) }
+
+.superfamily		{ background-color: rgb(255, 254, 201) }
+.family				{ background-color: rgb(255, 254, 201) }
+.subfamily			{ background-color: rgb(255, 254, 201) }
+.tribe				{ background-color: rgb(255, 254, 201) }
+.subtribe			{ background-color: rgb(255, 254, 201) }
+
+.supergenus			{ background-color: rgb(255, 227, 201) }
+.genus				{ background-color: rgb(255, 227, 201) }
+.subgenus			{ background-color: rgb(255, 227, 201) }
+.aggregate 			{ background-color: rgb(255, 227, 201) }
+
+.species			{ background-color: rgb(255, 238, 216) }
+
+.subspecies			{ background-color: rgb(252, 241, 227) }
+.variety			{ background-color: rgb(252, 241, 227) }
+.form				{ background-color: rgb(252, 241, 227) }
+.anamorph           { background-color: rgb(252, 241, 227) }
+.hybrid             { background-color: rgb(252, 241, 227) }
+
+.unranked			{ background-color: rgb(255, 214, 214) }
+
+.speciesName {
+	font-style: italic;
+	white-space: nowrap;
+}
+.author {
+	display: inline-block;
+	max-width: 150px;
+	font-size: 10px;
+	padding-left: 7px;
+}
+.taxonRank {
+	color: #515151;
+	padding-right: 5px;
+}
+
+div.taxonLevel {
+	display: block;
+	padding: 5px;
+	padding-bottom: 15px;
+	margin-bottom: 15px;
+	vertical-align: top;
+	font-size: 12px;
+	text-align: center;
+	border-bottom: 1px dotted rgb(200,200,200);
+}
+
+div.taxonChilds {
+	border: 1px dotted grey;
+	border-radius: 5px;
+	background-color: rgb(220,240,255);
+	padding: 5px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: left;
+}
+div.taxonWithTools {
+	display: inline-block;
+	margin: 2px;
+	cursor: pointer;
+}
+div.synonyms {
+	display: inline-block;
+	padding: 5px;
+	padding-left: 10px;
+	padding-right: 10px;
+	margin-left: 5px;
+	border: 1px dotted grey;
+	font-weight: normal;
+}
+div.taxonInfo {
+	display: inline-block;
+	padding: 3px;
+	border-radius: 3px;
+	vertical-align: middle;
+}
+div.taxonInfo span {
+	display: inline-block;
+	vertical-align: middle;
+}
+.treePlusMinusSign {
+	border-radius: 0px;
+}
+.treePlusMinusSign .ui-button-text {
+	padding: 1px;
+}
+div.taxonChildTools {
+	width: 100%;
+	background-color: rgb(50, 152, 206);
+	border-bottom: 1px solid black;
+}
+div.taxonChildTools h3 {
+	display: inline-block;
+	padding-left: 2px;
+	padding-right: 2px;
+	color: white;
+	font-size: 10px;
+}
+div.taxonChildTools button, div.taxonChildTools .button {
+	float: right;
+	margin-left: 5px;
+	margin-right: 5px;
+	border-radius: 4px;
+}
+div.taxonChildToolsBottom button, div.taxonChildToolsBottom .button {
+	float: none;
+}
+div.taxonChildToolsBottom  {
+	text-align: center;
+	border-bottom-style: none;
+	border-top: 1px solid black;
+}
+div.taxonChildTools .ui-button-text, .addSynonymButton .ui-button-text {
+	padding: 0px;
+	padding-left: 3px;
+	padding-right: 3px;
+	font-size: 10px;
+}
+div.sortingControls {
+	display: none;
+	text-align: center;
+	background-color: white;
+	margin: 2px;
+	padding: 4px;
+}
+div.sortingControls button {
+	float: none;
+}
+.taxonChilds li {
+	list-style: none;
+}
+.saveSortingButton {
+	display: none;
+}
+#greyOutElement, .ui-widget-overlay {
+	opacity: 1;
+	background: none;
+	background-color: rgba(100,100,100,0.5);
+}
+#greyOutElement {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: none;
+	z-index: 0;
+}
+.aboveGreyOutElement {
+	z-index: 1;
+	position: relative;
+}
+div.taxonDropArea {
+	width: 100%;
+	text-align: center;
+	color: grey;
+	margin: 0px;
+}
+div.taxonDropArea {
+	cursor: default;
+}
+.ui-sortable .taxonWithTools {
+	cursor: ns-resize;
+}
+div.taxonWithTools.ui-draggable {
+	cursor: move;
+}
+.column { display: inline-block; vertical-align: top; text-align: left; }
+.portlet { margin: 0 1em 1em 0; }
+.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: pointer; }
+.portlet-header .ui-icon { float: right; }
+.portlet-content { padding: 0.4em; white-space: nowrap; }
+.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
+.ui-sortable-placeholder * { visibility: hidden; }
+
+
+.checklistHeader {
+	position: absolute;
+	top: 58px;
+	left: 15px;
+}
+
+.taxonomySearchResultContainer p {
+	padding: 0px;
+	margin: 0px;
+	font-size: 90%;
+	font-weight: normal;
+}
+.taxonomySearchResultContainer h3 {
+	padding: 0px;
+	font-size: 90%;
+}
+.taxonomySearchResultContainer a {
+	color: rgb(33, 97, 203);
+}

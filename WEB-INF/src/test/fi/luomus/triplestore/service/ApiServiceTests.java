@@ -1,0 +1,429 @@
+package fi.luomus.triplestore.service;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Subject;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.commons.xml.Document.Node;
+import fi.luomus.commons.xml.XMLReader;
+import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.service.EditorBaseServlet.Format;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class ApiServiceTests {
+
+	private static TriplestoreDAO dao;
+	private static final Qname TEST_RESOURCE_QNAME = new Qname("JA.123");
+	private static final Subject TEST_RESOURCE = new Subject(TEST_RESOURCE_QNAME);
+
+	@BeforeClass
+	public static void setUpBeforeClass() throws Exception {
+		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
+		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
+		dao = new TriplestoreDAOImple(DataSourceDefinition.initDataSource(config.connectionDescription()), TriplestoreDAO.TEST_USER);
+	}
+
+	@AfterClass
+	public static void afterClass() throws Exception {
+		dao.delete(TEST_RESOURCE);
+	}
+
+	@Test
+	public void test_get_by_qname_notgiven() throws Exception {
+		String response = ApiServlet.get(new Qname(null), ResultType.NORMAL, Format.RDFXML, dao);
+		assertNull(response);
+	}
+
+	@Test
+	public void test_get_by_qname_nonexisting() throws Exception {
+		String response = ApiServlet.get(new Qname("nonexistig"), ResultType.NORMAL, Format.RDFXML, dao);
+		assertNull(response);
+	}
+
+	@Test
+	public void test_get_by_qname_existing_but_no_statements() throws Exception {
+		String response = ApiServlet.get(new Qname("rdfs:range"), ResultType.NORMAL, Format.RDFXML, dao);
+		assertNull(response);
+	}
+
+	private String trim(String string) {
+		return Utils.removeWhitespace(string);
+	}
+
+	@Test
+	public void test_get_by_qname_rdfxml() throws Exception {
+		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXML, dao);
+		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/MA.1\">"));
+
+	}
+
+	@Test
+	public void test_get_by_qname_rdfxml_abbrev() throws Exception {
+		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXMLABBREV, dao);
+		assertTrue(response.contains("<MA.person rdf:about=\"http://id.luomus.fi/MA.1\">"));
+
+	}
+
+	@Test
+	public void test_get_by_qname_json() throws Exception {
+		String response1 = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON, dao);
+		String response2 = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXMLABBREV, dao);
+		assertEquals(response1, response2);
+		assertTrue(trim(response1).contains(trim("\"MA.person\": { ")));
+		assertTrue(trim(response1).contains(trim("\"rdf:about\": \"http://id.luomus.fi/MA.1\",")));
+
+	}
+
+	@Test
+	public void test_get_by_qname_json_non_abbrev() throws Exception {
+		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXML, dao);
+		assertTrue(trim(response).contains(trim("\"rdf:Description\": { ")));
+		assertTrue(trim(response).contains(trim("\"rdf:about\": \"http://id.luomus.fi/MA.1\",")));
+		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://id.luomus.fi/MA.person\" },")));		
+	}
+
+	@Test
+	public void test_get_by_qname_resulttype_chain() throws Exception {
+		String response = ApiServlet.get(new Qname("MX.37602"), ResultType.CHAIN, Format.RDFXMLABBREV, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+
+		assertEquals(1, n.getChildNodes("dwc:Taxon").size());
+		Node animalia = n.getNode("dwc:Taxon");
+		assertEquals("Animalia", animalia.getNode("dwc:scientificName").getContents());
+
+		assertEquals(1, animalia.getChildNodes("MX.isPartOf").size());
+		Node eucarya = animalia.getNode("MX.isPartOf").getNode("dwc:Taxon");
+		assertEquals("Eucarya", eucarya.getNode("dwc:scientificName").getContents());
+
+		assertEquals(1, eucarya.getChildNodes("MX.isPartOf").size());
+		Node biota = eucarya.getNode("MX.isPartOf").getNode("dwc:Taxon");
+		assertEquals("Biota", biota.getNode("dwc:scientificName").getContents());
+
+		assertEquals(0, biota.getChildNodes("MX.isPartOf").size());
+	}
+
+	@Test
+	public void test_get_by_qname_resulttype_children() throws Exception {
+		String response = ApiServlet.get(new Qname("MX.7"), ResultType.CHILDREN, Format.RDFXML, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		Set<String> taxonRanks = new HashSet<String>();
+		for (Node child : n.getChildNodes()) {
+			taxonRanks.add(child.getNode("dwc:taxonRank").getAttribute("rdf:resource"));
+		}
+		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.species"));
+		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.genus"));
+		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.family"));
+	}
+
+
+	@Test
+	public void test_resulttype_tree() throws Exception {
+		String response = ApiServlet.get(new Qname("EA4.0WB"), ResultType.TREE, Format.RDFXMLABBREV, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getChildNodes().size());
+		n = n.getNode("MY.document");
+		assertTrue(n.getChildNodes().size() > 10);
+		assertEquals(1, n.getChildNodes("MZ.hasPart").size());
+		assertEquals(1, n.getNode("MZ.hasPart").getChildNodes().size());
+		Node gathering = n.getNode("MZ.hasPart").getNode("MY.gathering");
+		assertTrue(gathering.getChildNodes().size() > 5);
+		assertEquals(1, gathering.getChildNodes("MZ.hasPart").size());
+		assertEquals(1, gathering.getNode("MZ.hasPart").getChildNodes().size());
+		Node unit = gathering.getNode("MZ.hasPart").getNode("MY.unit");
+		assertEquals("http://id.luomus.fi/MY.sexF", unit.getNode("MY.sex").getAttribute("rdf:resource"));
+		assertEquals(1, unit.getChildNodes("MZ.hasPart").size());
+		assertEquals(1, unit.getNode("MZ.hasPart").getChildNodes().size());
+		Node identification = unit.getNode("MZ.hasPart").getNode("MY.identification");
+		assertEquals("http://id.luomus.fi/MY.210289", identification.getAttribute("rdf:about"));
+		assertEquals("Apamea crenata", identification.getNode("MY.taxon").getContents());
+	}
+
+	@Test
+	public void test__put_and_delete() throws Exception {
+		dao.delete(TEST_RESOURCE);
+
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		assertNull(response);
+
+		String data = "" +
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <rdfs:label>bar</rdfs:label> "+
+				"  </rdf:Description> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, data, Format.RDFXML, dao);
+
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		assertEquals(cleanForCompare(data), cleanForCompare(response));
+
+		response = ApiServlet.delete(TEST_RESOURCE_QNAME, Format.RDFXML, dao);
+		assertEquals(cleanForCompare("<rdf:RDF />"), cleanForCompare(response));
+	}
+
+	public static String cleanForCompare(String rdf) {
+		// <rdf:RDFxmlns="http://id.luomus.fi/"xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Descriptionrdf:about="http://id.luomus.fi/JA.123"><fooxml:lang="en">bar</foo></rdf:Description></rdf:RDF>
+		rdf = rdf.replace("<?xml version='1.0' encoding='utf-8'?>", "");
+		String nameSpaces = rdf.split(Pattern.quote(">"))[0];
+		rdf = rdf.replace(nameSpaces, "rdf:RDF");
+		return Utils.removeWhitespace(rdf);
+	}
+
+	@Test
+	public void test__put__data_is_abbrev_but_format_is_nonabbrev() throws Exception {
+		dao.delete(TEST_RESOURCE);
+
+		String data = "" +
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <JA.124 rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <rdfs:label>bar</rdfs:label> "+
+				"    <rdfs:comment xml:lang=\"fi\">baari</rdfs:comment> "+
+				"  </JA.124> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, data, Format.RDFXML, dao); // put succeeds even when format is incorrect
+
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao); // response is in the format given as parameter
+		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\">"));
+		assertTrue(response.contains("<rdf:type rdf:resource=\"http://id.luomus.fi/JA.124\" />"));
+	}
+
+	@Test
+	public void test__put_one_predicate() throws Exception {
+		dao.delete(TEST_RESOURCE);
+
+		// Put    rdfs:label "bar" @ sv for null context
+		String predicateQname = "rdfs:label";
+		String objectResource = null;
+		String objectLiteral = "bar";
+		String langCode = "sv";
+		String contextQname = null;
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getChildNodes().size());
+		assertEquals("http://id.luomus.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
+		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+
+		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+
+		// Put    rdfs:label "changed" @ sv for null context
+		predicateQname = "rdfs:label";
+		objectResource = null;
+		objectLiteral = "changed";
+		langCode = "sv";
+		contextQname = null;
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getChildNodes().size());
+		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+
+		assertEquals("changed", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+
+		// Put  rdfs:label "added" @ sv for context JA.1
+		predicateQname = "rdfs:label";
+		objectResource = null;
+		objectLiteral = "added";
+		langCode = "sv";
+		contextQname = "JA.1";
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getChildNodes().size());
+		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+
+		assertEquals("changed", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+
+		assertEquals("added", n.getNode("rdf:Description").getNode("rdfs:label_CONTEXT_JA.1").getContents());
+		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label_CONTEXT_JA.1").getAttribute("xml:lang"));
+	}
+
+	@Test
+	public void test__put_edit_one_predicate_removes_all_existing_subject_predicate_langcode_context_matches() throws Exception {
+		String rdf = "" +
+				"<?xml version='1.0' encoding='utf-8'?> "+
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <rdfs:label>bar1</rdfs:label> "+
+				"    <rdfs:label>bar2</rdfs:label> "+
+				"    <rdfs:label xml:lang=\"fi\">baari</rdfs:label> "+
+				"  </rdf:Description> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(3, n.getNode("rdf:Description").getChildNodes().size()); // Before changing rdfs:label for no language and null context there are 3 statements
+
+		// Put    rdfs:label "changed" @ no language for null context
+		String predicateQname = "rdfs:label";
+		String objectResource = null;
+		String objectLiteral = "changed";
+		String langCode = null;
+		String contextQname = null;
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		n = new XMLReader().parse(response).getRootNode();
+		assertTrue(response.contains("<rdfs:label xml:lang=\"fi\">baari</rdfs:label>"));
+		assertTrue(response.contains("<rdfs:label>changed</rdfs:label>"));
+		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size()); // Statement for language "fi" should remain!
+	}
+
+	@Test
+	public void test__put_one__predicate_with_objectresource() throws Exception {
+		String rdf = "" +
+				"<?xml version='1.0' encoding='utf-8'?> "+
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" /> "+
+				"  </rdf:Description> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+
+		// Put    MZ.isPartOf "JA.2" for null context
+		String predicateQname = "MZ.isPartOf";
+		String objectResource = "JA.2";
+		String objectLiteral = null;
+		String langCode = null;
+		String contextQname = null;
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		n = new XMLReader().parse(response).getRootNode();
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.2\" />"));
+		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+	}
+
+	@Test
+	public void test__put_one__predicate_with_objectresource_to_different_context() throws Exception {
+		String rdf = "" +
+				"<?xml version='1.0' encoding='utf-8'?> "+
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" /> "+
+				"  </rdf:Description> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+
+		// Put    MZ.isPartOf "JA.2" for null context
+		String predicateQname = "MZ.isPartOf";
+		String objectResource = "JA.2";
+		String objectLiteral = null;
+		String langCode = null;
+		String contextQname = "JA.2";
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		System.out.println(response);
+		
+		n = new XMLReader().parse(response).getRootNode();
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" />"));
+		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://id.luomus.fi/JA.2\" />"));
+		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+	}
+
+	@Test
+	public void test__use_put_one_predicate_to_delete() throws Exception {
+		String rdf = "" +
+				"<?xml version='1.0' encoding='utf-8'?> "+
+				"<rdf:RDF "+
+				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
+				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
+				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"    <rdfs:label xml:lang=\"fi\">foo</rdfs:label> "+
+				"    <rdfs:label xml:lang=\"sv\">foopåsvenska</rdfs:label> "+
+				"    <rdfs:label_CONTEXT_JA.1 xml:lang=\"fi\">foodifferentcontext</rdfs:label_CONTEXT_JA.1> "+
+				"  </rdf:Description> "+
+				"</rdf:RDF>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		System.out.println(response);
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(3, n.getNode("rdf:Description").getChildNodes().size());
+
+		// Put    rdfs:label "" for language "fi" and null context
+		String predicateQname = "rdfs:label";
+		String objectResource = null;
+		String objectLiteral = "";
+		String langCode = "fi";
+		String contextQname = null;
+
+		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		System.out.println(response);
+
+		n = new XMLReader().parse(response).getRootNode();
+		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+	}
+
+	@Test
+	public void test__get_several_qnames() throws Exception {
+		List<Qname> qnames = Utils.list(new Qname("MX.1"), new Qname("MX.2"), new Qname("MX.3"));
+		String response = ApiServlet.get(qnames, ResultType.NORMAL, Format.RDFXML, dao);
+		
+		Node n = new XMLReader().parse(response).getRootNode();
+		assertEquals(3, n.getChildNodes().size());
+		
+		int i = 1;
+		for (Node child : n.getChildNodes()) {
+			String id = child.getAttribute("rdf:about");
+			assertEquals("http://id.luomus.fi/MX." + i, id);
+			i++;
+		}
+	}
+
+}

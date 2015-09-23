@@ -1,0 +1,250 @@
+#content {
+	
+}
+
+.ui-widget {
+	font-size: 0.9em;
+}
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.hidden {
+	display: none;
+}
+
+#userinfo li {
+	float: right;
+	list-style: none;
+	display: block;
+	margin: 3px;
+}
+#userinfo .name {
+	font-weight: bold;
+}
+#userinfo .ui-button-text {
+	padding: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-variant: small-caps;
+}
+span.ui-icon {
+	display: inline-block;
+}
+
+.helpPage {
+	margin: auto;
+}
+
+ul#questionsAndAnswers li {
+	list-style-type: none;
+	margin-bottom: 20px;
+}
+ul#questionsAndAnswers li p {
+	margin: 0;
+	padding: 0;
+	line-height: 1.5em;
+	margin-bottom: 4px;
+	max-width: 550px;
+}
+ul#questionsAndAnswers li p .qa {
+	display: inline-block;
+	width: 30px;
+	font-weight: bold;
+}
+
+#login input {
+	width: 170px;
+	font-size: 12px;
+	font-family: monospace;
+	padding: 5px;
+	margin-left: 5px;
+}
+#login .error {
+	font-variant: small-caps;
+	color: rgb(200, 100, 150);
+	text-align: center;
+}
+label {
+	vertical-align: top;
+}
+label.error, span.error {
+	color: rgb(200, 100, 150);
+}
+label.error {
+	width: auto;
+	margin-left: 5px;
+}
+.helpPage {
+	max-width: 800px;
+}
+.info {
+	font-size: 90%;
+	max-width: 300px;
+	display: block;
+	margin: 10px;
+	white-space: normal;
+}
+.important {
+	font-size: 100%;
+	font-weight: bold;
+}
+
+.servicelist li {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+	display: inline-block;
+	padding: 5px;
+	vertical-align: top;
+}
+.servicelist li:hover {
+	background-color: rgb(228, 241, 251);
+	border-radius: 10px;
+}
+.servicelist select, .servicelist input, .servicelist textarea {
+	width: 180px;
+}
+
+.flashMessage, .successMessage {
+	padding: 10px;
+	display: block;
+	margin: 10px;
+	border: 1px dotted grey;
+}
+.successMessage {
+	background-color: rgb(200,250,200);
+	font-color: rgb(50,100,50);
+}
+.errorMessage {
+	border: 2px dashed red;
+	color: rgb(221, 93, 93);
+	padding: 1em;
+	display: inline-block;
+	font-size: 1.2em;
+}
+.warningMessage {
+	border: 1px dotted yellow;
+	color: rgb(229, 198, 0);
+}
+.validationResults {
+	font-size: 130%;
+}
+.validationResults td {
+	padding: 5px;
+	padding-right: 10px;
+}
+h4.errorMessage {
+	border-style: none;
+	color: red;
+	font-size: large;
+}
+
+select[disabled] {
+    color: rgb(55, 55, 55);
+    background-color: rgb(221, 221, 221);
+    border-style: solid;
+}
+.chosen-disabled  {
+    color: rgb(55, 55, 55);
+    background: none !important;
+    background-color: rgb(221, 221, 221);
+}
+
+table#resource {
+	border-collapse: collapse;
+}
+table#resource td, table#resource th {
+	padding: 4px;
+}
+table#resource tbody tr:nth-child(even) td {
+	background-color: rgb(219, 232, 251);
+}
+table#resource caption, table#resource th {
+	background-color: rgb(219, 232, 251);
+	font-weight: bold;
+	font-size: 1.2em;
+	padding: 5px;
+}
+table#resource caption {
+	font-size: 1.5em;
+}
+
+.literal, .resource {
+  border-radius: 1px;
+  background-color: #85C8CB;
+  font-size: 90%;
+  width: 80px;
+  text-align: center;
+  display: inline-block;
+}
+.resource {
+   background-color: #C8C885;
+}
+.label {
+  font-size: 80%;
+}
+table#resource.triplets input, table#resource.triplets select, table#resource.triplets textarea {
+  width: 280px;
+}
+table#resource.triplets select.langcode {
+	width: auto;
+}
+table#resource.triplets {
+	min-width: 800px;
+	float: left;
+}
+table#resource.triplets th {
+	text-align: left;
+} 
+table#resource.triplets td {
+	white-space: nowrap;
+	padding-right: 10px;
+}
+div#currentDataModel {
+	float: left;
+	margin-left: 1em;
+	max-width: 700px;
+	overflow: auto;
+	margin-top: 4em;
+}
+
+table#resource.triplets .buttons {
+	text-align: right;
+}
+
+.cancelButton {
+	margin-left: 5px;
+}
+.deleteAllButton {
+	color: red;
+	margin-left: 25px;
+}
+.blocker {
+	top: 0; left: 0;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background: grey;
+	background: #AAA url(jquery-ui/css/cupertino/images/ui-bg_diagonals-thick_90_eeeeee_40x40.png) repeat;
+	opacity: 0.8;
+	font-size: 3em;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+	z-index: 1000;
+	padding-top: 4em;
+}
+
+#addNewPredicateTools {
+	font-size: 0.8em;
+	color: rgb(51, 125, 77);
+}
+.newRow td {
+	background-color: rgb(200,255,200) !important;
+}

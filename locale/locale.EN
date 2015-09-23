@@ -1,0 +1,16 @@
+title_login = Login page
+title_greet = Welcome page
+title_main = Main page
+title_edit = Edit resource
+title_taxonEditMain = Editing taxa
+title_checklists = Checklists
+title_checklists-edit = Checklists
+title_publications = Publications
+title_publications-edit = Publications
+title_help = Help
+title_error = Error page!
+title_orphan = Orphan taxa
+
+exactMatch = Exact match found
+likelyMatches = Approximate matches
+partialMatches = Partial matches

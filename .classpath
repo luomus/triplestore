@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="WEB-INF/src/main"/>
+	<classpathentry kind="src" path="WEB-INF/src/taxonomy/main"/>
+	<classpathentry kind="src" path="WEB-INF/src/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-codec-1.6.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-io-2.3.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.1.3.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/fluent-hc-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/freemarker-2-3-19.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/guava-17.0.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/httpclient-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/httpclient-cache-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/httpmime-4.3.5.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/icu4j-3.4.4.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/iri-0.8.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jena-2.6.4.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/luomus-commons.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/mail.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/slf4j-log4j12-1.5.8.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/xercesImpl-2.7.1.jar"/>
+	<classpathentry kind="lib" path="C:/apache-tomcat/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="C:/apache-tomcat/bin/tomcat-juli.jar"/>
+	<classpathentry kind="lib" path="C:/apache-tomcat/lib/tomcat-jdbc.jar"/>
+	<classpathentry kind="lib" path="C:/apache-tomcat/lib/tomcat-util.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="WEB-INF/classes"/>
+</classpath>
