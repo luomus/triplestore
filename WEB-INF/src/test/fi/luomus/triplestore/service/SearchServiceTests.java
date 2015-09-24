@@ -1,11 +1,11 @@
 package fi.luomus.triplestore.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
-import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -220,11 +220,8 @@ public class SearchServiceTests {
 		Format format = Format.RDFXML;
 	
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
-		assertEquals(trim("<?xmlversion='1.0'encoding='utf-8'?><rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" />"), trim(response));
-	}
-	
-	private String trim(String string) {
-		return Utils.removeWhitespace(string);
+		Node root = new XMLReader().parse(response).getRootNode();
+		assertFalse(root.hasChildNodes());
 	}
 
 }

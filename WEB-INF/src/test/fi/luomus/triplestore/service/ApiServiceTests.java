@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -179,7 +180,8 @@ public class ApiServiceTests {
 		assertEquals(cleanForCompare(data), cleanForCompare(response));
 
 		response = ApiServlet.delete(TEST_RESOURCE_QNAME, Format.RDFXML, dao);
-		assertEquals(cleanForCompare("<rdf:RDF />"), cleanForCompare(response));
+		Node root = new XMLReader().parse(response).getRootNode();
+		assertFalse(root.hasChildNodes());
 	}
 
 	public static String cleanForCompare(String rdf) {
@@ -208,7 +210,7 @@ public class ApiServiceTests {
 
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao); // response is in the format given as parameter
 		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\">"));
-		assertTrue(response.contains("<rdf:type rdf:resource=\"http://id.luomus.fi/JA.124\" />"));
+		assertTrue(response.contains("<rdf:type rdf:resource=\"http://id.luomus.fi/JA.124\""));
 	}
 
 	@Test
@@ -336,7 +338,7 @@ public class ApiServiceTests {
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 
 		n = new XMLReader().parse(response).getRootNode();
-		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.2\" />"));
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.2\""));
 		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
 	}
 
@@ -349,7 +351,7 @@ public class ApiServiceTests {
 				"    xmlns=\"http://id.luomus.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
 				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
-				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" /> "+
+				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\"/>"+
 				"  </rdf:Description> "+
 				"</rdf:RDF>";
 		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
@@ -370,8 +372,8 @@ public class ApiServiceTests {
 		System.out.println(response);
 		
 		n = new XMLReader().parse(response).getRootNode();
-		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" />"));
-		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://id.luomus.fi/JA.2\" />"));
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\""));
+		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://id.luomus.fi/JA.2\""));
 		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
 	}
 
