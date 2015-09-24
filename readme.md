@@ -99,6 +99,7 @@ To delete a literal statement, give empty resourceliteral ("") as parameter. Thi
 * checklist - Qname of checklist, default MR.1 (master checklist)
 * format - JSON, XML, JSONP (taxon-search)
 
+Returns HTTP 200 on success, HTTP 500 on failure.
 
 
 ##Installation

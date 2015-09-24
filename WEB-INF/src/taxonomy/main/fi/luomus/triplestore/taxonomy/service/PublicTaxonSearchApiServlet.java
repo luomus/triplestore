@@ -84,7 +84,13 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Format format = getFormat(req);
 
 		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist));
-
+		if (response.getRootNode().hasAttribute("error")) {
+			if (response.getRootNode().getAttribute("error").startsWith("Search word")) {
+				res.setStatus(400);
+			} else {
+				res.setStatus(500);
+			}
+		}
 		if (format == Format.JSONP) {
 			String callback = req.getParameter("callback");
 			if (callback == null || callback.length() < 1) throw new IllegalArgumentException("Callback parameter must be given for jsonp response. Use 'callback'.");
