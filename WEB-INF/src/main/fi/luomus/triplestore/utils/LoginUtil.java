@@ -117,12 +117,21 @@ public class LoginUtil  {
 		if (session.isAuthenticatedFor("triplestore")) {
 			return responseData.setRedirectLocation(frontPage);
 		}
-		String originalUrl = req.getParameter("originalURL");
+		String originalUrl = getOriginalUrl(req);
 		responseData.setData("originalURL", originalUrl);
 		if (usingLajiAuth()) {
 			setLajiAuthLinks(originalUrl);
 		}
 		return responseData.setViewName("login");
+	}
+
+	private String getOriginalUrl(HttpServletRequest req) {
+		String originalUrl = req.getParameter("originalURL");
+		if (originalUrl == null) return "";
+		if (originalUrl.contains("/logout")) {
+			return frontPage;
+		}
+		return originalUrl;
 	}
 
 	private void setLajiAuthLinks(String originalUrl) throws URISyntaxException {
@@ -146,15 +155,16 @@ public class LoginUtil  {
 	public ResponseData processPost(HttpServletRequest req) throws Exception {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		String originalUrl = req.getParameter("originalURL");
-
-		responseData.setViewName("login").setData("originalURL", originalUrl).setData("username", username);
+		String next = req.getParameter("next");
+		String originalUrl = getOriginalUrl(req);
+		
+		responseData.setViewName("login").setData("originalURL", next).setData("username", username);
 
 		if (usingLajiAuth()) {
 			setLajiAuthLinks(originalUrl);
 			String token = req.getParameter("token");
 			if (given(token)) {
-				return tryLajiAuthentication(req, token, originalUrl);
+				return tryLajiAuthentication(req, token, next);
 			}
 		} 
 		return tryLuomusAdLogin(req, username, password, originalUrl); 
@@ -181,7 +191,7 @@ public class LoginUtil  {
 		}
 	}
 
-	private ResponseData tryLajiAuthentication(HttpServletRequest req, String token, String originalUrl) throws URISyntaxException, IOException, JsonParseException, JsonMappingException, ApiException {
+	private ResponseData tryLajiAuthentication(HttpServletRequest req, String token, String next) throws URISyntaxException, IOException, JsonParseException, JsonMappingException, ApiException {
 		AuthenticationToken authorizationToken = null;
 		try {
 			System.out.println("Jee: " + token);
@@ -190,8 +200,8 @@ public class LoginUtil  {
 			client.validateToken(authorizationToken);
 			// Validation throws exception if something is wrong; Authentication has been successful:
 			authenticateSession(req, authorizationToken.getUser());
-			if (given(originalUrl)) {
-				return responseData.setRedirectLocation(originalUrl);
+			if (given(next)) {
+				return responseData.setRedirectLocation(config.baseURL() + next);
 			} else {
 				return responseData.setRedirectLocation(frontPage);
 			}
@@ -227,7 +237,7 @@ public class LoginUtil  {
 
 	private void authenticateSession(HttpServletRequest req, UserDetails user) throws Exception {
 		session.authenticateFor("triplestore");
-		session.setUserId(user.getId());
+		session.setUserId(user.getEmail());
 		session.setUserName(user.getName());
 		session.put("user_qname", user.getId());
 		int userFK = dao.getUserFK(user.getId());
