@@ -37,7 +37,7 @@ $(function() {
 			responseElement.hide();
 			$.ajax({
     			type: 'GET',
-    			url: '${baseURL}/search?object=%25'+searchWord+'%25&limit=50',
+    			url: '${baseURL}/search?objectliteral=%25'+searchWord+'%25&limit=50',
     			dataType: 'xml',
     			success: function(xml) {
 	    			var count = 0;
