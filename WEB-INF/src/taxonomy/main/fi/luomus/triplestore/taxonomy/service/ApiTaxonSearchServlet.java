@@ -7,7 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonomy-search/*"})
+@WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonomy-search-content/*"})
 public class ApiTaxonSearchServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -3382868354885463547L;

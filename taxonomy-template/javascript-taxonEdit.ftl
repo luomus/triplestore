@@ -5,11 +5,11 @@ $(function() {
 		$("#toolBoxContent").toggle();
 	});
 	
-    $(document).ajaxError(function (e, response, settings) {
+    $(document).ajaxError(function(event, response, settings, thrownError) {
     	if (response.status == 403) {
         	document.location.href = document.location.href;
 		} else {
-			document.location.href = '${baseURL}/error';
+			document.location.href = '${baseURL}/error?error='+encodeURIComponent(settings.url + ': ' + response.status + ' : ' + thrownError);
 		}
 	});
 	

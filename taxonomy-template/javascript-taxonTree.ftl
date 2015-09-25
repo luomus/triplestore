@@ -549,7 +549,7 @@ function searchTaxon(taxonSearchForm) {
 	resultViewContainer.html('').removeClass('collapse');
 	resultViewContainer.hide();
 	$("body").css("cursor", "progress");
-	$.get('${baseURL}/api/taxonomy-search/'+encodeURIComponent(taxon)+'?locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
+	$.get('${baseURL}/api/taxonomy-search-content/'+encodeURIComponent(taxon)+'?locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
 		resultViewContainer.html(data);
 		resultViewContainer.fadeIn(1000);
 		setTimeout(function() {
@@ -568,7 +568,7 @@ $(function() {
 		if (term in cache) {
 			response(cache[term]);
 		} else {
-			$.getJSON('https://ws.luomus.fi/triplestore/taxon-search/'+term+'?<#if checklist??>checklist=${checklist.qname}&</#if>format=jsonp&callback=?', function (data) {
+			$.getJSON('${baseURL}/api/taxon-search/'+term+'?<#if checklist??>checklist=${checklist.qname}&</#if>format=jsonp&callback=?', function (data) {
 				cache[term] = data.result;
 				response(data.result);
 			});

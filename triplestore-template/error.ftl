@@ -6,7 +6,11 @@
 
 <p>Message:</p>
 <div class="errorMessage">
- 	${flashMessage!"No message was given.."}
+	<#if flashMessage?has_content> 
+ 		${flashMessage}
+ 	<#elseif error?has_content>
+ 		${error}
+ 	</#if>
 </div>
 
 <hr />

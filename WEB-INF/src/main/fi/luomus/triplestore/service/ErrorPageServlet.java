@@ -13,12 +13,17 @@ public class ErrorPageServlet extends EditorBaseServlet {
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
-		return false;
+		return true;
 	}
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return super.initResponseData(req).setViewName("error");
+		String error = req.getParameter("error");
+		ResponseData responseData = super.initResponseData(req).setViewName("error");
+		if (given(error)) {
+			responseData.setData("error", error);
+		}
+		return responseData;
 	}
 	
 }
