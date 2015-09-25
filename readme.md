@@ -56,7 +56,7 @@ Inserts/updates one resource.
 
 ###Parameters
 
-* data - data in the given format (rdfxml,rdfxmlabbrev)
+* data as body content or 'data' parameter; format: rdfxml or rdfxmlabbrev 
 
 OR to insert/update/delete one predicate
 

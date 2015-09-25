@@ -217,6 +217,11 @@ public class ApiServlet extends EditorBaseServlet {
 		String contextQname = req.getParameter("context_qname");
 
 		if (!given(data) && !given(predicateQname)) {
+			data = readBody(req);
+		}
+		System.out.println(data);
+		
+		if (!given(data) && !given(predicateQname)) {
 			throw new IllegalArgumentException("You must give 'data' or 'predicate_qname' parameter");
 		}
 

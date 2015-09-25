@@ -17,11 +17,9 @@ import fi.luomus.triplestore.models.User;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -141,24 +139,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected String getQname(HttpServletRequest req) {
-		String path = req.getPathInfo();
-		if (path == null || path.equals("/")) {
-			return "";
-		}
-		String qname = path.substring(path.lastIndexOf("/")+1);
-		return qname;
+		return getId(req);
 	}
 
 	protected List<Qname> getQnames(HttpServletRequest req) {
-		List<Qname> qnames = new ArrayList<Qname>();
-		String qnamePart = getQname(req);
-		for (String part : qnamePart.split(Pattern.quote("+"))) {
-			Qname qname = new Qname(part);
-			if (qname.isSet()) {
-				qnames.add(qname);
-			}
-		}
-		return qnames;
+		return getIds(req);
 	}
 
 	protected boolean given(Object o) {
