@@ -19,16 +19,16 @@ public class LoginServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processGet(req);
+		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processGet(req);
+	}
+
+	@Override
+	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processPost(req);
 	}
 
 	private String frontpage() {
 		return getConfig().baseURL();
 	}
 	
-	@Override
-	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processPost(req);
-	}
-
 }

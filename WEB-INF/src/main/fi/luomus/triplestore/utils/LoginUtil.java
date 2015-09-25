@@ -1,12 +1,22 @@
 package fi.luomus.triplestore.utils;
 
+import fi.luomus.commons.config.Config;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.lajiauth.model.AuthenticationToken;
+import fi.luomus.lajiauth.model.Constants;
+import fi.luomus.lajiauth.model.UserDetails;
+import fi.luomus.lajiauth.service.LajiAuthClient;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.utils.exceptions.ApiException;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,17 +27,21 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class LoginUtil  {
 
 	private static class AuthenticationResponse {
-		
+
 		private final boolean success;
 		private String errorMessage;
 		private String userId;
 		private String userFullname;
 		private String userQname;
 		private boolean isAdmin = false;
-		
+
 		public AuthenticationResponse(boolean success) {
 			this.success = success;
 		}
@@ -75,23 +89,26 @@ public class LoginUtil  {
 		public void setAdmin(boolean isAdmin) {
 			this.isAdmin = isAdmin;
 		}
-		
+
 	}
-	
+
 	private final SessionHandler session; 
 	private final ResponseData responseData; 
 	private final String frontPage;
 	private final ErrorReporter errorReporter;
 	private final TriplestoreDAO dao;
-	
-	public LoginUtil(String frontPage, SessionHandler session, ResponseData responseData, ErrorReporter errorReporter, TriplestoreDAO dao) {
+	private final Config config;
+	private final ObjectMapper objectMapper = new ObjectMapper();
+
+	public LoginUtil(String frontpage, Config config, SessionHandler session, ResponseData responseData, ErrorReporter errorReporter, TriplestoreDAO dao) {
+		this.config = config;
 		this.session = session;
 		this.responseData = responseData;
-		this.frontPage = frontPage;
+		this.frontPage = frontpage;
 		this.errorReporter = errorReporter;
 		this.dao = dao;
 	}
-	
+
 	public static boolean authorized() {
 		return true;
 	}
@@ -99,24 +116,57 @@ public class LoginUtil  {
 	public ResponseData processGet(HttpServletRequest req) throws Exception {
 		if (session.isAuthenticatedFor("triplestore")) {
 			return responseData.setRedirectLocation(frontPage);
-		} else {
-			return responseData.setViewName("login").setData("originalURL", req.getParameter("originalURL"));
 		}
+		String originalUrl = req.getParameter("originalURL");
+		responseData.setData("originalURL", originalUrl);
+		if (usingLajiAuth()) {
+			setLajiAuthLinks(originalUrl);
+		}
+		return responseData.setViewName("login");
+	}
+
+	private void setLajiAuthLinks(String originalUrl) throws URISyntaxException {
+		if (originalUrl == null) {
+			originalUrl = "";
+		} else {
+			originalUrl = originalUrl.replace(config.baseURL(), "");
+		}
+
+		LajiAuthClient client = getLajiAuthClient();
+		URI hakaURI = client.createLoginUrlForAuthenticationSource(originalUrl, Constants.AuthenticationSources.HAKA);
+		URI virtuURI = client.createLoginUrlForAuthenticationSource(originalUrl, Constants.AuthenticationSources.VIRTU);
+		responseData.setData("hakaURI", hakaURI.toString());
+		responseData.setData("virtuURI", virtuURI.toString());
+	}
+
+	private boolean usingLajiAuth() {
+		return config.defines("LajiAuthURL") && config.defines("SystemQname");
 	}
 
 	public ResponseData processPost(HttpServletRequest req) throws Exception {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		String originalURL = req.getParameter("originalURL");
+		String originalUrl = req.getParameter("originalURL");
 
-		responseData.setViewName("login").setData("originalURL", originalURL).setData("username", username);
+		responseData.setViewName("login").setData("originalURL", originalUrl).setData("username", username);
 
+		if (usingLajiAuth()) {
+			setLajiAuthLinks(originalUrl);
+			String token = req.getParameter("token");
+			if (given(token)) {
+				return tryLajiAuthentication(req, token, originalUrl);
+			}
+		} 
+		return tryLuomusAdLogin(req, username, password, originalUrl); 
+	}
+
+	private ResponseData tryLuomusAdLogin(HttpServletRequest req, String username, String password, String originalUrl) {
 		try {
 			AuthenticationResponse authentication = authenticateViaKotkaAPI(username, password);
 			if (authentication.successful()) {
 				authenticateSession(req, authentication);
-				if (given(originalURL)) {
-					return responseData.setRedirectLocation(originalURL);
+				if (given(originalUrl)) {
+					return responseData.setRedirectLocation(originalUrl);
 				} else {
 					return responseData.setRedirectLocation(frontPage);
 				}
@@ -128,7 +178,32 @@ public class LoginUtil  {
 			errorReporter.report("Login for username " + username, e);
 			responseData.setData("error", e.getMessage());
 			return responseData;
-		} 
+		}
+	}
+
+	private ResponseData tryLajiAuthentication(HttpServletRequest req, String token, String originalUrl) throws URISyntaxException, IOException, JsonParseException, JsonMappingException, ApiException {
+		AuthenticationToken authorizationToken = null;
+		try {
+			System.out.println("Jee: " + token);
+			LajiAuthClient client = getLajiAuthClient();
+			authorizationToken = objectMapper.readValue(token, AuthenticationToken.class);
+			client.validateToken(authorizationToken);
+			// Validation throws exception if something is wrong; Authentication has been successful:
+			authenticateSession(req, authorizationToken.getUser());
+			if (given(originalUrl)) {
+				return responseData.setRedirectLocation(originalUrl);
+			} else {
+				return responseData.setRedirectLocation(frontPage);
+			}
+		} catch (Exception e) {
+			errorReporter.report("Erroreous LajiAuth login for " + Utils.debugS(token, authorizationToken.toString()), e);
+			responseData.setData("lajiAuthError", "Something went wrong! " + e.getMessage());
+			return responseData;
+		}
+	}
+
+	private LajiAuthClient getLajiAuthClient() throws URISyntaxException {
+		return new LajiAuthClient(config.get("SystemQname"), new URI(config.get("LajiAuthURL")));
 	}
 
 	private boolean given(String s) {
@@ -140,13 +215,23 @@ public class LoginUtil  {
 		session.setUserId(authentication.getUserId());
 		session.setUserName(authentication.getUserFullname());
 		session.put("user_qname", authentication.getUserQname());
-		
+
 		int userFK = dao.getUserFK(authentication.getUserQname());
 		session.put("user_fk", Integer.toString(userFK)); // Tämä sitä varten, että jos (ja kun) AddStatement ja AddStatementL käytöstä luovutaan, voidaan pistää userfk statement tauluun
-		
+
 		if (authentication.isForAdminUser()) {
 			session.put("role", "admin");
 		}
+		req.getSession().setMaxInactiveInterval(60 * 60 *3);
+	}
+
+	private void authenticateSession(HttpServletRequest req, UserDetails user) throws Exception {
+		session.authenticateFor("triplestore");
+		session.setUserId(user.getId());
+		session.setUserName(user.getName());
+		session.put("user_qname", user.getId());
+		int userFK = dao.getUserFK(user.getId());
+		session.put("user_fk", Integer.toString(userFK)); // Tämä sitä varten, että jos (ja kun) AddStatement ja AddStatementL käytöstä luovutaan, voidaan pistää userfk statement tauluun
 		req.getSession().setMaxInactiveInterval(60 * 60 *3);
 	}
 
@@ -159,7 +244,7 @@ public class LoginUtil  {
 			params.add(new BasicNameValuePair("username", username));
 			params.add(new BasicNameValuePair("password", password));
 			postRequest.setEntity(new UrlEncodedFormEntity(params));
-			
+
 			JSONObject response = client.contentAsJson(postRequest);
 			return handleAuthenticationResponse(response);
 		} finally {

@@ -19,7 +19,7 @@ public class LoginServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processGet(req);
+		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processGet(req);
 	}
 
 	private String frontpage() {
@@ -28,7 +28,7 @@ public class LoginServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processPost(req);
+		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter(), getTriplestoreDAO()).processPost(req);
 	}
 
 }

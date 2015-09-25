@@ -2,6 +2,25 @@
 	
 }
 
+
+div#luomusLogin, div#lajiAuthLogin {
+  float: left;
+  margin: 4em;
+}
+div#lajiAuthLogin ul li {
+  list-style-type: none;
+  margin: 1em;
+}
+div#luomusLogin label {
+  width: auto;
+  margin-right: 1em;
+}
+div#luomusLogin .error, div#lajiAuthLogin .error {
+	font-variant: small-caps;
+	color: rgb(200, 100, 150);
+	text-align: center;
+}
+
 .ui-widget {
 	font-size: 0.9em;
 }
@@ -65,11 +84,7 @@ ul#questionsAndAnswers li p .qa {
 	padding: 5px;
 	margin-left: 5px;
 }
-#login .error {
-	font-variant: small-caps;
-	color: rgb(200, 100, 150);
-	text-align: center;
-}
+
 label {
 	vertical-align: top;
 }
