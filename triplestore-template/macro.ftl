@@ -7,6 +7,12 @@
 </#if>
 <ul class="servicelist">
 	<li>
+		Search <input type="text" id="searchWord" placeholder="Object or literal" /> <button id="searchButton">Search</button>
+	</li>
+	<li>
+		Edit by Qname <input id="editByQname" type="text" name="search" placeholder="Qname" /> <button id="editByQnameButton">Go</button>
+	</li>
+	<li>
 		Create new 
 			<select id="createNewResourceSelect">
 				<option value="">Select type...</option>
@@ -15,12 +21,6 @@
 				</#list>
 			</select>
 			<button id="createNewResourceButton">Create</button>
-	</li>
-	<li>
-		Search <input type="text" id="searchWord" placeholder="Object or literal" /> <button id="searchButton">Search</button>
-	</li>
-	<li>
-		Edit by Qname <input id="editByQname" type="text" name="search" placeholder="Qname" /> <button id="editByQnameButton">Go</button>
 	</li>
 </ul>
 </#macro>
