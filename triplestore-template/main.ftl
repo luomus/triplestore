@@ -87,11 +87,6 @@ function listResources(className) {
 		}
    	});
 }
-
-function toQname(uri) {
-	return uri.replace('http://id.luomus.fi/', '').replace('http://tun.fi/', 'tun:');
-}
-
 </script>
 
 <#include "luomus-footer.ftl">

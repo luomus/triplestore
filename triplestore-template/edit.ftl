@@ -1,6 +1,7 @@
 <#include "luomus-header.ftl">
 
 <@editorTools />
+<div id="resourceListingResponse"></div>
 
 <h1>Edit ${model.subject.qname}</h1>
 

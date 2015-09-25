@@ -1,4 +1,10 @@
 <#macro editorTools>
+<#if history??>
+	Previously edited: 
+	<#list history.getPrevious(7) as qname>
+		<a href="${baseURL}/editor/${qname}">${qname}</a> <#if qname_has_next> | </#if>
+	</#list>
+</#if>
 <ul class="servicelist">
 	<li>
 		Create new 
@@ -17,11 +23,6 @@
 		Edit by Qname <input id="editByQname" type="text" name="search" placeholder="Qname" /> <button id="editByQnameButton">Go</button>
 	</li>
 </ul>
-<#if history??>
-	<#list history.getPrevious(7) as qname>
-		<a href="${baseURL}/editor/${qname}">${qname}</a> <#if qname_has_next> | </#if>
-	</#list>
-</#if>
 </#macro>
 
 <script>
@@ -87,4 +88,7 @@ $(function() {
 		}
 	});
 });
+function toQname(uri) {
+	return uri.replace('http://id.luomus.fi/', '').replace('http://tun.fi/', 'tun:');
+}
 </script>
