@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.service;
 
+import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.BaseServlet;
 import fi.luomus.commons.services.ResponseData;
@@ -72,6 +73,10 @@ public abstract class EditorBaseServlet extends BaseServlet {
 			responseData.setData("successMessage", session.getFlashSuccess());
 			responseData.setData("errorMessage", session.getFlashError());
 			responseData.setData("creatableResources", CREATABLE_RESOURCES);
+		}
+		Config config = getConfig();
+		if (config.defines("taxonomyEditorBaseURL")) {
+			responseData.setData("taxonomyEditorBaseURL", config.get("taxonomyEditorBaseURL"));
 		}
 		return responseData;
 	}
