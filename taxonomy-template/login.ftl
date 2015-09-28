@@ -25,6 +25,7 @@
 </form>
 </div>
 
+<#if usingLajiAuth??>
 <div id="lajiAuthLogin">
 <h4>Or use your own organization's login</h4>
 	<#if lajiAuthError??>
@@ -35,5 +36,6 @@
 		<li><a href="${virtuURI}"><img src="${staticURL}/img/virtu.png" alt="VIRTU" /></a></li>
 	</ul>
 </div>
+</#if>
 
 <#include "luomus-footer.ftl">

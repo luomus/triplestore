@@ -146,6 +146,7 @@ public class LoginUtil  {
 		URI virtuURI = client.createLoginUrlForAuthenticationSource(originalUrl, Constants.AuthenticationSources.VIRTU);
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
+		responseData.setData("usingLajiAuth", true);
 	}
 
 	private boolean usingLajiAuth() {
