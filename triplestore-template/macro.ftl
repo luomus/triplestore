@@ -22,6 +22,7 @@
 			</select>
 			<button id="createNewResourceButton">Create</button>
 	</li>
+	<li><a href="${baseURL}/editor/invalidate-caches">Clear caches</a></li>
 </ul>
 </#macro>
 

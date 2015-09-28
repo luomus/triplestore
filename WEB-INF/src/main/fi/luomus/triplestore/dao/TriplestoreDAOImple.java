@@ -509,36 +509,45 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		return PROPERTIES_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(className, this));
 	}
 
-	@Override
-	public RdfProperties getPropertiesForceReload(String className) throws SQLException {
-		return PROPERTIES_CACHE.getForceReload(new ResourceWrapper<String, TriplestoreDAOImple>(className, this));
-	}
+	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> SINGLE_PROPETY_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty>(new SinglePropertyCacheLoader(), 60*60, 500);
 
+	private static class SinglePropertyCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> {
+
+		@Override
+		public RdfProperty load(ResourceWrapper<String, TriplestoreDAOImple> key) {
+			String predicateQname = key.getKey();
+			TriplestoreDAOImple dao = key.getResource();
+			TransactionConnection con = null;
+			PreparedStatement p = null;
+			ResultSet rs = null;
+			try {
+				con = dao.openConnection();
+				p = con.prepareStatement(GET_PROPERTY_BY_PREDICATE_NAME_SQL);
+				p.setString(1, predicateQname);
+				rs = p.executeQuery();
+				while (rs.next()) {
+					Qname range = rs.getString(1) == null ? null : new Qname(rs.getString(1));
+					String sortOrder = rs.getString(2);
+					RdfProperty property = dao.createProperty(new Qname(predicateQname), range);
+					if (sortOrder != null) {
+						try {
+							property.setOrder(Integer.valueOf(sortOrder));
+						} catch (NumberFormatException e) {}
+					}
+					return property;
+				}
+				return new RdfProperty(new Qname(predicateQname), null);
+			} catch (Exception e) {
+				throw new RuntimeException("Single property cache loader for predicate " + predicateQname + ". " + e.getMessage());
+			} finally {
+				Utils.close(p, rs, con);
+			}
+		}
+		
+	}
 	@Override
 	public RdfProperty getProperty(Predicate predicate) throws Exception {
-		TransactionConnection con = null;
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			con = openConnection();
-			p = con.prepareStatement(GET_PROPERTY_BY_PREDICATE_NAME_SQL);
-			p.setString(1, predicate.getQname());
-			rs = p.executeQuery();
-			while (rs.next()) {
-				Qname range = rs.getString(1) == null ? null : new Qname(rs.getString(1));
-				String sortOrder = rs.getString(2);
-				RdfProperty property = createProperty(new Qname(predicate.getQname()), range);
-				if (sortOrder != null) {
-					try {
-						property.setOrder(Integer.valueOf(sortOrder));
-					} catch (NumberFormatException e) {}
-				}
-				return property;
-			}
-			return new RdfProperty(new Qname(predicate.getQname()), null);
-		} finally {
-			Utils.close(p, rs, con);
-		}
+		return SINGLE_PROPETY_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(predicate.getQname(), this));
 	}
 
 	@Override
@@ -659,6 +668,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public void clearCaches() {
 		PROPERTIES_CACHE.invalidateAll();
+		SINGLE_PROPETY_CACHE.invalidateAll();
 	}
 
 	@Override

@@ -293,7 +293,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 	private RdfProperties getProperties(TriplestoreDAO dao, Model model) throws Exception {
 		String rdfType = model.getType();
 		if (rdfType != null) {
-			return dao.getPropertiesForceReload(rdfType);
+			return dao.getProperties(rdfType);
 		} else {
 			return new RdfProperties();
 		}

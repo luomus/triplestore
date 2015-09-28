@@ -76,14 +76,6 @@ public interface TriplestoreDAO {
 	public RdfProperty getProperty(Predicate predicate) throws Exception;
 
 	/**
-	 * Reads information of all properties that are used in contect of the given class (rdf:type == className)
-	 * @param className
-	 * @return
-	 * @throws SQLException
-	 */
-	public RdfProperties getPropertiesForceReload(String className) throws Exception;
-
-	/**
 	 * Return model by qname
 	 * @param qname
 	 * @return

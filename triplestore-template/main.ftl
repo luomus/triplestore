@@ -5,6 +5,9 @@
 <#if error??>
 	<span class="errorMessage">${error}</span>
 </#if>
+<#if success??>
+	<span class="successMessage">${success}</span>
+</#if>
 
 <@editorTools />
 
