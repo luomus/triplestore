@@ -158,7 +158,7 @@ Editor responds from /triplestore/editor
 
 ##Installation
 
-1. Same steps as Triplestore-Api
+Included in Triplestore-API, same configuration file.
 
 
 Taxonomy Editor
@@ -169,12 +169,14 @@ Taxonomy editor responds from /triplestore/taxonomy-editor
 
 ##Installation
 
-1. Same steps as Triplestore-Api
+1. Included in Triplestore-API, but requires it's own configuratoini file
 2. Add triplestore-v2-taxonomyeditor.properties to  <catalina.base>/app-conf
 
 ###Example configuration file
 ~~~
 SystemID = taxonomy-editor
+SystemQname = KE.
+LajiAuthURL = https://../laji-auth
 
 DevelopmentMode = YES
 StagingMode = NO
