@@ -424,7 +424,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		LocalizedText localizedText = new LocalizedText();
 		Model model = get(property.getQname());
 		for (Statement s : model.getStatements("rdfs:label")) {
-			localizedText.set(s.getObjectLiteral().getContent(), s.getObjectLiteral().getLangcode());
+			localizedText.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
 		}
 		property.setLabels(localizedText);
 	}
@@ -543,7 +543,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				Utils.close(p, rs, con);
 			}
 		}
-		
+
 	}
 	@Override
 	public RdfProperty getProperty(Predicate predicate) throws Exception {
