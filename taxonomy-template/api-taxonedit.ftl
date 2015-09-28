@@ -392,7 +392,6 @@
 								<#else>
 									<option value="${prop.qname}">${prop.label.forLocale("en")!prop.qname}</option>
 								</#if>
-								  
 							</#list>
 						</select>
 					</td>
