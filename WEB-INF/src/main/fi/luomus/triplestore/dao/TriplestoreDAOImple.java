@@ -369,7 +369,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 
 
-	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> PROPERTIES_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties>(new PropertiesCacheLoader(), 60*60, 100);
+	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> PROPERTIES_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties>(new PropertiesCacheLoader(), 60*60, 500);
 
 	private static class PropertiesCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> {
 
