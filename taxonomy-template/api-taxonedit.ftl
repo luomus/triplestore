@@ -390,7 +390,7 @@
 								<#if taxon.occurrences.hasStatus(area.qname, prop.qname)>
 									<option value="${prop.qname}" selected="selected">${prop.label.forLocale("en")}</option>
 								<#else>
-									<option value="${prop.qname}">${prop.label.forLocale("en")}</option>
+									<option value="${prop.qname}">${prop.label.forLocale("en")!prop.qname}</option>
 								</#if>
 								  
 							</#list>
