@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -32,6 +34,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LoginUtil  {
+
+	private static final String ORIGINAL_URL = "originalURL";
 
 	private static class AuthenticationResponse {
 
@@ -118,7 +122,7 @@ public class LoginUtil  {
 			return responseData.setRedirectLocation(frontPage);
 		}
 		String originalUrl = getOriginalUrl(req);
-		responseData.setData("originalURL", originalUrl);
+		responseData.setData(ORIGINAL_URL, originalUrl);
 		if (usingLajiAuth()) {
 			setLajiAuthLinks(originalUrl);
 		}
@@ -126,7 +130,7 @@ public class LoginUtil  {
 	}
 
 	private String getOriginalUrl(HttpServletRequest req) {
-		String originalUrl = req.getParameter("originalURL");
+		String originalUrl = req.getParameter(ORIGINAL_URL);
 		if (originalUrl == null) return "";
 		if (originalUrl.contains("/logout")) {
 			return frontPage;
@@ -135,15 +139,13 @@ public class LoginUtil  {
 	}
 
 	private void setLajiAuthLinks(String originalUrl) throws URISyntaxException {
-		if (originalUrl == null) {
-			originalUrl = "";
-		} else {
-			originalUrl = originalUrl.replace(config.baseURL(), "");
-		}
+		MultivaluedMap<String, String> params = new MultivaluedHashMap<>();
+		params.putSingle(ORIGINAL_URL, originalUrl);
 
 		LajiAuthClient client = getLajiAuthClient();
-		URI hakaURI = client.createLoginUrlForAuthenticationSource(originalUrl, Constants.AuthenticationSources.HAKA);
-		URI virtuURI = client.createLoginUrlForAuthenticationSource(originalUrl, Constants.AuthenticationSources.VIRTU);
+		URI hakaURI = client.createLoginUrlForAuthenticationSource("", params, Constants.AuthenticationSources.HAKA);
+		URI virtuURI = client.createLoginUrlForAuthenticationSource("", params, Constants.AuthenticationSources.VIRTU);
+
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
 		responseData.setData("usingLajiAuth", true);
@@ -156,16 +158,15 @@ public class LoginUtil  {
 	public ResponseData processPost(HttpServletRequest req) throws Exception {
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-		String next = req.getParameter("next");
 		String originalUrl = getOriginalUrl(req);
-		
-		responseData.setViewName("login").setData("originalURL", next).setData("username", username);
+
+		responseData.setViewName("login").setData(ORIGINAL_URL, originalUrl).setData("username", username);
 
 		if (usingLajiAuth()) {
 			setLajiAuthLinks(originalUrl);
 			String token = req.getParameter("token");
 			if (given(token)) {
-				return tryLajiAuthentication(req, token, next);
+				return tryLajiAuthentication(req, token, originalUrl);
 			}
 		} 
 		return tryLuomusAdLogin(req, username, password, originalUrl); 
@@ -192,17 +193,16 @@ public class LoginUtil  {
 		}
 	}
 
-	private ResponseData tryLajiAuthentication(HttpServletRequest req, String token, String next) throws URISyntaxException, IOException, JsonParseException, JsonMappingException, ApiException {
+	private ResponseData tryLajiAuthentication(HttpServletRequest req, String token, String originalURL) throws URISyntaxException, IOException, JsonParseException, JsonMappingException, ApiException {
 		AuthenticationToken authorizationToken = null;
 		try {
-			System.out.println("Jee: " + token);
 			LajiAuthClient client = getLajiAuthClient();
 			authorizationToken = objectMapper.readValue(token, AuthenticationToken.class);
 			client.validateToken(authorizationToken);
 			// Validation throws exception if something is wrong; Authentication has been successful:
 			authenticateSession(req, authorizationToken.getUser());
-			if (given(next)) {
-				return responseData.setRedirectLocation(config.baseURL() + next);
+			if (given(originalURL)) {
+				return responseData.setRedirectLocation(originalURL);
 			} else {
 				return responseData.setRedirectLocation(frontPage);
 			}
