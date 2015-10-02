@@ -263,3 +263,34 @@ table#resource.triplets .buttons {
 .newRow td {
 	background-color: rgb(200,255,200) !important;
 }
+
+div.system {
+	display: inline-block;
+	padding: 1em;
+	margin: 1em;
+	border: 1px dotted grey;
+}
+div.system.webApplication { background-color: rgb(200,200,255); }
+div.system.webService { background-color: rgb(250,200,245); }
+div.system.softwareComponent { background-color: rgb(200,240,235); }
+div.system.program { background-color: rgb(200,250,255); }
+div.system.database { background-color: rgb(250,250,215); }
+div.system.hardware { background-color: rgb(180,180,185); }
+div.system.server { background-color: rgb(210,220,220); }
+div.system.other { background-color: rgb(250,60,255); }
+
+div.system label {
+	width: 100px;
+	display: inline-block;
+}
+#systemsTable {
+	width: 100%;
+}
+#systemsTable td {
+	vertical-align: top;
+	font-size: 90%;
+	whitespace: no-wrap;
+}
+#systemsTable a.edit {
+	float: right;
+}

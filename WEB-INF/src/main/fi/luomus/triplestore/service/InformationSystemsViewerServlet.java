@@ -36,18 +36,32 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 		if ("dependency-graph".equals(req.getParameter("view"))) responseData.setViewName("it-dependency-graph");
 
 		TriplestoreDAO dao = getTriplestoreDAO();
+		
+		Map<String, List<Model>> systems = SYSTEMS_CACHE.get(dao);
+		
+		int count = 0;
+		for (List<Model> list : systems.values()) {
+			count += list.size();
+		}
+		
+//		Model system = systems.get("").get(0);
+//		system.getStatements("").iterator().next().getObjectLiteral().get
+//		
+		//dao.getProperties("").getAllProperties().iterator().next().getRange().getValueFor("")
+//		
 		responseData.setData("properties", dao.getProperties("KE.informationSystem"));
-		responseData.setData("systemFourfoldMap", SYSTEMS_CACHE.get(dao));
-
+		responseData.setData("systems", systems);
+		responseData.setData("count", count);
+		
 		return responseData;
 	}
 
-	private static final SingleObjectCacheResourceInjected<Map<Sixfold, List<Model>>, TriplestoreDAO> SYSTEMS_CACHE = 
-			new SingleObjectCacheResourceInjected<Map<Sixfold, List<Model>>, TriplestoreDAO>(new SystemsLoader(), 60*3); 
+	private static final SingleObjectCacheResourceInjected<Map<String, List<Model>>, TriplestoreDAO> SYSTEMS_CACHE = 
+			new SingleObjectCacheResourceInjected<Map<String, List<Model>>, TriplestoreDAO>(new SystemsLoader(), 60*3); 
 
-	private static class SystemsLoader implements CacheLoader<Map<Sixfold, List<Model>>, TriplestoreDAO> {
+	private static class SystemsLoader implements CacheLoader<Map<String, List<Model>>, TriplestoreDAO> {
 
-		public Map<Sixfold, List<Model>> load(TriplestoreDAO dao) {
+		public Map<String, List<Model>> load(TriplestoreDAO dao) {
 			try {
 				return tryToLoad(dao);
 			} catch (Exception e) {
@@ -55,12 +69,12 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 			}
 		}
 
-		private Map<Sixfold, List<Model>> tryToLoad(TriplestoreDAO dao) throws Exception {
-			Map<Sixfold, List<Model>> systems = new HashMap<>();
+		private Map<String, List<Model>> tryToLoad(TriplestoreDAO dao) throws Exception {
+			Map<String, List<Model>> systems = new HashMap<>();
 			for (Model system : dao.getSearchDAO().search("rdf:type", "KE.informationSystem")) {
 				String state = getState(system);
 				String publicity = getPublicity(system);
-				Sixfold slot = resolveSixfoldSlot(state, publicity);
+				String slot = resolveSixfoldSlot(state, publicity).toString();
 				if (!systems.containsKey(slot)) {
 					systems.put(slot, new ArrayList<Model>());
 				}

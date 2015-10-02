@@ -148,6 +148,10 @@ public class Model implements Iterable<Statement> {
 		return Utils.debugS(subject, statements);
 	}
 
+	public boolean hasStatements(String predicateQname) {
+		return hasStatements(new Qname(predicateQname));
+	}
+
 	public boolean hasStatements(Qname predicateQname) {
 		Predicate predicate = new Predicate(predicateQname);
 		return statementMap.containsKey(predicate);
@@ -160,6 +164,10 @@ public class Model implements Iterable<Statement> {
 		return false;
 	}
 
+	public List<Statement> getStatements(Qname predicateQname) {
+		return getStatements(predicateQname.toString());
+	}
+	
 	public List<Statement> getStatements(String predicateQname) {
 		List<Statement> statements = new ArrayList<>();
 		for (Statement s : getStatements()) {
