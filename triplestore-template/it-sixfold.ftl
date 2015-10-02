@@ -41,7 +41,7 @@
 	</#if>
 </#macro>
 
-<p>Total: ${count}</p>
+<p>Total: ${systemFourfoldMap?values?size}</p>
 
 <table>
 	<caption>Legend TODO labels for types</caption>
@@ -57,8 +57,6 @@
 			<div class="system other"> other </div>
 		</td>
 	</tr>
-
-PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION, ADMIN, ABANDONED, UKNOWN
 
 <table id="systemsTable">
 <tbody>
@@ -93,16 +91,8 @@ PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION
 <tr>
 <td colspan="2">
 	<div>
-		<h2>IT Administration Tools</h2>
+		<h2>ITC Team Tools</h2>
 		<@printSystems "ADMIN" />
-	</div>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-	<div>
-		<h2>Others</h2>
-		<@printSystems "OTHERS" />
 	</div>
 </td>
 </tr>
@@ -111,6 +101,14 @@ PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION
 	<div>
 		<h2>Retired</h2>
 		<@printSystems "ABANDONED" />
+	</div>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+	<div>
+		<h2>Unknown?!</h2>
+		<@printSystems "UKNOWN" />
 	</div>
 </td>
 </tr>
