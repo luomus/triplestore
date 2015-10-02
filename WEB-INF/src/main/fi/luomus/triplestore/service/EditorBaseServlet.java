@@ -146,7 +146,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return getIds(req);
 	}
 
-	protected boolean given(Object o) {
+	protected static boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
 
