@@ -5,10 +5,12 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.Model;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,10 +37,10 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 		TriplestoreDAO dao = getTriplestoreDAO();
 
-		Map<String, List<Model>> systems = loadSystems(dao);
+		Map<String, TreeSet<Model>> systems = loadSystems(dao);
 
 		int activeCount = 0;
-		for (List<Model> list : systems.values()) {
+		for (Collection<Model> list : systems.values()) {
 			activeCount += list.size();
 		}
 		activeCount -= systems.get(Sixfold.ABANDONED.toString()).size();
@@ -55,7 +57,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 		return responseData;
 	}
 
-	Map<String, List<Model>> loadSystems(TriplestoreDAO dao) {
+	Map<String, TreeSet<Model>> loadSystems(TriplestoreDAO dao) {
 		try {
 			return tryToLoad(dao);
 		} catch (Exception e) {
@@ -63,14 +65,30 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 		}
 	}
 
-	private Map<String, List<Model>> tryToLoad(TriplestoreDAO dao) throws Exception {
-		Map<String, List<Model>> systems = new HashMap<>();
+	private static Comparator<Model> SYSTEM_COMPARATOR = new Comparator<Model>() {
+		@Override
+		public int compare(Model m1, Model m2) {
+			String name1 = getName(m1);
+			String name2 = getName(m2);
+			return name1.compareTo(name2);
+		}
+
+		private String getName(Model m) {
+			for (Statement s : m.getStatements("KE.name")) {
+				return s.getObjectLiteral().getContent().toLowerCase();
+			}
+			return "Ö";
+		}
+	};
+
+	private Map<String, TreeSet<Model>> tryToLoad(TriplestoreDAO dao) throws Exception {
+		Map<String, TreeSet<Model>> systems = new HashMap<>();
 		for (Model system : dao.getSearchDAO().search("rdf:type", "KE.informationSystem")) {
 			String state = getState(system);
 			String publicity = getPublicity(system);
 			String slot = resolveSixfoldSlot(state, publicity).toString();
 			if (!systems.containsKey(slot)) {
-				systems.put(slot, new ArrayList<Model>());
+				systems.put(slot, new TreeSet<Model>(SYSTEM_COMPARATOR));
 			}
 			systems.get(slot).add(system);
 		}
