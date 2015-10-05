@@ -1,5 +1,7 @@
 <#include "luomus-header.ftl">
 
+<@editorTools />
+
 <h1>Information Systems</h1>
 
 <ul class="servicelist">
@@ -29,12 +31,12 @@
 
 <table id="systemsTable">
 	<tr>
-		<td> <@printSystems "INTERNAL_PRODUCTION" "Internal - Production" /> </td>
-		<td> <@printSystems "PUBLIC_PRODUCTION" "Public - Production" /> </td>
+		<td> <@printSystems "INTERNAL_PRODUCTION" "LUOMUS only - Production" /> </td>
+		<td> <@printSystems "PUBLIC_PRODUCTION" "Public for all - Production" /> </td>
 	</tr>
 	<tr>
-		<td> <@printSystems "INTERNAL_DEVELOPMENT" "Internal - Development" /> </td>
-		<td> <@printSystems "PUBLIC_DEVELOPMENT" "Public - Development" /> </td>
+		<td> <@printSystems "INTERNAL_DEVELOPMENT" "LUOMUS only - Development" /> </td>
+		<td> <@printSystems "PUBLIC_DEVELOPMENT" "Public for all - Development" /> </td>
 	</tr>
 	<tr>
 		<td colspan="2">  <@printSystems "ADMIN" "Administration tools" /> </td>
