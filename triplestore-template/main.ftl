@@ -45,15 +45,6 @@
 </ul>
 
 <script>
-$(function() {
-
-	$.ajaxSetup({
-  		headers: {
-    		'Authorization': "Basic " + btoa('${TriplestoreSelf_Username}' + ":" + '${TriplestoreSelf_Password}')
-  		}
-	});
-});
-
 function listResources(className) {
 	var responseElement = $('#resourceListingResponse'); 
 	responseElement.html('');

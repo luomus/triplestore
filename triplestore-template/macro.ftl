@@ -28,6 +28,13 @@
 
 <script>
 $(function() {
+	$.ajaxSetup({
+  		headers: {
+    		'Authorization': "Basic " + btoa('${TriplestoreSelf_Username}' + ":" + '${TriplestoreSelf_Password}')
+  		}
+	});
+});
+$(function() {
 	$("#searchButton").on('click', function() {
 		var searchWord = $("#searchWord").val();
 		if (searchWord.length < 3) {
