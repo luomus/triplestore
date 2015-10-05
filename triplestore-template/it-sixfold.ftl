@@ -88,6 +88,7 @@
 			</div>
 		</#list>
 	<#else>
+		<h2>${title} (0)</h2>
 		No systems.
 	</#if>
 </#macro>
