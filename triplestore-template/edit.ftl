@@ -1,4 +1,5 @@
 <#include "luomus-header.ftl">
+<#include "macro.ftl">
 
 <@editorTools />
 <div id="resourceListingResponse"></div>

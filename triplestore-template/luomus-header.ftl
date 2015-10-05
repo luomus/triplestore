@@ -29,8 +29,6 @@
 	
 </head>
 
-<#include "macro.ftl">
-
 <body>
 
 	<div id="masthead" role="banner">

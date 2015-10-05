@@ -1,4 +1,5 @@
 <#include "luomus-header.ftl">
+<#include "macro.ftl">
 
 <h1>Triplestore Editor</h1>
 

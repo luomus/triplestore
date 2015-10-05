@@ -1,4 +1,5 @@
 <#include "luomus-header.ftl">
+<#include "macro.ftl">
 
 <h4 class="errorMessage">Uups! An error has occured!</h4>
 
