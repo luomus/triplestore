@@ -33,9 +33,6 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = super.initResponseData(req);
 
-		responseData.setData("TriplestoreSelf_Username", getConfig().get("TriplestoreSelf_Username"));
-		responseData.setData("TriplestoreSelf_Password", getConfig().get("TriplestoreSelf_Password"));
-
 		History history = (History) getSession(req).getObject("history");
 		if (history == null) {
 			history = new History();
