@@ -71,8 +71,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 			responseData.setData("successMessage", session.getFlashSuccess());
 			responseData.setData("errorMessage", session.getFlashError());
 			responseData.setData("creatableResources", CREATABLE_RESOURCES);
-			responseData.setData("TriplestoreSelf_Username", getConfig().get("TriplestoreSelf_Username"));
-			responseData.setData("TriplestoreSelf_Password", getConfig().get("TriplestoreSelf_Password"));
+			Config config = getConfig();
+			if (config.defines("TriplestoreSelf_Username")) {
+				responseData.setData("TriplestoreSelf_Username", config.get("TriplestoreSelf_Username"));
+				responseData.setData("TriplestoreSelf_Password", config.get("TriplestoreSelf_Password"));
+			}
 		}
 		Config config = getConfig();
 		if (config.defines("taxonomyEditorBaseURL")) {
