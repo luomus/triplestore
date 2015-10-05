@@ -14,48 +14,39 @@
 
 <p>Active total: <span style="font-size: 150%">${activeCount}</span></p>
 
-<table>
-	<caption>Legend TODO used types dynamically in order from common to least common; labels for types</caption>
-	<tr>
-		<td>
-			<div class="system webApplication"> Web application </div>
-			<div class="system webService"> HTTP API </div>
-			<div class="system softwareComponent"> Component </div>
-			<div class="system program"> Stand-alone program </div>
-			<div class="system database"> Database </div>
-			<div class="system hardware"> Hardware </div>
-			<div class="system server"> Server </div>
-			<div class="system other"> Unknown!? </div>
-		</td>
-	</tr>
-</table>
-
 <table id="systemsTable">
 	<tr>
-		<td> <@printSystems "INTERNAL_PRODUCTION" "LUOMUS only - Production" /> </td>
-		<td> <@printSystems "PUBLIC_PRODUCTION" "Public for all - Production" /> </td>
+		<td colspan="2"> <@printSystems "INTERNAL_PRODUCTION" "LUOMUS only - Production" /> </td>
+		<td colspan="2"> <@printSystems "PUBLIC_PRODUCTION" "Public for all - Production" /> </td>
 	</tr>
 	<tr>
-		<td> <@printSystems "INTERNAL_DEVELOPMENT" "LUOMUS only - Development" /> </td>
-		<td> <@printSystems "PUBLIC_DEVELOPMENT" "Public for all - Development" /> </td>
+		<td colspan="2"> <@printSystems "INTERNAL_DEVELOPMENT" "LUOMUS only - Development" /> </td>
+		<td colspan="2"> <@printSystems "PUBLIC_DEVELOPMENT" "Public for all - Development" /> </td>
 	</tr>
 	<tr>
-		<td colspan="2">  <@printSystems "ADMIN" "Administration tools" /> </td>
+		<td colspan="3">  <@printSystems "ADMIN_PRODUCTION" "Administration tools - Production" /> </td>
+		<td colspan="1">  <@printSystems "ADMIN_DEVELOPMENT" "Administration tools - Development" /> </td>
 	</tr>
 	<tr>
-		<td colspan="2"> <@printSystems "ABANDONED" "Abandoned" /> </td>
+		<td colspan="4"> <@printSystems "ABANDONED" "Abandoned" /> </td>
 	</tr>
 	<tr>
-		<td colspan="2"> <@printSystems "UKNOWN" "Unknown?!" /> </td>
+		<td colspan="4"> <@printSystems "UKNOWN" "Unknown?!" /> </td>
 	</tr>
-</table>>
-
+	<tr style="opacity: 0.0">
+		<td>1</td> <td>2</td> <td>3</td> <td>4</td>
+	</tr>
+</table>
 
 <#macro printSystems type title>
 	<#if systems[type]??>
 		<h2>${title} (${systems[type]?size})</h2>
 		<#list systems[type] as system>
-			<div class="system <#if system.hasStatements("KE.type")>${system.getStatements("KE.type")?first.objectResource.qname?replace("KE.", "")}<#else>other</#if>">
+			<#assign itSystemType = "" />
+			<#if system.hasStatements("KE.type")>
+				<#assign itSystemType = system.getStatements("KE.type")?first.objectResource.qname />
+			</#if>
+			<div class="system <#if itSystemType?has_content>${itSystemType?replace("KE.", "")}<#else>other</#if>">
 				<a class="edit" href="${baseURL}/editor/${system.subject.qname}">Edit</a>
 				
 				<#if (system.developmentStatus!"") == "UNDER_ACTIVE_DEVELOPMENT">
@@ -87,7 +78,10 @@
 							</#if>
 						</#list>
 					</#if>
-				</#list> 
+				</#list>
+				<#if itSystemType?has_content>
+					<span class="systemType">[${properties.getProperty("KE.type").range.getValueFor(itSystemType).label.forLocale("en")}]</span>
+				</#if>
 			</div>
 		</#list>
 	<#else>

@@ -21,7 +21,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = 6850858604573984943L;
 
-	public static enum Sixfold { PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION, ADMIN, ABANDONED, UKNOWN };
+	public static enum Sixfold { PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION, ADMIN_PRODUCTION, ADMIN_DEVELOPMENT, ABANDONED, UKNOWN };
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
@@ -110,22 +110,15 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 	}
 
 	private Sixfold resolveSixfoldSlot(String state, String publicity) {
-		if (state.equals("KE.abandonedState")) 
-			return Sixfold.ABANDONED;
-		if (publicity.equals("KE.adminOnly")) 
-			return Sixfold.ADMIN;
-		if (state.equals("KE.productionState") && publicity.equals("KE.inPublicUse")) {
-			return Sixfold.PUBLIC_PRODUCTION;
-		}
-		if (state.equals("KE.productionState") && publicity.equals("KE.inUseByLuomus")) {
-			return Sixfold.INTERNAL_PRODUCTION;
-		}
-		if (state.equals("KE.developmentState") && publicity.equals("KE.inPublicUse")) {
-			return Sixfold.PUBLIC_DEVELOPMENT;
-		}
-		if (state.equals("KE.developmentState") && publicity.equals("KE.inUseByLuomus")) {
-			return Sixfold.INTERNAL_DEVELOPMENT;
-		}
+		if (state.equals("KE.abandonedState")) return Sixfold.ABANDONED;
+
+		if (state.equals("KE.productionState") && publicity.equals("KE.adminOnly")) return Sixfold.ADMIN_PRODUCTION;
+		if (state.equals("KE.developmentState") && publicity.equals("KE.adminOnly")) return Sixfold.ADMIN_DEVELOPMENT;
+
+		if (state.equals("KE.productionState") && publicity.equals("KE.inPublicUse")) return Sixfold.PUBLIC_PRODUCTION;
+		if (state.equals("KE.productionState") && publicity.equals("KE.inUseByLuomus")) return Sixfold.INTERNAL_PRODUCTION;
+		if (state.equals("KE.developmentState") && publicity.equals("KE.inPublicUse")) return Sixfold.PUBLIC_DEVELOPMENT;
+		if (state.equals("KE.developmentState") && publicity.equals("KE.inUseByLuomus")) return Sixfold.INTERNAL_DEVELOPMENT;
 		return Sixfold.UKNOWN;
 	}
 

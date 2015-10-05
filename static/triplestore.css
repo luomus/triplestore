@@ -310,7 +310,12 @@ div.system h3 {
 	border-radius: 10px;
 	background-color: #eee;
 	padding: 0.3em;
+	width: 20%;
 }
-
+.systemType { 
+	float: right;
+	font-size: 80%;
+	color: #444; 
+}
 
 
