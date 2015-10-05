@@ -95,11 +95,12 @@
 
 <script>
 $(function() {
-	$(".system").on('mouseover', function() {
-		$(".system").not(this).find('.infofield').hide(200);
+	$(".system").on('click', function() {
+		$(".system").not(this).find('.infofield').hide(100);
 		$(this).find('.infofield').show(200);
 	});
 });
 </script>
 
+<div style="height: 400px;"></div>
 <#include "luomus-footer.ftl">
