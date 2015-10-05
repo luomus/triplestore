@@ -39,10 +39,11 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 		
 		Map<String, List<Model>> systems = SYSTEMS_CACHE.get(dao);
 		
-		int count = 0;
+		int activeCount = 0;
 		for (List<Model> list : systems.values()) {
-			count += list.size();
+			activeCount += list.size();
 		}
+		activeCount -= systems.get(Sixfold.ABANDONED.toString()).size();
 		
 //		Model system = systems.get("").get(0);
 //		system.getStatements("").iterator().next().getObjectLiteral().get
@@ -51,7 +52,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 //		
 		responseData.setData("properties", dao.getProperties("KE.informationSystem"));
 		responseData.setData("systems", systems);
-		responseData.setData("count", count);
+		responseData.setData("activeCount", activeCount);
 		
 		return responseData;
 	}
@@ -61,6 +62,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	private static class SystemsLoader implements CacheLoader<Map<String, List<Model>>, TriplestoreDAO> {
 
+		@Override
 		public Map<String, List<Model>> load(TriplestoreDAO dao) {
 			try {
 				return tryToLoad(dao);

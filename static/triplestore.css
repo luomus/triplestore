@@ -266,9 +266,13 @@ table#resource.triplets .buttons {
 
 div.system {
 	display: inline-block;
-	padding: 1em;
-	margin: 1em;
+	padding: 0.2em;
+	margin: 0.6em;
 	border: 1px dotted grey;
+	width: 300px;
+	vertical-align: top;
+	font-size: 0.9em;
+	cursor: pointer;
 }
 div.system.webApplication { background-color: rgb(200,200,255); }
 div.system.webService { background-color: rgb(250,200,245); }
@@ -280,17 +284,33 @@ div.system.server { background-color: rgb(210,220,220); }
 div.system.other { background-color: rgb(250,60,255); }
 
 div.system label {
-	width: 100px;
-	display: inline-block;
+	display: block;
+	margin-top: 0.5em;
+}
+div.system a.edit {
+	float: right;
+	padding-left: 4px;
+}
+div.system h2 {
+	border-bottom: 2px solid green;
+	margin-right: 2em;
+}
+div.system h3 {
+	font-size: 1.2em;
+	margin: 0;
+	padding: 0;
+	margin-top: 0.3em;
 }
 #systemsTable {
-	width: 100%;
+	border-collapse: separate;
 }
 #systemsTable td {
 	vertical-align: top;
-	font-size: 90%;
-	whitespace: no-wrap;
+	border: 2px solid grey;
+	border-radius: 10px;
+	background-color: #eee;
+	padding: 0.3em;
 }
-#systemsTable a.edit {
-	float: right;
-}
+
+
+
