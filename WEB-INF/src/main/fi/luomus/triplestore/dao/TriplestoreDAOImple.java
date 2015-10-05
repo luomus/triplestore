@@ -669,6 +669,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public void clearCaches() {
 		PROPERTIES_CACHE.invalidateAll();
 		SINGLE_PROPETY_CACHE.invalidateAll();
+		CACHED_PERSONS.invalidate();
 	}
 
 	@Override
