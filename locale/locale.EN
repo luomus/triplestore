@@ -11,7 +11,7 @@ title_help = Help
 title_error = Error page!
 title_orphan = Orphan taxa
 title_it-sixfold = Information Systems | Sixfold
-title_it-dependecy-graph = Information Systems | Dependency Graph
+title_it-dependency-graph = Information Systems | Dependency Graph
 
 exactMatch = Exact match found
 likelyMatches = Approximate matches
