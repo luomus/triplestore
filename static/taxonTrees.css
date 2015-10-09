@@ -224,11 +224,6 @@ div.sortingControls button {
 .saveSortingButton {
 	display: none;
 }
-#greyOutElement, .ui-widget-overlay {
-	opacity: 1;
-	background: none;
-	background-color: rgba(100,100,100,0.5);
-}
 #greyOutElement {
 	position: fixed;
 	top: 0;

@@ -106,6 +106,8 @@
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon /> | 
 	<@printEditorExpert taxon />
+	<#--<button id="descriptionTextButton">Description texts</button>-->
+	<button id="imagesButton">Images</button>
 </h5>
 
 <#if noPermissions??>
@@ -486,7 +488,28 @@ $(function() {
   		});
   		
 	});
-	  	
+	
+	$("#imagesButton").on('click', function() {
+		var container = $('<div id="iframeContainer"><iframe src="https://kotka.luomus.fi/tools/taxon-images?taxonID=${taxon.qname}"></iframe></div>');
+		$("body").append(container);
+		var windowHeight = $(window).height();
+        var dialogHeight = windowHeight * 0.9;
+		container.dialog({
+			autoOpen: true,
+      		height: dialogHeight,
+      		width: "95%",
+      		modal: true,
+      		buttons: {
+        		"Close": function() {
+          			container.dialog("close");
+        		}
+			},
+      		close: function() {
+				container.remove();
+      		}
+    	});
+	});
+	
 });
 </script>
 

@@ -115,3 +115,12 @@ tr.errorMessage td {
 	display: inline-block;
 }
 
+#taxonEditHeader button {
+	font-size: 1.0em;
+	padding: 2px;
+}
+
+#iframeContainer iframe {
+	height: 100%;
+	width: 100%;
+}
