@@ -136,17 +136,17 @@ SupportedLanguages = en
 ErrorReporting_SMTP_Host = localhost
 ErrorReporting_SMTP_Username =
 ErrorReporting_SMTP_Password =
-ErrorReporting_SMTP_SendTo = eopiirai@cs.helsinki.fi
-ErrorReporting_SMTP_SendFrom = www@luomus.fi
-ErrorReporting_SMTP_Subject = Triplestore V2 Dev Error Report
+ErrorReporting_SMTP_SendTo = 
+ErrorReporting_SMTP_SendFrom = 
+ErrorReporting_SMTP_Subject = Triplestore Dev Error Report
 
 DBdriver = oracle.jdbc.OracleDriver
-DBurl = jdbc:oracle:thin:@salkku.it.helsinki.fi:1521:ltkm
-DBusername = ltkm_api
+DBurl = 
+DBusername = 
 DBpassword = 
-LuontoDbName = ltkm_luonto
+LuontoDbName = 
 
-TriplestoreSelf_Username = triplestore-self
+TriplestoreSelf_Username = 
 TriplestoreSelf_Password = 
 ~~~
 
@@ -200,18 +200,18 @@ SupportedLanguages = en
 ErrorReporting_SMTP_Host = localhost
 ErrorReporting_SMTP_Username =
 ErrorReporting_SMTP_Password =
-ErrorReporting_SMTP_SendTo = eopiirai@cs.helsinki.fi
-ErrorReporting_SMTP_SendFrom = www@luomus.fi
-ErrorReporting_SMTP_Subject = Triplestore V2 Taxonomy Editor Dev Error Report
+ErrorReporting_SMTP_SendTo =
+ErrorReporting_SMTP_SendFrom = 
+ErrorReporting_SMTP_Subject = Triplestore Taxonomy Editor Dev Error Report
 
 DBdriver = oracle.jdbc.OracleDriver
-DBurl = jdbc:oracle:thin:@salkku.it.helsinki.fi:1521:ltkm
-DBusername = ltkm_api
+DBurl = 
+DBusername = 
 DBpassword = 
-LuontoDbName = ltkm_luonto
+LuontoDbName = 
 
 TriplestoreURL = http://localhost:8081/triplestore
-TriplestoreUsername = taxonomy-editor
+TriplestoreUsername = 
 TriplestorePassword = 
 ~~~
 
