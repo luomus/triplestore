@@ -10,14 +10,12 @@ public class User {
 	private final Qname qname;
 	private final String fullname;
 	private final boolean isAdmin;
-	private final int userFK;
 	
-	public User(String adUserID, String qname, String fullname, Role role, int userFK) {
+	public User(String adUserID, String qname, String fullname, Role role) {
 		this.adUserID = adUserID;
 		this.qname = new Qname(qname);
 		this.fullname = fullname;
 		this.isAdmin = role == Role.ADMIN;
-		this.userFK = userFK;
 	}
 	
 	public String getAdUserID() {
@@ -34,10 +32,6 @@ public class User {
 	
 	public boolean isAdmin() {
 		return isAdmin;
-	}
-
-	public int userFK() {
-		return userFK;
 	}
 	
 }

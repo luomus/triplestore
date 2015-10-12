@@ -97,7 +97,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		if ("admin".equals(session.get("role"))) {
 			role = User.Role.ADMIN;
 		}
-		return new User(session.userId(), session.get("user_qname"), session.userName(), role, Integer.valueOf(session.get("user_fk")));
+		return new User(session.userId(), session.get("user_qname"), session.userName(), role);
 	}
 
 	@Override
