@@ -177,6 +177,7 @@ Taxonomy editor responds from /triplestore/taxonomy-editor
 SystemID = taxonomy-editor
 SystemQname = KE.
 LajiAuthURL = https://../laji-auth
+KotkaURL = https://kotkatest.luomus.fi
 
 DevelopmentMode = YES
 StagingMode = NO

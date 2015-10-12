@@ -59,6 +59,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("occurrenceProperties", getTriplestoreDAO().getProperties("MO.occurrence"));
 		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);
+		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
 		return responseData;
 	}
 

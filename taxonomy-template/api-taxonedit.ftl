@@ -490,7 +490,7 @@ $(function() {
 	});
 	
 	$("#imagesButton").on('click', function() {
-		var container = $('<div id="iframeContainer"><iframe src="https://kotka.luomus.fi/tools/taxon-images?taxonID=${taxon.qname}"></iframe></div>');
+		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}"></iframe></div>');
 		$("body").append(container);
 		var windowHeight = $(window).height();
         var dialogHeight = windowHeight * 0.9;
