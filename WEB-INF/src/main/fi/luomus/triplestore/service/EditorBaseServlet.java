@@ -45,7 +45,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	protected void applicationInitOnlyOnce() {}
 
 	@Override
-	protected void applicationDestroy() {}
+	protected void applicationDestroy() {
+		try {
+			if (dataSource != null) dataSource.close();
+		} catch (Exception e) {}
+	}
 
 	@Override
 	protected ResponseData notAuthorizedRequest(HttpServletRequest req, HttpServletResponse res) {

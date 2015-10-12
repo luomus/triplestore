@@ -14,20 +14,29 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.service.EditorBaseServlet.Format;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class SearchServiceTests {
 
 	private static TriplestoreDAO dao;
-
+	private static DataSource dataSource;
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
-		dao = new TriplestoreDAOImple(DataSourceDefinition.initDataSource(config.connectionDescription()), TriplestoreDAO.TEST_USER);
+		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
 	}
 
+	@AfterClass
+	public static void tearDownAfterClass() throws Exception {
+		dataSource.close();
+	}
+	
 	@Test
 	public void test_search_predicate_object() throws Exception {
 		String[] subjects = null;

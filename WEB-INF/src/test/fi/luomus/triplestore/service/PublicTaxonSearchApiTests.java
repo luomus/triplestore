@@ -14,6 +14,8 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,16 +23,22 @@ public class PublicTaxonSearchApiTests {
 
 	private static TriplestoreDAO triplestoreDAO;
 	private static TaxonomyDAO taxonomyDAO;
-
+	private static DataSource dataSource;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
-		triplestoreDAO = new TriplestoreDAOImple(DataSourceDefinition.initDataSource(config.connectionDescription()), TriplestoreDAO.TEST_USER);
+		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO);
 	}
 
+	@AfterClass 
+	public static void tearDownAfterClass() throws Exception {
+		dataSource.close();
+	}
+	
 	@Test
 	public void test_exact_match() throws Exception {
 		Node n = taxonomyDAO.search("susi").getRootNode();
