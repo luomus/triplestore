@@ -104,11 +104,26 @@ Returns HTTP 200 on success, HTTP 500 on failure.
 
 ##Installation
 
-1. Add triplestore-v2.properties to  <catalina.base>/app-conf
-2. Place ojdbc6.jar to <catalina.base>/lib
-3. Add http basic authentication permissions to tomcat-users.xml
-4. Restart tomcat
-5. Deploy laji-etl.war
+1. Create LuOnto DB user, grant needed (see bellow)
+2. Add triplestore-v2.properties to  <catalina.base>/app-conf
+3. Place ojdbc6.jar to <catalina.base>/lib
+4. Add http basic authentication permissions to tomcat-users.xml
+5. Restart tomcat
+6. Deploy laji-etl.war
+
+###Grants
+~~~
+grant connect to ;
+grant execute on luonto.addresource to l;
+grant execute on luonto.addstatement to ;
+grant execute on luonto.addstatementl to ;
+grant select,delete on luonto.rdf_statementview to ;
+grant delete on luonto.rdf_statement to ;
+grant select on luonto.rdf_resource to ;
+
+grant select on luonto.rdf_XX_seq to ;
+grant select on luonto.rdf_XX_seq to ; -- All used sequences..
+~~~
 
 ###Example configuration file
 ~~~
