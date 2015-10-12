@@ -224,8 +224,16 @@ public class LoginUtil  {
 		authenticationResponse.setUserId(userDetails.getEmail());
 		authenticationResponse.setUserQname(userDetails.getId());
 		authenticationResponse.setUserFullname(userDetails.getName());
-		// TODO setAdminStatus(authenticationResponse, userDetails.getStatus());
+		setAdminStatus(authenticationResponse, userDetails.getRoles());
 		return authenticationResponse;
+	}
+
+	private void setAdminStatus(AuthenticationResult authenticationResponse, List<String> roles) {
+		for (String role : roles) {
+			if ("MA.admin".equals(role)) {
+				authenticationResponse.setAdmin(true);
+			}
+		}
 	}
 
 	private LajiAuthClient getLajiAuthClient() throws URISyntaxException {
