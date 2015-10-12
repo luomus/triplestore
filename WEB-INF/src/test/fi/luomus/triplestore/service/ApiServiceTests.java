@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,19 +33,23 @@ import org.junit.Test;
 public class ApiServiceTests {
 
 	private static TriplestoreDAO dao;
+	private static DataSource dataSource;
 	private static final Qname TEST_RESOURCE_QNAME = new Qname("JA.123");
 	private static final Subject TEST_RESOURCE = new Subject(TEST_RESOURCE_QNAME);
+
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
-		dao = new TriplestoreDAOImple(DataSourceDefinition.initDataSource(config.connectionDescription()), TriplestoreDAO.TEST_USER);
+		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
 		dao.delete(TEST_RESOURCE);
+		dataSource.close();
 	}
 
 	@Test
@@ -370,7 +376,7 @@ public class ApiServiceTests {
 		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		System.out.println(response);
-		
+
 		n = new XMLReader().parse(response).getRootNode();
 		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\""));
 		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://id.luomus.fi/JA.2\""));
@@ -416,15 +422,26 @@ public class ApiServiceTests {
 	public void test__get_several_qnames() throws Exception {
 		List<Qname> qnames = Utils.list(new Qname("MX.1"), new Qname("MX.2"), new Qname("MX.3"));
 		String response = ApiServlet.get(qnames, ResultType.NORMAL, Format.RDFXML, dao);
-		
+
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(3, n.getChildNodes().size());
-		
+
 		int i = 1;
 		for (Node child : n.getChildNodes()) {
 			String id = child.getAttribute("rdf:about");
 			assertEquals("http://id.luomus.fi/MX." + i, id);
 			i++;
+		}
+	}
+
+	@Test
+	public void tooLongLiteralContent() throws Exception {
+		try {
+			String literal = "<p>Perunarutto on peräisin Perun Andeilta tai Meksikosta, josta se levisi 1840-luvun alussa Pohjois-Amerikkaan. Euroopassa taudista on ensimmäisiä havaintoja Belgiasta 1843 tai 1844. Vuoden 1845 syksyllä tauti levisi kulovalkean tavoin Euroopan rannikkoseuduilla ja erityisesti Irlannissa, jossa se tuhosi valtaosan saaren perunasadosta. Tuhot toistuivat seuraavina kesinä entistä pahempina ja seurauksena arviolta miljoona irlantilaista nääntyi nälkään ja arviolta saman verran asukkaita joutui lähtemään siirtolaisiksi Amerikkaan ja Australiaan.</p><p>Suomessa perunaruton esiintymisestä Etelä-Suomessa raportoitiin ensimmäisen kerran eri sanomalehdissä syksyllä 1847. Seuraavana vuonna perunaruttoa esiintyi lehtitietojen mukaan hyvin tuhoisana etenkin Turun ja Viipurin seuduilla, mutta tautia esiintyi myös Pohjois-Suomessa aina Tornionjokilaaksoa myöten. 1800-luvun puolivälistä aina 1900-luvulle perunaruttoa esiintyi sanomalehtitietojen mukaan perunassa miltei joka kesä. Maanlaajuisia perunaruttoepidemioita oli kuitenkin enintään muutamana vuotena vuosikymmentä kohden. Tauti ilmaantui perunapelloille yleensä elokuun puolivälin jälkeen ja satotappiot johtuivat pääsääntöisesti mukuloiden pilaantumisesta kellareissa.</p><p>1900-luvulle asti Suomen maaseudulla asuva valtaväestö ei ollut erityisen riippuvainen perunasta, sitä kasvatettiin ensisijaisesti karjan rehuksi. Täten perunarutto ei Suomessa koskaan aiheuttanut maanlaajuista nälänhätää. Ruttovuosista joutuivat eniten kärsimään köyhät tilattomat ja nopeasti kehittyvien teollisuuspaikkakuntien työväki, joiden tärkeä energianlähde oli palstaviljelmillä kasvatettu peruna.</p><p>1900-luvulla julkaistiin tutkimusraportteja perunaruton esiintymisestä eri vuosikymmenillä ja niiden perusteella taudin esiintyminen oli varsin samanlaista aina 1990-luvulle asti &ndash; ensimmäiset ruttohavainnot tehtiin yleensä elokuun jälkipuoliskolla ja vakavia epidemioita esiintyi 2&ndash;3 kertaa vuosikymmenessä. Yksittäisillä viljelmillä tuhot toki saattoivat olla hyvin suuria. 1950-luvulta alkaen kemiallisia rutontorjunta-aineita alettiin aktiivisesti markkinoida viljelijöille, mutta kemiallinen rutontorjunta alkoi yleistyä vasta 1970-luvulla. Ruton hallitsemiseksi tuolloin tarvittiin enintään 1&ndash;3 torjuntakäsittelyä elo-syyskuussa.</p><p>1980-luvun lopulla perunarutosta tuli aivan uudenlainen ongelmatauti. Meksikosta levisi ensin Manner-Eurooppaan ja sittemmin 1990-luvun kuluessa miltei kaikille muillekin maapallon perunantuotantoalueille hyvin aggressiivinen uusi ruttopopulaatio. Vanha maailmanlaajuinen perunaruton populaatio koostui vain taudinaiheuttajan toisesta pariutumistyypistä (&rdquo;sukupuoli&rdquo;) A1. Toinen pariutumistyyppi A2 oli yleinen ainoastaan Meksikossa. Uusi erittäin nopeasti levittäytynyt populaatio sisälsi molemmat pariutumistyypit. Seurauksena uusi perunarutto alkoi tuottaa maassa säilyviä suvullisia munaitiöitä. Munaitiöiden avulla perunaruton aiheuttaja pystyy säilymään talven yli ilman eläviä perunan mukuloita. Nykyisin myös hyvin aggressiiviset ruttokannat, jotka aiemmin hävisivät tuhotessaan nopeasti perunan mukulat talven aikana, kykenevät säilymään munaitiöinä maassa.</p><p>Vakavin seuraus uuden ruttopopulaation leviämisestä Suomeen 1990-luvulla oli ruttoepidemioiden alun aikaistuminen. Maassa talvehtineet taudinaiheuttajan munaitiöt voivat tartuttaa perunan ja aiheuttaa vakavan epidemian jo taimettumisvaiheessa. Mukuloissa talvehtinut taudinaiheuttaja tarvitsee useita viikkoja lisääntyäkseen tasolle, joka saa aikaan vakavan ruttoepidemian. Suomessa ruton ilmaantuminen perunapelloille aikaistui1980-luvulta 2000-luvun alkuun mennessä 4&ndash;5 viikolla: kun rutto aiemmin iski elokuun puolivälissä, uusi rutto ilmaantuikin pelloille heti juhannuksen jälkeen.</p><p>Aluksi uusi rutto aiheutti pahoja ongelmia, koska torjuntatoimiin ryhdyttiin liian myöhään.&nbsp; Nyt uuden ruton kanssa on opittu elämään ja ajoittamaan torjuntatoimet oikein. Luomutuotannolle ja kotitarveviljelijöille aikaisin alkava perunarutto on kuitenkin pahoina ruttovuosina hyvin suuri ongelma.</p><p>&nbsp;</p>";
+			ApiServlet.put(new Qname("JA.123"), "MX.originAndDistributionText", null, literal, "fi", null, dao);
+			fail("Should throw exception");
+		} catch (IllegalArgumentException e) {
+			assertEquals("Content is longer than 4000 characters.", e.getMessage());
 		}
 	}
 

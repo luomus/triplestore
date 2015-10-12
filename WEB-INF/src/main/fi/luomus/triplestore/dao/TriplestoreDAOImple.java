@@ -193,6 +193,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		int i = 2;
 		addStatement.setString(i++, statement.getPredicate().getQname());
 		if (statement.isLiteralStatement()) {
+			String content = statement.getObjectLiteral().getContent();
+			if (content.length() >= 4000) {
+				throw new IllegalArgumentException("Content is longer than 4000 characters.");
+			}
 			addStatement.setString(i++, statement.getObjectLiteral().getContent());
 			addStatement.setString(i++, statement.getObjectLiteral().getLangcode());
 		} else {
