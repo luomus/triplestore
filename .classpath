@@ -29,6 +29,6 @@
 	<classpathentry kind="lib" path="C:/apache-tomcat/lib/tomcat-jdbc.jar"/>
 	<classpathentry kind="lib" path="C:/apache-tomcat/lib/tomcat-util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/laji-auth-client-0.5-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/laji-auth-client-0.7-jar-with-dependencies.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

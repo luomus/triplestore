@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -136,9 +137,9 @@ public class LoginUtil  {
 		params.putSingle(ORIGINAL_URL, originalUrl);
 
 		LajiAuthClient client = getLajiAuthClient();
-		URI hakaURI = client.createLoginUrlForAuthenticationSource("", params, Constants.AuthenticationSources.HAKA);
-		URI virtuURI = client.createLoginUrlForAuthenticationSource("", params, Constants.AuthenticationSources.VIRTU);
-
+		URI hakaURI = client.createLoginUrl("").authenticationSource(Constants.AuthenticationSources.HAKA).query(params).build();
+		URI virtuURI = client.createLoginUrl("").authenticationSource(Constants.AuthenticationSources.HAKA).query(params).build();
+		
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
 		responseData.setData("usingLajiAuth", true);
@@ -228,12 +229,8 @@ public class LoginUtil  {
 		return authenticationResponse;
 	}
 
-	private void setAdminStatus(AuthenticationResult authenticationResponse, List<String> roles) {
-		for (String role : roles) {
-			if ("MA.admin".equals(role)) {
-				authenticationResponse.setAdmin(true);
-			}
-		}
+	private void setAdminStatus(AuthenticationResult authenticationResponse, Set<String> roles) {
+		authenticationResponse.setAdmin(roles.contains("MA.admin"));
 	}
 
 	private LajiAuthClient getLajiAuthClient() throws URISyntaxException {
