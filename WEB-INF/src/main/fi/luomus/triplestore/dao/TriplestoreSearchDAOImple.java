@@ -272,7 +272,9 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 				}
 				dao.toModel(rs, currentModel);
 			}
-			models.add(currentModel);
+			if (currentModel != null) {
+				models.add(currentModel);
+			}
 		} finally {
 			Utils.close(p, rs, con);
 		}
