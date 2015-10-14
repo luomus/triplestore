@@ -89,11 +89,17 @@ $(function() {
 	});
 	$("#editByQnameButton").on('click', function() {
 		var qname = $("#editByQname").val();
-		if (qname) {
-			document.location.href = '${baseURL}/editor/'+qname.toUpperCase();
-		} else {
+		if (!qname) {
 			alert('Qname not given...');
+			return;
 		}
+		var splitted = qname.split(".");
+		if (splitted.length != 2) {
+			alert('Invalid Qname...');
+			return;
+		}
+		qname = splitted[0].toUpperCase() + "." + splitted[1];
+		document.location.href = '${baseURL}/editor/'+qname;
 	});
 });
 function toQname(uri) {
