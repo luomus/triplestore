@@ -28,6 +28,7 @@ public class InternalModelToJenaModelConverter {
 
 	public com.hp.hpl.jena.rdf.model.Model getJenaModel() {
 		for (Model model : models) {
+			if (model == null) continue;
 			addToJenaModel(model);
 		}
 		return jenaModel;
