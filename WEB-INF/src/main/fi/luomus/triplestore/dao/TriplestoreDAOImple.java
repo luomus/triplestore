@@ -194,6 +194,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		addStatement.setString(i++, statement.getPredicate().getQname());
 		if (statement.isLiteralStatement()) {
 			String content = statement.getObjectLiteral().getContent();
+			if (!given(content)) return;
 			if (content.length() >= 4000) {
 				throw new IllegalArgumentException("Content is longer than 4000 characters.");
 			}
@@ -589,9 +590,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			}
 			for (Statement givenStatement : usedAndGivenStatements.getGivenStatements()) {
 				if (givenStatement.isLiteralStatement()) {
-					if (given(givenStatement.getObjectLiteral().getContent())) {
-						addStatement(givenStatement, addStatementL);
-					}
+					addStatement(givenStatement, addStatementL);
 				} else {
 					addStatement(givenStatement, addStatement);
 				}
