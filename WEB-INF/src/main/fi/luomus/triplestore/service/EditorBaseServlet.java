@@ -1,7 +1,6 @@
 package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.BaseServlet;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
@@ -149,10 +148,6 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	protected String getQname(HttpServletRequest req) {
 		return getId(req);
-	}
-
-	protected List<Qname> getQnames(HttpServletRequest req) {
-		return getIds(req);
 	}
 
 	protected static boolean given(Object o) {
