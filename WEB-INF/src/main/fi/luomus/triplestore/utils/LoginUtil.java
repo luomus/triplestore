@@ -7,8 +7,8 @@ import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
 import fi.luomus.commons.utils.Utils;
+import fi.luomus.lajiauth.model.AuthenticationSources;
 import fi.luomus.lajiauth.model.AuthenticationToken;
-import fi.luomus.lajiauth.model.Constants;
 import fi.luomus.lajiauth.model.UserDetails;
 import fi.luomus.lajiauth.service.LajiAuthClient;
 
@@ -137,8 +137,8 @@ public class LoginUtil  {
 		params.putSingle(ORIGINAL_URL, originalUrl);
 
 		LajiAuthClient client = getLajiAuthClient();
-		URI hakaURI = client.createLoginUrl("").authenticationSource(Constants.AuthenticationSources.HAKA).query(params).build();
-		URI virtuURI = client.createLoginUrl("").authenticationSource(Constants.AuthenticationSources.HAKA).query(params).build();
+		URI hakaURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.HAKA).query(params).build();
+		URI virtuURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.VIRTU).query(params).build();
 		
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
