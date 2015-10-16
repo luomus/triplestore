@@ -139,7 +139,7 @@ public class LoginUtil  {
 		LajiAuthClient client = getLajiAuthClient();
 		URI hakaURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.HAKA).query(params).build();
 		URI virtuURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.VIRTU).query(params).build();
-		
+
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
 		responseData.setData("usingLajiAuth", true);
@@ -198,7 +198,7 @@ public class LoginUtil  {
 		}
 		req.getSession().setMaxInactiveInterval(60 * 60 *3);
 	}
-	
+
 	private AuthenticationResult authenticateViaLajiAuthentication(String token) throws Exception {
 		AuthenticationToken authorizationToken = null;
 		try {
