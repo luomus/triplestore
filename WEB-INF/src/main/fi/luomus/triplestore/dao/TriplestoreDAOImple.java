@@ -477,9 +477,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private void addRangeValuesForAlt(RdfProperty property) throws Exception {
 		Model model = get(property.getRange().getQname());
 		List<RdfProperty> values = getAltValues(model);
-		System.out.println("Pistetään " + values);
 		property.getRange().setRangeValues(values);
-		System.out.println("Sen jälkeen on " + property.getRange().getValues());
 	}
 
 	private List<RdfProperty> getAltValues(Model model) throws Exception {
