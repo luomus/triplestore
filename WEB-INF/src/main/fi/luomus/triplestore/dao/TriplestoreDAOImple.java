@@ -658,6 +658,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		PROPERTIES_CACHE.invalidateAll();
 		SINGLE_PROPETY_CACHE.invalidateAll();
 		CACHED_PERSONS.invalidate();
+		CACHED_RESOURCE_STATS.invalidate();
 	}
 
 	@Override
@@ -747,6 +748,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				}
 				return listing;
 			} catch (Exception e) {
+				e.printStackTrace();
 				return Collections.emptyList();
 			} finally {
 				Utils.close(p, rs, con);
