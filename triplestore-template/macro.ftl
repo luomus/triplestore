@@ -1,3 +1,65 @@
+<#macro booleanValue value langcode>
+	<#assign found = false />
+	<select class="objectLiteral">
+		<option value=""></option>
+		<option value="true" <#if value=="true">selected="selected"<#assign found = true /></#if>>true</option>
+		<option value="false" <#if value=="false">selected="selected"<#assign found = true /></#if>>false</option>
+	</select>
+	<#if langcode?has_content>
+		<@langcodeSelect langcode />
+	</#if>
+	<#if value?has_content && !found>
+		<span class="error">INVALID VALUE: ${value?html}</span>
+	</#if>
+</#macro>
+
+<#macro literalValue value langcode range="">
+	<#if (value?length > 40)>
+		<textarea class="objectLiteral">${value?html}</textarea>
+	<#else>
+		<input type="text" class="objectLiteral" value="${value?html}" />
+	</#if>
+	<#if langcode?has_content || range == "xsd:string">
+		<@langcodeSelect langcode />
+	</#if>
+</#macro>
+
+<#macro langcodeSelect langcode>
+	<select class="langcode">
+		<option value=""></option>
+		<option value="fi" <#if langcode=="fi">selected="selected"</#if>>fi</option>
+		<option value="en" <#if langcode=="en">selected="selected"</#if>>en</option>
+		<option value="sv" <#if langcode=="sv">selected="selected"</#if>>sv</option>
+	</select>
+</#macro>
+
+<#macro resourceValue value>
+	<#if value?has_content>
+		<input type="text" class="objectResource hidden" value="${value}" />
+		<span class="objectResourceLink">
+			<a href="${baseURL}/editor/${value}">${value}</a>
+		</span> 
+		<button class="changeObjectResourceButton">Change</button>
+	<#else>
+		<input type="text" class="objectResource" value="${value}" />
+	</#if>
+</#macro>
+
+<#macro resourceValueRangeSelect value rangeValues>
+	<#assign found = false />
+	<select class="objectResource <#if (rangeValues?size > 20)>chosen</#if>">
+		<option value=""></option>
+		<#list rangeValues as rangeValue>
+			<option value="${rangeValue.qname}" <#if value == rangeValue.qname.toString()>selected="selected" <#assign found = true /> </#if>>
+				${rangeValue.qname} <#if rangeValue.label??> - ${(rangeValue.label.forLocale("fi")!rangeValue.label.forLocale("en")!"")?html}</#if>
+			</option>
+		</#list>
+	</select>
+	<#if value?has_content && !found>
+		<span class="error">INVALID VALUE: ${value?html}</span>
+	</#if>
+</#macro>
+
 <#macro editorTools>
 <#if history??>
 	Previously edited: 
@@ -24,8 +86,7 @@
 	</li>
 	<li><a href="${baseURL}/editor/invalidate-caches">Clear caches</a></li>
 </ul>
-</#macro>
-
+<div id="resourceListingResponse"></div>
 <script>
 $(function() {
 	$.ajaxSetup({
@@ -106,3 +167,4 @@ function toQname(uri) {
 	return uri.replace('http://id.luomus.fi/', '').replace('http://tun.fi/', 'tun:');
 }
 </script>
+</#macro>

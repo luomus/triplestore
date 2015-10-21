@@ -2,7 +2,6 @@
 <#include "macro.ftl">
 
 <@editorTools />
-<div id="resourceListingResponse"></div>
 
 <h1>Edit ${model.subject.qname}</h1>
 
@@ -43,6 +42,7 @@
 							<option value="${property.qname}">${property.qname}<#if property.label??> - ${(property.label.forLocale("fi")!property.label.forLocale("en")!"")?html}</#if></option>
 						</#list>
 					</select>
+					<input type="text" id="addNewPredicateInput" placeholder="or type predicate here.." /> <button id="addNewPredicateButton">Add</button>
 				</div>
 			</th>
 		</tr>
@@ -160,8 +160,6 @@
 					<span class="resource">resource</span> 
 					<#if property.hasRange()>
 						<a href="${baseURL}/editor/${property.range.qname}">${property.range.qname}</a>
-					<#else>
-						
 					</#if>
 				</td>
 				<td>
@@ -179,68 +177,6 @@
 			</#if>
 			<td><button class="deleteButton">Delete</button></td>
 		</tr>
-</#macro>
-
-<#macro booleanValue value langcode>
-	<#assign found = false />
-	<select class="objectLiteral">
-		<option value=""></option>
-		<option value="true" <#if value=="true">selected="selected"<#assign found = true /></#if>>true</option>
-		<option value="false" <#if value=="false">selected="selected"<#assign found = true /></#if>>false</option>
-	</select>
-	<#if langcode?has_content>
-		<@langcodeSelect langcode />
-	</#if>
-	<#if value?has_content && !found>
-		<span class="error">INVALID VALUE: ${value?html}</span>
-	</#if>
-</#macro>
-
-<#macro literalValue value langcode range="">
-	<#if (value?length > 40)>
-		<textarea class="objectLiteral">${value?html}</textarea>
-	<#else>
-		<input type="text" class="objectLiteral" value="${value?html}" />
-	</#if>
-	<#if langcode?has_content || range == "xsd:string">
-		<@langcodeSelect langcode />
-	</#if>
-</#macro>
-
-<#macro langcodeSelect langcode>
-	<select class="langcode">
-		<option value=""></option>
-		<option value="fi" <#if langcode=="fi">selected="selected"</#if>>fi</option>
-		<option value="en" <#if langcode=="en">selected="selected"</#if>>en</option>
-		<option value="sv" <#if langcode=="sv">selected="selected"</#if>>sv</option>
-	</select>
-</#macro>
-
-<#macro resourceValue value>
-	<#if value?has_content>
-		<input type="text" class="objectResource hidden" value="${value}" />
-		<span class="objectResourceLink">
-			<a href="${baseURL}/editor/${value}">${value}</a>
-		</span> 
-		<button class="changeObjectResourceButton">Change</button>
-	<#else>
-		<input type="text" class="objectResource" value="${value}" />
-	</#if>
-</#macro>
-
-<#macro resourceValueRangeSelect value rangeValues>
-	<#assign found = false />
-	<select class="objectResource <#if (rangeValues?size > 20)>chosen</#if>">
-		<option value=""></option>
-		<#list rangeValues as rangeValue>
-			<option value="${rangeValue.qname}" <#if value == rangeValue.qname.toString()>selected="selected" <#assign found = true /> </#if>>
-				${rangeValue.qname} <#if rangeValue.label??> - ${(rangeValue.label.forLocale("fi")!rangeValue.label.forLocale("en")!"")?html}</#if>
-			</option>
-		</#list>
-	</select>
-	<#if value?has_content && !found>
-		<span class="error">INVALID VALUE: ${value?html}</span>
-	</#if>
 </#macro>
 
 <div id="currentDataModel">
@@ -296,12 +232,24 @@ $(function() {
 		cloned.find(':input').val('');
 		cloned.addClass('newRow');
 		$("#resource").find('tbody').append(cloned);
-		//sortTable();
 		cloned.find('.changeObjectResourceButton').click();
 	});
+	$("#addNewPredicateButton").on('click', function() {
+		var typedPredicateName = $("#addNewPredicateInput").val();
+		$.get('${baseURL}/editor/new-predicate/'+typedPredicateName, function(response) {
+			if (response.indexOf("Error") === 0) {
+				alert(response);
+			} else {
+				var newPredicate = $(response);
+				newPredicate.addClass('newRow');
+				newPredicate.find('button').button().on('click', function() {
+					$(this).closest('tr').hide(300, function() { $(this).remove(); });
+				});
+				$("#resource").find('tbody').append(newPredicate);
+			}
+		});
+	});
 });
-
-
 
 function submit() {
 	blockingLoader();

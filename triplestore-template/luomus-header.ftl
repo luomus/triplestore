@@ -12,7 +12,8 @@
 	<title>Triplestore Editor | ${text["title_"+page]} | LUOMUS</title>
 	<link href="${staticURL}/favicon.ico?${staticContentTimestamp}" type="image/ico" rel="shortcut icon" />
 	
-	<script src="${staticURL}/jquery-1.9.1.js?${staticContentTimestamp}"></script>
+	<#--><script src="${staticURL}/jquery-1.9.1.js?${staticContentTimestamp}"></script>-->
+	<script src="${staticURL}/jquery-1.11.3.min.js?${staticContentTimestamp}"></script>
 	
 	<link href="${staticURL}/jquery-ui/css/cupertino/jquery-ui-1.10.3.custom.min.css?${staticContentTimestamp}" rel="stylesheet" /> 
 	<script src="${staticURL}/jquery-ui/js/jquery-ui-1.10.3.custom.min.js?${staticContentTimestamp}"></script>
