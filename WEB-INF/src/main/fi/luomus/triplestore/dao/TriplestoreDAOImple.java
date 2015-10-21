@@ -438,7 +438,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			return;
 		}
 		String rangeType = getTypeOTheRange(property.getRange().getQname());
-		if (rangeType.equals("rdf:Alt")) {
+		if ("rdf:Alt".equals(rangeType)) {
 			addRangeValuesForAlt(property);
 		}
 	}
