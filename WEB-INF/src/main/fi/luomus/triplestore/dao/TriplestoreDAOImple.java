@@ -33,11 +33,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
@@ -478,35 +476,24 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private void addRangeValuesForAlt(RdfProperty property) throws Exception {
 		Model model = get(property.getRange().getQname());
-		TreeMap<Integer, Collection<Qname>> orderedMap = getAltValuesInOrder(model);
-		addRangeValuesForAlt(property, orderedMap);
+		List<RdfProperty> values = getAltValues(model);
+		System.out.println("Pistetään " + values);
+		property.getRange().setRangeValues(values);
+		System.out.println("Sen jälkeen on " + property.getRange().getValues());
 	}
 
-	private void addRangeValuesForAlt(RdfProperty property, TreeMap<Integer, Collection<Qname>> orderedMap) throws Exception {
-		List<RdfProperty> rangeValues = new ArrayList<RdfProperty>();
-		for (Integer order : orderedMap.keySet()) {
-			for (Qname rangeValueQname : orderedMap.get(order)) {
-				RdfProperty rangeValue = createProperty(rangeValueQname, null);
-				rangeValues.add(rangeValue);
-			}
-		}
-		property.getRange().setRangeValues(rangeValues);
-	}
-
-	private TreeMap<Integer, Collection<Qname>> getAltValuesInOrder(Model model) {
-		TreeMap<Integer, Collection<Qname>> orderedMap = new TreeMap<Integer, Collection<Qname>>();
+	private List<RdfProperty> getAltValues(Model model) throws Exception {
+		List<RdfProperty> values = new ArrayList<>();
 		for (Statement s : model.getStatements()) {
 			if (s.isLiteralStatement()) continue;
 			String predicate = s.getPredicate().getQname();
 			if (!predicate.startsWith("rdf:_")) continue;
 			String object = s.getObjectResource().getQname();
-			Integer order = Integer.valueOf(predicate.replace("rdf:_", ""));
-			if (!orderedMap.containsKey(order)) {
-				orderedMap.put(order, new ArrayList<Qname>());
-			}
-			orderedMap.get(order).add(new Qname(object));
+			RdfProperty property = createProperty(new Qname(object), null);
+			property.setOrder(Integer.valueOf(predicate.replace("rdf:_", "")));
+			values.add(property);
 		}
-		return orderedMap;
+		return values;
 	}
 
 	@Override
