@@ -11,7 +11,7 @@
 	<!-- Set the viewport width to device width for supporting devices (iOS, Android etc) -->
 	<meta name="viewport" content="initial-scale=1.0" />
 
-	<title>Taxonomy Editor | ${text["title_"+page]} | LUOMUS</title>
+	<title>Taxon Editor | ${text["title_"+page]} | LUOMUS</title>
 	<link href="${staticURL}/favicon.ico?${staticContentTimestamp}" type="image/ico" rel="shortcut icon" />
 
 	<script src="${staticURL}/jquery-1.9.1.js"></script>
@@ -75,7 +75,7 @@
 
 			<a href="${baseURL}">
 				<div id="sitetitle">
-					Taxonomy Editor
+					Taxon Editor
 				</div>
 			</a>
 			

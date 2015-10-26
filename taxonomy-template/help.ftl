@@ -4,7 +4,7 @@
 
 <h1>Help</h1>
 
-Here you can find instructions on how to use the Taxonomy Editor.
+Here you can find instructions on how to use the Taxon Editor.
 
 <h2>Q & A</h2>
 
@@ -12,7 +12,7 @@ Here you can find instructions on how to use the Taxonomy Editor.
 
 	<li>
 		<p><span class="qa">Q:</span> 
-			Who has access to the Taxonomy Editor?
+			Who has access to the Taxon Editor?
 		</p>
 		<p><span class="qa">A:</span> 
 			Anyone with FMNH username and password can access the editor. 

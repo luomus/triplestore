@@ -56,7 +56,7 @@
 			<div id="navigation-wrap" role="navigation">
 				<nav id="mainmenu" role="navigation">
 					<ul class="nav-bar" role="menu">
-						<li role="menuitem"><a href="${taxonomyEditorBaseURL}">Taxonomy editor</a></li>
+						<li role="menuitem"><a href="${taxonomyEditorBaseURL}">Taxon Editor</a></li>
 						<#if user?? && user.isAdmin()>
 							<li role="menuitem"><a href="${baseURL}/editor">Triplestore editor</a></li>
 							<li role="menuitem"><a href="${baseURL}/it">Information Systems</a></li>

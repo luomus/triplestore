@@ -176,10 +176,10 @@ Editor responds from /triplestore/editor
 Included in Triplestore-API, same configuration file.
 
 
-Taxonomy Editor
+Taxon Editor
 ===============
 
-Taxonomy editor responds from /triplestore/taxonomy-editor
+Taxon editor responds from /triplestore/taxonomy-editor
 (Production in taxonomyeditor.luomus.fi)
 
 ##Installation

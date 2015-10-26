@@ -46,7 +46,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		}
 		
 		if (isTaxon(qname)) {
-			responseData.setData("error", "Taxons must be edited using taxonomy editor.");
+			responseData.setData("error", "Taxons must be edited using Taxon editor.");
 			return mainPage(responseData);
 		}
 

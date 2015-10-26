@@ -5,7 +5,7 @@
 <p>Please, select your service.</p>
 
 <ul class="servicelist">
-	<li><a href="${taxonomyEditorBaseURL}">Taxonomy editor</a></li>
+	<li><a href="${taxonomyEditorBaseURL}">Taxon editor</a></li>
 	<#if user.isAdmin()>
 		<li><a href="${baseURL}/editor">Triplestore</a> (admin only)</li>
 		<li><a href="${baseURL}/it">Information Systems</a> (admin only)</li>
