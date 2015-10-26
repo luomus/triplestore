@@ -124,8 +124,8 @@ $(function() {
 						$(this).find('MOS\\.organizationLevel2').each(function() { instance.append($(this).text() + ' ') });
 						$(this).find('MOS\\.organizationLevel3').each(function() { instance.append($(this).text() + ' ') });
 						$(this).find('MOS\\.organizationLevel4').each(function() { instance.append($(this).text() + ' ') });
-						$(this).find('dc\\:bibliographicCitation').each(function() { instance.append($(this).text() + ' ') });
-						$(this).find('rdfs\\:label').each(function() { instance.append($(this).text() + ' ') });
+						$(this).find("dc\\:bibliographicCitation, bibliographicCitation").each(function() { instance.append($(this).text() + ' ') });
+						$(this).find("rdfs\\:label, label").each(function() { instance.append($(this).text() + ' ') });
 						responseElement.append(instance);
 					});
 					responseElement.prepend('<div>Found '+count+' records</div>');

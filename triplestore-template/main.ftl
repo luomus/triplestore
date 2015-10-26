@@ -56,8 +56,8 @@ function listResources(className) {
     	url: '${baseURL}/search?predicate=rdf:type&object='+className+'&limit=800',
     	dataType: 'xml',
     	success: function(xml) {
-	    	var count = 0;
-			$(xml).find('rdf\\:RDF').first().find(className.replace('.','\\.')).each(function() {
+    	   	var count = 0;
+			$(xml).first().find(className.replace('.','\\.')).each(function() {
 				count++;
 				var instance = $('<div>');
 				var resourceURI = $(this).attr('rdf:about');
@@ -71,8 +71,8 @@ function listResources(className) {
 				$(this).find('MOS\\.organizationLevel2').each(function() { instance.append($(this).text() + ' ') });
 				$(this).find('MOS\\.organizationLevel3').each(function() { instance.append($(this).text() + ' ') });
 				$(this).find('MOS\\.organizationLevel4').each(function() { instance.append($(this).text() + ' ') });
-				$(this).find('dc\\:bibliographicCitation').each(function() { instance.append($(this).text() + ' ') });
-				$(this).find('rdfs\\:label').each(function() { instance.append($(this).text() + ' ') });
+				$(this).find("dc\\:bibliographicCitation, bibliographicCitation").each(function() { instance.append($(this).text() + ' ') });
+				$(this).find("rdfs\\:label, label").each(function() { instance.append($(this).text() + ' ') });
 				
 				responseElement.append(instance);
 			});
