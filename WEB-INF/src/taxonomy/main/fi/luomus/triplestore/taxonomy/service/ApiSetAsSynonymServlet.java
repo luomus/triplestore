@@ -51,7 +51,7 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 
 		changeTaxonConcept(taxon, newTaxonConcept, dao);
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.isPartOf"));
-		dao.delete(new Subject(taxon.getQname()), new Predicate("dwc:nameAccordingTo"));
+		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.nameAccordingTo"));
 		
 		boolean masterChecklistTaxon = taxon.getChecklist() != null && taxon.getChecklist().toString().equals("MR.1");
 		

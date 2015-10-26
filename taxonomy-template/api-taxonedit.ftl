@@ -124,9 +124,9 @@
 
 	<@portletHeader "Basic information" "" "scientificNameSection" />
 		<label>ID</label> ${taxon.qname} 
-		<@labeledSelect "dwc:taxonRank" />
-		<@labeledInput "dwc:scientificName" />
-		<@labeledInput "dwc:scientificNameAuthorship" "on" />
+		<@labeledSelect "MX.taxonRank" />
+		<@labeledInput "MX.scientificName" />
+		<@labeledInput "MX.scientificNameAuthorship" "on" />
 		<br />
 		<label for="nameDecidedBy">Name decision by</label>  
 		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@permissions/> >
@@ -189,15 +189,15 @@
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___fi">FI</label> </td>
-				<td> <@input "dwc:vernacularName___fi" "off" taxon.getVernacularName("fi") /> </td>
+				<td> <@input "MX.vernacularName___fi" "off" taxon.getVernacularName("fi") /> </td>
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___sv">SV</label> </td>
-				<td> <@input "dwc:vernacularName___sv" "off" taxon.getVernacularName("sv") /> </td>
+				<td> <@input "MX.vernacularName___sv" "off" taxon.getVernacularName("sv") /> </td>
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___en">EN</label> </td>
-				<td> <@input "dwc:vernacularName___en" "off" taxon.getVernacularName("en") /> </td>
+				<td> <@input "MX.vernacularName___en" "off" taxon.getVernacularName("en") /> </td>
 			</tr>
 		</table>
 	<@portletFooter />	
@@ -268,12 +268,12 @@
 			</tr>
 			<#list taxon.alternativeVernacularNamesWithLangCodes as alternativeVernaculaName>
 			<tr>
-				<td><@input "MX.vernacularName___${alternativeVernaculaName.langcode}" "off" alternativeVernaculaName.name /></td>
+				<td><@input "MX.alternativeVernacularName___${alternativeVernaculaName.langcode}" "off" alternativeVernaculaName.name /></td>
 				<td><@languageSelector alternativeVernaculaName.langcode/></td>
 			</tr>
 			</#list>
 			<tr>
-				<td><@input "MX.vernacularName___fi" "off" "" /></td>
+				<td><@input "MX.alternativeVernacularName___fi" "off" "" /></td>
 				<td><@languageSelector "fi" /></td>
 			</tr>
 		</table>

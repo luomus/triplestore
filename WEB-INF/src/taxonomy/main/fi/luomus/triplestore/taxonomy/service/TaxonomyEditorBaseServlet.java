@@ -55,7 +55,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("persons", getTaxonomyDAO().getPersons());
 		responseData.setData("publications", getTaxonomyDAO().getPublications());
 		responseData.setData("areas", getTaxonomyDAO().getAreas());
-		responseData.setData("properties", getTriplestoreDAO().getProperties("dwc:Taxon"));
+		responseData.setData("properties", getTriplestoreDAO().getProperties("MX.taxon"));
 		responseData.setData("occurrenceProperties", getTriplestoreDAO().getProperties("MO.occurrence"));
 		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);

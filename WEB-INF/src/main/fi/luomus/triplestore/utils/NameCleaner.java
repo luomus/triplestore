@@ -3,7 +3,7 @@ package fi.luomus.triplestore.utils;
 import java.util.regex.Pattern;
 
 /**
- * Used in templates to clean for example "dwc:scientificName" -> "scientificName"
+ * Used in templates to clean for example "MX.scientificName" -> "scientificName"
  *
  */
 public class NameCleaner {

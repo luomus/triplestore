@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -5176480667635744000L;
-	private static final Set<String> VERNACULAR_NAMES = Utils.set("dwc:vernacularName", "MX.vernacularName", "MX.obsoleteVernacularName");
+	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
 	private static final Set<String> FI_SV = Utils.set("fi", "sv");
 
 	@Override
@@ -46,7 +46,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
-		RdfProperties properties = dao.getProperties("dwc:Taxon");
+		RdfProperties properties = dao.getProperties("MX.taxon");
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
 
 		if (given(newPublicationCitation)) {

@@ -111,17 +111,17 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(new Qname("MX.37602"), ResultType.CHAIN, Format.RDFXMLABBREV, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 
-		assertEquals(1, n.getChildNodes("dwc:Taxon").size());
-		Node animalia = n.getNode("dwc:Taxon");
-		assertEquals("Animalia", animalia.getNode("dwc:scientificName").getContents());
+		assertEquals(1, n.getChildNodes("MX.taxon").size());
+		Node animalia = n.getNode("MX.taxon");
+		assertEquals("Animalia", animalia.getNode("MX.scientificName").getContents());
 
 		assertEquals(1, animalia.getChildNodes("MX.isPartOf").size());
-		Node eucarya = animalia.getNode("MX.isPartOf").getNode("dwc:Taxon");
-		assertEquals("Eucarya", eucarya.getNode("dwc:scientificName").getContents());
+		Node eucarya = animalia.getNode("MX.isPartOf").getNode("MX.taxon");
+		assertEquals("Eucarya", eucarya.getNode("MX.scientificName").getContents());
 
 		assertEquals(1, eucarya.getChildNodes("MX.isPartOf").size());
-		Node biota = eucarya.getNode("MX.isPartOf").getNode("dwc:Taxon");
-		assertEquals("Biota", biota.getNode("dwc:scientificName").getContents());
+		Node biota = eucarya.getNode("MX.isPartOf").getNode("MX.taxon");
+		assertEquals("Biota", biota.getNode("MX.scientificName").getContents());
 
 		assertEquals(0, biota.getChildNodes("MX.isPartOf").size());
 	}
@@ -133,7 +133,7 @@ public class ApiServiceTests {
 		Node n = new XMLReader().parse(response).getRootNode();
 		Set<String> taxonRanks = new HashSet<String>();
 		for (Node child : n.getChildNodes()) {
-			taxonRanks.add(child.getNode("dwc:taxonRank").getAttribute("rdf:resource"));
+			taxonRanks.add(child.getNode("MX.taxonRank").getAttribute("rdf:resource"));
 		}
 		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.species"));
 		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.genus"));

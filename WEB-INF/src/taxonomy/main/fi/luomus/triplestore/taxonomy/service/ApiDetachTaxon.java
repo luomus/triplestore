@@ -34,7 +34,7 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		getTaxonomyDAO().invalidateTaxon(taxon);
 		
 		getTriplestoreDAO(req).delete(new Subject(taxonQname), new Predicate("MX.isPartOf"));
-		getTriplestoreDAO(req).delete(new Subject(taxonQname), new Predicate("dwc:nameAccordingTo"));
+		getTriplestoreDAO(req).delete(new Subject(taxonQname), new Predicate("MX.nameAccordingTo"));
 
 		return apiSuccessResponse(res);
 	}

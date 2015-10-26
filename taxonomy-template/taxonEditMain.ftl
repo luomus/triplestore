@@ -83,7 +83,7 @@
 			<label for="newTaxonTaxonrank">Taxon rank</label>
 			<select id="allTaxonRanksSelect" class="hidden"> 
 				<option value=""></option>
-				<#list properties.getProperty("dwc:taxonRank").range.values as taxonRank>
+				<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
 						<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
 				</#list>
 			</select>
@@ -109,7 +109,7 @@
 			<label for="newSynonymTaxonrank">Taxon rank</label>
 			<select id="newSynonymTaxonrank" name="newSynonymTaxonrank"> 
 				<option value=""></option>
-				<#list properties.getProperty("dwc:taxonRank").range.values as taxonRank>
+				<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
 						<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
 				</#list>
 			</select> 

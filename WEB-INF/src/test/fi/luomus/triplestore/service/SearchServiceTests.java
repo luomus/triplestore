@@ -50,8 +50,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
 	}
 
 	@Test
@@ -67,14 +67,14 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
 	}
 
 	@Test
 	public void test_search_predicate_objectliteral() throws Exception {
 		String[] subjects = null;
-		String[] predicates = { "dwc:scientificName" };
+		String[] predicates = { "MX.scientificName" };
 		String[] objects = null;
 		String[] objectresources = null;
 		String[] objectliterals = { "Biota" };
@@ -84,13 +84,13 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
 	}
 
 	@Test
 	public void test_search_predicate_object_where_object_is_literal() throws Exception {
 		String[] subjects = null;
-		String[] predicates = { "dwc:scientificName" };
+		String[] predicates = { "MX.scientificName" };
 		String[] objects = { "Biota" };
 		String[] objectresources = null;
 		String[] objectliterals = null;
@@ -100,13 +100,13 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
 	}
 
 	@Test
 	public void test_search_predicate__multi_objects() throws Exception {
 		String[] subjects = null;
-		String[] predicates = { "dwc:scientificName" };
+		String[] predicates = { "MX.scientificName" };
 		String[] objects = null;
 		String[] objectresources = null;
 		String[] objectliterals = { "Plantae", "Animalia" };
@@ -116,8 +116,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
 	}
 
 	@Test
@@ -133,10 +133,10 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
-		assertTrue(response.contains("<dwc:Taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
 		Node n = new XMLReader().parse(response).getRootNode();
-		assertEquals(2, n.getChildNodes("dwc:Taxon").size());
+		assertEquals(2, n.getChildNodes("MX.taxon").size());
 	}
 
 	@Test
@@ -144,7 +144,7 @@ public class SearchServiceTests {
 		String[] subjects = null;
 		String[] predicates = { "rdf:type" };
 		String[] objects = null;
-		String[] objectresources = { "dwc:Taxon" };
+		String[] objectresources = { "MX.taxon" };
 		String[] objectliterals = null;
 		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
 		int offset = 0;

@@ -282,13 +282,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public Taxon addTaxon(Taxon taxon) throws SQLException {
 		Model model = new Model(taxon.getQname());
-		model.setType("dwc:Taxon");
+		model.setType("MX.taxon");
 
-		model.addStatementIfObjectGiven("dwc:scientificName", taxon.getScientificName());
-		model.addStatementIfObjectGiven("dwc:scientificNameAuthorship", taxon.getScientificNameAuthorship());
-		model.addStatementIfObjectGiven("dwc:taxonRank", taxon.getTaxonRank());
+		model.addStatementIfObjectGiven("MX.scientificName", taxon.getScientificName());
+		model.addStatementIfObjectGiven("MX.scientificNameAuthorship", taxon.getScientificNameAuthorship());
+		model.addStatementIfObjectGiven("MX.taxonRank", taxon.getTaxonRank());
 
-		model.addStatementIfObjectGiven("dwc:nameAccordingTo", taxon.getChecklist());
+		model.addStatementIfObjectGiven("MX.nameAccordingTo", taxon.getChecklist());
 		model.addStatementIfObjectGiven("MX.isPartOf", taxon.getParentQname());
 
 		if (!given(taxon.getTaxonConcept())) {
