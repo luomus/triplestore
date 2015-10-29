@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.dao;
 
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -7,7 +8,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-import fi.luomus.triplestore.models.Model;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

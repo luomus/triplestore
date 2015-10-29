@@ -23,7 +23,6 @@ import fi.luomus.triplestore.service.EditorBaseServlet.Format;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
@@ -183,19 +182,11 @@ public class ApiServiceTests {
 		ApiServlet.put(TEST_RESOURCE_QNAME, data, Format.RDFXML, dao);
 
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
-		assertEquals(cleanForCompare(data), cleanForCompare(response));
+		assertEquals(Utils.cleanForCompare(data), Utils.cleanForCompare(response));
 
 		response = ApiServlet.delete(TEST_RESOURCE_QNAME, Format.RDFXML, dao);
 		Node root = new XMLReader().parse(response).getRootNode();
 		assertFalse(root.hasChildNodes());
-	}
-
-	public static String cleanForCompare(String rdf) {
-		// <rdf:RDFxmlns="http://id.luomus.fi/"xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"><rdf:Descriptionrdf:about="http://id.luomus.fi/JA.123"><fooxml:lang="en">bar</foo></rdf:Description></rdf:RDF>
-		rdf = rdf.replace("<?xml version='1.0' encoding='utf-8'?>", "");
-		String nameSpaces = rdf.split(Pattern.quote(">"))[0];
-		rdf = rdf.replace(nameSpaces, "rdf:RDF");
-		return Utils.removeWhitespace(rdf);
 	}
 
 	@Test

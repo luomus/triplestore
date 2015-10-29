@@ -1,6 +1,7 @@
 package fi.luomus.lajitietokeskus.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
@@ -16,7 +17,6 @@ import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
-import fi.luomus.triplestore.models.Model;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import java.sql.PreparedStatement;

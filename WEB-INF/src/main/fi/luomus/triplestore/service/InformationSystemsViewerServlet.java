@@ -1,9 +1,9 @@
 package fi.luomus.triplestore.service;
 
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.models.Model;
 
 import java.util.Collection;
 import java.util.Comparator;

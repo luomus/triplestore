@@ -3,6 +3,7 @@ package fi.luomus.triplestore.dao;
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -12,7 +13,6 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.triplestore.models.Model;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 

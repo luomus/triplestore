@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.service;
 
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -12,7 +13,6 @@ import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.LogUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.History;
-import fi.luomus.triplestore.models.Model;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

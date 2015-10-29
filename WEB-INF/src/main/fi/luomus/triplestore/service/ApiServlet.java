@@ -1,6 +1,9 @@
 package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.containers.rdf.Context;
+import fi.luomus.commons.containers.rdf.InternalModelToJenaModelConverter;
+import fi.luomus.commons.containers.rdf.JenaUtils;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -12,9 +15,6 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-import fi.luomus.triplestore.models.Model;
-import fi.luomus.triplestore.utils.InternalModelToJenaModelConverter;
-import fi.luomus.triplestore.utils.JenaUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

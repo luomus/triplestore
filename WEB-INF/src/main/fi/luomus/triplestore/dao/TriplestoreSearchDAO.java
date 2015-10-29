@@ -1,8 +1,8 @@
 package fi.luomus.triplestore.dao;
 
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-import fi.luomus.triplestore.models.Model;
 
 import java.util.Collection;
 import java.util.List;
