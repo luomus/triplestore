@@ -15,7 +15,7 @@ public class DataSourceDefinition {
 		p.setPassword(desc.password());
 		
 		p.setDefaultAutoCommit(true); // non-transaction mode: connection will be set to transaction mode if updates are done
-		p.setMaxActive(10);
+		p.setMaxActive(15);
 		p.setMaxIdle(8);
 		p.setMinIdle(2);
 		p.setInitialSize(2);
