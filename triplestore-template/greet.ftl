@@ -9,6 +9,7 @@
 	<#if user.isAdmin()>
 		<li><a href="${baseURL}/editor">Triplestore</a> (admin only)</li>
 		<li><a href="${baseURL}/it">Information Systems</a> (admin only)</li>
+		<li><a href="https://login.laji.fi/admin/unapproved">Laji-Auth</a></li>
 	</#if>
 </ul>
 
