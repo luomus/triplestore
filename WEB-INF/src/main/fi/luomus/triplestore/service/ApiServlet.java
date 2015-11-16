@@ -116,7 +116,7 @@ public class ApiServlet extends EditorBaseServlet {
 			}
 		}
 		if (models.isEmpty()) return null;
-		
+
 		return generateRdf(models, format);
 	}
 
@@ -219,8 +219,7 @@ public class ApiServlet extends EditorBaseServlet {
 		if (!given(data) && !given(predicateQname)) {
 			data = readBody(req);
 		}
-		System.out.println(data);
-		
+
 		if (!given(data) && !given(predicateQname)) {
 			throw new IllegalArgumentException("You must give 'data' or 'predicate_qname' parameter");
 		}
