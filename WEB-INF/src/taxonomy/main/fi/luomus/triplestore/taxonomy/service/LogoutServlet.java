@@ -16,7 +16,7 @@ public class LogoutServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		SessionHandler sessionHandler = getSession(req);
 		if (sessionHandler.hasSession()) {
-			sessionHandler.removeAuthentication("triplestore");
+			sessionHandler.invalidate();
 		}
 		return redirectTo(getConfig().baseURL()+"/login", res);
 	}
