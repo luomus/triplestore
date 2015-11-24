@@ -122,7 +122,7 @@
 
 <div class="column">
 
-	<@portletHeader "Basic information" "" "scientificNameSection" />
+	<@portletHeader "Basic taxonomic information" "" "scientificNameSection" />
 		<label>ID</label> ${taxon.qname} 
 		<@labeledSelect "MX.taxonRank" />
 		<@labeledInput "MX.scientificName" />
