@@ -20,7 +20,8 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	private static final long serialVersionUID = 6941260573571219110L;
 
 	private static final int TAXON_DELETE_THRESHOLD_SECONDS = 60*60*5;
-	
+	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
+
 	private static ExtendedTaxonomyDAO taxonomyDAO;
 
 	@Override
@@ -103,6 +104,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	protected void checkPermissionsToAlterTaxon(EditableTaxon taxon, HttpServletRequest req) throws Exception {
+		if (SANDBOX_CHECKLIST.equals(taxon.getChecklist())) return;
 		User user = getUser(req);
 		if (!taxon.allowsAlterationsBy(user)) {
 			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter taxon " + taxon.getScientificName() + " (" + taxon.getQname() + ")");
