@@ -181,7 +181,7 @@
 
 <div class="column">
 	
-	<@portletHeader "Vernacular names" />
+	<@portletHeader "Primary vernacular names" />
 		<table id="vernacularNameTable">
 			<tr>
 				<th>&nbsp;</th>
@@ -260,7 +260,7 @@
 
 <div class="column">
 
-	<@portletHeader "Alternative vernacular names" "" "multirowSection" />
+	<@portletHeader "Other vernacular names" "" "multirowSection" />
 		<table>
 			<tr>
 				<th>Name</th> 
@@ -448,7 +448,7 @@
 
 <script>
 $(function() {
-
+	$("#notes").attr("placeholder", "In english");
 	$("#deleteTaxon").on('click', function() {
 		var taxonToDeleteQname = $("#taxonToEditQname").text();
 		var taxonToDeleteScientificName = $("#taxonToEditScientificName").text();
