@@ -1,7 +1,7 @@
 <script>
 
 var taxonTreeGraphs;
-var showSynonymsModeIsOn = false;
+var showSynonymsModeIsOn = true;
 $(function() {
 		
 	taxonTreeGraphs = jsPlumb.getInstance();
@@ -10,7 +10,7 @@ $(function() {
 		taxonTreeGraphs.repaintEverything();
   	});
 	
-	var synonymCheckedInitially = <#if showSynonymsMode??>true<#else>false</#if>;
+	var synonymCheckedInitially = <#if synonymsMode == "show">true<#else>false</#if>;
 	showSynonymsModeIsOn = synonymCheckedInitially; 
 	$("#synonymModeSelectorTool :checkbox").switchButton({
  		on_label: 'Shown',
@@ -124,8 +124,8 @@ function expandTree(e) {
 	addTaxonConnection(taxaOfTaxonContainerOfClicked.attr('id'), taxonQnameOfClicked+'Children');
 	taxonTreeGraphs.repaintEverything();
 	var url = '${baseURL}/api/children/'+encodeURIComponent(taxonQnameOfClicked);
-	if (showSynonymsModeIsOn) {
-		url += '?showSynonymsMode=show';
+	if (!showSynonymsModeIsOn) {
+		url += '?synonymsMode=disable';
 	}
 	$.get(url, function(data) {
 		taxaOfTaxonContainerToAddChildrenOfClicked.html(data);
@@ -256,22 +256,22 @@ function disableShowSynonymsMode() {
 	$(".synonyms").fadeOut('slow', function() {taxonTreeGraphs.repaintEverything();});
 }
 function changeToShowSynonymsMode() {
-	var url = location.href.split("?")[0] + "?showSynonymsMode=show";
+	var url = location.href.split("?")[0] + "?synonymsMode=show";
 	document.location.href = url;
 }
 function goUp() {
 	<#if root.hasParent()>
 			var url = "${baseURL}/${root.parent.qname}";
-			if (showSynonymsModeIsOn) {
-				url += "?showSynonymsMode=show";
+			if (!showSynonymsModeIsOn) {
+				url += "?synonymsMode=disable";
 			}
 			document.location.href = url;
 	</#if> 
 }
 function changeRoot(e, url) {
 	if(confirmChangeOfRoot(e)) {
-		if (showSynonymsModeIsOn) {
-			url += "?showSynonymsMode=show";
+		if (!showSynonymsModeIsOn) {
+			url += "?synonymsMode=disable";
 		}
 		document.location.href = url;
 	}

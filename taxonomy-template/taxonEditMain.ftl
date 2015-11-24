@@ -26,7 +26,6 @@
 					<td>Synonyms:</td>
 					<td>
 						<div id="synonymModeSelectorTool" class="switchContainer"><input type="checkbox" id="synonymMode" name="synonymMode" onchange="changeSynonymMode();" /></div>
-						<span class="ui-icon ui-icon-info" title="Showing synonyms makes browsing slower"></span>
 					</td>
 				</tr>
 				<tr>

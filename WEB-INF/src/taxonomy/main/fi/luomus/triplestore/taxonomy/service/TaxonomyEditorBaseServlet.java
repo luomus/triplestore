@@ -48,8 +48,11 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	@Override
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
 		ResponseData responseData = super.initResponseData(req).setViewName("help");
-		if (given(req.getParameter("showSynonymsMode"))) {
-			responseData.setData("showSynonymsMode", "show");
+		String synonymsMode = req.getParameter("synonymsMode"); 
+		if (given(synonymsMode)) {
+			responseData.setData("synonymsMode", synonymsMode);
+		} else {
+			responseData.setData("synonymsMode", "show");
 		}
 		responseData.setData("checklists", getTaxonomyDAO().getChecklists());
 		responseData.setData("persons", getTaxonomyDAO().getPersons());

@@ -80,7 +80,7 @@
 				<span class="taxonChildCount">(${taxon.childTaxons?size})</span>
 			</div>
 		</#if>
-		<#if showSynonymsAndSynonymTools && showSynonymsMode??>
+		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
 				<#list taxon.synonymTaxons as synonymTaxon>	 
 					<@printTaxon synonymTaxon "" false false />
