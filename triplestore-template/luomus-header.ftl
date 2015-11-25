@@ -60,7 +60,7 @@
 						<#if user?? && user.isAdmin()>
 							<li role="menuitem"><a href="${baseURL}/editor">Triplestore editor</a></li>
 							<li role="menuitem"><a href="${baseURL}/it">Information Systems</a></li>
-							<li role="menuitem"><a href="https://login.laji.fi/admin/unapproved">Laji-Auth</a></li>
+							<li role="menuitem"><a target="_blank" href="https://login.laji.fi/admin/unapproved">Laji-Auth</a></li>
 						</#if>
 					</ul>
 				</nav>
