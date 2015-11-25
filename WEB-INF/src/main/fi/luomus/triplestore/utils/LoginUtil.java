@@ -70,8 +70,9 @@ public class LoginUtil  {
 			return isAdmin;
 		}
 
-		public void setErrorMessage(String errorMessage) {
+		public AuthenticationResult setErrorMessage(String errorMessage) {
 			this.errorMessage = errorMessage;
+			return this;
 		}
 
 		public void setUserId(String userId) {
@@ -139,9 +140,11 @@ public class LoginUtil  {
 		LajiAuthClient client = getLajiAuthClient();
 		URI hakaURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.HAKA).query(params).build();
 		URI virtuURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.VIRTU).query(params).build();
+		URI lajifiURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.LOCAL).query(params).build();
 
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
+		responseData.setData("lajifiURI", lajifiURI.toString());
 		responseData.setData("usingLajiAuth", true);
 	}
 
@@ -222,8 +225,11 @@ public class LoginUtil  {
 	}
 
 	private AuthenticationResult authenticationResultFromLajiAuth(AuthenticationResult authenticationResponse, UserDetails userDetails) {
+		String userQname = userDetails.getId().get();
+		if (!given(userQname)) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");
+		// TODO taxon editor permission predicate
 		authenticationResponse.setUserId(userDetails.getEmail());
-		authenticationResponse.setUserQname(userDetails.getId());
+		authenticationResponse.setUserQname(userQname);
 		authenticationResponse.setUserFullname(userDetails.getName());
 		setAdminStatus(authenticationResponse, userDetails.getRoles());
 		return authenticationResponse;

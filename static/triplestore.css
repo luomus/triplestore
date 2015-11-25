@@ -10,6 +10,7 @@ div#luomusLogin, div#lajiAuthLogin {
 div#lajiAuthLogin ul li {
   list-style-type: none;
   margin: 1em;
+  margin-bottom: 2em;
 }
 div#luomusLogin label {
   width: auto;
