@@ -13,6 +13,8 @@ import java.util.List;
 
 public class EditableTaxon extends Taxon {
 
+	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
+	
 	private final ExtendedTaxonomyDAO dao;
 	private Qname taxonConcept;
 	private final List<Qname> explicitlySetEditors = new ArrayList<Qname>();
@@ -146,6 +148,7 @@ public class EditableTaxon extends Taxon {
 	}
 
 	private boolean allowsAlterationForUserDirectly(User user, Taxon taxon) {
+		if (SANDBOX_CHECKLIST.equals(taxon.getChecklist())) return true;
 		return allowsAlterationForUserDirectly(user, taxon.getEditors());
 	}
 
