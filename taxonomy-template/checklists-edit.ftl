@@ -68,7 +68,7 @@
 	<#if action=="add">
 		<input type="submit" value="Create" class="addButton" />
 	<#else>
-		<input type="submit" value="Modify" class="addButton" />
+		<#if same(user.qname, checklist.owner) || user.isAdmin()><input type="submit" value="Modify" class="addButton" /></#if>
 	</#if>
 </form>
 

@@ -6,6 +6,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.models.User;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,12 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MR") : new Qname(getQname(req));
+		
+		if (!addNew) {
+			checkPermissions(qname, req);
+		}
+		
+		
 		String nameEN = req.getParameter("name_en");
 		String nameFI = req.getParameter("name_fi");
 		String notesEN = req.getParameter("notes_en");
@@ -86,6 +93,16 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		} else {
 			getSession(req).setFlashSuccess("Checklist modified");
 			return redirectTo(getConfig().baseURL()+"/checklists/"+qname, res);
+		}
+	}
+
+	private void checkPermissions(Qname qname, HttpServletRequest req) throws Exception {
+		User user = getUser(req);
+		if (user.isAdmin()) return;
+		
+		Checklist checklist = getTaxonomyDAO().getChecklists().get(qname.toString());
+		if (!user.getQname().equals(checklist.getOwner())) {
+			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter checklist " + qname);
 		}
 	}
 
