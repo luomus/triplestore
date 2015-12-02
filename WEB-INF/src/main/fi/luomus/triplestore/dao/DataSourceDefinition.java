@@ -25,7 +25,7 @@ public class DataSourceDefinition {
 		p.setValidationInterval(60 * 1000); // 60 seconds
 		p.setJdbcInterceptors(
 				"org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;"+
-				"org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+				"org.apache.tomcat.jdbc.pool.interceptor.StatementCache");
 		
 		DataSource datasource = new DataSource();
 		datasource.setPoolProperties(p);
