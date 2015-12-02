@@ -12,6 +12,7 @@
 	<tbody>
 	<#list publications?values as publication>
 		<tr>
+			<td><a href="${baseURL}/publications/${publication.qname}">${publication.qname}</a></td>
 			<td>${publication.citation?html}</td>
 			<td><a class="button" href="${baseURL}/publications/${publication.qname}">Modify</button></td>
 		</tr>

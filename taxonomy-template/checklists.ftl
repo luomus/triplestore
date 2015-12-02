@@ -11,6 +11,7 @@
 <table class="checklistTable">
 	<thead>
 		<tr>
+			<td>Id</td>
 			<td>Name</td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
@@ -22,6 +23,7 @@
 	<tbody>
 	<#list checklists?values as checklist>
 		<tr>
+			<td><a href="${baseURL}/checklists/${checklist.qname}">${checklist.qname}</a></td>
 			<td>${checklist.getFullname("en")}</td>
 			<td>
 				<#if checklist.rootTaxon.set>
