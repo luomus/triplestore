@@ -4,7 +4,7 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +22,8 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 			return redirectTo500(res);
 		} 
 			
-		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		checkPermissionsToAlterTaxon(taxon, req);
 		
 		if (taxon.hasChildren()) {
 			throw new IllegalStateException("Can not delete "+taxonQname+": It has children.");
