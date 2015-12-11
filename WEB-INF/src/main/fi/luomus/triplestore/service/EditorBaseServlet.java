@@ -82,9 +82,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		}
 		Config config = getConfig();
 
-		responseData.setData("taxonomyEditorBaseURL", config.get("taxonomyEditorBaseURL"));
-		responseData.setData("lajiETLBaseURL", config.get("lajiETLBaseURL"));
-		responseData.setData("lajiAuthBaseURL", config.get("lajiAuthBaseURL"));
+		if (config.defines("taxonomyEditorBaseURL")) {
+			responseData.setData("taxonomyEditorBaseURL", config.get("taxonomyEditorBaseURL"));
+			responseData.setData("lajiETLBaseURL", config.get("lajiETLBaseURL"));
+			responseData.setData("lajiAuthBaseURL", config.get("lajiAuthBaseURL"));
+		}
 
 		return responseData;
 	}
