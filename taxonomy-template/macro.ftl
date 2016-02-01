@@ -131,11 +131,11 @@
 
 <#macro adminPermissions><#if !user.isAdmin()> disabled="disabled" </#if></#macro>
 
-<#macro label field>
+<#macro label field class="">
 	<#assign property = properties.getProperty(field)>
 	<#assign cleanedName = cleanName(field)>
 	<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
-	<label for="${cleanedName}">${property.label.forLocale("en")!field}</label>
+	<label for="${cleanedName}" class="${class}">${property.label.forLocale("en")!field}</label>
 </#macro>
 
 <#macro labeledSelect field defaultValue="taxonValue">
@@ -177,6 +177,10 @@
 	<@textarea field defaultValue/>
 </#macro>
 
+<#macro longText field defaultValue="taxonValue">
+	<@textarea field defaultValue "longtext" />
+</#macro>
+
 <#macro input field autocomplete="off" defaultValue="taxonValue">
 	<#if autocomplete != "on" && autocomplete != "off">INVALID autocomplete value given!</#if>
 	<#assign cleanedName = cleanName(field)>
@@ -192,14 +196,14 @@
 	</#if>
 </#macro>
 
-<#macro textarea field defaultValue="taxonValue">
+<#macro textarea field defaultValue="taxonValue" class="">
 	<#assign cleanedName = cleanName(field)>
 	<#if defaultValue == "taxonValue">
 		<#if taxon[cleanedName]??> <#assign value = taxon[cleanedName]> <#else> <#assign value = ""> </#if>
 	<#else>
 		<#assign value = defaultValue>
 	</#if>
-	<textarea name="${field}" id="${cleanedName}" <@permissions/> >${value?html}</textarea>
+	<textarea name="${field}" id="${cleanedName}" <@permissions/> class="${class}">${value?html}</textarea>
 </#macro>
 
 <#function cleanName field>

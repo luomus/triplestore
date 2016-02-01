@@ -66,7 +66,7 @@
 </div>
 		
 		
-<div id="editTaxon" class="ui-widget-content">
+<div id="editTaxonDescriptions" class="ui-widget-content">
 <div id="editTaxonContent">
 
 <h5 id="taxonEditHeader">
@@ -74,13 +74,45 @@
 	<#if taxon.getVernacularName("fi")?has_content>
 		&mdash; ${taxon.getVernacularName("fi")}
 	</#if>
+	&nbsp;
+	${taxon.qname}
 </h5>
 
 
 <div class="column">
 	
 	<@portletHeader "Basic descriptions" />
-		Jee		
+		<div class="languageTabs">
+			<ul>
+				<li><a href="#basic-fi">FI</a></li>
+				<li><a href="#basic-sv">SV</a></li>
+				<li><a href="#basic-en">EN</a></li>
+			</ul>
+			<div id="basic-fi">
+				<@label "MX.speciesCardAuthors" />
+				<@input "MX.speciesCardAuthors___fi" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "fi") />
+				<@label "MX.ingressText" "longtext" />
+				<@longText "MX.ingressText___fi" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "fi") />
+				<@label "MX.descriptionText" "longtext" />
+				<@longText "MX.descriptionText___fi" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "fi") />
+			</div>
+			<div id="basic-sv">
+				<@label "MX.speciesCardAuthors" />
+				<@input "MX.speciesCardAuthors___sv" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "sv") />
+				<@label "MX.ingressText" "longtext" />
+				<@longText "MX.ingressText___sv" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "sv") />
+				<@label "MX.descriptionText" "longtext" />
+				<@longText "MX.descriptionText___sv" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "sv") />
+			</div>
+			<div id="basic-en">
+				<@label "MX.speciesCardAuthors" />
+				<@input "MX.speciesCardAuthors___en" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "en") />
+				<@label "MX.ingressText" "longtext" />
+				<@longText "MX.ingressText___en" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "en") />
+				<@label "MX.descriptionText" "longtext" />
+				<@longText "MX.descriptionText___en" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "en") />
+			</div>
+		</div>
 	<@portletFooter />	
 	
 	<@portletHeader "Basic descriptions" />
@@ -117,6 +149,7 @@ dee
 
 <script>
 $(function() {
+	$(".languageTabs").tabs();
 });
 </script>
 
