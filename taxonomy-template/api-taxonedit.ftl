@@ -106,7 +106,7 @@
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon /> | 
 	<@printEditorExpert taxon />
-	<#--<button id="descriptionTextButton">Description texts</button>-->
+	<button id="descriptionTextButton">Description texts</button>
 	<button id="imagesButton">Images</button>
 </h5>
 
@@ -495,6 +495,7 @@ $(function() {
 		var windowHeight = $(window).height();
         var dialogHeight = windowHeight * 0.9;
 		container.dialog({
+			title: 'Add/modify taxon images',
 			autoOpen: true,
       		height: dialogHeight,
       		width: "95%",
@@ -510,6 +511,27 @@ $(function() {
     	});
 	});
 	
+	$("#descriptionTextButton").on('click', function() {
+		var container = $('<div id="iframeContainer"><iframe src="${baseURL}/taxon-descriptions/${taxon.qname}"></iframe></div>');
+		$("body").append(container);
+		var windowHeight = $(window).height();
+        var dialogHeight = windowHeight * 0.9;
+		container.dialog({
+			title: 'Edit taxon descriptions',
+			autoOpen: true,
+      		height: dialogHeight,
+      		width: "95%",
+      		modal: true,
+      		buttons: {
+        		"Close": function() {
+          			container.dialog("close");
+        		}
+			},
+      		close: function() {
+				container.remove();
+      		}
+    	});
+	});
 });
 </script>
 

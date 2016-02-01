@@ -544,6 +544,8 @@ function searchTaxon(taxonSearchForm) {
 	var taxonpageBaseLinkURL = '${(baseURL + "/orphan")?url}';
 	if (taxonpageBaseLinkType === "taxonTree") {
 		taxonpageBaseLinkURL = '${(baseURL)?url}';
+	} else if (taxonpageBaseLinkType === "taxonDescriptions") {
+		taxonpageBaseLinkURL = '${(baseURL + "/taxon-descriptions")?url}';
 	}
 	var resultViewContainer = $(taxonSearchForm).find('div:first');
 	resultViewContainer.html('').removeClass('collapse');

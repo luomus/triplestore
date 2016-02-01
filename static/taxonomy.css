@@ -124,11 +124,26 @@ tr.errorMessage td {
 }
 
 #taxonEditHeader button {
-	font-size: 1.0em;
-	padding: 2px;
+	font-size: 0.8em;
+	padding: 0.2em;
+	padding-left: 1em;
+	padding-right: 2em;
+	margin: 0.5em;
+	margin-left: 1em;
+}
+#descriptionTextButton {
+	background-image: url("img/taxonedit_text.png");
+	background-repeat: no-repeat;
+	background-position: right 5px center;
+}
+#imagesButton {
+	background-image: url("img/taxonedit_image.png");
+	background-repeat: no-repeat;
+	background-position: right 5px center;
 }
 
 #iframeContainer iframe {
 	height: 100%;
 	width: 100%;
 }
+
