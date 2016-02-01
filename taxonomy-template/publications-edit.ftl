@@ -15,7 +15,7 @@
 	<ul>
 		<li>
 			<label>Citation</label>
-			<input type="text" name="citation" class="required citation" value="${publication.citation?html}" />  
+			<textarea name="citation" class="required citation">${publication.citation?html}</textarea>  
 			<span class="requiredFieldMarker" title="Required">*</span>
 			<span class="ui-icon ui-icon-info" title="For example: Silfverberg, H. 2007. Changes in the list of Finnish insects 2001-2005. - Entomol. Fenn. 18:82-101"></span>
 		</li>
