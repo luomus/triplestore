@@ -13,7 +13,12 @@
 	<#list publications?values as publication>
 		<tr>
 			<td><a href="${baseURL}/publications/${publication.qname}">${publication.qname}</a></td>
-			<td>${publication.citation?html}</td>
+			<td>
+				${publication.citation?html}
+				<#if publication.getURI()?has_content>
+					<a href="${publication.getURI()?html}">Link</a>
+				</#if>
+			</td>
 			<td><a class="button" href="${baseURL}/publications/${publication.qname}">Modify</button></td>
 		</tr>
 	</#list>
