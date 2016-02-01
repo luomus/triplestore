@@ -67,7 +67,7 @@
 		
 		
 <div id="editTaxonDescriptions" class="ui-widget-content">
-<div id="editTaxonContent">
+
 
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon />
@@ -78,62 +78,34 @@
 	${taxon.qname}
 </h5>
 
+<#assign locales = ["fi","sv","en"] />
 
+<#--		TODO			<@label "MX.speciesCardAuthors" />
+					<@input "MX.speciesCardAuthors___fi" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "fi") /> -->
+
+
+<#list groups as group>
 <div class="column">
-	
-	<@portletHeader "Basic descriptions" />
+	<@portletHeader group.label.forLocale("en") "initiallyClosed" />
 		<div class="languageTabs">
 			<ul>
-				<li><a href="#basic-fi">FI</a></li>
-				<li><a href="#basic-sv">SV</a></li>
-				<li><a href="#basic-en">EN</a></li>
+				<#list locales as locale>
+					<li><a href="#group-${group_index}-${locale}">${locale?upper_case}</a></li>
+				</#list>
 			</ul>
-			<div id="basic-fi">
-				<@label "MX.speciesCardAuthors" />
-				<@input "MX.speciesCardAuthors___fi" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "fi") />
-				<@label "MX.ingressText" "longtext" />
-				<@longText "MX.ingressText___fi" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "fi") />
-				<@label "MX.descriptionText" "longtext" />
-				<@longText "MX.descriptionText___fi" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "fi") />
-			</div>
-			<div id="basic-sv">
-				<@label "MX.speciesCardAuthors" />
-				<@input "MX.speciesCardAuthors___sv" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "sv") />
-				<@label "MX.ingressText" "longtext" />
-				<@longText "MX.ingressText___sv" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "sv") />
-				<@label "MX.descriptionText" "longtext" />
-				<@longText "MX.descriptionText___sv" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "sv") />
-			</div>
-			<div id="basic-en">
-				<@label "MX.speciesCardAuthors" />
-				<@input "MX.speciesCardAuthors___en" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "en") />
-				<@label "MX.ingressText" "longtext" />
-				<@longText "MX.ingressText___en" taxon.basicDescriptionTexts.getDefaultContextText("MX.ingressText", "en") />
-				<@label "MX.descriptionText" "longtext" />
-				<@longText "MX.descriptionText___en" taxon.basicDescriptionTexts.getDefaultContextText("MX.descriptionText", "en") />
-			</div>
+			<#list locales as locale>
+				<div id="group-${group_index}-${locale}">
+					<#list variables[group.qname.toString()] as descriptionVariable>
+						<#assign qname = descriptionVariable.qname.toString() /> 
+						<@label qname "longtext" />
+						<@longText qname + "___" + locale taxon.basicDescriptionTexts.getDefaultContextText(qname, locale) />
+					</#list>
+				</div>
+			</#list>
 		</div>
 	<@portletFooter />	
-	
-	<@portletHeader "Basic descriptions" />
-		Joo
-	<@portletFooter />	
-	
 </div>
-
-<div class="clear"></div>
-
-
-<div class="column">
-dee
-	
-</div>
-
-
-<div class="column">
-
-	deedee
-</div>
+</#list>
 
 
 <div class="clear"></div>
@@ -143,7 +115,6 @@ dee
 
 
 
-</div>
 </div>
 
 

@@ -475,11 +475,17 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void addRangeValuesForAlt(RdfProperty property) throws Exception {
-		Model model = get(property.getRange().getQname());
-		List<RdfProperty> values = getAltValues(model);
+		List<RdfProperty> values = getAltValues(property.getRange().getQname());
 		property.getRange().setRangeValues(values);
 	}
 
+	@Override
+	public List<RdfProperty> getAltValues(Qname qname) throws Exception {
+		Model model = get(qname);
+		List<RdfProperty> values = getAltValues(model);
+		return values;
+	}
+	
 	private List<RdfProperty> getAltValues(Model model) throws Exception {
 		List<RdfProperty> values = new ArrayList<>();
 		for (Statement s : model.getStatements()) {

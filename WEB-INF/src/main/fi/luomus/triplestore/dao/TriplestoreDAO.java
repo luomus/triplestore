@@ -76,6 +76,14 @@ public interface TriplestoreDAO {
 	public RdfProperty getProperty(Predicate predicate) throws Exception;
 
 	/**
+	 * Reads rdf:_li values of rdf:Alt
+	 * @param qname
+	 * @return
+	 * @throws Exception
+	 */
+	public List<RdfProperty> getAltValues(Qname qname) throws Exception;
+
+	/**
 	 * Return model by qname
 	 * @param qname
 	 * @return
@@ -212,5 +220,7 @@ public interface TriplestoreDAO {
 	 * @throws SQLException 
 	 */
 	public boolean resourceExists(Qname resourceQname) throws Exception;
+
+
 
 }

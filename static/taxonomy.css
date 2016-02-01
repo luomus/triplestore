@@ -34,8 +34,8 @@ textarea {
 	height: 3em;
 }
 textarea.longtext {
-	width: 650px;
-	height: 180px;
+	width: 550px;
+	height: 90px;
 }
 input[type="submit"] {
 	width: auto;
