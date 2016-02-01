@@ -50,7 +50,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		this.userQname = userQname;
 	}
 
-	private static final String DELETE_ALL_PREDICATE_CONTEXT_STATEMENTS_SQL = "" +
+	private static final String DELETE_ALL_PREDICATE_CONTEXT_LANGCODE_STATEMENTS_SQL = "" +
 			" DELETE from "+SCHEMA+".rdf_statementview " +
 			" WHERE subjectname = ? AND predicatename = ? " + 
 			" AND coalesce(contextname,'.') = ? AND coalesce(langcodefk,'.') = ? ";
@@ -562,7 +562,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			con = openConnection();
 			con.startTransaction();
 
-			removePredicatesStatement = con.prepareStatement(DELETE_ALL_PREDICATE_CONTEXT_STATEMENTS_SQL);
+			removePredicatesStatement = con.prepareStatement(DELETE_ALL_PREDICATE_CONTEXT_LANGCODE_STATEMENTS_SQL);
 			addStatement = con.prepareCall(CALL_LTKM_LUONTO_ADD_STATEMENT);
 			addStatementL = con.prepareCall(CALL_LTKM_LUONTO_ADD_STATEMENT_L);
 
