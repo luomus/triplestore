@@ -35,7 +35,7 @@ function initColumnsPortlets() {
 	
 	$("#editTaxonContent").find(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
 	
-	$("#editTaxonContent").find("button").button();
+	$("#editTaxonContent").find("button, .button").button();
 	
 	$(".taxonEditSection").validate();
 	
