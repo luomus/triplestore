@@ -63,34 +63,19 @@
 <script>
 $(function() {
 	$(".languageTabs").tabs();
-	$("textarea").jqte({
-		br: true,
-		center: false,
-		color: false,
-		fsize: false,
-		format: false,
-		i: true,
-		indent: false,
-		link: true,
-		linktypes: ['Link to web page','not in use','not in use'],
-		left: false,
-		ol: false,
-		outdent: false,
-		p: true,
-		placeholder: false,
-		remove: false,
-		right: false,
-		rule: false,
-		source: true,
-		sub: false,
-		strike: false,
-		sup: false,
-		title: true,
-		u: false,
-		ul: false,
-		unlink: true
-	});
 });
+
+/*
+tinymce.init({ 
+	selector:'textarea',
+	setup: function (editor) {
+        editor.on('change', function () {
+            editor.save();
+        });
+    } 
+});
+*/
+
 </script>
 
 

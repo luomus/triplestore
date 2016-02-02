@@ -165,4 +165,5 @@ tr.errorMessage td {
 .jqte {
 	margin: 0.5em;
 	border-style: none;
+	white-space: normal;
 }
