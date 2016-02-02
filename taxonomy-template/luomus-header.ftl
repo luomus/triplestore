@@ -14,7 +14,7 @@
 	<title>Taxon Editor | ${text["title_"+page]} | LUOMUS</title>
 	<link href="${staticURL}/favicon.ico?${staticContentTimestamp}" type="image/ico" rel="shortcut icon" />
 
-	<script src="${staticURL}/jquery-1.9.1.js"></script>
+	<script src="${staticURL}/jquery-1.11.3.min.js"></script>
 	
 	<link href="${staticURL}/jquery-ui/css/cupertino/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" /> 
 	<script src="${staticURL}/jquery-ui/js/jquery-ui-1.10.2.min.js"></script>
