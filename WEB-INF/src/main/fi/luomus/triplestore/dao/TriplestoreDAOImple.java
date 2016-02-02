@@ -497,6 +497,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			property.setOrder(Integer.valueOf(predicate.replace("rdf:_", "")));
 			values.add(property);
 		}
+		Collections.sort(values);
 		return values;
 	}
 

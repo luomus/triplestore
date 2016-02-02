@@ -15,6 +15,7 @@
 		
 <div id="editTaxonDescriptions" class="ui-widget-content">
 
+<h6><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h6>
 
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon />
@@ -27,12 +28,7 @@
 
 <#assign locales = ["fi","sv","en"] />
 
-<#--		TODO			<@label "MX.speciesCardAuthors" />
-					<@input "MX.speciesCardAuthors___fi" "on" taxon.basicDescriptionTexts.getDefaultContextText("MX.speciesCardAuthors", "fi") /> -->
-
-
 <#list groups as group>
-<div class="column">
 	<@portletHeader group.label.forLocale("en") "initiallyClosed" />
 		<div class="languageTabs">
 			<ul>
@@ -51,7 +47,6 @@
 			</#list>
 		</div>
 	<@portletFooter />	
-</div>
 </#list>
 
 

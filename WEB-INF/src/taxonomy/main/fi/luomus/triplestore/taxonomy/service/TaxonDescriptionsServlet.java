@@ -4,6 +4,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 import java.util.LinkedHashMap;
@@ -35,7 +36,12 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 			descriptionGroupVariables.put(descriptionGroup.getQname().toString(), dao.getAltValues(descriptionGroup.getQname()));
 		}
 
-		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		Taxon taxon = taxonomyDAO.getTaxon(new Qname(taxonQname));
+
+		if (taxon.getChecklist() != null) {
+			responseData.setData("checklist", taxonomyDAO.getChecklists().get(taxon.getChecklist().toString()));
+		}
 
 		return responseData.setViewName("taxonDescriptions").setData("taxon", taxon).setData("root", taxon).setData("variables", descriptionGroupVariables).setData("groups", descriptionGroups);
 	}

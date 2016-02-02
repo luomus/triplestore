@@ -580,7 +580,14 @@ $(function() {
 		var selectedName = ui.item.value; 
 		$.getJSON('${baseURL}/api/taxonomy-search-exact-match-selected?selectedTaxonName='+encodeURIComponent(selectedName)+'<#if checklist??>&checklist=${checklist.qname}</#if>', function (data) {
 			if (data.exactMatch) {
-				document.location.href = '${baseURL}/'+data.qname
+				var taxonpageBaseLinkType = $(".taxonomySearchForm").attr('taxonpageBaseLinkType');
+				var taxonpageBaseLinkURL = '${baseURL + "/orphan"}';
+				if (taxonpageBaseLinkType === "taxonTree") {
+					taxonpageBaseLinkURL = '${baseURL}';
+				} else if (taxonpageBaseLinkType === "taxonDescriptions") {
+					taxonpageBaseLinkURL = '${baseURL + "/taxon-descriptions"}';
+				}
+				document.location.href = taxonpageBaseLinkURL+'/'+data.qname
 			} else {
 				searchTaxon($(event.target).parent());
 			}
