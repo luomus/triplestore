@@ -42,12 +42,12 @@
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/triplestore.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/taxonomy.css?${staticContentTimestamp}" rel="stylesheet" />
-	<#if page == "taxonEditMain">
+	<#if page == "taxonEditMain" || page == "taxonDescriptions">
 		<link href="${staticURL}/taxonTrees.css?${staticContentTimestamp}" rel="stylesheet" />
 	</#if>
 	
 	<#include "javascript.ftl">
-	<#if page == "taxonEditMain">
+	<#if page == "taxonEditMain" || page == "taxonDescriptions">
 		<#include "javascript-taxonTree.ftl">
 		<#include "javascript-taxonEdit.ftl">
 	</#if>
@@ -87,6 +87,7 @@
 					<ul class="nav-bar" role="menu">
 						<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
 						<li role="menuitem"><a href="${baseURL}/orphan">Orphan taxa</a></li>
+						<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
 						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
 						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
 						<li role="menuitem"><a href="${baseURL}/help">Help</a></li>

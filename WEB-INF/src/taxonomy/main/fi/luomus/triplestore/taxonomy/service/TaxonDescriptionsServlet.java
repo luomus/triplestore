@@ -25,20 +25,19 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req);
 		String taxonQname = getQname(req);
 		if (!given(taxonQname)) {
-			return redirectTo500(res);
+			taxonQname = TaxonomyTreesEditorServlet.DEFAULT_ROOT_QNAME.toString();
 		} 
 
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Map<String, List<RdfProperty>> descriptionGroupVariables = new LinkedHashMap<>();
 		List<RdfProperty> descriptionGroups = dao.getAltValues(SPECIES_DESC_VARIABLES);
-		
 		for (RdfProperty descriptionGroup : descriptionGroups) {
 			descriptionGroupVariables.put(descriptionGroup.getQname().toString(), dao.getAltValues(descriptionGroup.getQname()));
 		}
-		
+
 		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(taxonQname));
 
-		return responseData.setViewName("taxon-descriptions").setData("taxon", taxon).setData("root", taxon).setData("variables", descriptionGroupVariables).setData("groups", descriptionGroups);
+		return responseData.setViewName("taxonDescriptions").setData("taxon", taxon).setData("root", taxon).setData("variables", descriptionGroupVariables).setData("groups", descriptionGroups);
 	}
 
 }
