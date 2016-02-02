@@ -39,7 +39,7 @@ function initColumnsPortlets() {
 	
 	$(".taxonEditSection").validate();
 	
-	$(".taxonEditSection").find(":input").bind("change keyup", function() {
+	$(".taxonEditSection").bind("change keyup", function() {
 		var section = $(this).closest(".taxonEditSection"); 
 		if(section.find(".saveButton").length === 0) {
 			section.append('<input type="submit" class="saveButton" value="Save changes" />');

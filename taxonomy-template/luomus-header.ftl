@@ -35,9 +35,13 @@
 	<script src="${staticURL}/collapse/collapse.js?${staticContentTimestamp}"></script>
 	<link href="${staticURL}/collapse/collapse.css?${staticContentTimestamp}" rel="stylesheet" />
 	
-	
 	<script src="${staticURL}/jquery-switchButton/jquery.switchButton.js?${staticContentTimestamp}"></script>
 	<link href="${staticURL}/jquery-switchButton/jquery.switchButton.css?${staticContentTimestamp}" rel="stylesheet" />
+	
+	<#if page == "taxonDescriptions">
+		<script src="${staticURL}/jQuery-TE_v.1.4.0/jquery-te-1.4.0.min.js?${staticContentTimestamp}"></script>
+		<link href="${staticURL}/jQuery-TE_v.1.4.0/jquery-te-1.4.0.css?${staticContentTimestamp}" rel="stylesheet" />
+	</#if>
 	
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/triplestore.css?${staticContentTimestamp}" rel="stylesheet" />
@@ -51,6 +55,7 @@
 		<#include "javascript-taxonTree.ftl">
 		<#include "javascript-taxonEdit.ftl">
 	</#if>
+
 	
 </head>
 

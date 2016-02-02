@@ -162,3 +162,7 @@ tr.errorMessage td {
 	width: 100%;
 }
 
+.jqte {
+	margin: 0.5em;
+	border-style: none;
+}
