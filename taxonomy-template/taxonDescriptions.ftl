@@ -26,6 +26,11 @@
 	${taxon.qname}
 </h5>
 
+<#if noPermissions??>
+	<div class="noPermissionsToAlterTaxon"><span class="ui-icon ui-icon-info" title="Note!"></span> You do not have permissions to edit descriptions for this taxon.</div>
+</#if>
+
+
 <#assign locales = ["fi","sv","en"] />
 
 <#list groups as group>
@@ -82,6 +87,7 @@ $(function() {
     	height: "210",
     	toolbar: 'bold italic | link unlink | removeformat | undo, redo | code',
     	setup: function(editor) {
+    		checkIfDisabled(editor);
     		editor.on('change', function(e) {
       			editor.save();
       			updateOriginal(editor.getElement());
@@ -93,6 +99,12 @@ $(function() {
 
 function updateOriginal(e) {
 	$(e).trigger('change');
+}
+
+function checkIfDisabled(editor) {
+	if ($(editor.getElement()).prop('disabled') === true) {
+		editor.settings.readonly = true;
+	}
 }
 
 </script>

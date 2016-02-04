@@ -119,17 +119,15 @@
 </#if>
 </#macro>
 
-<#macro languageSelector selectedLangcode>
-	<select class="languageSelector" onchange="languageChanged(this)" <@permissions/>>
+<#macro languageSelector selectedLangcode permissions="requireEditorPermissions" >
+	<select class="languageSelector" onchange="languageChanged(this)" <@checkPermissions permissions/>>
 		<option value="fi" <#if selectedLangcode == "fi">selected="selected"</#if>>FI</option>
 		<option value="sv" <#if selectedLangcode == "sv">selected="selected"</#if>>SV</option>
 		<option value="en" <#if selectedLangcode == "en">selected="selected"</#if>>EN</option>
 	</select>
 </#macro>
 
-<#macro permissions><#if noPermissions??> disabled="disabled" </#if></#macro>
-
-<#macro adminPermissions><#if !user.isAdmin()> disabled="disabled" </#if></#macro>
+<#macro checkPermissions permissions="requireEditorPermissions"><#if permissions == "requireEditorPermissions"><#if noPermissions??> disabled="disabled" </#if><#elseif permissions=="requireAdminPermissions"><#if !user.isAdmin()> disabled="disabled" </#if></#if></#macro>
 
 <#macro label field class="" locale="en">
 	<#assign property = properties.getProperty(field)>
@@ -138,12 +136,12 @@
 	<label for="${cleanedName}" class="${class}">${property.label.forLocale(locale)!field}</label>
 </#macro>
 
-<#macro labeledSelect field defaultValue="taxonValue">
+<#macro labeledSelect field defaultValue="taxonValue" permissions="requireEditorPermissions" >
 	<@label field />
-	<@select field defaultValue />
+	<@select field defaultValue permissions />
 </#macro>
 
-<#macro select field defaultValue="taxonValue">
+<#macro select field defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<#assign property = properties.getProperty(field)>
 	<#if !property.hasRange()>NO RANGE!<#else>
 	<#assign cleanedName = cleanName(field)>
@@ -152,7 +150,7 @@
 	<#else>
 		<#assign value = defaultValue>
 	</#if>
-	<select id="${cleanedName}" name="${field}" <@permissions/> > 
+	<select id="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
 		<option value=""></option>
 		<#if property.isBooleanProperty()>
 			<#list property.range.values as optionValue>
@@ -167,21 +165,21 @@
 	</#if>
 </#macro>
 
-<#macro labeledInput field autocomplete="off" defaultValue="taxonValue">
+<#macro labeledInput field autocomplete="off" defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<@label field />
-	<@input field autocomplete defaultValue/>
+	<@input field autocomplete defaultValue permissions/>
 </#macro>
 
-<#macro labeledTextarea field defaultValue="taxonValue">
+<#macro labeledTextarea field defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<@label field />
 	<@textarea field defaultValue/>
 </#macro>
 
-<#macro longText field defaultValue="taxonValue">
-	<@textarea field defaultValue "longtext" />
+<#macro longText field defaultValue="taxonValue" permissions="requireEditorPermissions">
+	<@textarea field defaultValue "longtext" permissions />
 </#macro>
 
-<#macro input field autocomplete="off" defaultValue="taxonValue">
+<#macro input field autocomplete="off" defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<#if autocomplete != "on" && autocomplete != "off">INVALID autocomplete value given!</#if>
 	<#assign cleanedName = cleanName(field)>
 	<#if defaultValue == "taxonValue">
@@ -190,20 +188,20 @@
 		<#assign value = defaultValue>
 	</#if>
 	<#if properties.hasProperty(field) && properties.getProperty(field).isDateProperty()>
-		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@permissions/> class="datepicker" />
+		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> class="datepicker" />
 	<#else>
-		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@permissions/> />
+		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> />
 	</#if>
 </#macro>
 
-<#macro textarea field defaultValue="taxonValue" class="">
+<#macro textarea field defaultValue="taxonValue" class="" permissions="requireEditorPermissions">
 	<#assign cleanedName = cleanName(field)>
 	<#if defaultValue == "taxonValue">
 		<#if taxon[cleanedName]??> <#assign value = taxon[cleanedName]> <#else> <#assign value = ""> </#if>
 	<#else>
 		<#assign value = defaultValue>
 	</#if>
-	<textarea name="${field}" id="${cleanedName}" <@permissions/> class="${class}">${value?html}</textarea>
+	<textarea name="${field}" id="${cleanedName}" <@checkPermissions permissions /> class="${class}">${value?html}</textarea>
 </#macro>
 
 <#function cleanName field>
@@ -215,7 +213,7 @@
 	<div class="portlet-header ${initiallyClosed}">${portletTitle}</div>
 	<div class="portlet-content">
 		<form class="taxonEditSection ${additionalFormClass}">
-			<input type="hidden" name="taxonQname" class="taxonQname" value="${taxon.qname?html}" <@permissions/> />
+			<input type="hidden" name="taxonQname" class="taxonQname" value="${taxon.qname?html}" />
 </#macro>
 
 <#macro portletFooter>

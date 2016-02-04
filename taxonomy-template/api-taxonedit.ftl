@@ -26,7 +26,7 @@
 		<@labeledInput "MX.scientificNameAuthorship" "on" />
 		<br />
 		<label for="nameDecidedBy">Name decision by</label>  
-		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@permissions/> >
+		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQname>
 				<option value="${personQname}" <#if same(taxon.nameDecidedBy, personQname)>selected="selected"</#if> >${persons[personQname].fullname}</option>
@@ -45,7 +45,7 @@
 			<#list taxon.getOriginalPublicationsSortedByPublication(publications) as publication>
 			<tr>
 				<td>
-					<select name="MX.originalPublication" class="chosen" <@permissions/> >
+					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
 							<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
@@ -56,7 +56,7 @@
 			</#list>
 			<tr>
 				<td>
-					<select name="MX.originalPublication" class="chosen" <@permissions/> data-placeholder="Select existing publication" >
+					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
 							<option value="${publicationQname}">${publications[publicationQname].citation}</option>
@@ -68,7 +68,7 @@
 				<th>Or create new publication</th> 
 			</tr>
 			<tr>
-				<td><input type="text" name="newPublicationCitation" id="createNewPublicationInput" placeholder="Type citaction, for example 'Silfverberg, H. 2007. Changes in the list of Finnish insects 2001-2005. - Entomol. Fenn. 18:82-101'"/></td>
+				<td><input <@checkPermissions/> type="text" name="newPublicationCitation" id="createNewPublicationInput" placeholder="Type citaction, for example 'Silfverberg, H. 2007. Changes in the list of Finnish insects 2001-2005. - Entomol. Fenn. 18:82-101'"/></td>
 			</tr>
 		</table>
 		<div></div>
@@ -116,7 +116,7 @@
 			<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
 			<tr>
 				<td>
-					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@permissions/> >
+					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
 							<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
@@ -127,7 +127,7 @@
 			</#list>
 			<tr>
 				<td>
-					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@permissions/> data-placeholder="Select existing publication" >
+					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
 							<option value="${publicationQname}">${publications[publicationQname].citation}</option>
@@ -139,7 +139,7 @@
 				<th>Or create new publication</th> 
 			</tr>
 			<tr>
-				<td><input type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
+				<td><input <@checkPermissions/> type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
 			</tr>
 		</table>
 		<div></div>
@@ -218,7 +218,7 @@
 		<p><label>Editors</label></p>
 		<#list taxon.explicitlySetEditors as editorQname>
 			<p>
-			<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@permissions/> >
+			<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 				<option value=""></option>
 				<#list persons?keys as personQnameString>
 					<option value="${personQnameString}" <#if same(editorQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
@@ -227,7 +227,7 @@
 			</p>
 		</#list>
 		<p>
-		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@permissions/> >
+		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
 				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
@@ -238,7 +238,7 @@
 		<p><label>Experts</label></p>
 		<#list taxon.explicitlySetExperts as expertQname>
 			<p>
-			<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@permissions/> >
+			<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 				<option value=""></option>
 				<#list persons?keys as personQnameString>
 					<option value="${personQnameString}" <#if same(expertQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
@@ -247,7 +247,7 @@
 			</p>
 		</#list>
 		<p>
-		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@permissions/> >
+		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
 				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
@@ -304,20 +304,18 @@
 
 <div class="column">
 
-	<#if user.isAdmin()>
 	<@portletHeader "Invasive species (Admin only)" "initiallyClosed" />
-		<@labeledSelect "MX.invasiveSpeciesCategory" />
-		<@labeledSelect "MX.invasiveSpeciesEstablishment" />
+		<@labeledSelect "MX.invasiveSpeciesCategory" "requireAdminPermissions" />
+		<@labeledSelect "MX.invasiveSpeciesEstablishment" "requireAdminPermissions" />
 		
 		<#list taxon.adminContent.getDefaultContextTexts("HBE.invasiveSpeciesMainGroup") as mainGroup>
-			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup />
+			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup "requireAdminPermissions" />
 		</#list>
-		<@labeledSelect "HBE.invasiveSpeciesMainGroup" "" />
+		<@labeledSelect "HBE.invasiveSpeciesMainGroup" "" "requireAdminPermissions" />
 		
-		<@labeledSelect "HBE.invasiveSpeciesGroup" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesGroup") />
-		<@labeledInput "HBE.invasiveSpeciesCustomReportFormLink" "on" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesCustomReportFormLink") />
+		<@labeledSelect "HBE.invasiveSpeciesGroup" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesGroup") "requireAdminPermissions" />
+		<@labeledInput "HBE.invasiveSpeciesCustomReportFormLink" "on" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesCustomReportFormLink") "requireAdminPermissions" />
 	<@portletFooter />
-	</#if>
 	
 </div>
 

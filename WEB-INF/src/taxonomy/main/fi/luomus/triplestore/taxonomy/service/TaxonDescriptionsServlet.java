@@ -6,6 +6,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -39,7 +40,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 		}
 
 		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		Taxon taxon = taxonomyDAO.getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
 
 		Set<String> groupsWithContent = resolveGroupsWithContent(descriptionGroupVariables, taxon);
 
@@ -47,6 +48,12 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 			responseData.setData("checklist", taxonomyDAO.getChecklists().get(taxon.getChecklist().toString()));
 		}
 
+		try {
+			checkPermissionsToAlterTaxon(taxon, req);
+		} catch (IllegalAccessException noAcess) {
+			responseData.setData("noPermissions", "true");
+		}
+		
 		return responseData
 				.setViewName("taxonDescriptions")
 				.setData("taxon", taxon)
