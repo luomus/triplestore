@@ -29,16 +29,27 @@
 <#assign locales = ["fi","sv","en"] />
 
 <#list groups as group>
+	<#if groupsWithContent?seq_contains(group.qname.toString())>
+		<@printGroup group "" group_index />
+	</#if>
+</#list>
+<#list groups as group>
+	<#if !groupsWithContent?seq_contains(group.qname.toString())>
+		<@printGroup group "initiallyClosed" group_index />
+	</#if>
+</#list>
+
+<#macro printGroup group initiallyClosed index>
 	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("en") />
-	<@portletHeader headerLabel "initiallyClosed" />
+	<@portletHeader headerLabel initiallyClosed />
 		<div class="languageTabs">
 			<ul>
 				<#list locales as locale>
-					<li><a href="#group-${group_index}-${locale}">${locale?upper_case}</a></li>
+					<li><a href="#group-${index}-${locale}">${locale?upper_case}</a></li>
 				</#list>
 			</ul>
 			<#list locales as locale>
-				<div id="group-${group_index}-${locale}">
+				<div id="group-${index}-${locale}">
 					<#list variables[group.qname.toString()] as descriptionVariable>
 						<#assign qname = descriptionVariable.qname.toString() /> 
 						<@label qname "longtext" locale />
@@ -48,8 +59,7 @@
 			</#list>
 		</div>
 	<@portletFooter />	
-</#list>
-
+</#macro>
 
 <div class="clear"></div>
 

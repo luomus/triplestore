@@ -7,9 +7,11 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -39,11 +41,45 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(taxonQname));
 
+		Set<String> groupsWithContent = resolveGroupsWithContent(descriptionGroupVariables, taxon);
+
 		if (taxon.getChecklist() != null) {
 			responseData.setData("checklist", taxonomyDAO.getChecklists().get(taxon.getChecklist().toString()));
 		}
 
-		return responseData.setViewName("taxonDescriptions").setData("taxon", taxon).setData("root", taxon).setData("variables", descriptionGroupVariables).setData("groups", descriptionGroups);
+		return responseData
+				.setViewName("taxonDescriptions")
+				.setData("taxon", taxon)
+				.setData("root", taxon)
+				.setData("variables", descriptionGroupVariables)
+				.setData("groups", descriptionGroups)
+				.setData("groupsWithContent", groupsWithContent);
+	}
+
+	private Set<String> resolveGroupsWithContent(Map<String, List<RdfProperty>> descriptionGroupVariables, Taxon taxon) {
+		Set<String> groupsWithContent = new HashSet<>();
+		for (Map.Entry<String, List<RdfProperty>> e : descriptionGroupVariables.entrySet()) {
+			String group = e.getKey();
+			List<RdfProperty> descriptionVariables = e.getValue(); 
+			if (hasContent(taxon, descriptionVariables)) {
+				groupsWithContent.add(group);
+			}
+		}
+		return groupsWithContent;
+	}
+
+	private boolean hasContent(Taxon taxon, List<RdfProperty> descriptionVariables) {
+		for (RdfProperty descriptionVariable : descriptionVariables) {
+			String property = descriptionVariable.getQname().toString();
+			if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "fi"))) {
+				return true;
+			} else if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "sv"))) {
+				return true;
+			} else if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "en"))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }
