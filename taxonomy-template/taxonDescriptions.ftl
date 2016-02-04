@@ -55,26 +55,33 @@
 
 
 
-
-
 </div>
 
 
 <script>
 $(function() {
+	
 	$(".languageTabs").tabs();
+	
+	tinymce.init({
+		plugins: 'link code',
+    	selector: 'textarea',
+    	menubar: false,
+    	statusbar: false,
+    	toolbar: 'bold italic | link unlink | removeformat | undo, redo | code',
+    	setup: function(editor) {
+    		editor.on('change', function(e) {
+      			editor.save();
+      			updateOriginal(editor.getElement());
+    		});
+  		}
+  	});
+	
 });
 
-/*
-tinymce.init({ 
-	selector:'textarea',
-	setup: function (editor) {
-        editor.on('change', function () {
-            editor.save();
-        });
-    } 
-});
-*/
+function updateOriginal(e) {
+	$(e).trigger('change');
+}
 
 </script>
 

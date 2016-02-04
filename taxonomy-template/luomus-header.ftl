@@ -25,8 +25,6 @@
 	
 	<script src="${staticURL}/jsPlumb/jquery.jsPlumb-1.5.4-min.js?${staticContentTimestamp}"></script>
 	
-	<script src="${staticURL}/freetile/jquery.freetile.min.js?${staticContentTimestamp}"></script>
-	
 	<script src="${staticURL}/jquery-placeholder/jquery.placeholder.js?${staticContentTimestamp}"></script>
 	
 	<script src="${staticURL}/chosen/chosen.jquery.min.js?${staticContentTimestamp}"></script>
@@ -39,7 +37,7 @@
 	<link href="${staticURL}/jquery-switchButton/jquery.switchButton.css?${staticContentTimestamp}" rel="stylesheet" />
 	
 	<#if page == "taxonDescriptions">
-		<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+		<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>
 	</#if>
 	
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />

@@ -8,7 +8,7 @@ $(function() {
 		alert(text);
 	}
 	
-	$(document).tooltip({
+	$(document).not("#editTaxonDescriptions").tooltip({
 		position: {
 			 my: "left bottom", 
 			 at: "left top-7"
