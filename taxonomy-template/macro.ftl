@@ -131,11 +131,11 @@
 
 <#macro adminPermissions><#if !user.isAdmin()> disabled="disabled" </#if></#macro>
 
-<#macro label field class="">
+<#macro label field class="" locale="en">
 	<#assign property = properties.getProperty(field)>
 	<#assign cleanedName = cleanName(field)>
 	<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
-	<label for="${cleanedName}" class="${class}">${property.label.forLocale("en")!field}</label>
+	<label for="${cleanedName}" class="${class}">${property.label.forLocale(locale)!field}</label>
 </#macro>
 
 <#macro labeledSelect field defaultValue="taxonValue">

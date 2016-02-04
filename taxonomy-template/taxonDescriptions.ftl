@@ -29,7 +29,8 @@
 <#assign locales = ["fi","sv","en"] />
 
 <#list groups as group>
-	<@portletHeader group.label.forLocale("en") "initiallyClosed" />
+	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("en") />
+	<@portletHeader headerLabel "initiallyClosed" />
 		<div class="languageTabs">
 			<ul>
 				<#list locales as locale>
@@ -40,7 +41,7 @@
 				<div id="group-${group_index}-${locale}">
 					<#list variables[group.qname.toString()] as descriptionVariable>
 						<#assign qname = descriptionVariable.qname.toString() /> 
-						<@label qname "longtext" />
+						<@label qname "longtext" locale />
 						<@longText qname + "___" + locale taxon.basicDescriptionTexts.getDefaultContextText(qname, locale) />
 					</#list>
 				</div>
