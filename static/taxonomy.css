@@ -25,7 +25,7 @@ label {
 	width: auto;
 	padding-right: 1em;
 }
-select, input, textarea {
+select, input {
 	width: 185px;
 }
 #editTaxonDescriptions input {
@@ -33,10 +33,6 @@ select, input, textarea {
 }
 textarea {
 	height: 3em;
-}
-textarea.longtext {
-	width: 800px;
-	height: 250px;
 }
 input[type="submit"] {
 	width: auto;
@@ -163,3 +159,12 @@ tr.errorMessage td {
 	width: 100%;
 }
 
+#editTaxonDescriptions .portlet {
+	width: 600px;
+	dislay: inline-block;
+	float: left;
+} 
+#editTaxonDescriptions .portlet-header {
+	padding: 0.6em;
+	font-size: 1.2em;
+}
