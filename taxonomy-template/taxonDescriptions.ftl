@@ -85,7 +85,7 @@ $(function() {
     	menubar: false,
     	statusbar: false,
     	height: "210",
-    	toolbar: 'bold italic | link unlink | removeformat | undo, redo | code',
+    	toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
     	setup: function(editor) {
     		checkIfDisabled(editor);
     		editor.on('change', function(e) {
