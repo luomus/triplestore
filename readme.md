@@ -15,7 +15,7 @@ For all requests defined bellow (except for taxon-search), you can use these com
 
 * Get information about one resource (for example triplestore/MX.1
 * Get information about many resources with one call (for example triplestore/MX.1+MX.2+MX.3)
-* Add additional resources based on result type parameter
+* If result type parameter is given, will include additional resources to the response as described
 
 ### Parameters
 
