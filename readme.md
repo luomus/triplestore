@@ -109,7 +109,7 @@ Returns HTTP 200 on success, HTTP 500 on failure.
 3. Place ojdbc6.jar to <catalina.base>/lib
 4. Add http basic authentication permissions to tomcat-users.xml
 5. Restart tomcat
-6. Deploy laji-etl.war
+6. Deploy triplestore.war
 
 ###Grants
 ~~~
