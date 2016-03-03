@@ -56,7 +56,11 @@
 <#macro printTaxon taxon additionalClass="" showSynonymsAndSynonymTools=true showChildrenTools=true>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>" onclick="editTaxon(this); return false;">
-			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> <@printScientificNameAndAuthor taxon />
+			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> 
+			
+			<@printScientificNameAndAuthor taxon />
+			<span class="vernacularNameFI">${taxon.getVernacularName("fi")!""}</span>
+			
 			<#if additionalClass == "rootTaxon">
 				<div class="taxonEditorExpert">
 					<@printEditorExpert taxon />

@@ -77,6 +77,11 @@ function initColumnsPortlets() {
 			var author = $(this).find("#scientificNameAuthorship").val();
         	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
         	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
+        } 
+        else if ($(this).hasClass("primaryVernacularNameSection")) {
+        	var qname = $(this).find(".taxonQname").first().val();
+			var finnishName = $(this).find("#vernacularName___fi").val();
+			updateFinnishNameToTree(qname, finnishName);
         }
 		submitTaxonEditSection(this); 
 		return false;
@@ -90,6 +95,10 @@ function initColumnsPortlets() {
 		taxon.find(".author").first().text(author);
 	}
 	
+	function updateFinnishNameToTree(qname, finnishName) {
+		var taxon = $("#"+qname.replace("MX.", "MX"));
+		taxon.find(".vernacularNameFI").first().text(finnishName);
+	}
 	
 	function updateRankScientificNameAndAuthorToEditHeader(scientificName, author) {
 		var header = $("#taxonEditHeader");

@@ -120,6 +120,7 @@ h3 {
 	max-width: 150px;
 	font-size: 10px;
 	padding-left: 7px;
+	padding-right: 7px;
 }
 .taxonRank {
 	color: #515151;
@@ -287,4 +288,9 @@ div.taxonWithTools.ui-draggable {
 
 .synonyms .checklistChangesMidTree {
 	display: none;
+}
+
+div.taxonInfo .vernacularNameFI {
+	display: block;
+	padding-left: 1em;
 }

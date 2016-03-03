@@ -79,7 +79,7 @@
 
 <div class="column">
 	
-	<@portletHeader "Primary vernacular names" />
+	<@portletHeader "Primary vernacular names" "" "primaryVernacularNameSection" />
 		<table id="vernacularNameTable">
 			<tr>
 				<th>&nbsp;</th>
