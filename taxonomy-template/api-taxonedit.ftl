@@ -35,6 +35,7 @@
 		<@labeledInput "MX.nameDecidedDate" "on" />
 		<@labeledTextarea "MX.notes" />
 		<@labeledTextarea "MX.privateNotes" />
+		<@labeledSelect "MX.hiddenTaxon" />
 	<@portletFooter />
 	
 	<@portletHeader "Publications" "" "reloadAfterSaveSection" />
