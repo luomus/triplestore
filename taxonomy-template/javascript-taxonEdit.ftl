@@ -24,9 +24,16 @@ function editTaxon(e) {
 		return;
 	}
 	$.get("${baseURL}/api/taxonToEdit/"+taxon, function(data) {
+		scrollToTaxonEditSection();
 		$("#editTaxonContent").html(data);
 		initColumnsPortlets();
   	});
+}
+
+function scrollToTaxonEditSection() {
+    $("html, body").animate({
+        scrollTop: $("#taxonEditHeader").offset().top
+    }, 700);
 }
 
 function initColumnsPortlets() {
