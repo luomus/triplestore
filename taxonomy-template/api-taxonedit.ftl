@@ -202,7 +202,22 @@
 			<@labeledSelect "MX.checklistStatus" />
 			<@labeledSelect "MX.higherTaxaStatus" />
 			<@labeledSelect "MX.finnishSpeciesTaggingStatus" />
+			<hr />
 			<@labeledInput "MX.customReportFormLink" "on" taxon.adminContent.getDefaultContextText("MX.customReportFormLink") />
+			<hr />
+			<label>External links</label>
+			<table>
+			<#list taxon.externalLinks as link>
+				<tr>
+					<td><@input "MX.externalLinkURL___${link.langcode}" "on" link.toString()!"" /></td>
+					<td><@languageSelector link.langcode /></td>
+				</tr>
+			</#list>
+				<tr>
+					<td><@input "MX.externalLinkURL___fi" "on" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</table>
 		<@portletFooter />	
 	</#if>
 	
