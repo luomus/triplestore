@@ -66,7 +66,11 @@
 					<@printEditorExpertSpecific taxon.explicitlySetEditors taxon.explicitlySetExperts false />
 				</div>
 			</#if>
-			<#if taxon.checklist?? && taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)>
+			<#if !taxon.checklist??>
+				<div class="checklistChangesMidTree">
+					Checklist: NONE!
+				</div>
+			<#elseif taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)>
 				<div class="checklistChangesMidTree">
 					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 				</div>

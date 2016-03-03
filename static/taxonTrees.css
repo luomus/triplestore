@@ -280,3 +280,11 @@ div.taxonWithTools.ui-draggable {
 .taxonomySearchResultContainer a {
 	color: rgb(33, 97, 203);
 }
+
+.checklistChangesMidTree {
+	color: red;
+}
+
+.synonyms .checklistChangesMidTree {
+	display: none;
+}
