@@ -28,10 +28,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			" SELECT DISTINCT subjectname                      " + 
 			" FROM "+SCHEMA+".rdf_statementview               " + 
 			" WHERE objectname = ?                             " + 
-			" AND predicatename IN ( 						   " + 
+			" AND ( predicatename IN ( 						   " + 
 			" 		SELECT DISTINCT subjectname FROM "+SCHEMA+".rdf_statementview              " + 
 			"       WHERE predicatename = 'rdfs:subPropertyOf' AND objectname = 'MZ.isPartOf' ) " + 
-			" OR predicatename = 'MZ.isPartOf' ";
+			" 		OR predicatename = 'MZ.isPartOf' ) ";
 
 	private static final String FETCH_TAXON_CHAIN_SQL = "" + 
 			" SELECT objectname                   " + 
