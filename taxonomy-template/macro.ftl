@@ -169,7 +169,7 @@
 				<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
 			</#list>
 		</#if>
-	</select>
+	</select>			
 	</#if>
 </#macro>
 
