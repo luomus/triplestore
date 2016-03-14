@@ -150,7 +150,7 @@
 	<#if taxon.isSpecies()>
 	<@portletHeader "Finnish Red list statuses (species only)" />
 		<@labeledSelect "MX.redListStatus2010Finland" />
-		<@labeledSelect "MX.redListDraftStatusFinland" />
+		<@labeledSelect "MX.redListStatus2015Finland" />
 	<@portletFooter />
 	</#if>
 	
@@ -321,15 +321,14 @@
 <div class="column">
 
 	<@portletHeader "Invasive species (Admin only)" "initiallyClosed" />
-		<@labeledSelect "MX.invasiveSpeciesCategory" "requireAdminPermissions" />
-		<@labeledSelect "MX.invasiveSpeciesEstablishment" "requireAdminPermissions" />
+		<@labeledSelect "MX.invasiveSpeciesCategory" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.invasiveSpeciesEstablishment" "taxonValue" "requireAdminPermissions" />
 		
 		<#list taxon.adminContent.getDefaultContextTexts("HBE.invasiveSpeciesMainGroup") as mainGroup>
 			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup "requireAdminPermissions" />
 		</#list>
 		<@labeledSelect "HBE.invasiveSpeciesMainGroup" "" "requireAdminPermissions" />
 		
-		<@labeledSelect "HBE.invasiveSpeciesGroup" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesGroup") "requireAdminPermissions" />
 		<@labeledInput "HBE.invasiveSpeciesCustomReportFormLink" "on" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesCustomReportFormLink") "requireAdminPermissions" />
 	<@portletFooter />
 	
