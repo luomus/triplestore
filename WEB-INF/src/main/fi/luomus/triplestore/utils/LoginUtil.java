@@ -262,7 +262,7 @@ public class LoginUtil  {
 
 	private AuthenticationResult authenticationResultFromKotkaAPI(JSONObject response) {
 		// {"success":false,"message":"Invalid credentials","code":-3}
-		// {"identity":{"MA.role":"MA.admin","links":[{"rel":"self","href":"/view?uri=http://id.luomus.fi/MA.5"}],"uri":"http://id.luomus.fi/MA.5","MA.emailAddress":["esko.piirainen@helsinki.fi"],"MA.description":null,"rdf:type":"MA.person","MA.yearOfBirth":"1981","MA.fullName":"Esko Piirainen","MA.hatikkaLoginName":"Esko.Piirainen@hatikka.fi","MA.inheritedName":"Piirainen","MA.givenNames":"Esko Olavi","MA.organisation":{"MOS.1016":"University of Helsinki, Finnish Museum of Natural History, General Services Unit, IT Team"},"MA.firstJoined":{"timezone":"Europe/Helsinki","timezone_type":3,"date":"2011-06-01 00:00:00"},"MA.preferredName":"Esko","MA.LTKMLoginName":"eopiirai"},"success":true}
+		// {"identity":{"MA.role":"MA.admin","links":[{"rel":"self","href":"/view?uri=http://tun.fi/MA.5"}],"uri":"http://tun.fi/MA.5","MA.emailAddress":["esko.piirainen@helsinki.fi"],"MA.description":null,"rdf:type":"MA.person","MA.yearOfBirth":"1981","MA.fullName":"Esko Piirainen","MA.hatikkaLoginName":"Esko.Piirainen@hatikka.fi","MA.inheritedName":"Piirainen","MA.givenNames":"Esko Olavi","MA.organisation":{"MOS.1016":"University of Helsinki, Finnish Museum of Natural History, General Services Unit, IT Team"},"MA.firstJoined":{"timezone":"Europe/Helsinki","timezone_type":3,"date":"2011-06-01 00:00:00"},"MA.preferredName":"Esko","MA.LTKMLoginName":"eopiirai"},"success":true}
 		if (!response.getBoolean("success")) {
 			AuthenticationResult authenticationResult = new AuthenticationResult(false);
 			authenticationResult.setErrorMessage(response.getString("message"));

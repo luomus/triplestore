@@ -50,8 +50,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.35\">"));
 	}
 
 	@Test
@@ -67,8 +67,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37\">"));
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.35\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.35\">"));
 	}
 
 	@Test
@@ -84,7 +84,7 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37600\">"));
 	}
 
 	@Test
@@ -100,7 +100,7 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37600\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37600\">"));
 	}
 
 	@Test
@@ -116,8 +116,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37601\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37602\">"));
 	}
 
 	@Test
@@ -133,8 +133,8 @@ public class SearchServiceTests {
 
 		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
 
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37601\">"));
-		assertTrue(response.contains("<MX.taxon rdf:about=\"http://id.luomus.fi/MX.37602\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37601\">"));
+		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37602\">"));
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(2, n.getChildNodes("MX.taxon").size());
 	}
@@ -190,7 +190,7 @@ public class SearchServiceTests {
 		assertEquals(10, n.getChildNodes().size());
 		int i = 1;
 		for (Node person : n.getChildNodes()) {
-			int id = Integer.valueOf(person.getAttribute("rdf:about").replace("http://id.luomus.fi/MA.", ""));
+			int id = Integer.valueOf(person.getAttribute("rdf:about").replace("http://tun.fi/MA.", ""));
 			assertEquals(i++, id);
 		}
 	}
@@ -212,7 +212,7 @@ public class SearchServiceTests {
 		assertEquals(10, n.getChildNodes().size());
 		int i = 6;
 		for (Node person : n.getChildNodes()) {
-			int id = Integer.valueOf(person.getAttribute("rdf:about").replace("http://id.luomus.fi/MA.", ""));
+			int id = Integer.valueOf(person.getAttribute("rdf:about").replace("http://tun.fi/MA.", ""));
 			assertEquals(i++, id);
 		}
 	}

@@ -162,7 +162,7 @@ $(function() {
 	});
 });
 function toQname(uri) {
-	return uri.replace('http://id.luomus.fi/', '').replace('http://tun.fi/', 'tun:');
+	return uri.replace('http://id.luomus.fi/', 'luomus:').replace('http://tun.fi/', '');
 }
 </script>
 </#macro>

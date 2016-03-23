@@ -76,14 +76,14 @@ public class ApiServiceTests {
 	@Test
 	public void test_get_by_qname_rdfxml() throws Exception {
 		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXML, dao);
-		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/MA.1\">"));
+		assertTrue(response.contains("<rdf:Description rdf:about=\"http://tun.fi/MA.1\">"));
 
 	}
 
 	@Test
 	public void test_get_by_qname_rdfxml_abbrev() throws Exception {
 		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXMLABBREV, dao);
-		assertTrue(response.contains("<MA.person rdf:about=\"http://id.luomus.fi/MA.1\">"));
+		assertTrue(response.contains("<MA.person rdf:about=\"http://tun.fi/MA.1\">"));
 
 	}
 
@@ -93,7 +93,7 @@ public class ApiServiceTests {
 		String response2 = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXMLABBREV, dao);
 		assertEquals(response1, response2);
 		assertTrue(trim(response1).contains(trim("\"MA.person\": { ")));
-		assertTrue(trim(response1).contains(trim("\"rdf:about\": \"http://id.luomus.fi/MA.1\",")));
+		assertTrue(trim(response1).contains(trim("\"rdf:about\": \"http://tun.fi/MA.1\",")));
 
 	}
 
@@ -101,8 +101,8 @@ public class ApiServiceTests {
 	public void test_get_by_qname_json_non_abbrev() throws Exception {
 		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXML, dao);
 		assertTrue(trim(response).contains(trim("\"rdf:Description\": { ")));
-		assertTrue(trim(response).contains(trim("\"rdf:about\": \"http://id.luomus.fi/MA.1\",")));
-		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://id.luomus.fi/MA.person\" },")));		
+		assertTrue(trim(response).contains(trim("\"rdf:about\": \"http://tun.fi/MA.1\",")));
+		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://tun.fi/MA.person\" },")));		
 	}
 
 	@Test
@@ -134,9 +134,9 @@ public class ApiServiceTests {
 		for (Node child : n.getChildNodes()) {
 			taxonRanks.add(child.getNode("MX.taxonRank").getAttribute("rdf:resource"));
 		}
-		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.species"));
-		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.genus"));
-		assertTrue(taxonRanks.contains("http://id.luomus.fi/MX.family"));
+		assertTrue(taxonRanks.contains("http://tun.fi/MX.species"));
+		assertTrue(taxonRanks.contains("http://tun.fi/MX.genus"));
+		assertTrue(taxonRanks.contains("http://tun.fi/MX.family"));
 	}
 
 
@@ -155,11 +155,11 @@ public class ApiServiceTests {
 		assertEquals(1, gathering.getChildNodes("MZ.hasPart").size());
 		assertEquals(1, gathering.getNode("MZ.hasPart").getChildNodes().size());
 		Node unit = gathering.getNode("MZ.hasPart").getNode("MY.unit");
-		assertEquals("http://id.luomus.fi/MY.sexF", unit.getNode("MY.sex").getAttribute("rdf:resource"));
+		assertEquals("http://tun.fi/MY.sexF", unit.getNode("MY.sex").getAttribute("rdf:resource"));
 		assertEquals(1, unit.getChildNodes("MZ.hasPart").size());
 		assertEquals(1, unit.getNode("MZ.hasPart").getChildNodes().size());
 		Node identification = unit.getNode("MZ.hasPart").getNode("MY.identification");
-		assertEquals("http://id.luomus.fi/MY.210289", identification.getAttribute("rdf:about"));
+		assertEquals("http://tun.fi/MY.210289", identification.getAttribute("rdf:about"));
 		assertEquals("Apamea crenata", identification.getNode("MY.taxon").getContents());
 	}
 
@@ -173,9 +173,9 @@ public class ApiServiceTests {
 		String data = "" +
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 				"    <rdfs:label>bar</rdfs:label> "+
 				"  </rdf:Description> "+
 				"</rdf:RDF>";
@@ -196,9 +196,9 @@ public class ApiServiceTests {
 		String data = "" +
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <JA.124 rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"  <JA.124 rdf:about=\"http://tun.fi/JA.123\"> "+
 				"    <rdfs:label>bar</rdfs:label> "+
 				"    <rdfs:comment xml:lang=\"fi\">baari</rdfs:comment> "+
 				"  </JA.124> "+
@@ -206,8 +206,8 @@ public class ApiServiceTests {
 		ApiServlet.put(TEST_RESOURCE_QNAME, data, Format.RDFXML, dao); // put succeeds even when format is incorrect
 
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao); // response is in the format given as parameter
-		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\">"));
-		assertTrue(response.contains("<rdf:type rdf:resource=\"http://id.luomus.fi/JA.124\""));
+		assertTrue(response.contains("<rdf:Description rdf:about=\"http://tun.fi/JA.123\">"));
+		assertTrue(response.contains("<rdf:type rdf:resource=\"http://tun.fi/JA.124\""));
 	}
 
 	@Test
@@ -226,7 +226,7 @@ public class ApiServiceTests {
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
-		assertEquals("http://id.luomus.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
+		assertEquals("http://tun.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
 		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
 
 		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
@@ -276,9 +276,9 @@ public class ApiServiceTests {
 				"<?xml version='1.0' encoding='utf-8'?> "+
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 				"    <rdfs:label>bar1</rdfs:label> "+
 				"    <rdfs:label>bar2</rdfs:label> "+
 				"    <rdfs:label xml:lang=\"fi\">baari</rdfs:label> "+
@@ -312,10 +312,10 @@ public class ApiServiceTests {
 				"<?xml version='1.0' encoding='utf-8'?> "+
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
-				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\" /> "+
+				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
+				"    <MZ.isPartOf rdf:resource=\"http://tun.fi/JA.1\" /> "+
 				"  </rdf:Description> "+
 				"</rdf:RDF>";
 		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
@@ -335,7 +335,7 @@ public class ApiServiceTests {
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 
 		n = new XMLReader().parse(response).getRootNode();
-		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.2\""));
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://tun.fi/JA.2\""));
 		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
 	}
 
@@ -345,10 +345,10 @@ public class ApiServiceTests {
 				"<?xml version='1.0' encoding='utf-8'?> "+
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
-				"    <MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\"/>"+
+				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
+				"    <MZ.isPartOf rdf:resource=\"http://tun.fi/JA.1\"/>"+
 				"  </rdf:Description> "+
 				"</rdf:RDF>";
 		ApiServlet.put(TEST_RESOURCE_QNAME, rdf, Format.RDFXML, dao);
@@ -369,8 +369,8 @@ public class ApiServiceTests {
 		System.out.println(response);
 
 		n = new XMLReader().parse(response).getRootNode();
-		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://id.luomus.fi/JA.1\""));
-		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://id.luomus.fi/JA.2\""));
+		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://tun.fi/JA.1\""));
+		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://tun.fi/JA.2\""));
 		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
 	}
 
@@ -380,9 +380,9 @@ public class ApiServiceTests {
 				"<?xml version='1.0' encoding='utf-8'?> "+
 				"<rdf:RDF "+
 				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-				"    xmlns=\"http://id.luomus.fi/\" "+
+				"    xmlns=\"http://tun.fi/\" "+
 				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 				"    <rdfs:label xml:lang=\"fi\">foo</rdfs:label> "+
 				"    <rdfs:label xml:lang=\"sv\">foopåsvenska</rdfs:label> "+
 				"    <rdfs:label_CONTEXT_JA.1 xml:lang=\"fi\">foodifferentcontext</rdfs:label_CONTEXT_JA.1> "+
@@ -420,7 +420,7 @@ public class ApiServiceTests {
 		int i = 1;
 		for (Node child : n.getChildNodes()) {
 			String id = child.getAttribute("rdf:about");
-			assertEquals("http://id.luomus.fi/MX." + i, id);
+			assertEquals("http://tun.fi/MX." + i, id);
 			i++;
 		}
 	}

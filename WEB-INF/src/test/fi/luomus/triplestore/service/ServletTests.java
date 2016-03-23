@@ -42,7 +42,7 @@ public class ServletTests {
 	@Test
 	public void test_authentication() throws Exception {
 		Document response = client.contentAsDocument(new HttpGet(TRIPLESTORE_URL + "/MA.5"));
-		assertEquals("http://id.luomus.fi/MA.5", response.getRootNode().getNode("MA.person").getAttribute("rdf:about"));
+		assertEquals("http://tun.fi/MA.5", response.getRootNode().getNode("MA.person").getAttribute("rdf:about"));
 	}
 
 	@Test
@@ -72,7 +72,7 @@ public class ServletTests {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/taxon-search/susi"));
-			assertTrue(response.contains("scientificName=\"Canis lupus\""));
+			assertTrue("No canis lupus in response: " + response, response.contains("scientificName=\"Canis lupus\""));
 		} finally {
 			if (noAutenticationClient != null) noAutenticationClient.close();
 		}
@@ -120,14 +120,14 @@ public class ServletTests {
 	//		HttpGet request = new HttpGet("http://127.0.0.1:8081/triplestore-current-old/MA.1");
 	//		String response = client.contentAsString(request);
 	//		System.out.println(response);
-	//		assertTrue(response.contains("<MA.person rdf:about=\"http://id.luomus.fi/MA.1\">"));
+	//		assertTrue(response.contains("<MA.person rdf:about=\"http://tun.fi/MA.1\">"));
 	//	}
 	//
 	//	public void test_get__format_nonabbrev_rdf() throws Exception {
 	//		HttpGet request = new HttpGet("http://127.0.0.1:8081/triplestore-current-old/MA.1?format=rdfxml");
 	//		String response = client.contentAsString(request);
 	//		System.out.println(response);
-	//		assertTrue(response.contains("<rdf:Description rdf:about=\"http://id.luomus.fi/MA.1\">"));
+	//		assertTrue(response.contains("<rdf:Description rdf:about=\"http://tun.fi/MA.1\">"));
 	//	}
 	//
 	//	public void test_get__format_json() throws Exception {
@@ -137,7 +137,7 @@ public class ServletTests {
 	//		debug(json);
 	//		assertEquals(1, json.getKeys().length);
 	//		assertEquals("rdf:RDF", json.getKeys()[0]);
-	//		assertEquals("http://id.luomus.fi/MA.1", json.getObject("rdf:RDF").getObject("MA.person").getString("rdf:about"));
+	//		assertEquals("http://tun.fi/MA.1", json.getObject("rdf:RDF").getObject("MA.person").getString("rdf:about"));
 	//	}
 	//
 	
@@ -167,12 +167,12 @@ public class ServletTests {
 	//				"<?xml version='1.0' encoding='utf-8'?> "+
 	//				"<rdf:RDF "+
 	//				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-	//				"    xmlns=\"http://id.luomus.fi/\" "+
+	//				"    xmlns=\"http://tun.fi/\" "+
 	//				"    xmlns:dc=\"http://purl.org/dc/terms/\" "+
 	//				"    xmlns:dwc=\"http://rs.tdwg.org/dwc/terms/\" "+
 	//				"    xmlns:abcd=\"http://www.tdwg.org/schemas/abcd/2.06#\" "+
 	//				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-	//				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+	//				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 	//				"    <rdfs:label>bar</rdfs:label> "+
 	//				"  </rdf:Description> "+
 	//				"</rdf:RDF>";
@@ -181,7 +181,7 @@ public class ServletTests {
 	//
 	//		Node n = new XMLReader().parse(response).getRootNode();
 	//		assertEquals(1, n.getChildNodes().size());
-	//		assertEquals("http://id.luomus.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
+	//		assertEquals("http://tun.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
 	//		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
 	//		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
 	//
@@ -198,12 +198,12 @@ public class ServletTests {
 	//				"<?xml version='1.0' encoding='utf-8'?> "+
 	//				"<rdf:RDF "+
 	//				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-	//				"    xmlns=\"http://id.luomus.fi/\" "+
+	//				"    xmlns=\"http://tun.fi/\" "+
 	//				"    xmlns:dc=\"http://purl.org/dc/terms/\" "+
 	//				"    xmlns:dwc=\"http://rs.tdwg.org/dwc/terms/\" "+
 	//				"    xmlns:abcd=\"http://www.tdwg.org/schemas/abcd/2.06#\" "+
 	//				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-	//				"  <JA.124 rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+	//				"  <JA.124 rdf:about=\"http://tun.fi/JA.123\"> "+
 	//				"    <rdfs:label>bar</rdfs:label> "+
 	//				"    <rdfs:comment xml:lang=\"fi\">baari</rdfs:comment> "+
 	//				"  </JA.124> "+
@@ -215,10 +215,10 @@ public class ServletTests {
 	//
 	//		Node n = new XMLReader().parse(response).getRootNode();
 	//		assertEquals(1, n.getChildNodes().size());
-	//		assertEquals("http://id.luomus.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
+	//		assertEquals("http://tun.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
 	//		assertEquals(3, n.getNode("rdf:Description").getChildNodes().size());
 	//
-	//		assertEquals("http://id.luomus.fi/JA.124", n.getNode("rdf:Description").getNode("rdf:type").getAttribute("rdf:resource"));
+	//		assertEquals("http://tun.fi/JA.124", n.getNode("rdf:Description").getNode("rdf:type").getAttribute("rdf:resource"));
 	//		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
 	//		assertEquals("baari", n.getNode("rdf:Description").getNode("rdfs:comment").getContents());
 	//		assertEquals("fi", n.getNode("rdf:Description").getNode("rdfs:comment").getAttribute("xml:lang"));
@@ -234,7 +234,7 @@ public class ServletTests {
 	//
 	//		Node n = new XMLReader().parse(response).getRootNode();
 	//		assertEquals(1, n.getChildNodes().size());
-	//		assertEquals("http://id.luomus.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
+	//		assertEquals("http://tun.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
 	//		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
 	//
 	//		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
@@ -271,12 +271,12 @@ public class ServletTests {
 	//				"<?xml version='1.0' encoding='utf-8'?> "+
 	//				"<rdf:RDF "+
 	//				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-	//				"    xmlns=\"http://id.luomus.fi/\" "+
+	//				"    xmlns=\"http://tun.fi/\" "+
 	//				"    xmlns:dc=\"http://purl.org/dc/terms/\" "+
 	//				"    xmlns:dwc=\"http://rs.tdwg.org/dwc/terms/\" "+
 	//				"    xmlns:abcd=\"http://www.tdwg.org/schemas/abcd/2.06#\" "+
 	//				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-	//				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+	//				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 	//				"    <rdfs:label>bar1</rdfs:label> "+
 	//				"    <rdfs:label>bar2</rdfs:label> "+
 	//				"    <rdfs:label xml:lang=\"fi\">baari</rdfs:label> "+
@@ -303,12 +303,12 @@ public class ServletTests {
 	//				"<?xml version='1.0' encoding='utf-8'?> "+
 	//				"<rdf:RDF "+
 	//				"    xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\" "+
-	//				"    xmlns=\"http://id.luomus.fi/\" "+
+	//				"    xmlns=\"http://tun.fi/\" "+
 	//				"    xmlns:dc=\"http://purl.org/dc/terms/\" "+
 	//				"    xmlns:dwc=\"http://rs.tdwg.org/dwc/terms/\" "+
 	//				"    xmlns:abcd=\"http://www.tdwg.org/schemas/abcd/2.06#\" "+
 	//				"    xmlns:rdfs=\"http://www.w3.org/2000/01/rdf-schema#\"> "+
-	//				"  <rdf:Description rdf:about=\"http://id.luomus.fi/JA.123\"> "+
+	//				"  <rdf:Description rdf:about=\"http://tun.fi/JA.123\"> "+
 	//				"    <rdfs:label_CONTEXT_JA.1>bar</rdfs:label_CONTEXT_JA.1> "+
 	//				"  </rdf:Description> "+
 	//				"</rdf:RDF>";
