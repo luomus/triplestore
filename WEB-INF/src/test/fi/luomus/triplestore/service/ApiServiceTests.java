@@ -142,7 +142,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_resulttype_tree() throws Exception {
-		String response = ApiServlet.get(new Qname("EA4.0WB"), ResultType.TREE, Format.RDFXMLABBREV, dao);
+		String response = ApiServlet.get(new Qname("luomus:EA4.0WB"), ResultType.TREE, Format.RDFXMLABBREV, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
