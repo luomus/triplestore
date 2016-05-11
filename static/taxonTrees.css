@@ -247,6 +247,14 @@ div.taxonDropArea {
 div.taxonDropArea {
 	cursor: default;
 }
+.synonyms div.taxonDropArea {
+  display: inline-block;
+  width: 120px;
+}
+.synonyms div.taxonDropArea p {
+  margin: 0;
+  line-height: 1.4em;
+}
 .ui-sortable .taxonWithTools {
 	cursor: ns-resize;
 }

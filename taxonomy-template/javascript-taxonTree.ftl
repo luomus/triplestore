@@ -293,7 +293,7 @@ function changeTaxonDragMode() {
 			$(this).append(dropContainer);
 		});
 		$(".synonyms").each(function() {
-			var dropContainer = $('<div class="taxonDropArea ui-widget ui-widget-header"><p>Drop taxon here as a synonym</p></div>');
+			var dropContainer = $('<div class="taxonDropArea ui-widget ui-widget-header"><p>Drop taxon here</p></div>');
 			dropContainer.disableSelection();
 			dropContainer.droppable({
 				activeClass: "ui-state-hover",
