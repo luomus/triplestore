@@ -163,9 +163,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			for (Statement s : model) {
 				if (!existingModel.hasStatement(s)) {
 					if (s.isLiteralStatement()) {
-						addStatement(s, addLiteralStatement);
+						addStatement(s, addLiteralStatement, subject);
 					} else {
-						addStatement(s, addResourceStatement);
+						addStatement(s, addResourceStatement, subject);
 					}
 				}
 			}
@@ -187,7 +187,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		if (i != 1) throw new IllegalStateException("Delete removed " + i + " rows instead of 1.");
 	}
 
-	private void addStatement(Statement statement, CallableStatement addStatement) throws SQLException {
+	private void addStatement(Statement statement, CallableStatement addStatement, Subject subject) throws SQLException {
 		int i = 2;
 		addStatement.setString(i++, statement.getPredicate().getQname());
 		if (statement.isLiteralStatement()) {
@@ -203,8 +203,30 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		addStatement.setString(i++, userQname == null ? null : userQname.toString());
 		addStatement.setString(i++, statement.isForDefaultContext() ? null : statement.getContext().getQname());
-		int c = addStatement.executeUpdate();
-		if (c != 1) throw new IllegalStateException("Add statement inserted " + c + " rows instead of 1.");
+		try {
+			int c = addStatement.executeUpdate();
+			if (c != 1) throw new IllegalStateException("Add statement inserted " + c + " rows instead of 1.");
+		} catch (SQLException sqle) {
+			if (sqle.getMessage() != null && sqle.getMessage().startsWith("ORA-01403")) {
+				throw reportMissingResource(statement, subject, sqle);
+			}
+		}
+	}
+
+	private RuntimeException reportMissingResource(Statement statement, Subject subject, SQLException sqle) throws SQLException {
+		if (!resourceExists(subject.getQname())) {
+			return new IllegalArgumentException("Subject " + subject.getQname() + " does not exist.");
+		}
+		if (!resourceExists(statement.getPredicate().getQname())) {
+			return new IllegalArgumentException("Predicate " + statement.getPredicate().getQname() + " does not exist.");
+		}
+		if (statement.isResourceStatement() && !resourceExists(statement.getObjectResource().getQname())) {
+			return new IllegalArgumentException("Object " + statement.getObjectResource().getQname() + " does not exist.");
+		}
+		if (!statement.isForDefaultContext() && !resourceExists(statement.getContext().getQname())) {
+			return new IllegalArgumentException("Context " + statement.getContext().getQname() + " does not exist.");
+		}
+		return new IllegalArgumentException(sqle);
 	}
 
 	@Override
@@ -485,7 +507,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		List<RdfProperty> values = getAltValues(model);
 		return values;
 	}
-	
+
 	private List<RdfProperty> getAltValues(Model model) throws Exception {
 		List<RdfProperty> values = new ArrayList<>();
 		for (Statement s : model.getStatements()) {
@@ -582,9 +604,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			}
 			for (Statement givenStatement : usedAndGivenStatements.getGivenStatements()) {
 				if (givenStatement.isLiteralStatement()) {
-					addStatement(givenStatement, addStatementL);
+					addStatement(givenStatement, addStatementL, subject);
 				} else {
-					addStatement(givenStatement, addStatement);
+					addStatement(givenStatement, addStatement, subject);
 				}
 			}
 
