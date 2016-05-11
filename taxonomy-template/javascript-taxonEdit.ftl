@@ -32,7 +32,7 @@ function editTaxon(e) {
 
 function scrollToTaxonEditSection() {
     $("html, body").animate({
-        scrollTop: $("#taxonEditHeader").offset().top
+        scrollTop: $("#editTaxon").offset().top
     }, 700);
 }
 

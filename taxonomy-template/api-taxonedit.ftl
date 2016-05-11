@@ -358,7 +358,9 @@
 
 <script>
 $(function() {
+
 	$("#notes").attr("placeholder", "In english");
+	
 	$("#deleteTaxon").on('click', function() {
 		var taxonToDeleteQname = $("#taxonToEditQname").text();
 		var taxonToDeleteScientificName = $("#taxonToEditScientificName").text();
