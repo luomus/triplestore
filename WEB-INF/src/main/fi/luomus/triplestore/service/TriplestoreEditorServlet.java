@@ -179,6 +179,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		}
 
 		if (p.isIntegerProperty()) {
+			if (p.getQname().toString().equals("xsd:maxOccurs") && "unbounded".equals(value)) return;
 			validateInteger(value, validationResponse);
 			return;
 		}
