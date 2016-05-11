@@ -163,6 +163,10 @@ LuontoDbName =
 
 TriplestoreSelf_Username = 
 TriplestoreSelf_Password = 
+
+taxonomyEditorBaseURL = ...
+lajiETLBaseURL = .../console
+lajiAuthBaseURL  = .../admin/unapproved
 ~~~
 
 
