@@ -121,7 +121,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Set<String> matches = new LinkedHashSet<String>();
 		for (Node matchType : results.getRootNode()) {
 			for (Node match : matchType) {
-				String name = match.getContents().replace("'", "\\'");
+				String name = match.getAttribute("matchingName").replace("'", "\\'");
 				matches.add(name);
 			}
 		}

@@ -1,6 +1,7 @@
 package fi.luomus.lajitietokeskus.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.InformalGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -27,6 +28,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
@@ -340,7 +342,8 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		String scientificName = rs.getString(3);
 		String author = rs.getString(4);
 		String taxonrank = rs.getString(5);
-		Node match = new Node(qname).setContents(name.toLowerCase());
+		Node match = new Node(qname);
+		match.addAttribute("matchingName", name.toLowerCase());
 		if (given(scientificName)) {
 			match.addAttribute("scientificName", scientificName);
 		}
@@ -349,6 +352,20 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		}
 		if (given(taxonrank)) {
 			match.addAttribute("taxonRank", taxonrank);
+		}
+		Taxon taxon = getTaxon(new Qname(qname));
+		if (taxon != null) {
+			Set<Qname> informalGroups = taxon.getInformalGroups();
+			if (informalGroups.isEmpty()) return match;
+			Node informalGroupsNode = match.addChildNode("informalGroups");
+			for (Qname informalGroupQname : taxon.getInformalGroups()) {
+				InformalGroup informalGroup = getInformalGroups().get(informalGroupQname.toString());
+				if (informalGroup == null) continue;
+				Node informalGroupNode = informalGroupsNode.addChildNode(informalGroup.getQname().toString());
+				for (Map.Entry<String, String> e : informalGroup.getName().getAllTexts().entrySet()) {
+					informalGroupNode.addAttribute(e.getKey(), e.getValue());
+				}
+			}
 		}
 		return match;
 	}

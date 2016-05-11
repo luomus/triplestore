@@ -3,7 +3,7 @@
 		<h3>${text[matches.name]}</h3>
 		<#list matches.childNodes as match>
 			<p>
-				<a href="${taxonpageBaseLinkURL}/${match.name}">${match.contents}</a>
+				<a href="${taxonpageBaseLinkURL}/${match.name}">${match.getAttribute("matchingName")}</a>
 				<#if match.hasAttribute("scientificName")>
 					&nbsp; - &nbsp; ${match.getAttribute("scientificName")}<#if match.hasAttribute("scientificNameAuthorship")>,</#if>
 				</#if>
@@ -11,6 +11,12 @@
 					${match.getAttribute("scientificNameAuthorship")}
 				</#if> 
 				[<#if match.hasAttribute("taxonRank")>${match.getAttribute("taxonRank")?replace("MX.", "")}<#else>unranked</#if>]
+				<#if match.hasChildNodes("informalGroups")>
+					&nbsp; - &nbsp;
+					<#list match.getNode("informalGroups").getChildNodes() as group>
+						${group.getAttribute("en")}<#if group_has_next>, </#if>
+					</#list>
+				</#if>
 			</p>
 		</#list>
 	</#list>

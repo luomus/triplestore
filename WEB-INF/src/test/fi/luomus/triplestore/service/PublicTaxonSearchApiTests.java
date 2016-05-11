@@ -47,9 +47,13 @@ public class PublicTaxonSearchApiTests {
 		Node match = n.getNode("exactMatch").getChildNodes().get(0);
 		assertEquals("MX.46549", match.getName());
 		assertEquals("Canis lupus", match.getAttribute("scientificName"));
-		assertEquals("susi", match.getContents());
+		assertEquals("susi", match.getAttribute("matchingName"));
 		assertEquals("Linnaeus, 1758", match.getAttribute("scientificNameAuthorship"));
 		assertEquals("MX.species", match.getAttribute("taxonRank"));
+		assertEquals(1, match.getChildNodes("informalGroups").size());
+		assertEquals(1, match.getNode("informalGroups").getChildNodes().size());
+		assertEquals("MVL.2", match.getNode("informalGroups").getChildNodes().get(0).getName());
+		assertEquals("Nisäkkäät", match.getNode("informalGroups").getChildNodes().get(0).getAttribute("fi"));
 	}
 
 	@Test
