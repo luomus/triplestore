@@ -227,6 +227,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			}
 		} else if (p.hasRange()) {
 			Qname range = p.getRange().getQname();
+			if (range.toString().equals("rdfs:Resource")) return;
 			Model value = dao.get(resourceQname);
 			if (!value.getType().equals(range.toString())) {
 				validationError("Value " + resourceQname + " should be of type " + range + " but it is " + value.getType(), validationResponse);
