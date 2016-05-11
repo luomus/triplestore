@@ -72,13 +72,17 @@
 			</#if>
 			<#if !taxon.checklist??>
 				<div class="checklistChangesMidTree">
-					Checklist: NONE!
+					Checklist: Orphan taxa
 				</div>
-			<#elseif taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)>
+			<#elseif taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)> 
 				<div class="checklistChangesMidTree">
 					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 				</div>
-			</#if> 
+			<#elseif additionalClass="synonym">
+				<div class="checklist">
+					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
+				</div>
+			</#if>
 		</div>
 		<#if showChildrenTools>
 			<div class="showChildrenTools">
@@ -91,7 +95,7 @@
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
 				<#list taxon.synonymTaxons as synonymTaxon>	 
-					<@printTaxon synonymTaxon "" false false />
+					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>
 				<#if !taxon.synonymTaxons?has_content>
 					<span class="noSynonymsText">(no synonyms)</span>

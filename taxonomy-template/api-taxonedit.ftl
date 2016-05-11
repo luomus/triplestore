@@ -20,6 +20,12 @@
 <div class="column">
 
 	<@portletHeader "Basic taxonomic information" "" "scientificNameSection" />
+		<#if taxon.checklist??> 
+			<label>Checklist</label> ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
+		<#else>
+			<label>Checklist</label> Orphan taxa
+		</#if>
+		<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
 		<label>ID</label> ${taxon.qname} 
 		<@labeledSelect "MX.taxonRank" />
 		<@labeledInput "MX.scientificName" />
