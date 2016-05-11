@@ -25,10 +25,6 @@
 			<label>Name, swedish</label>
 			<input type="text" name="name_sv" class="required checklistName" value="${(group.name.forLocale("sv")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
-		<li>
-			<label>Name, latin</label>
-			<input type="text" name="name_la" class="required checklistName" value="${(group.name.forLocale("la")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
-		</li>
 	</ul>
 	<br />
 	<#if action=="add">

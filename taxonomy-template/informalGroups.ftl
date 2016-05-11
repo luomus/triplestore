@@ -20,7 +20,7 @@
 	<#list informalGroups?values as group>
 		<tr>
 			<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
-			<td>${group.getName("en")} ${group.getName("fi")} ${group.getName("la")}</td>
+			<td>${group.getName("en")} ${group.getName("fi")}</td>
 			<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</button></td>
 		</tr>
 	</#list>

@@ -21,7 +21,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req);
 		if (req.getRequestURI().endsWith("/informalGroups")) {
 			responseData.setData("informalGroups", getTaxonomyDAO().getInformalGroupsForceReload());
-			return responseData.setViewName("informalGroups");	
+			return responseData.setViewName("informalGroups");
 		}
 		if (addNew(req)) {
 			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalGroup());
@@ -47,20 +47,17 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		String nameEN = req.getParameter("name_en");
 		String nameFI = req.getParameter("name_fi");
 		String nameSV = req.getParameter("name_sv");
-		String nameLA = req.getParameter("name_la");
-
-		if (!given(nameEN, nameFI, nameSV, nameLA)) throw new IllegalStateException("Required parameters were not set");
+		
+		if (!given(nameEN, nameFI, nameSV)) throw new IllegalStateException("Required parameters were not set");
 
 		nameEN = Utils.upperCaseFirst(nameEN.toLowerCase());
 		nameFI = Utils.upperCaseFirst(nameFI.toLowerCase());
 		nameSV = Utils.upperCaseFirst(nameSV.toLowerCase());
-		nameLA = Utils.upperCaseFirst(nameLA.toLowerCase());
 
 		LocalizedText names = new LocalizedText();
 		names.set("en", nameEN);
 		names.set("fi", nameFI);
 		names.set("sv", nameSV);
-		names.set("la", nameLA);
 
 		InformalGroup group = new InformalGroup(qname, names);
 
