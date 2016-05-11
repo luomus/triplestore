@@ -158,7 +158,13 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return o != null && o.toString().trim().length() > 0;
 	}
 
-
+	protected static boolean given(Object ... objects) {
+		for (Object o : objects) {
+			if (!given(o)) return false;
+		}
+		return true;
+	}
+	
 	@Override
 	protected SessionHandler getSession(HttpServletRequest req) {
 		SessionHandler sessionHandler = new SessionHandlerImple(req.getSession(true), "triplestore");

@@ -90,8 +90,9 @@
 						<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
 						<li role="menuitem"><a href="${baseURL}/orphan">Orphan taxa</a></li>
 						<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
-						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
 						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
+						<li role="menuitem"><a href="${baseURL}/informalGroups">Informal groups</a></li>
+						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
 						<li role="menuitem"><a href="${baseURL}/help">Help</a></li>
 					</ul>
 				</nav>

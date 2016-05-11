@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.dao;
 
 import fi.luomus.commons.containers.Checklist;
+import fi.luomus.commons.containers.InformalGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
@@ -291,6 +292,18 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		return checklist;
 	}
 
+	@Override
+	public InformalGroup storeInformalGroup(InformalGroup group) throws Exception {
+		Model model = new Model(group.getQname());
+		model.setType("MVL.informalTaxonGroup");
+
+		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
+			model.addStamentIfObjectGiven("rdfs:label", e.getValue(), e.getKey());
+		}
+		store(model);
+		return group;
+	}
+	
 	@Override
 	public Publication storePublication(Publication publication) throws Exception {
 		Model model = new Model(publication.getQname());
