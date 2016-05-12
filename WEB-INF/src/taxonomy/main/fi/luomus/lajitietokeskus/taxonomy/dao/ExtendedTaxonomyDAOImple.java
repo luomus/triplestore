@@ -344,6 +344,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		String taxonrank = rs.getString(5);
 		Node match = new Node(qname);
 		match.addAttribute("matchingName", name.toLowerCase());
+		match.addAttribute("content", name.toLowerCase()); // TODO remove when no longer needed for backwards compability
 		if (given(scientificName)) {
 			match.addAttribute("scientificName", scientificName);
 		}
