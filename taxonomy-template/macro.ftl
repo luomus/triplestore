@@ -35,9 +35,6 @@
 			<a href="${baseURL}/${parentTaxon.qname}" class="button" onclick="changeRoot(this, '${baseURL}/${parentTaxon.qname}'); return false;">Use as work root</a>
 		</div>
 		<div class="clear"></div>
-		<div class="taxonEditorExpert">
-			<@printEditorExpert parentTaxon />
-		</div>
 		<div class="sortingControls ui-widget ui-widget-header""><button class="saveSortingButton" onclick="saveSorting(this);">Save sorting</button> <button onclick="cancelSorting(this);">Cancel</button></div>
 		<div class="clear"></div>
 	</div>
@@ -97,9 +94,6 @@
 				<#list taxon.synonymTaxons as synonymTaxon>	 
 					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>
-				<#if !taxon.synonymTaxons?has_content>
-					<span class="noSynonymsText">(no synonyms)</span>
-				</#if>
 				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add synonym</button></#if>
 			</div>
 		</#if>

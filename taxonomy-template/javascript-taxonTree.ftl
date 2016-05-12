@@ -387,7 +387,6 @@ function taxonSynonymDropHandler(event, ui) {
 			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
 			droppedTaxon.fadeOut(function() {
 				newSynonymParentSynonymContainer.prepend(droppedTaxon);
-				newSynonymParentSynonymContainer.find('.noSynonymsText').remove(); 
 				droppedTaxon.find('.synonyms').remove();
 				droppedTaxon.find('.showChildrenTools').remove();
 				taxonTreeGraphs.repaintEverything();
@@ -513,7 +512,6 @@ function addNewSynonymDialogSubmit() {
 	$.post('${baseURL}/api/addsynonym?synonymOf='+encodeURIComponent(synonymOf)+'&scientificName='+encodeURIComponent(scientificName)+'&author='+encodeURIComponent(author)+'&taxonRank='+encodeURIComponent(taxonRank), function(data) {
 		var newSynonym = $('<div/>').html(data);
 		synonymContainer.prepend(newSynonym);
-		synonymContainer.find('.noSynonymsText').remove(); 
 		taxonTreeGraphs.repaintEverything();
 		$("#addNewSynonymDialog").dialog("close");
 		$(".addButton").show();
