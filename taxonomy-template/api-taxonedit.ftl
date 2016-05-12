@@ -159,7 +159,7 @@
 			<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" class="chosen" <@checkPermissions/> >
 				<option value=""></option>
 				<#list informalGroups?keys as groupQnameString>
-					<option value="${groupQnameString}" <#if same(groupQname.toString(), groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("en")}</option>
+					<option value="${groupQnameString}" <#if same(groupQname.toString(), groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("fi")} - ${informalGroups[groupQnameString].name.forLocale("en")}</option>
 				</#list>
 			</select>
 			</p>
@@ -167,7 +167,7 @@
 		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Add new group" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list informalGroups?keys as groupQnameString>
-				<option value="${groupQnameString}">${informalGroups[groupQnameString].name.forLocale("en")}</option>
+				<option value="${groupQnameString}">${informalGroups[groupQnameString].name.forLocale("fi")} - ${informalGroups[groupQnameString].name.forLocale("en")}</option>
 			</#list>
 		</select>
 	<@portletFooter />				
