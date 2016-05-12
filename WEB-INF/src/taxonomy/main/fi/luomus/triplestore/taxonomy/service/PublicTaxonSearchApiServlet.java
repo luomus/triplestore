@@ -24,7 +24,7 @@ import org.json.XML;
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
-	private static final int DEFAULT_LIMIT = 15;
+	private static final int DEFAULT_LIMIT = Integer.MAX_VALUE;
 
 	private static final long serialVersionUID = -1055689074656680611L;
 
