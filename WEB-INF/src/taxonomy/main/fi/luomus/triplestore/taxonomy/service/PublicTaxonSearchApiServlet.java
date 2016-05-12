@@ -24,6 +24,8 @@ import org.json.XML;
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
+	private static final int DEFAULT_LIMIT = 15;
+
 	private static final long serialVersionUID = -1055689074656680611L;
 
 	private static final int ONE_HOUR_IN_SECONDS = 60*60*1;
@@ -39,12 +41,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		private final TaxonomyDAO dao;
 		private final String searchword;
 		private final String checklist;
+		private final int limit;
 		private final String toString;
-		public SearchWrapper(TaxonomyDAO dao, String searchword, String checklist) {
+		public SearchWrapper(TaxonomyDAO dao, String searchword, String checklist, int limit) {
 			this.dao = dao;
 			this.searchword = searchword;
 			this.checklist = checklist;
-			this.toString = this.searchword + " (" + checklist + ")";
+			this.limit = limit;
+			this.toString = this.searchword + " (" + checklist + ") + limit:" + limit;
 		}
 		@Override
 		public int hashCode() {
@@ -65,7 +69,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		@Override
 		public Document load(SearchWrapper wrapper) {
 			try {
-				return wrapper.dao.search(wrapper.searchword, wrapper.checklist);
+				return wrapper.dao.search(wrapper.searchword, wrapper.checklist, wrapper.limit);
 			} catch (Exception e) {
 				throw new RuntimeException(wrapper.toString(), e);
 			}
@@ -78,12 +82,13 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String searchword = Utils.urlDecode(getQname(req));
 		String checklist = req.getParameter("checklist");
+		int limit = getLimit(req);
 		if (!given(checklist)) checklist = MASTER_CHECKLIST_QNAME;
 		if (checklist.equals("null")) checklist = null;
 
 		Format format = getFormat(req);
 
-		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist));
+		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist, limit));
 		if (response.getRootNode().hasAttribute("error")) {
 			if (response.getRootNode().getAttribute("error").startsWith("Search word")) {
 				res.setStatus(400);
@@ -103,6 +108,16 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			return jsonResponse(json, res);
 		} else {
 			return xmlResponse(response, res);
+		}
+	}
+
+	private int getLimit(HttpServletRequest req) {
+		String limit = req.getParameter("limit");
+		if (limit == null) return DEFAULT_LIMIT;
+		try {
+			return Integer.valueOf(limit);
+		} catch (Exception e) {
+			return DEFAULT_LIMIT;
 		}
 	}
 

@@ -38,10 +38,10 @@ public class PublicTaxonSearchApiTests {
 	public static void tearDownAfterClass() throws Exception {
 		dataSource.close();
 	}
-	
+
 	@Test
 	public void test_exact_match() throws Exception {
-		Node n = taxonomyDAO.search("susi").getRootNode();
+		Node n = taxonomyDAO.search("susi", 10).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
 		assertEquals(1, n.getNode("exactMatch").getChildNodes().size());
 		Node match = n.getNode("exactMatch").getChildNodes().get(0);
@@ -58,37 +58,37 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_exact_search_from_null_checklist() throws Exception {
-		Node n = taxonomyDAO.search("susi", null).getRootNode();
+		Node n = taxonomyDAO.search("susi", null, 10).getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
 
 	@Test
 	public void test_exact_search_from_null_checklist_2() throws Exception {
-		Node n = taxonomyDAO.search("teStI", null).getRootNode();
+		Node n = taxonomyDAO.search("teStI", null, 10).getRootNode();
 		assertTrue(n.getNode("exactMatch").getChildNodes().size() > 0);
 	}
 
 	@Test
 	public void test_missing_searchword() throws Exception {
-		Node n = taxonomyDAO.search(null, null).getRootNode();
+		Node n = taxonomyDAO.search(null, null, 10).getRootNode();
 		assertEquals("Search word must be given.", n.getAttribute("error"));
 	}
 
 	@Test
 	public void test_too_short_searchword() throws Exception {
-		Node n = taxonomyDAO.search("a", null).getRootNode();
+		Node n = taxonomyDAO.search("a", null, 10).getRootNode();
 		assertEquals("Search word was too short.", n.getAttribute("error"));
 
-		n = taxonomyDAO.search("aa", null).getRootNode();
+		n = taxonomyDAO.search("aa", null, 10).getRootNode();
 		assertFalse(n.hasAttribute("error"));
 
-		n = taxonomyDAO.search("aaaa", null).getRootNode();
+		n = taxonomyDAO.search("aaaa", null, 10).getRootNode();
 		assertFalse(n.hasAttribute("error"));
 	}
 
 	@Test
 	public void test_likely_match() throws Exception {
-		Node n = taxonomyDAO.search("susiåpus").getRootNode();
+		Node n = taxonomyDAO.search("susiåpus", 10).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
 		assertEquals(1, n.getNode("likelyMatches").getChildNodes().size());
 		Node match = n.getNode("likelyMatches").getChildNodes().get(0);
@@ -97,11 +97,10 @@ public class PublicTaxonSearchApiTests {
 	}
 
 	@Test
-	public void test_partial_match() throws Exception {
-		Node n = taxonomyDAO.search("kotka").getRootNode();
+	public void test_partial_match_unlimited() throws Exception {
+		Node n = taxonomyDAO.search("kotka", 10000).getRootNode();
 		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 3);
 		assertTrue(n.getNode("partialMatches").getChildNodes().size() > 30);
 	}
-
 
 }

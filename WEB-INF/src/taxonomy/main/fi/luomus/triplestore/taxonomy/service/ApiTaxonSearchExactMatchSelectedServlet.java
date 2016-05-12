@@ -19,7 +19,7 @@ public class ApiTaxonSearchExactMatchSelectedServlet extends ApiBaseServlet {
 		if (!given(selectedTaxon) || !given(checklist)) {
 			return noExactMatchFound(res);
 		}
-		Document response =  getTaxonomyDAO().search(selectedTaxon, checklist);
+		Document response =  getTaxonomyDAO().search(selectedTaxon, checklist, 1000);
 		if (!response.getRootNode().hasChildNodes("exactMatch")) {
 			return noExactMatchFound(res);
 		}

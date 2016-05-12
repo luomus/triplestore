@@ -22,7 +22,7 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 		}
 		searchword = searchword.trim();
 		
-		Document response =  getTaxonomyDAO().search(searchword, checklist);
+		Document response =  getTaxonomyDAO().search(searchword, checklist, 30);
 		responseData.setData("response", response);
 		responseData.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"));
 		return responseData;

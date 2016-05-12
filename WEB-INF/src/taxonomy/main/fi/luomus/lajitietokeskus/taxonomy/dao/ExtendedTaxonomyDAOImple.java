@@ -232,12 +232,12 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public Document search(String searchword) throws Exception{
-		return search(searchword, MASTER_CHECKLIST_QNAME);
+	public Document search(String searchword, int limit) throws Exception{
+		return search(searchword, MASTER_CHECKLIST_QNAME, limit);
 	}
 
 	@Override
-	public Document search(String searchword, String checklist) throws Exception {
+	public Document search(String searchword, String checklist, int limit) throws Exception {
 		Document results = initResults();
 		if (!given(searchword)) {
 			results.getRootNode().addAttribute("error", "Search word must be given.");
@@ -253,16 +253,21 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		} else {
 			checklist = ".";
 		}
-
+		int addedCount = 0;
 		TransactionConnection con = null;
 		try {
 			con = triplestoreDAO.openConnection();
-			Node exactMatch = exactMatch(searchword, checklist, con);
-			addIfHasMatches(exactMatch, results);
+
+			Node exactMatch = exactMatch(searchword, checklist, limit, con);
+			addedCount = addIfHasMatches(exactMatch, results);
+			if (addedCount >= limit) return results;
+
 			if (!exactMatch.hasChildNodes() && searchword.length() > 3) {
-				Node likelyMatches = likelyMatches(searchword, checklist, con);
-				addIfHasMatches(likelyMatches, results);
-				Node partialMatches = partialMatches(searchword, checklist, con);
+				Node likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, con);
+				addedCount += addIfHasMatches(likelyMatches, results);
+				if (addedCount >= limit) return results;
+
+				Node partialMatches = partialMatches(searchword, checklist, limit - addedCount, con);
 				addIfHasMatches(partialMatches, results);
 			}
 		} catch (Exception e) {
@@ -277,7 +282,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return o != null && o.toString().trim().length() > 0;
 	}
 
-	private Node exactMatch(String searchword, String checklist, TransactionConnection con) throws SQLException {
+	private Node exactMatch(String searchword, String checklist, int limit, TransactionConnection con) throws SQLException {
 		Node exactMatch = new Node("exactMatch");
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -288,6 +293,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(3, searchword);
 			rs = p.executeQuery();
 			while (rs.next()) {
+				if (limit-- < 1) break;
 				exactMatch.addChildNode(toMatch(rs));
 			}
 		} finally {
@@ -296,7 +302,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return exactMatch;
 	}
 
-	private Node likelyMatches(String searchword, String checklist, TransactionConnection con) throws SQLException {
+	private Node likelyMatches(String searchword, String checklist, int limit, TransactionConnection con) throws SQLException {
 		Node likelyMatches = new Node("likelyMatches");
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -308,6 +314,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(4, checklist);
 			rs = p.executeQuery();
 			while (rs.next()) {
+				if (limit-- < 1) break;
 				Double similarity = Utils.round(rs.getDouble(6), 3);
 				likelyMatches.addChildNode(toMatch(rs).addAttribute("similarity", similarity.toString()));
 			}
@@ -317,7 +324,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return likelyMatches;
 	}
 
-	private Node partialMatches(String searchword, String checklist, TransactionConnection con) throws SQLException {
+	private Node partialMatches(String searchword, String checklist, int limit, TransactionConnection con) throws SQLException {
 		Node partialMatches = new Node("partialMatches");
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -328,6 +335,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(3, checklist);
 			rs = p.executeQuery();
 			while (rs.next()) {
+				if (limit-- < 1) break;
 				partialMatches.addChildNode(toMatch(rs));
 			}
 		} finally {
@@ -370,10 +378,12 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return match;
 	}
 
-	private void addIfHasMatches(Node matches, Document results) {
+	private int addIfHasMatches(Node matches, Document results) {
 		if (matches.hasChildNodes()) {
 			results.getRootNode().addChildNode(matches);
+			return matches.getChildNodes().size();
 		}
+		return 0;
 	}
 
 	private static Document initResults() {
