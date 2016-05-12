@@ -14,12 +14,12 @@
 
 	<ul>
 		<li>
-			<label>Name, english</label>
-			<input type="text" name="name_en" class="required checklistName" value="${(group.name.forLocale("en")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
-		</li>
-		<li>
 			<label>Name, finnish</label>
 			<input type="text" name="name_fi" class="required checklistName" value="${(group.name.forLocale("fi")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
+		</li>
+		<li>
+			<label>Name, english</label>
+			<input type="text" name="name_en" class="required checklistName" value="${(group.name.forLocale("en")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
 		<li>
 			<label>Name, swedish</label>

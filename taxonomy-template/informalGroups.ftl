@@ -12,7 +12,9 @@
 	<thead>
 		<tr>
 			<td>Id</td>
-			<td>Name</td>
+			<td>Finnish</td>
+			<td>English</td>
+			<td>Swedish</td>
 			<td>&nbsp;</td>
 		</tr>
 	</thead>
@@ -20,7 +22,9 @@
 	<#list informalGroups?values as group>
 		<tr>
 			<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
-			<td>${group.getName("en")} ${group.getName("fi")}</td>
+			<td>${group.getName("fi")}</td>
+			<td>${group.getName("en")}</td>
+			<td>${group.getName("sv")}</td>
 			<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</button></td>
 		</tr>
 	</#list>
