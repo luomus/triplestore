@@ -96,8 +96,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	private void type(String type, List<String> values, StringBuilder query) {
 		if (type == null) return;
 		query
-		.append(" AND statementid IN (")
-		.append("		SELECT statementid FROM "+SCHEMA+".rdf_statementview ")
+		.append(" AND subjectname IN (")
+		.append("		SELECT subjectname FROM "+SCHEMA+".rdf_statementview ")
 		.append("		WHERE predicatename = 'rdf:type' ");
 		if (type.startsWith("http:")) {
 			query.append(" AND objecturi = ? ");
