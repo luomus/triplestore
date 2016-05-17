@@ -57,7 +57,7 @@ function initColumnsPortlets() {
 	
 	$(".multirowSection").each(function() {
 		var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
-		$(this).append(addNewRowButton);
+		$(this).find('table').after(addNewRowButton);
 		addNewRowButton.click(function() {
 			var tableToAddNewRow = $(this).parent().find('table'); 
 			var rowToCopy = $(tableToAddNewRow).find('tr').last().clone();

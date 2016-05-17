@@ -221,6 +221,25 @@
 		</table>
 	<@portletFooter />	
 
+	<@portletHeader "Misapplied scientific names" "" "multirowSection" />
+		<table>
+			<tr>
+				<th>Name</th> 
+			</tr>
+			<#list taxon.misappliedNames as misappliedName>
+			<tr>
+				<td><@input "MX.misappliedName" "off" misappliedName /></td>
+			</tr>
+			</#list>
+			<tr>
+				<td><@input "MX.misappliedName" "off" "" /></td>
+			</tr>
+		</table>
+		<@label "MX.misappliedNameNotes" "longtext" locale />
+		<@textarea "MX.misappliedNameNotes" />
+	<@portletFooter />	
+
+
 	<#if user.isAdmin()>
 		<@portletHeader "Admin only" "initiallyClosed" />
 			<p class="info">Applicable for taxon rank order or a higher level</p>

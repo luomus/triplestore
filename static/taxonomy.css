@@ -33,6 +33,7 @@ select, input {
 }
 textarea {
 	height: 3em;
+	width: 190px;
 }
 input[type="submit"] {
 	width: auto;
