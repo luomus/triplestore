@@ -27,17 +27,18 @@ public class SearchServlet extends ApiServlet {
 		String[] objects = req.getParameterValues("object");
 		String[] objectresources = req.getParameterValues("objectresource");
 		String[] objectliterals = req.getParameterValues("objectliteral");
-
+		String type = req.getParameter("type");
+		
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Format format = getFormat(req);
 		int limit = getLimit(req);
 		int offset = getOffset(req);
 
-		if (noneGiven(subjects) && noneGiven(predicates) && noneGiven(objects) && noneGiven(objectresources) && noneGiven(objectliterals)) {
+		if (noneGiven(subjects) && noneGiven(predicates) && noneGiven(objects) && noneGiven(objectresources) && noneGiven(objectliterals) && notGiven(type)) {
 			return redirectTo500(res);
 		}
 
-		String response = search(subjects, predicates, objects, objectresources, objectliterals, limit, offset, format, dao);
+		String response = search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
@@ -46,8 +47,8 @@ public class SearchServlet extends ApiServlet {
 		}
 	}
 
-	public static String search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, int limit, int offset, Format format, TriplestoreDAO dao) throws Exception {
-		Collection<Model> models = dao.getSearchDAO().search(subjects, predicates, objects, objectresources, objectliterals, limit, offset);
+	public static String search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset, Format format, TriplestoreDAO dao) throws Exception {
+		Collection<Model> models = dao.getSearchDAO().search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset);
 
 		String rdf = generateRdf(models, format);
 

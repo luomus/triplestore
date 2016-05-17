@@ -16,12 +16,13 @@ public interface TriplestoreSearchDAO {
 	 * @param objects
 	 * @param objectresources
 	 * @param objectliterals
+	 * @param type 
 	 * @param limit
 	 * @param offset
 	 * @return
 	 * @throws Exception 
 	 */
-	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, int limit, int offset) throws Exception;
+	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset) throws Exception;
 
 	/**
 	 *  Search by predicate and objectresource using default limit and no offset 

@@ -46,18 +46,18 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	@Override
-	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, int limit, int offset) throws SQLException {
+	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset) throws SQLException {
 		Set<String> results = new HashSet<String>();
 
 		List<String> values = new ArrayList<String>();
-		String sql = buildSearchSQLAndSetValues(subjects, predicates, objects, objectresources, objectliterals, limit, offset, values);
+		String sql = buildSearchSQLAndSetValues(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, values);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try { 
-			// System.out.println(sql);
-			// System.out.println(values);
+			System.out.println(sql);
+			System.out.println(values);
 			con = dao.openConnection();
 			p = con.prepareStatement(sql);
 			int i = 1;
@@ -75,110 +75,117 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return get(results);
 	}
 
-	private String buildSearchSQLAndSetValues(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, int limit, int offset, List<String> values) {
+	private String buildSearchSQLAndSetValues(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset, List<String> values) {
 		StringBuilder query = new StringBuilder();
-		query.append(" SELECT  subjectname FROM (                        \n");
-		query.append(" SELECT  DISTINCT subjectname,                     \n");
-		query.append("         row_number() OVER (ORDER BY "+SCHEMA+".GetNumericOrder(subjectname), subjectname) roworder  \n");
+		query.append(" SELECT  DISTINCT subjectname            \n");
 		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 
-		query.append(" WHERE   1=1                              \n");
+		query.append(" WHERE   1=1                             \n");
 		subjects(subjects, values, query);
 		predicates(predicates, values, query);
 		objects(objects, values, query);
 		objectresources(objectresources, values, query);
 		objectliterals(objectliterals, values, query);
-		query.append(" ) \n");
-		query.append(" WHERE roworder BETWEEN ? and ? \n");
-		query.append(" ORDER BY roworder ");
-
-		values.add(Integer.toString(offset + 1));
-		values.add(Integer.toString(limit + offset));
+		type(type, values, query);
+		query.append(" ORDER BY "+SCHEMA+".GetNumericOrder(subjectname)  \n ");
+		query.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+		values.add(Integer.toString(offset));
+		values.add(Integer.toString(limit));
 		return query.toString();
 	}
 
-	private void objectliterals(String[] objectliterals, List<String> values, StringBuilder query) {
-		if (objectliterals != null) {
-			query.append(" AND ( 1=2 ");
-			for (String literal : objectliterals) {
-				if (literal.contains("%")) {
-					query.append(" OR UPPER(resourceliteral) LIKE ? ");
-					values.add(literal.toUpperCase());
-				} else {
-					query.append(" OR resourceliteral = ? ");
-					values.add(literal);
-				}
-			}
-			query.append(" ) \n");
+	private void type(String type, List<String> values, StringBuilder query) {
+		if (type == null) return;
+		query
+		.append(" AND statementid IN (")
+		.append("		SELECT statementid FROM "+SCHEMA+".rdf_statementview ")
+		.append("		WHERE predicatename = 'rdf:type' ");
+		if (type.startsWith("http:")) {
+			query.append(" AND objecturi = ? ");
+		} else {
+			query.append(" AND objectname = ? ");	
 		}
+		query.append(" ) ");
+		values.add(type);
+	}
+
+	private void objectliterals(String[] objectliterals, List<String> values, StringBuilder query) {
+		if (objectliterals == null) return;
+		query.append(" AND ( 1=2 ");
+		for (String literal : objectliterals) {
+			if (literal.contains("%")) {
+				query.append(" OR UPPER(resourceliteral) LIKE ? ");
+				values.add(literal.toUpperCase());
+			} else {
+				query.append(" OR resourceliteral = ? ");
+				values.add(literal);
+			}
+		}
+		query.append(" ) \n");
 	}
 
 	private void objectresources(String[] objectresources, List<String> values, StringBuilder query) {
-		if (objectresources != null) {
-			query.append(" AND ( 1=2 ");
-			for (String qname : objectresources) {
-				if (qname.contains("%")) {
-					query.append(" OR UPPER(objectname) LIKE ? ");
-					values.add(qname.toUpperCase());
-				} else {
-					query.append(" OR objectname = ? ");
-					values.add(qname);
-				}
+		if (objectresources == null) return;
+		query.append(" AND ( 1=2 ");
+		for (String qname : objectresources) {
+			if (qname.contains("%")) {
+				query.append(" OR UPPER(objectname) LIKE ? ");
+				values.add(qname.toUpperCase());
+			} else {
+				query.append(" OR objectname = ? ");
+				values.add(qname);
 			}
-			query.append(" ) \n");
 		}
+		query.append(" ) \n");
 	}
 
 	private void objects(String[] objects, List<String> values, StringBuilder query) {
-		if (objects != null) {
-			query.append(" AND ( 1=2 ");
-			for (String object : objects) {
-				if (object.startsWith("http:")) {
-					query.append(" OR objecturi = ? ");
+		if (objects == null) return;
+		query.append(" AND ( 1=2 ");
+		for (String object : objects) {
+			if (object.startsWith("http:")) {
+				query.append(" OR objecturi = ? ");
+				values.add(object);
+			} else {
+				if (object.contains("%")) {
+					query.append(" OR objectname LIKE ? OR UPPER(resourceliteral) LIKE ? ");
 					values.add(object);
+					values.add(object.toUpperCase());
 				} else {
-					if (object.contains("%")) {
-						query.append(" OR objectname LIKE ? OR UPPER(resourceliteral) LIKE ? ");
-						values.add(object);
-						values.add(object.toUpperCase());
-					} else {
-						query.append(" OR objectname = ? OR resourceliteral = ? ");
-						values.add(object);
-						values.add(object);
-					}
+					query.append(" OR objectname = ? OR resourceliteral = ? ");
+					values.add(object);
+					values.add(object);
 				}
 			}
-			query.append(" ) \n");
 		}
+		query.append(" ) \n");
 	}
 
 	private void predicates(String[] predicates, List<String> values, StringBuilder query) {
-		if (predicates != null) {
-			query.append(" AND ( 1=2 ");
-			for (String predicate : predicates) {
-				if (predicate.startsWith("http:")) {
-					query.append(" OR predicateuri = ? ");
-				} else {
-					query.append(" OR predicatename = ? ");
-				}
-				values.add(predicate);
+		if (predicates == null) return;
+		query.append(" AND ( 1=2 ");
+		for (String predicate : predicates) {
+			if (predicate.startsWith("http:")) {
+				query.append(" OR predicateuri = ? ");
+			} else {
+				query.append(" OR predicatename = ? ");
 			}
-			query.append(" ) \n");
+			values.add(predicate);
 		}
+		query.append(" ) \n");
 	}
 
 	private void subjects(String[] subjects, List<String> values, StringBuilder query) {
-		if (subjects != null) {
-			query.append(" AND ( 1=2 ");
-			for (String subject : subjects) {
-				if (subject.startsWith("http:")) {
-					query.append(" OR subjecturi = ? ");
-				} else {
-					query.append(" OR subjectname like ? ");	
-				}
-				values.add(subject);
+		if (subjects == null) return;
+		query.append(" AND ( 1=2 ");
+		for (String subject : subjects) {
+			if (subject.startsWith("http:")) {
+				query.append(" OR subjecturi = ? ");
+			} else {
+				query.append(" OR subjectname like ? ");	
 			}
-			query.append(" ) \n");
+			values.add(subject);
 		}
+		query.append(" ) \n");
 	}
 
 	@Override
@@ -402,7 +409,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> search(String predicate, String objectresource) throws Exception {
-		return search(null, new String[]{predicate}, null, new String[]{objectresource}, null, 1000, 0);
+		return search(null, new String[]{predicate}, null, new String[]{objectresource}, null, null, 1000, 0);
 	}
 
 }
