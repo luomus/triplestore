@@ -56,8 +56,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try { 
-			System.out.println(sql);
-			System.out.println(values);
+			//			System.out.println(sql);
+			//			System.out.println(values);
 			con = dao.openConnection();
 			p = con.prepareStatement(sql);
 			int i = 1;
@@ -86,7 +86,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		objectresources(objectresources, values, query);
 		objectliterals(objectliterals, values, query);
 		type(type, values, query);
-		query.append(" ORDER BY "+SCHEMA+".GetNumericOrder(subjectname)  \n ");
+		query.append("\n ORDER BY "+SCHEMA+".GetNumericOrder(subjectname)  \n");
 		query.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 		values.add(Integer.toString(offset));
 		values.add(Integer.toString(limit));
