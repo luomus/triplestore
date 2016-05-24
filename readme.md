@@ -36,6 +36,8 @@ For all requests defined bellow (except for taxon-search), you can use these com
 * objectresource
 * objectliteral
 * object - objectresource OR objectliteral; defining the type is more performant, so use objectresource or objectliteral parameter if the type of the object is known
+* type  - rdf:type=xxxx
+ 
 (no support for context yet)
 
 The query is an AND search, when several subjects or predicates or objects are used as search parameters.
