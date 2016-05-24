@@ -262,7 +262,8 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			addedCount = addIfHasMatches(exactMatch, results);
 			if (addedCount >= limit) return results;
 
-			if (!exactMatch.hasChildNodes() && searchword.length() > 3) {
+			//if (!exactMatch.hasChildNodes() && searchword.length() > 3) {
+			if (searchword.length() > 3) {
 				Node likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, con);
 				addedCount += addIfHasMatches(likelyMatches, results);
 				if (addedCount >= limit) return results;
