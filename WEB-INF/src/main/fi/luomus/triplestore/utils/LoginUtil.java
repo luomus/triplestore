@@ -7,8 +7,8 @@ import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.lajiauth.model.AuthenticationSources;
-import fi.luomus.lajiauth.model.AuthenticationToken;
+import fi.luomus.lajiauth.model.AuthenticationEvent;
+import fi.luomus.lajiauth.model.AuthenticationSource;
 import fi.luomus.lajiauth.model.UserDetails;
 import fi.luomus.lajiauth.service.LajiAuthClient;
 
@@ -138,9 +138,9 @@ public class LoginUtil  {
 		params.putSingle(ORIGINAL_URL, originalUrl);
 
 		LajiAuthClient client = getLajiAuthClient();
-		URI hakaURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.HAKA).query(params).build();
-		URI virtuURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.VIRTU).query(params).build();
-		URI lajifiURI = client.createLoginUrl("").authenticationSource(AuthenticationSources.LOCAL).query(params).build();
+		URI hakaURI = client.createLoginUrl("").authenticationSource(AuthenticationSource.HAKA).query(params).build();
+		URI virtuURI = client.createLoginUrl("").authenticationSource(AuthenticationSource.VIRTU).query(params).build();
+		URI lajifiURI = client.createLoginUrl("").authenticationSource(AuthenticationSource.LOCAL).query(params).build();
 
 		responseData.setData("hakaURI", hakaURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
@@ -203,18 +203,18 @@ public class LoginUtil  {
 	}
 
 	private AuthenticationResult authenticateViaLajiAuthentication(String token) throws Exception {
-		AuthenticationToken authorizationToken = null;
+		AuthenticationEvent authorizationInfo = null;
 		try {
 			LajiAuthClient client = getLajiAuthClient();
-			authorizationToken = objectMapper.readValue(token, AuthenticationToken.class);
-			client.validateToken(authorizationToken);
+			authorizationInfo = client.validateTokenAndGetAuthenticationInfo(token);
 			// Validation throws exception if something is wrong; Authentication has been successful:
+
 			AuthenticationResult authenticationResponse = new AuthenticationResult(true);
-			UserDetails userDetails = authorizationToken.getUser();
+			UserDetails userDetails = authorizationInfo.getUser();
 			return authenticationResultFromLajiAuth(authenticationResponse, userDetails);
 		} catch (Exception e) {
-			if (authorizationToken != null) {
-				errorReporter.report("Erroreous LajiAuth login for " + Utils.debugS(token, authorizationToken.toString()), e);
+			if (authorizationInfo != null) {
+				errorReporter.report("Erroreous LajiAuth login for " + Utils.debugS(token, objectMapper.writeValueAsString(authorizationInfo)), e);
 			} else {
 				errorReporter.report("Unsuccesful LajiAuth login for " + token, e);
 			}
@@ -225,11 +225,10 @@ public class LoginUtil  {
 	}
 
 	private AuthenticationResult authenticationResultFromLajiAuth(AuthenticationResult authenticationResponse, UserDetails userDetails) {
-		String userQname = userDetails.getId().get();
-		if (!given(userQname)) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");
+		if (!userDetails.getQname().isPresent()) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");;
 		// TODO taxon editor permission predicate
 		authenticationResponse.setUserId(userDetails.getEmail());
-		authenticationResponse.setUserQname(userQname);
+		authenticationResponse.setUserQname(userDetails.getQname().get());
 		authenticationResponse.setUserFullname(userDetails.getName());
 		setAdminStatus(authenticationResponse, userDetails.getRoles());
 		return authenticationResponse;
