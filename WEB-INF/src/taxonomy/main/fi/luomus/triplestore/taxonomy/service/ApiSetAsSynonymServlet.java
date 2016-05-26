@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/setAsSynonym/*"})
 public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 
+	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 	private static final long serialVersionUID = 4325161753479424734L;
 
 	@Override
@@ -39,9 +40,17 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 
 		}
 
+		if (taxon.getChecklist() != null && !taxon.getSynonymTaxons().isEmpty()) {
+			return new ResponseData().setData("error", "Can not switch taxon to be a synonym while it itself has synonyms. Move the synonyms of this taxon first.").setViewName("api-error");
+		}
+		
+		taxonomyDAO.invalidateTaxon(taxon);
+		taxonomyDAO.invalidateTaxon(newSynonymParent);
+		taxonomyDAO.invalidateTaxon(oldParent);
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
-		if (!given(newSynonymParent.getTaxonConcept())) {
+		if (!given(newSynonymParent.getTaxonConcept())) { // All taxons should have taxon concept, but just in case the parent doesn't have we create it
 			Qname taxonConcept = dao.addTaxonConcept();
 			changeTaxonConcept(newSynonymParent, taxonConcept, dao);
 			newSynonymParent.setTaxonConcept(taxonConcept);
@@ -52,20 +61,7 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 		changeTaxonConcept(taxon, newTaxonConcept, dao);
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.isPartOf"));
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.nameAccordingTo"));
-		
-		boolean masterChecklistTaxon = taxon.getChecklist() != null && taxon.getChecklist().toString().equals("MR.1");
-		
-		for (Taxon previousSynonym : taxon.getSynonymTaxons()) {
-			if (masterChecklistTaxon && previousSynonym.getChecklist() == null) {
-				changeTaxonConcept(previousSynonym, newTaxonConcept, dao);
-			}
-			taxonomyDAO.invalidateTaxon(previousSynonym);
-		}
-		
-		taxonomyDAO.invalidateTaxon(taxon);
-		taxonomyDAO.invalidateTaxon(newSynonymParent);
-		taxonomyDAO.invalidateTaxon(oldParent);
-
+				
 		return apiSuccessResponse(res);
 	}
 

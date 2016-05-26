@@ -203,9 +203,27 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public void invalidateTaxon(Taxon taxon) {
 		if (taxon == null) return;
+		synchronized (this) {
+			alreadyInvalidatedTaxonsInIsolation.clear();
+			invalidateTaxonInIsolation(taxon);
+			alreadyInvalidatedTaxonsInIsolation.clear();
+		}
+	}
+
+	private final Set<Qname> alreadyInvalidatedTaxonsInIsolation = new HashSet<>();
+
+	private void invalidateTaxonInIsolation(Taxon taxon) {
+		if (alreadyInvalidatedTaxonsInIsolation.contains(taxon.getQname())) return;
+		alreadyInvalidatedTaxonsInIsolation.add(taxon.getQname());
+		for (Taxon synonym : taxon.getSynonymTaxons()) {
+			invalidateTaxonInIsolation(synonym);
+		}
+		if (taxon.hasParent()) {
+			invalidateTaxonInIsolation(taxon.getParent());
+		}
 		cachedTaxons.invalidate(taxon.getQname());
 		cachedChildren.invalidate(taxon.getQname());
-		cachedSynonyms.invalidate(taxon.getQname());		
+		cachedSynonyms.invalidate(taxon.getQname());
 	}
 
 	@Override

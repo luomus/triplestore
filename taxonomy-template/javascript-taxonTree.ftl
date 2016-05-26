@@ -351,6 +351,7 @@ function taxonDropHandler(event, ui) {
 			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
 			droppedTaxon.fadeOut(function() {
   				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
+  				droppedTaxon.find('.checklistChangesMidTree').remove();
 				droppedTaxon.fadeIn(function() {
 					taxonTreeGraphs.repaintEverything();
 				});
@@ -389,6 +390,7 @@ function taxonSynonymDropHandler(event, ui) {
 				newSynonymParentSynonymContainer.prepend(droppedTaxon);
 				droppedTaxon.find('.synonyms').remove();
 				droppedTaxon.find('.showChildrenTools').remove();
+				droppedTaxon.find('.checklistChangesMidTree').remove();
 				taxonTreeGraphs.repaintEverything();
 				droppedTaxon.fadeIn(function() {
 					taxonTreeGraphs.repaintEverything();

@@ -23,28 +23,41 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String taxonQname = req.getParameter("taxon").replace("MX", "MX.");
 		String newParentQname = req.getParameter("newParent").replace("MX", "MX.");
-		
+
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		
+
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
-		Qname oldParent = taxon.getParentQname();
-		
+		EditableTaxon oldParent = taxon.hasParent() ? (EditableTaxon) taxonomyDAO.getTaxon(taxon.getParentQname()) : null;
+		EditableTaxon newParent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(newParentQname));
+
 		try {
 			checkPermissionsToAlterTaxon(taxon, req);
-			checkPermissionsToAlterTaxon(newParentQname, req);
+			checkPermissionsToAlterTaxon(newParent, req);
+			if (oldParent != null) {
+				checkPermissionsToAlterTaxon(oldParent, req);
+			}
 		} catch (IllegalAccessException noAccess) {
 			return new ResponseData().setData("error", noAccess.getMessage()).setViewName("api-error");
-			
+
 		}
+
+		if (taxon.getChecklist() != null && !taxon.getChecklist().equals(newParent.getChecklist())) {
+			throw new IllegalAccessException("Can not move a taxon from some other checklist to be a child of another checklist");
+		}
+
+		taxonomyDAO.invalidateTaxon(taxon);
+		taxonomyDAO.invalidateTaxon(newParent);
+		taxonomyDAO.invalidateTaxon(oldParent);
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentQname)));
-		
-		taxonomyDAO.invalidateTaxon(taxon);
-		taxonomyDAO.invalidateTaxon(new Qname(newParentQname));
-		taxonomyDAO.invalidateTaxon(oldParent);
+		if (taxon.getChecklist() == null) {
+			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.nameAccordingTo"), new ObjectResource(newParent.getChecklist())));
+			Qname newTaxonConcept = dao.addTaxonConcept();
+			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.circumscription"), new ObjectResource(newTaxonConcept)));
+		}
 		
 		return apiSuccessResponse(res);
 	}
-	
+
 }
