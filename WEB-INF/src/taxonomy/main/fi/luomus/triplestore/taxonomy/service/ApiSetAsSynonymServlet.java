@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/setAsSynonym/*"})
 public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 
-	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 	private static final long serialVersionUID = 4325161753479424734L;
 
 	@Override
