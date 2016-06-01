@@ -206,7 +206,7 @@ public class LoginUtil  {
 		AuthenticationEvent authorizationInfo = null;
 		try {
 			LajiAuthClient client = getLajiAuthClient();
-			authorizationInfo = client.validateTokenAndGetAuthenticationInfo(token);
+			authorizationInfo = client.getAndValidateAuthenticationInfo(token);
 			// Validation throws exception if something is wrong; Authentication has been successful:
 
 			AuthenticationResult authenticationResponse = new AuthenticationResult(true);
