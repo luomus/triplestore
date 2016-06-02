@@ -1,13 +1,19 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -28,12 +34,29 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 		int draftYear = Iterables.getLast(evaluationYears);
 		int selectedYear = selectedYear(req, evaluationYears, draftYear);
 
+		Collection<InformalTaxonGroup> groups = getTaxonomyDAO().getInformalTaxonGroups().values();
+		Map<String, List<Qname>> groupEditors = getGroupEditors();
+		
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
 				.setData("draftYear", draftYear)
 				.setData("selectedYear", selectedYear)
 				.setData("checklist", getTaxonomyDAO().getChecklists().get("MR.1"))
-				.setData("taxonGroups", getTaxonomyDAO().getInformalGroups()); 
+				.setData("taxonGroups", groups)
+				.setData("taxonGroupEditors", groupEditors); 
+	}
+
+	private Map<String, List<Qname>> getGroupEditors() throws Exception {
+		Map<String, List<Qname>> map = new HashMap<>();
+		for (Model m : getTriplestoreDAO().getSearchDAO().search("rdf:type", "MKV.taxonGroupIucnEditors")) {
+			String groupQname = m.getStatements("MKV.taxonGroup").get(0).getObjectResource().getQname();
+			List<Qname> editors = new ArrayList<>();
+			for (Statement editor : m.getStatements("MKV.iucnEditor")) {
+				editors.add(new Qname(editor.getObjectResource().getQname()));
+			}
+			map.put(groupQname, editors);
+		}
+		return map;
 	}
 
 	private int selectedYear(HttpServletRequest req, List<Integer> evaluationYears, int draftYear) {

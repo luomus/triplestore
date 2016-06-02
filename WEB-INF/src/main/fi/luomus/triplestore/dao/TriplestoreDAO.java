@@ -1,7 +1,7 @@
 package fi.luomus.triplestore.dao;
 
 import fi.luomus.commons.containers.Checklist;
-import fi.luomus.commons.containers.InformalGroup;
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
@@ -44,12 +44,12 @@ public interface TriplestoreDAO {
 	public Checklist storeChecklist(Checklist checklist) throws Exception;
 
 	/**
-	 * Adds or modifies an informal group. For new groups the ID must be already set,
+	 * Adds or modifies an informal taxon group. For new groups the ID must be already set.
 	 * @param group
 	 * @return the same group.
 	 * @throws Exception
 	 */
-	public InformalGroup storeInformalGroup(InformalGroup group) throws Exception;
+	public InformalTaxonGroup storeInformalTaxonGroup(InformalTaxonGroup group) throws Exception;
 
 	/**
 	 * Add a taxon into db. Taxon must have Qname already set. If taxon doesn't have a taxon concept, a new one is generated.

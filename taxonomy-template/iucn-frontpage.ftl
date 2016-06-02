@@ -38,7 +38,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<#list taxonGroups?values as taxonGroup>
+		<#list taxonGroups as taxonGroup>
 		<tr>
 			<td>
 				<a href="${baseURL}/iucn/group/${taxonGroup.qname}">
@@ -46,8 +46,16 @@
 				</a>
 			</td>
 			<td>tila..</td>
-			<td>henkilöt...</td>
-			<#if user.isAdmin??><td><button>Modify editors (admin only)</button></td></#if>
+			<td>
+				<#if taxonGroupEditors[taxonGroup.qname.toString()]??>
+					<#list taxonGroupEditors[taxonGroup.qname.toString()] as editor>
+						${persons[editor.toString()].fullname}<#if editor_has_next>, </#if>
+					</#list>
+				<#else>
+					Ei vielä määritelty
+				</#if>
+			</td>
+			<#if user.isAdmin??><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
 		</tr>
 		</#list>
 	</tbody>

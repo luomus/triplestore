@@ -1,6 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.InformalGroup;
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
@@ -20,14 +20,14 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
 		if (req.getRequestURI().endsWith("/informalGroups")) {
-			responseData.setData("informalGroups", getTaxonomyDAO().getInformalGroupsForceReload());
+			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload());
 			return responseData.setViewName("informalGroups");
 		}
 		if (addNew(req)) {
-			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalGroup());
+			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalTaxonGroup());
 		}
 		String qname = getQname(req);
-		InformalGroup group = getTaxonomyDAO().getInformalGroupsForceReload().get(qname);
+		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
 			return redirectTo404(res);
 		}
@@ -59,10 +59,10 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		names.set("fi", nameFI);
 		names.set("sv", nameSV);
 
-		InformalGroup group = new InformalGroup(qname, names);
+		InformalTaxonGroup group = new InformalTaxonGroup(qname, names);
 
-		triplestoreDAO.storeInformalGroup(group);
-		getTaxonomyDAO().getInformalGroupsForceReload();
+		triplestoreDAO.storeInformalTaxonGroup(group);
+		getTaxonomyDAO().getInformalTaxonGroupsForceReload();
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New informal group added");

@@ -1,7 +1,7 @@
 package fi.luomus.lajitietokeskus.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.containers.InformalGroup;
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -382,11 +382,11 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		}
 		Taxon taxon = getTaxon(new Qname(qname));
 		if (taxon != null) {
-			Set<Qname> informalGroups = taxon.getInformalGroups();
+			Set<Qname> informalGroups = taxon.getInformalTaxonGroups();
 			if (informalGroups.isEmpty()) return match;
 			Node informalGroupsNode = match.addChildNode("informalGroups");
-			for (Qname informalGroupQname : taxon.getInformalGroups()) {
-				InformalGroup informalGroup = getInformalGroups().get(informalGroupQname.toString());
+			for (Qname informalGroupQname : informalGroups) {
+				InformalTaxonGroup informalGroup = getInformalTaxonGroups().get(informalGroupQname.toString());
 				if (informalGroup == null) continue;
 				Node informalGroupNode = informalGroupsNode.addChildNode(informalGroup.getQname().toString());
 				for (Map.Entry<String, String> e : informalGroup.getName().getAllTexts().entrySet()) {
