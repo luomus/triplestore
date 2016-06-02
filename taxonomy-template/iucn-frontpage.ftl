@@ -47,8 +47,8 @@
 			</td>
 			<td>tila..</td>
 			<td>
-				<#if taxonGroupEditors[taxonGroup.qname.toString()]??>
-					<#list taxonGroupEditors[taxonGroup.qname.toString()] as editor>
+				<#if taxonGroupEditors[taxonGroup.qname.toString()]?? && taxonGroupEditors[taxonGroup.qname.toString()].editors?has_content>
+					<#list taxonGroupEditors[taxonGroup.qname.toString()].editors as editor>
 						${persons[editor.toString()].fullname}<#if editor_has_next>, </#if>
 					</#list>
 				<#else>
