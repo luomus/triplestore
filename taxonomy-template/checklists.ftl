@@ -8,16 +8,16 @@
 
 <p><a href="${baseURL}/checklists/add">&raquo; Create new checklist</a></p>
  
-<table class="checklistTable">
+<table class="resourceListTable">
 	<thead>
 		<tr>
-			<td>Id</td>
-			<td>Name</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>Owner</td>
-			<td>Public?</td>
-			<td>&nbsp;</td>
+			<th>Id</th>
+			<th>Name</th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
+			<th>Owner</th>
+			<th>Public?</th>
+			<th>&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>

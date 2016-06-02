@@ -8,14 +8,14 @@
 
 <p><a href="${baseURL}/informalGroups/add">&raquo; Create new group</a></p>
  
-<table class="checklistTable">
+<table class="resourceListTable">
 	<thead>
 		<tr>
-			<td>Id</td>
-			<td>Finnish</td>
-			<td>English</td>
-			<td>Swedish</td>
-			<td>&nbsp;</td>
+			<th>Id</th>
+			<th>Finnish</th>
+			<th>English</th>
+			<th>Swedish</th>
+			<th>&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>

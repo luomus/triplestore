@@ -9,9 +9,6 @@ body, html {
 	background-color:  rgb(242, 245, 247);
 }
 
-.ui-widget {
-	font-size: 11px;
-}
 #content-wrapper {
 	padding: 0;
 }
@@ -22,33 +19,6 @@ h3 {
 #taxonTree {
 	width: 100%;
 	min-height: 250px;
-}
-#toolbox {
-	position: fixed;
-	top: 35px;
-	right: 5px;
-	padding: 3px;
-	width: 276px;
-	z-index: 10;
-}
-#toolboxToggle { cursor: pointer; }
-#toolbox > div { 
-	padding: 5px; 
-}
-#toolbox > div, #toolbox > table {
-	width: 100%;
-}
-#toolbox table tr td {
-	vertical-align: top;
-}
-#toolbox table tr td :last  {
-	text-align: center;
-}
-.switchContainer {
-	display: inline-block;
-}
-#taxonSearch input {
-	display: inline-block;
 }
 
 #editTaxon {

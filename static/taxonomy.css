@@ -5,10 +5,45 @@
 	display: inline-block;
 	margin-right: 180px;
 }
-.checklistTable tr:nth-child(even) {
+.ui-widget {
+	font-size: 11px;
+}
+
+#toolbox {
+	position: fixed;
+	top: 35px;
+	right: 5px;
+	padding: 3px;
+	width: 276px;
+	z-index: 10;
+}
+#toolboxToggle { cursor: pointer; }
+#toolbox > div { 
+	padding: 5px; 
+}
+#toolbox > div, #toolbox > table {
+	width: 100%;
+}
+#toolbox table tr td {
+	vertical-align: top;
+}
+#toolbox table tr td :last  {
+	text-align: center;
+}
+.switchContainer {
+	display: inline-block;
+}
+#taxonSearch input {
+	display: inline-block;
+}
+
+.resourceListTable thead th {
+  background-color: rgb(174,208,234);
+}
+.resourceListTable tr:nth-child(even) {
 	background-color: #eee;
 }
-.checklistTable td {
+.resourceListTable td, th {
 	padding: 5px;
 }
 

@@ -1,6 +1,6 @@
 <#include "luomus-header.ftl">
 
-<h1>Uhanalaisuusarviointi - ${selectedYear}</h1>
+<h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 		<div id="toolbox" class="ui-widget ui-corner-all">
 			<div class="ui-widget-header noselect" id="toolboxToggle">Tools <span style="float: right;" class="ui-icon ui-icon-carat-1-s"></span></div>
@@ -28,16 +28,24 @@
 			</div>
 		</div>
 		
-<table>
+<table class="resourceListTable">
 	<thead>
 		<tr>
-			<td>Eliöryhmä</td>
-			<td>Tila</td>
-			<td>Uhanalaisuusarvioijat</td>
-			<td>&nbsp;</td>
+			<th>Eliöryhmä</th>
+			<th>Tila</th>
+			<th>Uhanalaisuusarvioijat</th>
+			<#if user.isAdmin??><th></th></#if>
 		</tr>
 	</thead>
 	<tbody>
+		<#list taxonGroups?values as taxonGroup>
+		<tr>
+			<td>${taxonGroup.name.forLocale("fi")}</td>
+			<td>tila..</td>
+			<td>henkilöt...</td>
+			<#if user.isAdmin??><td><button>Modify editors (admin only)</button></td></#if>
+		</tr>
+		</#list>
 	</tbody>
 </table>
 

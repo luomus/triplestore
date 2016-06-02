@@ -43,11 +43,12 @@
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/triplestore.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/taxonomy.css?${staticContentTimestamp}" rel="stylesheet" />
-	<#if page == "taxonEditMain" || page == "taxonDescriptions" || page?starts_with("iucn")>
+	<#if page == "taxonEditMain" || page == "taxonDescriptions">
 		<link href="${staticURL}/taxonTrees.css?${staticContentTimestamp}" rel="stylesheet" />
 	</#if>
 	<#if page?starts_with("iucn")>
 		<link href="${staticURL}/iucn.css?${staticContentTimestamp}" rel="stylesheet" />
+		<#include "javascript-iucn.ftl">
 	</#if>
 	
 	<#include "javascript.ftl">

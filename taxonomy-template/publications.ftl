@@ -8,7 +8,7 @@
 
 <p><a href="${baseURL}/publications/add">&raquo; Create new publicaton</a></p>
  
-<table class="checklistTable">
+<table class="resourceListTable">
 	<tbody>
 	<#list publications?values as publication>
 		<tr>
