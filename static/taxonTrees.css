@@ -247,19 +247,6 @@ div.taxonWithTools.ui-draggable {
 	left: 15px;
 }
 
-.taxonomySearchResultContainer p {
-	padding: 0px;
-	margin: 0px;
-	font-size: 90%;
-	font-weight: normal;
-}
-.taxonomySearchResultContainer h3 {
-	padding: 0px;
-	font-size: 90%;
-}
-.taxonomySearchResultContainer a {
-	color: rgb(33, 97, 203);
-}
 
 .checklistChangesMidTree {
 	color: red;

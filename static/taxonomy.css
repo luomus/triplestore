@@ -37,6 +37,22 @@
 	display: inline-block;
 }
 
+.taxonomySearchResultContainer p {
+	padding: 0px;
+	margin: 0px;
+	font-size: 90%;
+	font-weight: normal;
+}
+.taxonomySearchResultContainer h3 {
+    margin: 0px;
+	padding: 0px;
+	font-size: 90%;
+}
+.taxonomySearchResultContainer a {
+	color: rgb(33, 97, 203);
+}
+
+
 .resourceListTable thead th {
   background-color: rgb(174,208,234);
 }

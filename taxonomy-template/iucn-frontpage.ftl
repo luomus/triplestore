@@ -40,7 +40,11 @@
 	<tbody>
 		<#list taxonGroups?values as taxonGroup>
 		<tr>
-			<td>${taxonGroup.name.forLocale("fi")}</td>
+			<td>
+				<a href="${baseURL}/iucn/group/${taxonGroup.qname}">
+					${taxonGroup.name.forLocale("fi")}
+				</a>
+			</td>
 			<td>tila..</td>
 			<td>henkilöt...</td>
 			<#if user.isAdmin??><td><button>Modify editors (admin only)</button></td></#if>
