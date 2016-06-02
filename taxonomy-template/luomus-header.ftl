@@ -43,8 +43,11 @@
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/triplestore.css?${staticContentTimestamp}" rel="stylesheet" />
 	<link href="${staticURL}/taxonomy.css?${staticContentTimestamp}" rel="stylesheet" />
-	<#if page == "taxonEditMain" || page == "taxonDescriptions">
+	<#if page == "taxonEditMain" || page == "taxonDescriptions" || page?starts_with("iucn")>
 		<link href="${staticURL}/taxonTrees.css?${staticContentTimestamp}" rel="stylesheet" />
+	</#if>
+	<#if page?starts_with("iucn")>
+		<link href="${staticURL}/iucn.css?${staticContentTimestamp}" rel="stylesheet" />
 	</#if>
 	
 	<#include "javascript.ftl">
@@ -90,6 +93,7 @@
 						<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
 						<li role="menuitem"><a href="${baseURL}/orphan">Orphan taxa</a></li>
 						<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
+						<li role="menuitem"><a href="${baseURL}/iucn">IUCN</a></li>
 						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
 						<li role="menuitem"><a href="${baseURL}/informalGroups">Informal groups</a></li>
 						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>

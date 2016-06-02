@@ -30,4 +30,32 @@ $(function() {
 	$(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
 });
 
+function searchTaxon(taxonSearchForm) {
+	var taxon = $(taxonSearchForm).find('input:first').val();
+	taxon = taxon.replace("%", "");
+	var taxonpageBaseLinkType = $(taxonSearchForm).attr('taxonpageBaseLinkType');
+	var taxonpageBaseLinkURL = '${(baseURL + "/orphan")?url}';
+	if (taxonpageBaseLinkType === "taxonTree") {
+		taxonpageBaseLinkURL = '${(baseURL)?url}';
+	} else if (taxonpageBaseLinkType === "taxonDescriptions") {
+		taxonpageBaseLinkURL = '${(baseURL + "/taxon-descriptions")?url}';
+	} else if (taxonpageBaseLinkType === "iucnEdit") {
+		taxonpageBaseLinkURL = '${(baseURL + "/iucn/species")?url}';
+	}
+	var resultViewContainer = $(taxonSearchForm).find('div:first');
+	resultViewContainer.html('').removeClass('collapse');
+	resultViewContainer.hide();
+	$("body").css("cursor", "progress");
+	$.get('${baseURL}/api/taxonomy-search-content/'+encodeURIComponent(taxon)+'?locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
+		resultViewContainer.html(data);
+		resultViewContainer.fadeIn(1000);
+		setTimeout(function() {
+			if (resultViewContainer.height() > 200) {
+				resultViewContainer.collapse({showMoreText: '+ Show more'});
+			}
+	  		$("body").css("cursor", "default");
+	  	}, 50);
+  	});
+}
+
 </script>
