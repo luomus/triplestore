@@ -232,6 +232,7 @@ DBusername =
 DBpassword = 
 LuontoDbName = 
 
+#Used by luomus-commons Taxonomy DAO Base Imple
 TriplestoreURL = http://localhost:8081/triplestore
 TriplestoreUsername = 
 TriplestorePassword = 
