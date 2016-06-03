@@ -236,6 +236,9 @@ LuontoDbName =
 TriplestoreURL = http://localhost:8081/triplestore
 TriplestoreUsername = 
 TriplestorePassword = 
+
+TaxonomyAPIURL = http://laji.fi/api/taxonomy
+
 ~~~
 
 

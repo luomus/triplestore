@@ -1,3 +1,29 @@
 .info {
   max-width: none;
 }
+
+.stat {
+  font-weight: bold;
+  min-width: 30px;
+  display: inline-block;
+}
+
+.ready {
+  color: green;
+}
+
+.total {
+  color: blue;
+}
+
+.resourceListTable {
+  border-collapse: collapse;
+}
+.resourceListTable td {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.resourceListTable .stat {
+  padding-left: 5px;
+  padding-right: 5px;
+}

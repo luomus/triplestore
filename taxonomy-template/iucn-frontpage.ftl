@@ -42,10 +42,12 @@
 		<tr>
 			<td>
 				<a href="${baseURL}/iucn/group/${taxonGroup.qname}">
-					${taxonGroup.name.forLocale("fi")}
+					${taxonGroup.name.forLocale("fi")!""}
 				</a>
 			</td>
-			<td>tila..</td>
+			<td class="taxonGroupStat" id="${taxonGroup.qname}">
+				<@loadingSpinner "" />
+			</td>
 			<td>
 				<#if taxonGroupEditors[taxonGroup.qname.toString()]?? && taxonGroupEditors[taxonGroup.qname.toString()].editors?has_content>
 					<#list taxonGroupEditors[taxonGroup.qname.toString()].editors as editor>
@@ -61,6 +63,18 @@
 	</tbody>
 </table>
 
-<p class="info">Voit siirtyä arvioitavien lajien luetteloon valitsemalla eliöryhmän.</p>
+<p class="info">Voit siirtyä arvioitavien lajien luetteloon klikkaamalla eliöryhmän nimeä.</p>
+
+<script>
+$(function() {
+	$(".taxonGroupStat").each(function() {
+		var groupQname = $(this).attr("id");
+		var groupStatElement = $(this);
+		$.get("${baseURL}/api/iucn-data/"+groupQname+"?year=${selectedYear}", function(data) {
+			groupStatElement.html(data);
+		});
+	});
+});
+</script>
 
 <#include "luomus-footer.ftl">

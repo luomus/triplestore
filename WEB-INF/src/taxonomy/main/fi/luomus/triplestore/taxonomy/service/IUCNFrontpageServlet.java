@@ -47,7 +47,7 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("selectedYear", selectedYear)
 				.setData("checklist", getTaxonomyDAO().getChecklists().get("MR.1"))
 				.setData("taxonGroups", groups)
-				.setData("taxonGroupEditors", groupEditors); 
+				.setData("taxonGroupEditors", groupEditors);
 	}
 
 	private static final SingleObjectCacheResourceInjected<Map<String, TaxonGroupIucnEditors>, TriplestoreDAO> 

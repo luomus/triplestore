@@ -100,9 +100,9 @@
 	</div>
 </#macro>
 
-<#macro loadingSpinner><@compress single_line=true>
+<#macro loadingSpinner text="Loading..."><@compress single_line=true>
 	<div class="ui-corner-all loadingSpinner"> 
-    	Loading... &nbsp; &nbsp; <img src="${staticURL}/img/loading.gif" alt="Loading.." /> 
+    	${text} &nbsp; &nbsp; <img src="${staticURL}/img/loading.gif" alt="Loading.." /> 
     </div>
 </@compress></#macro>
 
