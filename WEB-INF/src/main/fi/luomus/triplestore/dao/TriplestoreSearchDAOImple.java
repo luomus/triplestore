@@ -46,11 +46,11 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	@Override
-	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset) throws SQLException {
+	public Collection<Model> search(SearchParams searchParams) throws SQLException {
 		Set<String> results = new HashSet<String>();
 
 		List<String> values = new ArrayList<String>();
-		String sql = buildSearchSQLAndSetValues(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, values);
+		String sql = buildSearchSQLAndSetValues(searchParams, values);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -75,21 +75,21 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return get(results);
 	}
 
-	private String buildSearchSQLAndSetValues(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset, List<String> values) {
+	private String buildSearchSQLAndSetValues(SearchParams searchParams, List<String> values) {
 		StringBuilder query = new StringBuilder();
 		query.append(" SELECT  DISTINCT subjectname            \n");
 		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 
 		query.append(" WHERE   1=1                             \n");
-		subjects(subjects, values, query);
-		predicates(predicates, values, query);
-		objects(objects, values, query);
-		objectresources(objectresources, values, query);
-		objectliterals(objectliterals, values, query);
-		type(type, values, query);
+		subjects(searchParams.getSubjects(), values, query);
+		predicates(searchParams.getPredicates(), values, query);
+		objects(searchParams.getObjects(), values, query);
+		objectresources(searchParams.getObjectresources(), values, query);
+		objectliterals(searchParams.getObjectliterals(), values, query);
+		type(searchParams.getType(), values, query);
 		query.append("\n ORDER BY "+SCHEMA+".GetNumericOrder(subjectname)  \n");
 		query.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
-		values.add(Integer.toString(offset));
-		values.add(Integer.toString(limit));
+		values.add(Integer.toString(searchParams.getOffset()));
+		values.add(Integer.toString(searchParams.getLimit()));
 		return query.toString();
 	}
 
@@ -108,10 +108,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		values.add(type);
 	}
 
-	private void objectliterals(String[] objectliterals, List<String> values, StringBuilder query) {
-		if (objectliterals == null) return;
+	private void objectliterals(List<String> literals, List<String> values, StringBuilder query) {
+		if (literals.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String literal : objectliterals) {
+		for (String literal : literals) {
 			if (literal.contains("%")) {
 				query.append(" OR UPPER(resourceliteral) LIKE ? ");
 				values.add(literal.toUpperCase());
@@ -123,10 +123,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void objectresources(String[] objectresources, List<String> values, StringBuilder query) {
-		if (objectresources == null) return;
+	private void objectresources(List<String> resources, List<String> values, StringBuilder query) {
+		if (resources.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String qname : objectresources) {
+		for (String qname : resources) {
 			if (qname.contains("%")) {
 				query.append(" OR UPPER(objectname) LIKE ? ");
 				values.add(qname.toUpperCase());
@@ -138,32 +138,32 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void objects(String[] objects, List<String> values, StringBuilder query) {
-		if (objects == null) return;
+	private void objects(List<String> resourcesOrLiterals, List<String> values, StringBuilder query) {
+		if (resourcesOrLiterals.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String object : objects) {
-			if (object.startsWith("http:")) {
+		for (String resourceOrLiteral : resourcesOrLiterals) {
+			if (resourceOrLiteral.startsWith("http:")) {
 				query.append(" OR objecturi = ? ");
-				values.add(object);
+				values.add(resourceOrLiteral);
 			} else {
-				if (object.contains("%")) {
+				if (resourceOrLiteral.contains("%")) {
 					query.append(" OR objectname LIKE ? OR UPPER(resourceliteral) LIKE ? ");
-					values.add(object);
-					values.add(object.toUpperCase());
+					values.add(resourceOrLiteral);
+					values.add(resourceOrLiteral.toUpperCase());
 				} else {
 					query.append(" OR objectname = ? OR resourceliteral = ? ");
-					values.add(object);
-					values.add(object);
+					values.add(resourceOrLiteral);
+					values.add(resourceOrLiteral);
 				}
 			}
 		}
 		query.append(" ) \n");
 	}
 
-	private void predicates(String[] predicates, List<String> values, StringBuilder query) {
-		if (predicates == null) return;
+	private void predicates(List<String> oreducates, List<String> values, StringBuilder query) {
+		if (oreducates.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String predicate : predicates) {
+		for (String predicate : oreducates) {
 			if (predicate.startsWith("http:")) {
 				query.append(" OR predicateuri = ? ");
 			} else {
@@ -174,8 +174,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void subjects(String[] subjects, List<String> values, StringBuilder query) {
-		if (subjects == null) return;
+	private void subjects(List<String> subjects, List<String> values, StringBuilder query) {
+		if (subjects.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String subject : subjects) {
 			if (subject.startsWith("http:")) {
@@ -409,7 +409,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> search(String predicate, String objectresource) throws Exception {
-		return search(null, new String[]{predicate}, null, new String[]{objectresource}, null, null, 1000, 0);
+		return search(new SearchParams(1000, 0).predicate(predicate).objectresource(objectresource));
 	}
 
 }

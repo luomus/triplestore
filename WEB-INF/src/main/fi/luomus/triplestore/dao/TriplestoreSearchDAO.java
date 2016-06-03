@@ -10,19 +10,12 @@ import java.util.List;
 public interface TriplestoreSearchDAO {
 
 	/**
-	 * Search by combination of subjects, predicates, objects with limit and offset
-	 * @param subjects
-	 * @param predicates
-	 * @param objects
-	 * @param objectresources
-	 * @param objectliterals
-	 * @param type 
-	 * @param limit
-	 * @param offset
-	 * @return
-	 * @throws Exception 
+	 * Search by combination of subjects, predicates, objects and rdf_type with limit and offset
+	 * @param searchParams
+	 * @return matching models
+	 * @throws Exception
 	 */
-	public Collection<Model> search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset) throws Exception;
+	public Collection<Model> search(SearchParams searchParams) throws Exception;
 
 	/**
 	 *  Search by predicate and objectresource using default limit and no offset 

@@ -2,6 +2,7 @@ package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 import java.util.Collection;
@@ -37,8 +38,12 @@ public class SearchServlet extends ApiServlet {
 		if (noneGiven(subjects) && noneGiven(predicates) && noneGiven(objects) && noneGiven(objectresources) && noneGiven(objectliterals) && notGiven(type)) {
 			return redirectTo500(res);
 		}
-
-		String response = search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
+		SearchParams searchParams = new SearchParams(limit, offset)
+				.subjects(subjects).predicates(predicates).objects(objects)
+				.objectresources(objectresources).objectliterals(objectliterals)
+				.type(type);
+		
+		String response = search(searchParams, format, dao);
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
@@ -47,11 +52,9 @@ public class SearchServlet extends ApiServlet {
 		}
 	}
 
-	public static String search(String[] subjects, String[] predicates, String[] objects, String[] objectresources, String[] objectliterals, String type, int limit, int offset, Format format, TriplestoreDAO dao) throws Exception {
-		Collection<Model> models = dao.getSearchDAO().search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset);
-
+	public static String search(SearchParams searchParams, Format format, TriplestoreDAO dao) throws Exception {
+		Collection<Model> models = dao.getSearchDAO().search(searchParams);
 		String rdf = generateRdf(models, format);
-
 		if (jsonRequest(format)) {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();

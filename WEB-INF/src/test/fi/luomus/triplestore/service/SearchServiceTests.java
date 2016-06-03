@@ -9,6 +9,7 @@ import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
@@ -23,7 +24,7 @@ public class SearchServiceTests {
 
 	private static TriplestoreDAO dao;
 	private static DataSource dataSource;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
@@ -36,109 +37,49 @@ public class SearchServiceTests {
 	public static void tearDownAfterClass() throws Exception {
 		dataSource.close();
 	}
-	
+
 	@Test
 	public void test_search_predicate_object() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "MX.isPartOf" };
-		String[] objects = { "MX.34" };
-		String[] objectresources = null;
-		String[] objectliterals = null;
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("MX.isPartOf").object("MX.34");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37\">"));
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.35\">"));
 	}
 
 	@Test
 	public void test_search_predicate_objectresource() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "MX.isPartOf" };
-		String[] objects = null;
-		String[] objectresources = { "MX.34" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("MX.isPartOf").objectresource("MX.34");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37\">"));
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.35\">"));
 	}
 
 	@Test
 	public void test_search_predicate_objectliteral() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "MX.scientificName" };
-		String[] objects = null;
-		String[] objectresources = null;
-		String[] objectliterals = { "Biota" };
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("MX.scientificName").objectliteral("Biota");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37600\">"));
 	}
 
 	@Test
 	public void test_search_predicate_object_where_object_is_literal() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "MX.scientificName" };
-		String[] objects = { "Biota" };
-		String[] objectresources = null;
-		String[] objectliterals = null;
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("MX.scientificName").object("Biota");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37600\">"));
 	}
 
 	@Test
 	public void test_search_predicate__multi_objects() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "MX.scientificName" };
-		String[] objects = null;
-		String[] objectresources = null;
-		String[] objectliterals = { "Plantae", "Animalia" };
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("MX.scientificName").object("Plantae").object("Animalia");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37601\">"));
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37602\">"));
 	}
 
 	@Test
 	public void test_search_predicate__multi_subjects() throws Exception {
-		String[] subjects = { "MX.37601", "MX.37602" };
-		String[] predicates = null;
-		String[] objects = null;
-		String[] objectresources = null;
-		String[] objectliterals = null;
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = SearchServlet.DEFAULT_FORMAT;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).subject("MX.37601").subject("MX.37602");
+		String response = SearchServlet.search(searchParams, SearchServlet.DEFAULT_FORMAT, dao);
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37601\">"));
 		assertTrue(response.contains("<MX.taxon rdf:about=\"http://tun.fi/MX.37602\">"));
 		Node n = new XMLReader().parse(response).getRootNode();
@@ -147,53 +88,24 @@ public class SearchServiceTests {
 
 	@Test
 	public void test_search_default_limit_and_offset() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "rdf:type" };
-		String[] objects = null;
-		String[] objectresources = { "MX.taxon" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = SearchServlet.DEFAULT_MAX_RESULT_COUNT;
-		int offset = 0;
-		Format format = Format.RDFXML;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("rdf:type").objectresource("MX.taxon");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(SearchServlet.DEFAULT_MAX_RESULT_COUNT, n.getChildNodes().size());
 	}
 
 	@Test
 	public void test_search_limit_and_offset() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "rdf:type" };
-		String[] objects = null;
-		String[] objectresources = { "MA.person" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = 10;
-		int offset = 0;
-		Format format = Format.RDFXML;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
-
+		SearchParams searchParams = new SearchParams(10, 0).predicate("rdf:type").objectresource("MA.person");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(10, n.getChildNodes().size());
 	}
 
 	@Test
 	public void test_search_limit_and_offset_2() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "rdf:type" };
-		String[] objects = null;
-		String[] objectresources = { "MA.person" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = 10;
-		int offset = 0;
-		Format format = Format.RDFXML;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
+		SearchParams searchParams = new SearchParams(10, 0).type("MA.person");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(10, n.getChildNodes().size());
@@ -206,17 +118,9 @@ public class SearchServiceTests {
 
 	@Test
 	public void test_search_limit_and_offset_3() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "rdf:type" };
-		String[] objects = null;
-		String[] objectresources = { "MA.person" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = 10;
-		int offset = 5;
-		Format format = Format.RDFXML;
+		SearchParams searchParams = new SearchParams(10, 5).type("MA.person");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(10, n.getChildNodes().size());
 		int i = 6;
@@ -234,48 +138,21 @@ public class SearchServiceTests {
 	}
 
 	private String withTypeParameter() throws Exception {
-		String[] subjects = null;
-		String[] predicates = null;
-		String[] objects = null;
-		String[] objectresources = null;
-		String[] objectliterals = null;
-		String type = "MA.person";
-		int limit = 5;
-		int offset = 0;
-		Format format = Format.RDFXML;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
+		SearchParams searchParams = new SearchParams(5, 0).type("MA.person");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		return response;
 	}
 
 	private String withoutTypeParameter() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "rdf:type" };
-		String[] objects = null;
-		String[] objectresources = { "MA.person" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = 5;
-		int offset = 0;
-		Format format = Format.RDFXML;
-
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
+		SearchParams searchParams = new SearchParams(5, 0).predicate("rdf:type").objectresource("MA.person");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		return response;
 	}
-	
+
 	@Test
 	public void test_search_no_matches() throws Exception {
-		String[] subjects = null;
-		String[] predicates = { "balalbaba" };
-		String[] objects = null;
-		String[] objectresources = { "balaba" };
-		String[] objectliterals = null;
-		String type = null;
-		int limit = 10;
-		int offset = 5;
-		Format format = Format.RDFXML;
-	
-		String response = SearchServlet.search(subjects, predicates, objects, objectresources, objectliterals, type, limit, offset, format, dao);
+		SearchParams searchParams = new SearchParams(10, 5).predicate("blablala").objectresource("blabalba");
+		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		Node root = new XMLReader().parse(response).getRootNode();
 		assertFalse(root.hasChildNodes());
 	}
