@@ -42,7 +42,8 @@ public class PublicTaxonSearchApiTests {
 	@Test
 	public void test_exact_match() throws Exception {
 		Node n = taxonomyDAO.search("susi", 10).getRootNode();
-		assertEquals(1, n.getChildNodes().size());
+		System.out.println(n);
+//		assertEquals(1, n.getChildNodes().size()); nyt ollaan taas silleen, että exact matchilla palautetaan muitankin osumia..
 		assertEquals(1, n.getNode("exactMatch").getChildNodes().size());
 		Node match = n.getNode("exactMatch").getChildNodes().get(0);
 		assertEquals("MX.46549", match.getName());
