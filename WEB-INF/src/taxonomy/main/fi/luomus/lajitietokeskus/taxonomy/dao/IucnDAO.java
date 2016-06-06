@@ -12,8 +12,8 @@ public interface IucnDAO {
 
 	public Map<String, TaxonGroupIucnEditors> getGroupEditors() throws Exception;
 
-	public void clearCaches();
-
 	public TaxonGroupIucnEvaluationData getTaxonGroupData(String groupQname) throws Exception;
+
+	public void clearEditorCache();
 
 }

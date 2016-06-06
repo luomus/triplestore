@@ -18,7 +18,7 @@
 		<#list taxonGroups as taxonGroup>
 		<tr>
 			<td>
-				<a href="${baseURL}/iucn/group/${taxonGroup.qname}">
+				<a href="${baseURL}/iucn/group/${taxonGroup.qname}/${selectedYear}">
 					${taxonGroup.name.forLocale("fi")!""}
 				</a>
 			</td>

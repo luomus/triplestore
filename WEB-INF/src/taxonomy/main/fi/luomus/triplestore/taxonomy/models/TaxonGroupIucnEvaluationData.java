@@ -2,67 +2,187 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.DateUtils;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TaxonGroupIucnEvaluationData {
 
+	private static final Map<String, Integer> CLASS_TO_INDEX;
+	static {
+		CLASS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
+		CLASS_TO_INDEX.put("MX.iucnEX", 5);
+		CLASS_TO_INDEX.put("MX.iucnEW", 5);
+		CLASS_TO_INDEX.put("MX.iucnRE", 5);
+		CLASS_TO_INDEX.put("MX.iucnCR", 4);
+		CLASS_TO_INDEX.put("MX.iucnEN", 3);
+		CLASS_TO_INDEX.put("MX.iucnVU", 2);
+		CLASS_TO_INDEX.put("MX.iucnNT", 1);
+		CLASS_TO_INDEX.put("MX.iucnLC", 0);
+		CLASS_TO_INDEX.put("MX.iucnDD", 0);
+		CLASS_TO_INDEX.put("MX.iucnNA", 0);
+		CLASS_TO_INDEX.put("MX.iucnNE", 0); 
+	}
+
 	private final Qname groupQname;
-	private final Collection<String> speciesOfGroup;
-	private final Map<Integer, EvaluationYear> years = new HashMap<>();
+	private final Map<String, SpeciesInfo> speciesOfGroup = new LinkedHashMap<>();
+	private final Map<Integer, EvaluationYearData> years = new HashMap<>();
 
-	public TaxonGroupIucnEvaluationData(Qname groupQname, Collection<String> speciesOfGroup) {
+	public TaxonGroupIucnEvaluationData(Qname groupQname, List<SpeciesInfo> speciesOfGroup) {
 		this.groupQname = groupQname;
-		this.speciesOfGroup = speciesOfGroup;
+		for (SpeciesInfo info : speciesOfGroup) {
+			this.speciesOfGroup.put(info.getQname(), info);
+		}
 	}
 
-	public Qname getGroupQname() {
-		return groupQname;
+	public Collection<SpeciesInfo> getSpeciesOfGroup() {
+		return speciesOfGroup.values();
 	}
 
-	public Collection<String> getSpeciesOfGroup() {
-		return speciesOfGroup;
-	}
-
-	public EvaluationYear getYear(int year) {
+	public EvaluationYearData getYear(int year) {
 		if (!years.containsKey(years)) {
-			years.put(year, new EvaluationYear(year, this));
+			years.put(year, new EvaluationYearData(year, this));
 		}
 		return years.get(year);
 	}
 
-	public static class EvaluationYear {
+	public static class EvaluationYearData {
+
 		private final int year;
 		private final TaxonGroupIucnEvaluationData baseData;
-		private final Map<String, Model> speciesEvaluations = new HashMap<>();
+		private final Map<String, EvaluationYearSpeciesData> speciesEvaluations = new HashMap<>();
 		private Integer readyCount = null;
 
-		public EvaluationYear(int year, TaxonGroupIucnEvaluationData taxonGroupIucnEvaluationData) {
+		public EvaluationYearData(int year, TaxonGroupIucnEvaluationData taxonGroupIucnEvaluationData) {
 			this.year = year;
 			this.baseData = taxonGroupIucnEvaluationData;
 		}
+
+		public Collection<SpeciesInfo> getSpecies() {
+			return baseData.getSpeciesOfGroup();
+		}
+
 		public int getReadyCount() {
 			if (readyCount != null) return readyCount;
 			readyCount = countReady();
 			return readyCount;
 		}
+
 		private int countReady() {
 			int count = 0;
-			for (Model evaluation : speciesEvaluations.values()) {
-				if (evaluation.getStatements("MKV.state").get(0).getObjectResource().getQname().equals("MKV.stateReady")) {
+			for (EvaluationYearSpeciesData speciesData : speciesEvaluations.values()) {
+				if (speciesData.isReady()) {
 					count++;
 				}
 			}
 			return count;
-		}		
-		public EvaluationYear setEvaluation(String speciesQname, Model evaluation) {
+		}
+
+		public EvaluationYearData setEvaluation(String speciesQname, Model evaluation) {
 			readyCount = null;
-			speciesEvaluations.put(speciesQname, evaluation);
+			speciesEvaluations.put(speciesQname, new EvaluationYearSpeciesData(evaluation, this));
 			return this;
 		}
 
+		public EvaluationYearSpeciesData getEvaluation(String species) {
+			return speciesEvaluations.get(species);
+		}
+
+	}
+
+	public static class EvaluationYearSpeciesData {
+
+		private static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
+		private static final String STATE_READY = "MKV.stateReady";
+		private static final String STATE = "MKV.state";
+		private static final String LAST_MODIFIED = "MKV.lastModified";
+		private static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
+		private static final String RED_LIST_STATUS = "MKV.redListStatus";
+
+		private final EvaluationYearData yearData;
+		private final Model evaluationData;
+
+		public EvaluationYearSpeciesData(Model evaluationData, EvaluationYearData yearData) {
+			this.evaluationData = evaluationData;
+			this.yearData = yearData;
+		}
+
+		public boolean isReady() {
+			return STATE_READY.equals(getState());
+		}
+
+		private String getState() {
+			return evaluationData.getStatements(STATE).get(0).getObjectResource().getQname();
+		}
+
+		public Date getLastModified() throws Exception {
+			if (evaluationData.hasStatements(LAST_MODIFIED)) {
+				return DateUtils.convertToDate(evaluationData.getStatements(LAST_MODIFIED).get(0).getObjectLiteral().getContent(), "yyyy-MM-dd");
+			}
+			return null;
+		}
+
+		public String getLastModifiedBy() {
+			if (evaluationData.hasStatements(LAST_MODIFIED_BY)) {
+				return evaluationData.getStatements(LAST_MODIFIED_BY).get(0).getObjectLiteral().getContent();
+			}
+			return null;
+		}
+
+		public String getIucnClass() {
+			if (hasIucnClass()) {
+				return evaluationData.getStatements(RED_LIST_STATUS).get(0).getObjectLiteral().getContent();
+			}
+			return null;
+		}
+
+		public boolean hasIucnClass() {
+			return evaluationData.hasStatements(RED_LIST_STATUS);
+		}
+
+		public boolean hasCorrectedIndex() {
+			return evaluationData.hasStatements(RED_LIST_INDEX_CORRECTION);
+		}
+
+		public Integer getCorrectedIucnIndex() {
+			if (hasCorrectedIndex()) {
+				return Integer.valueOf(evaluationData.getStatements(RED_LIST_INDEX_CORRECTION).get(0).getObjectLiteral().getContent());
+			}
+			return null;
+		}
+
+		public Integer getCalculatedIucnIndex() {
+			if (!hasIucnClass()) return null;
+			String iucnClass = getIucnClass();
+			if (!CLASS_TO_INDEX.containsKey(iucnClass)) throw new UnsupportedOperationException("Unknown class " + iucnClass);
+			return CLASS_TO_INDEX.get(iucnClass);
+		}
+
+	}
+
+	public static class SpeciesInfo {
+		private final String qname;
+		private final String scientificName;
+		private final String vernacularNameFi;
+		public SpeciesInfo(String qname, String scientificName, String vernacularNameFi) {
+			this.qname = qname;
+			this.scientificName = scientificName;
+			this.vernacularNameFi = vernacularNameFi;
+		}
+		public String getQname() {
+			return qname;
+		}
+		public String getScientificName() {
+			return scientificName;
+		}
+		public String getVernacularNameFi() {
+			return vernacularNameFi;
+		}
 	}
 
 }

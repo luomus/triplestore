@@ -25,36 +25,37 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
 
-		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
-		int draftYear = Iterables.getLast(evaluationYears);
-		int selectedYear = selectedYear(req, evaluationYears, draftYear);
+		int selectedYear = selectedYear(req);
 
 		Collection<InformalTaxonGroup> groups = getTaxonomyDAO().getInformalTaxonGroups().values();
 		Map<String, TaxonGroupIucnEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
-
+		
+		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
+		
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
-				.setData("draftYear", draftYear)
+				.setData("draftYear", getDraftYear(evaluationYears))
 				.setData("selectedYear", selectedYear)
 				.setData("checklist", getTaxonomyDAO().getChecklists().get("MR.1"))
 				.setData("taxonGroups", groups)
 				.setData("taxonGroupEditors", groupEditors);
 	}
 
-	private int selectedYear(HttpServletRequest req, List<Integer> evaluationYears, int draftYear) {
+	protected int selectedYear(HttpServletRequest req) throws Exception {
 		String selectedYearParam = getId(req);
 		if (!given(selectedYearParam)) {
-			return draftYear;
+			return getDraftYear(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
 		}
 		try {
 			int selectedYear = Integer.valueOf(selectedYearParam);
-			if (!evaluationYears.contains(selectedYear)) {
-				return draftYear; 
-			}
 			return selectedYear;
 		} catch (Exception e) {
-			return draftYear;
+			throw new IllegalArgumentException("Invalid year " + selectedYearParam);
 		}
+	}
+
+	private int getDraftYear(List<Integer> allYears) throws Exception {
+		return Iterables.getLast(allYears);
 	}
 
 }

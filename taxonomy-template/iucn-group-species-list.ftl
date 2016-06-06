@@ -8,6 +8,55 @@
 <p class="info">Uhanalaisuusarviojat: <@editors group /></p>
 
 
+<table class="iucnSpeciesTable">
+	<thead>
+		<th>Tieteellinen nimi</th>
+		<th>Suomenkielinen nimi</th>
+		<th>Tila</th>
+		<th>Muokattu</th>
+		<th>Muokkaaja</th>
+		<th>Luokka</th>
+		<th>Indeksi</th>
+	</thead>
+	<tbody>
+		<#list yearData.species as species>
+			<tr class="iucnTaxonRow" id ="${species.qname}">
+				<td class="scientificName">${species.scientificName!species.qname}</td>
+				<td class="vernacularName">${species.vernacularNameFi!""}</td>
+				<#if yearData.getEvaluation(species.qname)??>
+					<#assign evaluationData = yearData.getEvaluation(species.qname)>
+					<td>
+						<#if evaluationData.ready>
+							<span class="state ready">Valmis</span>
+						<#else>
+							<span class="state started">Aloitettu</span>
+						</#if>
+					</td>
+					<td>${evaluationData.lastModified!"-"}</td>
+					<td>${evaluationData.lastModifiedBy!"-"}</td>
+					<td>${evaluationData.iucnClass!"-"}</td>
+					<td>
+						<#if evaluationData.hasIucnClass()>
+							<#if evaluationData.hasCorrectedIndex()>
+								${evaluationData.correctedIucnIndex} [KORJATTU]
+							<#else>
+								${evaluationData.calculatedIucnIndex} [laskettu]
+							</#if>
+						<#else>
+							-
+						</#if>
+					</td>
+				<#else>
+					<td><span class="state notStarted">Ei aloitettu</span> <button>NE</button></td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+					<td>-</td>
+				</#if>
+			</tr>
+		</#list>
+	</tbody>
+</table>
 
 <p class="info">Voit siirtyä katselemaan lajia klikkaamalla lajin nimeä.</p>
 

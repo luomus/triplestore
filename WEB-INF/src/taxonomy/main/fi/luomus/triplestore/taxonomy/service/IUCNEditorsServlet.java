@@ -71,7 +71,7 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 
 		getTriplestoreDAO().store(model);
 
-		getTaxonomyDAO().getIucnDAO().clearCaches();
+		getTaxonomyDAO().getIucnDAO().clearEditorCache();
 	}
 
 	private void delete(String groupEditorsQname) throws Exception {

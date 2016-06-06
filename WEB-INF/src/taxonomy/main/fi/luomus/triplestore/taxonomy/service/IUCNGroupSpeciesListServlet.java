@@ -3,6 +3,9 @@ package fi.luomus.triplestore.taxonomy.service;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
+import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearData;
+
+import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,17 +19,25 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
-		String qname = getQname(req);
-		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(qname);
+		String groupQname = groupQname(req);
+		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(groupQname);
 		if (group == null) {
 			return redirectTo404(res);
 		}
-
-		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(group.getQname().toString());
-
+		
+		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		int year = selectedYear(req);
+		EvaluationYearData evaluationYearData = getTaxonomyDAO().getIucnDAO().getTaxonGroupData(groupQname).getYear(year);
+		
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
-				.setData("groupEditors", groupEditors);
+				.setData("groupEditors", groupEditors)
+				.setData("yearData", evaluationYearData);
+	}
+
+	private String groupQname(HttpServletRequest req) {
+		String groupQname = req.getRequestURI().split(Pattern.quote("/group/"))[1].split(Pattern.quote("/"))[0];
+		return groupQname;
 	}
 
 }

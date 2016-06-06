@@ -12,6 +12,7 @@ import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData;
+import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.SpeciesInfo;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,9 +65,8 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	@Override
-	public void clearCaches() {
+	public void clearEditorCache() {
 		cachedGroupEditors.invalidate();
-		evaluationYearsCache.invalidate();
 	}
 
 	private static final SingleObjectCacheResourceInjected<List<Integer>, TriplestoreDAO> 
@@ -110,15 +109,15 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private TaxonGroupIucnEvaluationData loadGroupData(String groupQname) throws Exception {
-		Set<String> speciesOfGroup = loadSpeciesOfGroup(groupQname);
+		List<SpeciesInfo> speciesOfGroup = loadSpeciesOfGroup(groupQname);
 		TaxonGroupIucnEvaluationData data = new TaxonGroupIucnEvaluationData(new Qname(groupQname), speciesOfGroup);
 		addEvaluations(speciesOfGroup, data);
 		return data;
 	}
 
-	private void addEvaluations(Set<String> speciesOfGroup, TaxonGroupIucnEvaluationData data) throws Exception {
-		for (String speciesQname : speciesOfGroup) {
-			addEvaluations(data, speciesQname);
+	private void addEvaluations(List<SpeciesInfo> speciesOfGroup, TaxonGroupIucnEvaluationData data) throws Exception {
+		for (SpeciesInfo species : speciesOfGroup) {
+			addEvaluations(data, species.getQname());
 		}
 	}
 
@@ -142,9 +141,9 @@ public class IucnDAOImple implements IucnDAO {
 				.objectresource(speciesQname));
 	}
 
-	private Set<String> loadSpeciesOfGroup(String groupQname) throws Exception {
+	private List<SpeciesInfo> loadSpeciesOfGroup(String groupQname) throws Exception {
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
-		Set<String> speciesOfGroup = new LinkedHashSet<>();
+		List<SpeciesInfo> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
 		try {
 			client = new HttpClientService();
@@ -169,13 +168,28 @@ public class IucnDAOImple implements IucnDAO {
 		return rootTaxonsOfGroup;
 	}
 
-	private void addSpeciesOfTaxon(Set<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
+	private void addSpeciesOfTaxon(List<SpeciesInfo> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
 		System.out.println("Loading finnish species for " + rootTaxonQname);
-		URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname");
+		URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname,scientificName,vernacularNamesWithLangCodes");
 		JSONObject response = client.contentAsJson(new HttpGet(uri));
 		for (JSONObject species : response.getArray("children").iterateAsObject()) {
-			String qname = species.getObject("qname").getString("qname");
-			speciesOfGroup.add(qname);
+			SpeciesInfo speciesInfo = getSpeciesInfo(species);
+			speciesOfGroup.add(speciesInfo);
 		}
 	}
+
+	private SpeciesInfo getSpeciesInfo(JSONObject species) {
+		String qname = species.getObject("qname").getString("qname");
+		String scientificName = species.hasKey("scientificName") ? species.getString("scientificName") : null;
+		String vernacularNameFi = null;
+		for (JSONObject name : species.getArray("vernacularNamesWithLangCodes").iterateAsObject()) {
+			if (name.getString("locale").equals("fi")) {
+				vernacularNameFi = name.getString("name");
+				break;
+			}
+		}
+		SpeciesInfo speciesInfo = new SpeciesInfo(qname, scientificName, vernacularNameFi);
+		return speciesInfo;
+	}
+
 }
