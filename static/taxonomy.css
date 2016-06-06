@@ -9,6 +9,11 @@
 	font-size: 11px;
 }
 
+.speciesName {
+	font-style: italic;
+	white-space: nowrap;
+}
+
 #toolbox {
 	position: fixed;
 	top: 35px;

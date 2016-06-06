@@ -21,8 +21,16 @@
 	<tbody>
 		<#list yearData.species as species>
 			<tr class="iucnTaxonRow" id ="${species.qname}">
-				<td class="scientificName">${species.scientificName!species.qname}</td>
-				<td class="vernacularName">${species.vernacularNameFi!""}</td>
+				<td>
+					<a href="${baseURL}/iucn/species/${species.qname}">
+						<span class="scientificName speciesName">${species.scientificName!species.qname}</span>
+					</a>
+				</td>
+				<td>
+					<a href="${baseURL}/iucn/species/${species.qname}">
+						${species.vernacularNameFi!""}
+					</a>
+				</td>
 				<#if yearData.getEvaluation(species.qname)??>
 					<#assign evaluationData = yearData.getEvaluation(species.qname)>
 					<td>

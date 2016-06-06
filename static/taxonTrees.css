@@ -81,10 +81,6 @@ h3 {
 
 .unranked			{ background-color: rgb(255, 214, 214) }
 
-.speciesName {
-	font-style: italic;
-	white-space: nowrap;
-}
 .author {
 	display: inline-block;
 	max-width: 150px;
