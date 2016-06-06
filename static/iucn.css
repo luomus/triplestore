@@ -37,6 +37,12 @@
   text-align: center;
 }
 
+.iucnSpeciesTable th,  .iucnSpeciesTable td {
+  padding: 3px;
+  padding-right: 5px;
+  padding-left: 5px;
+ }
+ 
 .iucnSpeciesTable th {
   background-color: rgb(174,208,234);
 }
@@ -47,12 +53,15 @@
 .iucnSpeciesTable td:nth-child(2) {
   min-width: 140px;
 }
-.state .ready {
-  color: green;
-}
-.state .started {
-  color: rgb(99,117,133);
-}
 .state {
   color: rgb(199,217,233);
+}
+.state.ready {
+  color: green;
+}
+.state.started {
+  color: rgb(99,117,133);
+}
+.correctedIndex {
+  color: red;
 }

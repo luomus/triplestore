@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearData;
@@ -32,7 +33,9 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
 				.setData("groupEditors", groupEditors)
-				.setData("yearData", evaluationYearData);
+				.setData("yearData", evaluationYearData)
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
+				.setData("persons", getTaxonomyDAO().getPersons());
 	}
 
 	private String groupQname(HttpServletRequest req) {

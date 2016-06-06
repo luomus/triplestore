@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearData;
 import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearSpeciesData;
@@ -23,7 +24,10 @@ public class ApiIucnMarkNotEvaluatedServler extends ApiBaseServlet {
 		
 		EvaluationYearData evaluationYearData = getTaxonomyDAO().getIucnDAO().getTaxonGroupData(groupQname).getYear(year);
 		EvaluationYearSpeciesData yearSpeciesData = evaluationYearData.markNotEvaluated(speciesQname, getUser(req).getQname(), getTriplestoreDAO());
-		return new ResponseData().setViewName("iucn-species-row-update").setData("data", yearSpeciesData);
+		return new ResponseData().setViewName("iucn-species-row-update")
+				.setData("data", yearSpeciesData)
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
+				.setData("persons", getTaxonomyDAO().getPersons());
 	}
 
 }

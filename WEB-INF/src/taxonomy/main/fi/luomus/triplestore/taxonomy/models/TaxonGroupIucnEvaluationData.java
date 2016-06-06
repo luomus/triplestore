@@ -57,7 +57,7 @@ public class TaxonGroupIucnEvaluationData {
 	}
 
 	public EvaluationYearData getYear(int year) {
-		if (!years.containsKey(years)) {
+		if (!years.containsKey(year)) {
 			years.put(year, new EvaluationYearData(year, this));
 		}
 		return years.get(year);

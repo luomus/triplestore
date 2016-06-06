@@ -56,14 +56,26 @@
 			</#if>
 		</td>
 		<td>${(evaluation.lastModified?string("yyyy-MM-dd"))!"-"}</td>
-		<td>${evaluation.lastModifiedBy!"-"}</td>
-		<td>${evaluation.iucnClass!"-"}</td>
+		<td>
+			<#if evaluation.lastModifiedBy??>
+				${persons[evaluation.lastModifiedBy].fullname}
+			<#else>
+				-
+			</#if>
+		</td>
+		<td>
+			<#if evaluation.iucnClass??>
+				${statusProperty.range.getValueFor(evaluation.iucnClass).label.forLocale("fi")}
+		    <#else>
+		    	-
+		    </#if>
+		</td>
 		<td>
 			<#if evaluation.hasIucnClass()>
 				<#if evaluation.hasCorrectedIndex()>
-					${evaluation.correctedIucnIndex} [KORJATTU]
+					${evaluation.correctedIucnIndex}<span class="correctedIndex">[KORJATTU]</span>
 				<#else>
-					${evaluation.calculatedIucnIndex} [laskettu]
+					${evaluation.calculatedIucnIndex}
 				</#if>
 			<#else>
 				-
