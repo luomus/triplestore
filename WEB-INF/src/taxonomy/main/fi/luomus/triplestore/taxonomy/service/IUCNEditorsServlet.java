@@ -32,7 +32,7 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 		if (group == null) {
 			return redirectTo404(res);
 		}
-		TaxonGroupIucnEditors groupEditors = getGroupEditors().get(group.getQname().toString());
+		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(group.getQname().toString());
 		return responseData.setViewName("iucn-editors")
 				.setData("group", group)
 				.setData("groupEditors", groupEditors);
@@ -71,7 +71,7 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 
 		getTriplestoreDAO().store(model);
 
-		clearCaches();
+		getTaxonomyDAO().getIucnDAO().clearCaches();
 	}
 
 	private void delete(String groupEditorsQname) throws Exception {

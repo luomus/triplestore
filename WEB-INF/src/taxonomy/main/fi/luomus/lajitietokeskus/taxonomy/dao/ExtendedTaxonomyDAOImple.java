@@ -64,9 +64,11 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
 	private final Cached<Qname, Set<Qname>> cachedSynonyms = new Cached<Qname, Set<Qname>>(new SynonymLoader(), 1*60*60, 5000);
 	private final TriplestoreDAO triplestoreDAO;
+	private final Config config;
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO) {
 		super(config, 60 * 5, 20);
+		this.config = config;
 		this.triplestoreDAO = triplestoreDAO;
 	}
 
@@ -408,6 +410,11 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private static Document initResults() {
 		Document results = new Document("results");
 		return results;
+	}
+
+	@Override
+	public IucnDAO getIucnDAO() {
+		return new IucnDAOImple(config, triplestoreDAO);
 	}
 
 }

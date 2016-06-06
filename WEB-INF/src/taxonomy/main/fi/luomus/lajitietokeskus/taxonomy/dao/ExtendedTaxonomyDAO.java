@@ -19,4 +19,6 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
 	public void addOccurrences(EditableTaxon taxon);
 
+	public IucnDAO getIucnDAO();
+	
 }

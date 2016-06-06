@@ -22,7 +22,7 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 			return redirectTo404(res);
 		}
 
-		TaxonGroupIucnEditors groupEditors = getGroupEditors().get(group.getQname().toString());
+		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(group.getQname().toString());
 
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
