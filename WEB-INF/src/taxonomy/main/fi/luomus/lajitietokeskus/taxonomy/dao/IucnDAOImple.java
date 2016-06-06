@@ -142,6 +142,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<SpeciesInfo> loadSpeciesOfGroup(String groupQname) throws Exception {
+		if (config.developmentMode() && !groupQname.equals("MVL.27")) return Collections.emptyList();
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
 		List<SpeciesInfo> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;

@@ -36,4 +36,44 @@
 	</#if>
 </#macro>
 
-				
+<#macro speciesRow species evaluation="NOT STARTED">
+	<td>
+		<a href="${baseURL}/iucn/species/${species.qname}">
+			<span class="scientificName speciesName">${species.scientificName!species.qname}</span>
+		</a>
+	</td>
+	<td>
+		<a href="${baseURL}/iucn/species/${species.qname}">
+			${species.vernacularNameFi!""}
+		</a>
+	</td>
+	<#if evaluation != "NOT STARTED">
+		<td>
+			<#if evaluation.ready>
+				<span class="state ready">Valmis</span>
+			<#else>
+				<span class="state started">Aloitettu</span>
+			</#if>
+		</td>
+		<td>${(evaluation.lastModified?string("yyyy-MM-dd"))!"-"}</td>
+		<td>${evaluation.lastModifiedBy!"-"}</td>
+		<td>${evaluation.iucnClass!"-"}</td>
+		<td>
+			<#if evaluation.hasIucnClass()>
+				<#if evaluation.hasCorrectedIndex()>
+					${evaluation.correctedIucnIndex} [KORJATTU]
+				<#else>
+					${evaluation.calculatedIucnIndex} [laskettu]
+				</#if>
+			<#else>
+				-
+			</#if>
+		</td>
+	<#else>
+		<td><span class="state notStarted">Ei aloitettu</span> <button class="markNEButton">NE</button></td>
+		<td>-</td>
+		<td>-</td>
+		<td>-</td>
+		<td>-</td>
+	</#if>
+</#macro>

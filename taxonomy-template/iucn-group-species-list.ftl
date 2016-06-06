@@ -20,52 +20,30 @@
 	</thead>
 	<tbody>
 		<#list yearData.species as species>
-			<tr class="iucnTaxonRow" id ="${species.qname}">
-				<td>
-					<a href="${baseURL}/iucn/species/${species.qname}">
-						<span class="scientificName speciesName">${species.scientificName!species.qname}</span>
-					</a>
-				</td>
-				<td>
-					<a href="${baseURL}/iucn/species/${species.qname}">
-						${species.vernacularNameFi!""}
-					</a>
-				</td>
-				<#if yearData.getEvaluation(species.qname)??>
-					<#assign evaluationData = yearData.getEvaluation(species.qname)>
-					<td>
-						<#if evaluationData.ready>
-							<span class="state ready">Valmis</span>
-						<#else>
-							<span class="state started">Aloitettu</span>
-						</#if>
-					</td>
-					<td>${evaluationData.lastModified!"-"}</td>
-					<td>${evaluationData.lastModifiedBy!"-"}</td>
-					<td>${evaluationData.iucnClass!"-"}</td>
-					<td>
-						<#if evaluationData.hasIucnClass()>
-							<#if evaluationData.hasCorrectedIndex()>
-								${evaluationData.correctedIucnIndex} [KORJATTU]
-							<#else>
-								${evaluationData.calculatedIucnIndex} [laskettu]
-							</#if>
-						<#else>
-							-
-						</#if>
-					</td>
-				<#else>
-					<td><span class="state notStarted">Ei aloitettu</span> <button>NE</button></td>
-					<td>-</td>
-					<td>-</td>
-					<td>-</td>
-					<td>-</td>
-				</#if>
+			<tr class="iucnTaxonRow" id="${species.qname}">
+				<@speciesRow species yearData.getEvaluation(species.qname) />
 			</tr>
 		</#list>
 	</tbody>
 </table>
 
 <p class="info">Voit siirtyä katselemaan lajia klikkaamalla lajin nimeä.</p>
+
+<script>
+$(function() {
+
+	$(".markNEButton").on('click', function() {
+		var row = $(this).closest('tr');
+		var speciesQname = row.attr('id');
+		$.post('${baseURL}/api/iucn-mark-not-evaluated?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}', function(data) {
+			row.fadeOut('slow', function () {
+				row.html(data);
+				row.fadeIn('slow');
+			});
+		});
+	});
+	
+});
+</script>
 
 <#include "luomus-footer.ftl">
