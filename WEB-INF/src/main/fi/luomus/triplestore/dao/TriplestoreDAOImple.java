@@ -297,7 +297,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Model model = new Model(group.getQname());
 		model.setType("MVL.informalTaxonGroup");
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
-			model.addStamentIfObjectGiven("rdfs:label", e.getValue(), e.getKey());
+			model.addStamentIfObjectGiven("MVL.name", e.getValue(), e.getKey());
 		}
 		store(model);
 		return group;
