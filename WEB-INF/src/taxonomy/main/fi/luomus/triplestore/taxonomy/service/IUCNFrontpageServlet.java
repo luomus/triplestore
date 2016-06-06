@@ -1,10 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -19,19 +18,13 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	private static final long serialVersionUID = 3517803575719451136L;
 
-	protected static final String IUCN_NAMESPACE = "MKV";
-
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
-
 		int selectedYear = selectedYear(req);
-
-		Collection<InformalTaxonGroup> groups = getTaxonomyDAO().getInformalTaxonGroups().values();
-		Map<String, TaxonGroupIucnEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
-		
+		Map<String, InformalTaxonGroup> groups = getTaxonomyDAO().getInformalTaxonGroups();
 		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
-		
+		Map<String, List<Qname>> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
 				.setData("draftYear", getDraftYear(evaluationYears))

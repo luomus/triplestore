@@ -81,13 +81,7 @@ h3 {
 
 .unranked			{ background-color: rgb(255, 214, 214) }
 
-.author {
-	display: inline-block;
-	max-width: 150px;
-	font-size: 10px;
-	padding-left: 7px;
-	padding-right: 7px;
-}
+
 .taxonRank {
 	color: #515151;
 	padding-right: 5px;

@@ -37,10 +37,12 @@
   text-align: center;
 }
 
-.iucnSpeciesTable th,  .iucnSpeciesTable td {
+.iucnSpeciesTable th, .iucnSpeciesTable td {
   padding: 3px;
   padding-right: 5px;
   padding-left: 5px;
+  border: 1px solid #ddd;
+  border-bottom: 1px solid grey;
  }
  
 .iucnSpeciesTable th {
@@ -64,4 +66,11 @@
 }
 .correctedIndex {
   color: red;
+}
+
+.goBack {
+  display: inline-block;
+}
+.goBack:before {
+  content: "«";
 }

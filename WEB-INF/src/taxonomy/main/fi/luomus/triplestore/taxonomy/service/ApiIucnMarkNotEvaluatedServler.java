@@ -1,9 +1,10 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearSpeciesData;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +22,17 @@ public class ApiIucnMarkNotEvaluatedServler extends ApiBaseServlet {
 		int year = Integer.valueOf(req.getParameter("year"));
 		if (!given(speciesQname)) return redirectTo500(res);
 		if (!given(groupQname)) return redirectTo500(res);
+		Qname editor = getUser(req).getQname();
+
+		IUCNEvaluation evaluation = getTaxonomyDAO().getIucnDAO().getIUCNContainer().markNotEvaluated(speciesQname, year, editor);
+		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(evaluation.getSpeciesQname());
 		
-		EvaluationYearData evaluationYearData = getTaxonomyDAO().getIucnDAO().getTaxonGroupData(groupQname).getYear(year);
-		EvaluationYearSpeciesData yearSpeciesData = evaluationYearData.markNotEvaluated(speciesQname, getUser(req).getQname(), getTriplestoreDAO());
 		return new ResponseData().setViewName("iucn-species-row-update")
-				.setData("data", yearSpeciesData)
+				.setData("evaluation", evaluation)
+				.setData("target", target)
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
-				.setData("persons", getTaxonomyDAO().getPersons());
+				.setData("persons", getTaxonomyDAO().getPersons())
+				.setData("selectedYear", year);
 	}
 
 }

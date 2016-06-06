@@ -2,10 +2,11 @@ package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.EvaluationYearData;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -25,15 +26,14 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 		if (group == null) {
 			return redirectTo404(res);
 		}
-		
-		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
-		int year = selectedYear(req);
-		EvaluationYearData evaluationYearData = getTaxonomyDAO().getIucnDAO().getTaxonGroupData(groupQname).getYear(year);
-		
+
+		List<Qname> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		List<IUCNEvaluationTarget> targets = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTargetsOfGroup(groupQname);
+
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
 				.setData("groupEditors", groupEditors)
-				.setData("yearData", evaluationYearData)
+				.setData("targets", targets)
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
 				.setData("persons", getTaxonomyDAO().getPersons());
 	}

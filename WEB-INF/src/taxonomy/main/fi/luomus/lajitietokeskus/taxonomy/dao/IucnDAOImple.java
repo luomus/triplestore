@@ -6,13 +6,15 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
-import fi.luomus.commons.utils.SingleObjectCacheResourceInjected.CacheLoader;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.utils.SingleObjectCache;
+import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData.SpeciesInfo;
+import fi.luomus.triplestore.taxonomy.models.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -30,25 +32,29 @@ public class IucnDAOImple implements IucnDAO {
 
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
+	private final TaxonomyDAO taxonomyDAO;
+	private final IUCNContainer container;
 
-	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO) {
+	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO) {
 		this.config = config;
 		this.triplestoreDAO = triplestoreDAO;
+		this.taxonomyDAO = taxonomyDAO;
+		this.container = new IUCNContainer(triplestoreDAO, this);
 	}
 
-	private static final SingleObjectCacheResourceInjected<Map<String, TaxonGroupIucnEditors>, TriplestoreDAO> 
+	private final SingleObjectCache<Map<String, List<Qname>>> 
 	cachedGroupEditors = 
-	new SingleObjectCacheResourceInjected<>(
-			new CacheLoader<Map<String, TaxonGroupIucnEditors>, TriplestoreDAO>() {
+	new SingleObjectCache<>(
+			new CacheLoader<Map<String, List<Qname>>>() {
 				@Override
-				public Map<String, TaxonGroupIucnEditors> load(TriplestoreDAO dao) {
+				public Map<String, List<Qname>> load() {
 					try {
-						Map<String,TaxonGroupIucnEditors> map = new HashMap<>();
-						for (Model m : dao.getSearchDAO().search("rdf:type", "MKV.taxonGroupIucnEditors")) {
+						Map<String, List<Qname>> map = new HashMap<>();
+						for (Model m : triplestoreDAO.getSearchDAO().search("rdf:type", "MKV.taxonGroupIucnEditors")) {
 							String groupQname = m.getStatements("MKV.taxonGroup").get(0).getObjectResource().getQname();
-							TaxonGroupIucnEditors groupEditors = new TaxonGroupIucnEditors(new Qname(m.getSubject().getQname()), new Qname(groupQname));
+							List<Qname> groupEditors = new ArrayList<>();
 							for (Statement editor : m.getStatements("MKV.iucnEditor")) {
-								groupEditors.addEditor(new Qname(editor.getObjectResource().getQname()));
+								groupEditors.add(new Qname(editor.getObjectResource().getQname()));
 							}
 							map.put(groupQname, groupEditors);
 						}
@@ -60,8 +66,8 @@ public class IucnDAOImple implements IucnDAO {
 			}, 5*60);
 
 	@Override
-	public Map<String, TaxonGroupIucnEditors> getGroupEditors() throws Exception {
-		return cachedGroupEditors.get(triplestoreDAO);
+	public Map<String, List<Qname>> getGroupEditors() throws Exception {
+		return cachedGroupEditors.get();
 	}
 
 	@Override
@@ -69,15 +75,15 @@ public class IucnDAOImple implements IucnDAO {
 		cachedGroupEditors.invalidate();
 	}
 
-	private static final SingleObjectCacheResourceInjected<List<Integer>, TriplestoreDAO> 
+	private final SingleObjectCache<List<Integer>> 
 	evaluationYearsCache = 
-	new SingleObjectCacheResourceInjected<>(
-			new CacheLoader<List<Integer>, TriplestoreDAO>() {
+	new SingleObjectCache<>(
+			new CacheLoader<List<Integer>>() {
 				@Override
-				public List<Integer> load(TriplestoreDAO dao) {
+				public List<Integer> load() {
 					List<Integer> evaluationYears = new ArrayList<>();
 					try {
-						for (Model m : dao.getSearchDAO().search("rdf:type", "MKV.iucnRedListEvaluationYear")) {
+						for (Model m : triplestoreDAO.getSearchDAO().search("rdf:type", "MKV.iucnRedListEvaluationYear")) {
 							int year = Integer.valueOf(m.getStatements("MKV.evaluationYear").get(0).getObjectLiteral().getContent());
 							evaluationYears.add(year);
 						}
@@ -91,60 +97,18 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public List<Integer> getEvaluationYears() throws Exception {
-		return evaluationYearsCache.get(triplestoreDAO);
+		return evaluationYearsCache.get();
 	}
-
-	private static final Map<String, TaxonGroupIucnEvaluationData> taxonGroupData = new HashMap<>();
-	private static final Object LOCK = new Object();
 
 	@Override
-	public TaxonGroupIucnEvaluationData getTaxonGroupData(String groupQname) throws Exception {
-		if (taxonGroupData.containsKey(groupQname)) return taxonGroupData.get(groupQname);
-		synchronized (LOCK) {
-			if (taxonGroupData.containsKey(groupQname)) return taxonGroupData.get(groupQname);
-			TaxonGroupIucnEvaluationData groupData = loadGroupData(groupQname);
-			taxonGroupData.put(groupQname, groupData);
-			return groupData;
-		}
+	public IUCNContainer getIUCNContainer() {
+		return container;
 	}
 
-	private TaxonGroupIucnEvaluationData loadGroupData(String groupQname) throws Exception {
-		List<SpeciesInfo> speciesOfGroup = loadSpeciesOfGroup(groupQname);
-		TaxonGroupIucnEvaluationData data = new TaxonGroupIucnEvaluationData(new Qname(groupQname), speciesOfGroup);
-		addEvaluations(speciesOfGroup, data);
-		return data;
-	}
-
-	private void addEvaluations(List<SpeciesInfo> speciesOfGroup, TaxonGroupIucnEvaluationData data) throws Exception {
-		for (SpeciesInfo species : speciesOfGroup) {
-			addEvaluations(data, species.getQname());
-		}
-	}
-
-	private void addEvaluations(TaxonGroupIucnEvaluationData data, String speciesQname) throws Exception {
-		Collection<Model> evaluations = getEvaluations(speciesQname);
-		for (Model evaluation : evaluations) {
-			int year = getEvaluationYear(evaluation);
-			data.getYear(year).setEvaluation(speciesQname, evaluation);
-		}
-	}
-
-	private int getEvaluationYear(Model evaluation) {
-		return Integer.valueOf(evaluation.getStatements("MKV.evaluationYear").get(0).getObjectLiteral().getContent());
-	}
-
-	private Collection<Model> getEvaluations(String speciesQname) throws Exception {
-		return triplestoreDAO.getSearchDAO().search(
-				new SearchParams(Integer.MAX_VALUE, 0)
-				.type("MKV.iucnRedListEvaluation")
-				.predicate("MKV.evaluatedTaxon")
-				.objectresource(speciesQname));
-	}
-
-	private List<SpeciesInfo> loadSpeciesOfGroup(String groupQname) throws Exception {
-		if (config.developmentMode() && !groupQname.equals("MVL.27")) return Collections.emptyList();
+	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
+		if (config.developmentMode() && !groupQname.equals("MVL.27")) return Collections.emptyList(); //XXX
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
-		List<SpeciesInfo> speciesOfGroup = new ArrayList<>();
+		List<String> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
 		try {
 			client = new HttpClientService();
@@ -169,28 +133,31 @@ public class IucnDAOImple implements IucnDAO {
 		return rootTaxonsOfGroup;
 	}
 
-	private void addSpeciesOfTaxon(List<SpeciesInfo> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
+	private void addSpeciesOfTaxon(List<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
 		System.out.println("Loading finnish species for " + rootTaxonQname);
-		URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname,scientificName,vernacularNamesWithLangCodes");
+		URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname");
 		JSONObject response = client.contentAsJson(new HttpGet(uri));
 		for (JSONObject species : response.getArray("children").iterateAsObject()) {
-			SpeciesInfo speciesInfo = getSpeciesInfo(species);
-			speciesOfGroup.add(speciesInfo);
+			String qname = species.getObject("qname").getString("qname");
+			speciesOfGroup.add(qname);
 		}
 	}
 
-	private SpeciesInfo getSpeciesInfo(JSONObject species) {
-		String qname = species.getObject("qname").getString("qname");
-		String scientificName = species.hasKey("scientificName") ? species.getString("scientificName") : null;
-		String vernacularNameFi = null;
-		for (JSONObject name : species.getArray("vernacularNamesWithLangCodes").iterateAsObject()) {
-			if (name.getString("locale").equals("fi")) {
-				vernacularNameFi = name.getString("name");
-				break;
-			}
+	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
+		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
+		IUCNEvaluationTarget target = new IUCNEvaluationTarget(speciesQname, taxon.getScientificName(), taxon.getVernacularName("fi"), container);
+		for (Model evaluation : getEvaluations(speciesQname)) {
+			target.setEvaluation(new IUCNEvaluation(evaluation));
 		}
-		SpeciesInfo speciesInfo = new SpeciesInfo(qname, scientificName, vernacularNameFi);
-		return speciesInfo;
+		return target;
+	}
+
+	private Collection<Model> getEvaluations(String speciesQname) throws Exception {
+		return triplestoreDAO.getSearchDAO().search(
+				new SearchParams(Integer.MAX_VALUE, 0)
+				.type("MKV.iucnRedListEvaluation")
+				.predicate("MKV.evaluatedTaxon")
+				.objectresource(speciesQname));
 	}
 
 }

@@ -1,11 +1,13 @@
 <#include "luomus-header.ftl">
 <#include "iucn-macro.ftl">
 
+<a href="${baseURL}/iucn/${selectedYear}" class="goBack">Takaisin</a>
+
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 <@toolbox/>
 
 <h2>${group.name.forLocale("fi")!""}</h2>
-<p class="info">Uhanalaisuusarviojat: <@editors group /></p>
+<p class="info">Uhanalaisuusarviojat: <@editors group.qname.toString() /></p>
 
 
 <table class="iucnSpeciesTable">
@@ -19,9 +21,9 @@
 		<th>Indeksi</th>
 	</thead>
 	<tbody>
-		<#list yearData.species as species>
-			<tr class="iucnTaxonRow" id="${species.qname}">
-				<@speciesRow species yearData.getEvaluation(species.qname) />
+		<#list targets as target>
+			<tr class="iucnTaxonRow" id="${target.qname}">
+				<@speciesRow target target.getEvaluation(selectedYear) />
 			</tr>
 		</#list>
 	</tbody>

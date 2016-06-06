@@ -15,7 +15,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<#list taxonGroups as taxonGroup>
+		<#list taxonGroups?values as taxonGroup>
 		<tr>
 			<td>
 				<a href="${baseURL}/iucn/group/${taxonGroup.qname}/${selectedYear}">
@@ -26,7 +26,7 @@
 				<@loadingSpinner "" />
 			</td>
 			<td>
-				<@editors taxonGroup />
+				<@editors taxonGroup.qname.toString() />
 			</td>
 			<#if user.isAdmin??><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
 		</tr>
@@ -41,7 +41,7 @@ $(function() {
 	$(".taxonGroupStat").each(function() {
 		var groupQname = $(this).attr("id");
 		var groupStatElement = $(this);
-		$.get("${baseURL}/api/iucn-data/"+groupQname+"?year=${selectedYear}", function(data) {
+		$.get("${baseURL}/api/iucn-stat/"+groupQname+"?year=${selectedYear}", function(data) {
 			groupStatElement.html(data);
 		});
 	});

@@ -1,14 +1,14 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEvaluationData;
+import fi.luomus.triplestore.taxonomy.models.IUCNYearlyGroupStat;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-data/*"})
-public class ApiIucnDataServlet extends ApiBaseServlet {
+@WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-stat/*"})
+public class ApiIucnGroupStatServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -3859060737786587345L;
 
@@ -17,9 +17,10 @@ public class ApiIucnDataServlet extends ApiBaseServlet {
 		String groupQname = getId(req);
 		int year = Integer.valueOf(req.getParameter("year"));
 		if (!given(groupQname)) return redirectTo404(res);
-		TaxonGroupIucnEvaluationData data = getTaxonomyDAO().getIucnDAO().getTaxonGroupData(groupQname);
 
-		return new ResponseData().setViewName("iucn-stat").setData("data", data).setData("year", year);
+		IUCNYearlyGroupStat stat = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getStat(year, groupQname);
+
+		return new ResponseData().setViewName("iucn-stat").setData("stat", stat);
 	}
 
 }

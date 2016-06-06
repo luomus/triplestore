@@ -4,10 +4,11 @@ import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.TaxonGroupIucnEditors;
+import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +28,16 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins.");
 		ResponseData responseData = initResponseData(req);
-		String qname = getQname(req);
-		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(qname);
+		String groupQname = getQname(req);
+		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(groupQname);
 		if (group == null) {
 			return redirectTo404(res);
 		}
-		TaxonGroupIucnEditors groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(group.getQname().toString());
+		List<Qname> editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+
 		return responseData.setViewName("iucn-editors")
 				.setData("group", group)
-				.setData("groupEditors", groupEditors);
+				.setData("editors", editors);
 	}
 
 	@Override
@@ -92,7 +94,7 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 		if (given(groupEditorsQname)) {
 			model = getTriplestoreDAO().get(groupEditorsQname);
 		} else {
-			model = new Model(getTriplestoreDAO().getSeqNextValAndAddResource(IUCN_NAMESPACE));
+			model = new Model(getTriplestoreDAO().getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE));
 			model.setType("MKV.taxonGroupIucnEditors");
 			model.addStatement(new Statement(TAXON_GROUP_PREDICATE, new ObjectResource(groupQname)));
 		}

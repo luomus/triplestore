@@ -1,13 +1,10 @@
-<#assign groupSpeciesCount = data.speciesOfGroup?size>
-<#assign readyCount = data.getYear(year).readyCount>
-<#if groupSpeciesCount != 0>
-	<#assign percent = (readyCount/groupSpeciesCount*100)?ceiling >
+<#if stat.speciesOfGroupCount != 0>
+	<#assign percent = (stat.readyCount/stat.speciesOfGroupCount*100)?floor>
 <#else>
 	<#assign percent = 0>
 </#if>
-
-<span class="stat ready">${readyCount}</span> 
+<span class="stat ready">${stat.readyCount}</span> 
 /
-<span class="stat <#if (percent>=100)>ready<#else>total</#if>">${groupSpeciesCount}</span>
+<span class="stat <#if (percent>=100)>ready<#else>total</#if>">${stat.speciesOfGroupCount}</span>
 <span class="stat <#if (percent>=100)>ready<#else>total</#if>">${percent}%</span>
 

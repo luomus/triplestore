@@ -26,9 +26,9 @@
 		</div>
 </#macro>
 
-<#macro editors group>
-	<#if taxonGroupEditors[group.qname.toString()]?? && taxonGroupEditors[group.qname.toString()].editors?has_content>
-		<#list taxonGroupEditors[group.qname.toString()].editors as editor>
+<#macro editors groupQname>
+	<#if taxonGroupEditors[groupQname]?? && taxonGroupEditors[groupQname]?has_content>
+		<#list taxonGroupEditors[groupQname] as editor>
 			${persons[editor.toString()].fullname}<#if editor_has_next>, </#if>
 		</#list>
 	<#else>
@@ -36,15 +36,15 @@
 	</#if>
 </#macro>
 
-<#macro speciesRow species evaluation="NOT STARTED">
+<#macro speciesRow target evaluation="NOT STARTED">
 	<td>
-		<a href="${baseURL}/iucn/species/${species.qname}">
-			<span class="scientificName speciesName">${species.scientificName!species.qname}</span>
+		<a href="${baseURL}/iucn/species/${target.qname}/${selectedYear}">
+			<span class="scientificName speciesName">${target.scientificName!target.qname}</span>
 		</a>
 	</td>
 	<td>
-		<a href="${baseURL}/iucn/species/${species.qname}">
-			${species.vernacularNameFi!""}
+		<a href="${baseURL}/iucn/species/${target.qname}/${selectedYear}">
+			${target.vernacularNameFi!""}
 		</a>
 	</td>
 	<#if evaluation != "NOT STARTED">
@@ -55,7 +55,7 @@
 				<span class="state started">Aloitettu</span>
 			</#if>
 		</td>
-		<td>${(evaluation.lastModified?string("yyyy-MM-dd"))!"-"}</td>
+		<td>${(evaluation.lastModified?string("d.M.yyyy"))!"-"}</td>
 		<td>
 			<#if evaluation.lastModifiedBy??>
 				${persons[evaluation.lastModifiedBy].fullname}
