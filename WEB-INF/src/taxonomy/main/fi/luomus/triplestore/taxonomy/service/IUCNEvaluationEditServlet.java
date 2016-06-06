@@ -31,7 +31,8 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 				.setData("taxon", taxon)
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
-				.setData("properties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"));
+				.setData("properties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"))
+				.setData("taxonProperties", getTriplestoreDAO().getProperties("MX.taxon"));
 	}
 
 	private IUCNEvaluation getComparisonData(IUCNEvaluationTarget target, int year) throws Exception {

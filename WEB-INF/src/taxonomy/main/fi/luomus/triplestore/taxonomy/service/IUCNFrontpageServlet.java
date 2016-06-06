@@ -43,7 +43,7 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 			int selectedYear = Integer.valueOf(selectedYearParam);
 			return selectedYear;
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Invalid year " + selectedYearParam);
+			return getDraftYear(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
 		}
 	}
 

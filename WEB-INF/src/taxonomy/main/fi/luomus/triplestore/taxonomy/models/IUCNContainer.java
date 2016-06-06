@@ -56,7 +56,7 @@ public class IUCNContainer {
 
 	public List<String> getGroupsOfTarget(String speciesQname) {
 		synchronized (LOCK) {
-			if (!groupsOfTarget.containsKey(speciesQname)) throw new IllegalStateException("Group not loaded yet for " + speciesQname);
+			if (!groupsOfTarget.containsKey(speciesQname)) return Collections.emptyList();
 			return Collections.unmodifiableList(groupsOfTarget.get(speciesQname));
 		}
 	}
