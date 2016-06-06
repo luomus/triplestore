@@ -8,7 +8,7 @@
 	<h1>Create a new informal group</h1>
 	<form action="${baseURL}/informalGroups/add" method="post" id="groupForm">
 <#else>
-	<h1>Modify informal group "${group.name.forLocale("en")}"</h1>
+	<h1>Modify informal group "${group.name.forLocale("en")!""}"</h1>
 	<form action="${baseURL}/informalGroups/${group.qname}" method="post" id="groupForm">
 </#if>
 
