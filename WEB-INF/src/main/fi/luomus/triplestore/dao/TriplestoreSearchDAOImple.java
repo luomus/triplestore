@@ -160,10 +160,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void predicates(List<String> oreducates, List<String> values, StringBuilder query) {
-		if (oreducates.isEmpty()) return;
+	private void predicates(List<String> predicates, List<String> values, StringBuilder query) {
+		if (predicates.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String predicate : oreducates) {
+		for (String predicate : predicates) {
 			if (predicate.startsWith("http:")) {
 				query.append(" OR predicateuri = ? ");
 			} else {
