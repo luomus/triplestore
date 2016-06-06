@@ -105,6 +105,8 @@ public class IucnDAOImple implements IucnDAO {
 		return container;
 	}
 
+	private static final Object LOCK = new Object();
+
 	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
 		if (config.developmentMode() && !groupQname.equals("MVL.27")) return Collections.emptyList(); //XXX
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
@@ -135,11 +137,13 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void addSpeciesOfTaxon(List<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
 		System.out.println("Loading finnish species for " + rootTaxonQname);
-		URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname");
-		JSONObject response = client.contentAsJson(new HttpGet(uri));
-		for (JSONObject species : response.getArray("children").iterateAsObject()) {
-			String qname = species.getObject("qname").getString("qname");
-			speciesOfGroup.add(qname);
+		synchronized (LOCK) {
+			URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname");
+			JSONObject response = client.contentAsJson(new HttpGet(uri));
+			for (JSONObject species : response.getArray("children").iterateAsObject()) {
+				String qname = species.getObject("qname").getString("qname");
+				speciesOfGroup.add(qname);
+			}
 		}
 	}
 

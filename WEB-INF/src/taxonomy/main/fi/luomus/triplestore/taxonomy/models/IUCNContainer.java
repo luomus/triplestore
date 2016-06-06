@@ -18,6 +18,7 @@ public class IUCNContainer {
 	private final Map<String, List<IUCNEvaluationTarget>> targetsOfGroup = new HashMap<>();
 	private final Map<String, List<String>> groupsOfTarget = new HashMap<>();
 	private final Map<String, IUCNEvaluationTarget> targets = new HashMap<>();
+	private static final Object LOCK = new Object();
 
 	public IUCNContainer(TriplestoreDAO triplestoreDAO, IucnDAOImple iucnDAO) {
 		this.triplestoreDAO = triplestoreDAO;
@@ -26,57 +27,71 @@ public class IUCNContainer {
 
 	public IUCNEvaluationTarget getTarget(String speciesQname) throws Exception {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
-		IUCNEvaluationTarget target = iucnDAO.loadTarget(speciesQname);
-		targets.put(speciesQname, target);
-		return target;
+		synchronized (LOCK) {
+			if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
+			IUCNEvaluationTarget target = iucnDAO.loadTarget(speciesQname);
+			targets.put(speciesQname, target);
+			return target;
+		}
 	}
 
 	public List<IUCNEvaluationTarget> getTargetsOfGroup(String groupQname) throws Exception {
 		if (targetsOfGroup.containsKey(groupQname)) return targetsOfGroup.get(groupQname);
-		List<IUCNEvaluationTarget> targets = new ArrayList<>();
-		for (String speciesQname : iucnDAO.loadSpeciesOfGroup(groupQname)) {
-			targets.add(getTarget(speciesQname));
-			if (!groupsOfTarget.containsKey(speciesQname)) {
-				groupsOfTarget.put(speciesQname, new ArrayList<String>());
+		synchronized (LOCK) {
+			if (targetsOfGroup.containsKey(groupQname)) return targetsOfGroup.get(groupQname);
+			List<IUCNEvaluationTarget> targets = new ArrayList<>();
+			for (String speciesQname : iucnDAO.loadSpeciesOfGroup(groupQname)) {
+				targets.add(getTarget(speciesQname));
+				if (!groupsOfTarget.containsKey(speciesQname)) {
+					groupsOfTarget.put(speciesQname, new ArrayList<String>());
+				}
+				if (!groupsOfTarget.get(speciesQname).contains(groupQname)) {
+					groupsOfTarget.get(speciesQname).add(groupQname);
+				}
 			}
-			if (!groupsOfTarget.get(speciesQname).contains(groupQname)) {
-				groupsOfTarget.get(speciesQname).add(groupQname);
-			}
+			targetsOfGroup.put(groupQname, Collections.unmodifiableList(targets));
+			return targetsOfGroup.get(groupQname);
 		}
-		targetsOfGroup.put(groupQname, Collections.unmodifiableList(targets));
-		return targetsOfGroup.get(groupQname);
 	}
 
 	public List<String> getGroupsOfTarget(String speciesQname) {
-		if (!groupsOfTarget.containsKey(speciesQname)) throw new IllegalStateException("Group not loaded yet for " + speciesQname);
-		return Collections.unmodifiableList(groupsOfTarget.get(speciesQname));
+		synchronized (LOCK) {
+			if (!groupsOfTarget.containsKey(speciesQname)) throw new IllegalStateException("Group not loaded yet for " + speciesQname);
+			return Collections.unmodifiableList(groupsOfTarget.get(speciesQname));
+		}
 	}
 
 	public IUCNYearlyGroupStat getStat(int year, String groupQname) {
-		if (!stats.containsKey(year)) {
-			stats.put(year, new HashMap<String, IUCNYearlyGroupStat>());
+		synchronized (LOCK) {
+			if (!stats.containsKey(year)) {
+				stats.put(year, new HashMap<String, IUCNYearlyGroupStat>());
+			}
+			if (!stats.get(year).containsKey(groupQname)) {
+				stats.get(year).put(groupQname, new IUCNYearlyGroupStat(year, groupQname, this));
+			}
+			return stats.get(year).get(groupQname);
 		}
-		if (!stats.get(year).containsKey(groupQname)) {
-			stats.get(year).put(groupQname, new IUCNYearlyGroupStat(year, groupQname, this));
-		}
-		return stats.get(year).get(groupQname);
 	}
 
 	public void setEvaluation(IUCNEvaluation evaluation) throws Exception {
-		String speciesQname = evaluation.getSpeciesQname();
-		IUCNEvaluationTarget target = getTarget(speciesQname);
-		target.setEvaluation(evaluation);
-		for (String groupQname : target.getGroups()) {
-			getStat(evaluation.getYear(), groupQname).invalidate();
+		synchronized (LOCK) {
+			String speciesQname = evaluation.getSpeciesQname();
+			IUCNEvaluationTarget target = getTarget(speciesQname);
+			target.setEvaluation(evaluation);
+			for (String groupQname : target.getGroups()) {
+				getStat(evaluation.getYear(), groupQname).invalidate();
+			}
 		}
 	}
 
 	public IUCNEvaluation markNotEvaluated(String speciesQname, int year, Qname editorQname) throws Exception {
-		Qname evaluationId = triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
-		IUCNEvaluation evaluation = IUCNEvaluation.notEvaluated(evaluationId, speciesQname, year, editorQname);
-		triplestoreDAO.store(evaluation.getModel());
-		this.setEvaluation(evaluation);
-		return evaluation;
+		synchronized (LOCK) {
+			Qname evaluationId = triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
+			IUCNEvaluation evaluation = IUCNEvaluation.notEvaluated(evaluationId, speciesQname, year, editorQname);
+			triplestoreDAO.store(evaluation.getModel());
+			this.setEvaluation(evaluation);
+			return evaluation;	
+		}
 	}
 
 }
