@@ -64,14 +64,14 @@
 			</#if>
 		</td>
 		<td>
-			<#if evaluation.iucnClass??>
-				${statusProperty.range.getValueFor(evaluation.iucnClass).label.forLocale("fi")}
+			<#if evaluation.hasIucnStatus()>
+				${statusProperty.range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
 		    <#else>
 		    	-
 		    </#if>
 		</td>
 		<td>
-			<#if evaluation.hasIucnClass()>
+			<#if evaluation.hasIucnStatus()>
 				<#if evaluation.hasCorrectedIndex()>
 					${evaluation.correctedIucnIndex}<span class="correctedIndex">[KORJATTU]</span>
 				<#else>

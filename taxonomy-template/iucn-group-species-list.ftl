@@ -6,10 +6,42 @@
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 <@toolbox/>
 
+<div style="max-width:600px;">
+<p style="float: right" class="info">Uhanalaisuusarviojat: <@editors group.qname.toString() /></p>
 <h2>${group.name.forLocale("fi")!""}</h2>
-<p class="info">Uhanalaisuusarviojat: <@editors group.qname.toString() /></p>
+</div>
 
+<form action="${baseURL}/iucn/group/${group.qname}/${selectedYear}" method="get" id="filters"">
+<fieldset style="max-width:600px;">
+	<legend>Rajaa</legend>
+	<button id="clearButton" style="float: right;">Tyhjennä</button>
+	<button style="float: right;">Rajaa</button>
+	<label>Tilalla</label> 
+		<select name="state" multiple="multiple" class="chosen" data-placeholder="Valitse">
+			<option value=""></option>
+			<option value="ready" <#if states?? && states?seq_contains("ready")>selected="selected"</#if>>Valmiit</option>
+			<option value="started" <#if states?? && states?seq_contains("started")>selected="selected"</#if>>Aloitetut</option>
+			<option value="notStarted" <#if states?? && states?seq_contains("notStarted")>selected="selected"</#if>>Aloittamattomat</option>
+		</select>
+	<br />
+	<label>Luokalla</label>
+		<select name="redListStatus" multiple="multiple" class="chosen" data-placeholder="Valitse">
+			<option value=""></option>
+			<#list statusProperty.range.values as value>
+				<option value="${value.qname}" <#if redListStatuses?? && redListStatuses?seq_contains(value.qname)>selected="selected"</#if>>${value.label.forLocale("fi")}</option>
+			</#list>
+		</select>
+	<br />
+	<label>Taksonomisesti</label>
+		<input name="taxon" value="${taxon!""}"></input>
+	<br />
+	<#if filterError??>
+		<p class="errorMessage">${filterError}</p>
+	</#if>
+</fieldset>
+</form>
 
+<#if targets?has_content>
 <table class="iucnSpeciesTable">
 	<thead>
 		<th>Tieteellinen nimi</th>
@@ -55,6 +87,9 @@
 </table>
 
 <p class="info">Voit siirtyä katselemaan lajia klikkaamalla lajin nimeä.</p>
+<#else>
+	<p>Ei osumia</p>
+</#if>
 
 <script>
 $(function() {
@@ -82,6 +117,16 @@ $(function() {
 		window.location.href = url;
 	});
 	
+	$("#clearButton").on('click', function() {
+    	$("#filters").find('input, select').each(function() {
+    		$(this).val('');
+    	});
+	    $("#filters").find('select').each(function() {
+    	    $(this).trigger('chosen:updated');
+    	});
+    	return false;
+	});
+
 });
 </script>
 

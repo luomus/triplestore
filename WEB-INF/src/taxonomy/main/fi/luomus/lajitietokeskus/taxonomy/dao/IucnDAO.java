@@ -16,4 +16,6 @@ public interface IucnDAO {
 
 	public IUCNContainer getIUCNContainer();
 
+	public List<String> getFinnishSpecies(String taxonQname) throws Exception;
+
 }

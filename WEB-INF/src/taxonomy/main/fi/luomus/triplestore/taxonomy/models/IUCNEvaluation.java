@@ -81,14 +81,14 @@ public class IUCNEvaluation {
 		return null;
 	}
 
-	public String getIucnClass() {
-		if (hasIucnClass()) {
+	public String getIucnStatus() {
+		if (hasIucnStatus()) {
 			return evaluation.getStatements(RED_LIST_STATUS).get(0).getObjectResource().getQname();
 		}
 		return null;
 	}
 
-	public boolean hasIucnClass() {
+	public boolean hasIucnStatus() {
 		return evaluation.hasStatements(RED_LIST_STATUS);
 	}
 
@@ -104,8 +104,8 @@ public class IUCNEvaluation {
 	}
 
 	public Integer getCalculatedIucnIndex() {
-		if (!hasIucnClass()) return null;
-		String iucnClass = getIucnClass();
+		if (!hasIucnStatus()) return null;
+		String iucnClass = getIucnStatus();
 		if (!CLASS_TO_INDEX.containsKey(iucnClass)) throw new UnsupportedOperationException("Unknown class " + iucnClass);
 		return CLASS_TO_INDEX.get(iucnClass);
 	}

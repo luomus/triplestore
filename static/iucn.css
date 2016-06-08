@@ -1,6 +1,7 @@
 
 .info {
   max-width: none;
+  display: inline-block;
 }
 
 .stat, .state {

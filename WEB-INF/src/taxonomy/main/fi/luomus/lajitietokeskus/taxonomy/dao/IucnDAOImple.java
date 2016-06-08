@@ -142,6 +142,18 @@ public class IucnDAOImple implements IucnDAO {
 		return MASTER_CHECKLIST_QNAME.equals(checklistQname);
 	}
 
+	@Override
+	public List<String> getFinnishSpecies(String taxonQname) throws Exception {
+		List<String> list = new ArrayList<>();
+		HttpClientService client = null;
+		try {
+			client = new HttpClientService();
+			addSpeciesOfTaxon(list, client, taxonQname);
+		} finally {
+			if (client != null) client.close();
+		}
+		return list;
+	}
 	private void addSpeciesOfTaxon(List<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
 		System.out.println("Loading finnish species for " + rootTaxonQname);
 		synchronized (LOCK) {
