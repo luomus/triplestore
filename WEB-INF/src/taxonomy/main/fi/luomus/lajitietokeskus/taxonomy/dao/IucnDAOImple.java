@@ -30,6 +30,7 @@ import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
+	private static final String MASTER_CHECKLIST_QNAME = "MR.1";
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
@@ -108,7 +109,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Object LOCK = new Object();
 
 	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
-		if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1"))) return Collections.emptyList(); //XXX
+		if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
 		List<String> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
@@ -129,22 +130,42 @@ public class IucnDAOImple implements IucnDAO {
 		for (Model m : triplestoreDAO.getSearchDAO().search(searchParams)) {
 			if (!m.hasStatements("MX.nameAccordingTo")) continue;
 			String checklist = m.getStatements("MX.nameAccordingTo").get(0).getObjectResource().getQname();
-			if (!"MR.1".equals(checklist)) continue;
-			rootTaxonsOfGroup.add(m.getSubject().getQname());
+			if (fromMasterChecklist(checklist)) {
+				rootTaxonsOfGroup.add(m.getSubject().getQname());
+			}
 		}
 		return rootTaxonsOfGroup;
+	}
+
+	private boolean fromMasterChecklist(String checklistQname) {
+		return MASTER_CHECKLIST_QNAME.equals(checklistQname);
 	}
 
 	private void addSpeciesOfTaxon(List<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
 		System.out.println("Loading finnish species for " + rootTaxonQname);
 		synchronized (LOCK) {
-			URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname");
+			URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname,checklist,isSpecies");
 			JSONObject response = client.contentAsJson(new HttpGet(uri));
+			JSONObject root = response.getObject("root");
+			if (validSpecies(root)) {
+				speciesOfGroup.add(getQname(root));
+			}
 			for (JSONObject species : response.getArray("children").iterateAsObject()) {
-				String qname = species.getObject("qname").getString("qname");
-				speciesOfGroup.add(qname);
+				if (validSpecies(species)) {
+					speciesOfGroup.add(getQname(species));
+				}
 			}
 		}
+	}
+
+	private String getQname(JSONObject taxon) {
+		return taxon.getObject("qname").getString("qname");
+	}
+
+	private boolean validSpecies(JSONObject taxon) {
+		String checklistQname = taxon.getObject("checklist").getString("qname");
+		boolean isSpecies = taxon.getBoolean("isSpecies");
+		return isSpecies && fromMasterChecklist(checklistQname);
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
