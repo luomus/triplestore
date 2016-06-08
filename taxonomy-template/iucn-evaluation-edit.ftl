@@ -3,11 +3,8 @@
 
 <#list target.groups as groupQname>
 	<a href="${baseURL}/iucn/group/${groupQname}/${selectedYear}" class="goBack">
-		Takaisin
-		<#if (target.groups?size > 1)>
-			(${taxonGroups[groupQname].name.forLocale("fi")!""})
-		</#if>
-	</a>
+		Takaisin (${taxonGroups[groupQname].name.forLocale("fi")!""})
+	</a><br />
 </#list>
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
