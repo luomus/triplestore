@@ -1,3 +1,4 @@
+
 .info {
   max-width: none;
 }
@@ -55,6 +56,21 @@
 .iucnSpeciesTable td:nth-child(2) {
   min-width: 140px;
 }
+
+.iucnSpeciesTable tfoot span {
+  margin: 10px;
+  display: inline-block;
+}
+.iucnSpeciesTable tfoot td {
+  border: none;
+  background: inherit;
+}
+
+.iucnSpeciesTable tfoot select, 
+.iucnSpeciesTable tfoot input {
+  width: auto;
+}
+
 .state {
   color: rgb(199,217,233);
 }

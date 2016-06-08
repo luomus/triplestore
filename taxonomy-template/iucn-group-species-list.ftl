@@ -1,7 +1,7 @@
 <#include "luomus-header.ftl">
 <#include "iucn-macro.ftl">
 
-<a href="${baseURL}/iucn/${selectedYear}" class="goBack">Takaisin</a>
+<a href="${baseURL}/iucn/${selectedYear}" class="goBack">Takaisin (IUCN-etusivu)</a>
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 <@toolbox/>
@@ -20,6 +20,31 @@
 		<th>Luokka</th>
 		<th>Indeksi</th>
 	</thead>
+	<#if (pageCount > 1)>
+		<tfoot>
+			<tr>
+				<td colspan="7">
+					<span>
+					Sivu
+						<select id="pageSelector">
+							<#list 1 .. pageCount as page>
+								<#if page == currentPage>
+									<option value="${page}" selected="selected">${page}</option>
+								<#else>
+									<option value="${page}">${page}</option>
+								</#if>
+							</#list>
+						</select> 
+					/ ${pageCount}
+					</span>
+					<span>
+						Lajeja sivulla 
+						<input size="5" maxlength="4" type="text" value="${pageSize}" id="pageSizeSelector" />
+					</span>
+				</td>
+			</tr>
+		</tfoo>
+	</#if>
 	<tbody>
 		<#list targets as target>
 			<tr class="iucnTaxonRow" id="${target.qname}">
@@ -43,6 +68,18 @@ $(function() {
 				row.fadeIn('slow');
 			});
 		});
+	});
+	
+	$("#pageSelector, #pageSizeSelector").on('change', function() {
+		var url = window.location.href.split('?')[0];
+		var defaultPageSize = ${defaultPageSize};
+		var page = $("#pageSelector").val();
+		var pageSize = $("#pageSizeSelector").val();
+		url += "?page=" + page;
+		if (pageSize != defaultPageSize) {
+			url += "&pageSize=" + pageSize;
+		}
+		window.location.href = url;
 	});
 	
 });
