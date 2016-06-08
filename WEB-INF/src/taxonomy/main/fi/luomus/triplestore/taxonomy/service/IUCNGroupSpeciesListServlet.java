@@ -27,7 +27,7 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 			return redirectTo404(res);
 		}
 
-		List<Qname> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		List<Qname> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname).getEditors();
 		List<IUCNEvaluationTarget> targets = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTargetsOfGroup(groupQname);
 
 		return responseData.setViewName("iucn-group-species-list")

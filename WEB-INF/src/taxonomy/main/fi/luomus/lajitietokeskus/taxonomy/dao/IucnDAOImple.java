@@ -13,6 +13,7 @@ import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
 
@@ -43,21 +44,21 @@ public class IucnDAOImple implements IucnDAO {
 		this.container = new IUCNContainer(triplestoreDAO, this);
 	}
 
-	private final SingleObjectCache<Map<String, List<Qname>>> 
+	private final SingleObjectCache<Map<String, IUCNEditors>> 
 	cachedGroupEditors = 
 	new SingleObjectCache<>(
-			new CacheLoader<Map<String, List<Qname>>>() {
+			new CacheLoader<Map<String, IUCNEditors>>() {
 				@Override
-				public Map<String, List<Qname>> load() {
+				public Map<String, IUCNEditors> load() {
 					try {
-						Map<String, List<Qname>> map = new HashMap<>();
+						Map<String, IUCNEditors> map = new HashMap<>();
 						for (Model m : triplestoreDAO.getSearchDAO().search("rdf:type", "MKV.taxonGroupIucnEditors")) {
+							IUCNEditors editors = new IUCNEditors(new Qname(m.getSubject().getQname()));
 							String groupQname = m.getStatements("MKV.taxonGroup").get(0).getObjectResource().getQname();
-							List<Qname> groupEditors = new ArrayList<>();
 							for (Statement editor : m.getStatements("MKV.iucnEditor")) {
-								groupEditors.add(new Qname(editor.getObjectResource().getQname()));
+								editors.addEditor(new Qname(editor.getObjectResource().getQname()));
 							}
-							map.put(groupQname, groupEditors);
+							map.put(groupQname, editors);
 						}
 						return map;
 					} catch (Exception e) {
@@ -67,7 +68,7 @@ public class IucnDAOImple implements IucnDAO {
 			}, 5*60);
 
 	@Override
-	public Map<String, List<Qname>> getGroupEditors() throws Exception {
+	public Map<String, IUCNEditors> getGroupEditors() throws Exception {
 		return cachedGroupEditors.get();
 	}
 

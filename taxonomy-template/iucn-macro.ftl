@@ -27,8 +27,8 @@
 </#macro>
 
 <#macro editors groupQname>
-	<#if taxonGroupEditors[groupQname]?? && taxonGroupEditors[groupQname]?has_content>
-		<#list taxonGroupEditors[groupQname] as editor>
+	<#if taxonGroupEditors[groupQname]?? && taxonGroupEditors[groupQname].editors?has_content>
+		<#list taxonGroupEditors[groupQname].editors as editor>
 			${persons[editor.toString()].fullname}<#if editor_has_next>, </#if>
 		</#list>
 	<#else>

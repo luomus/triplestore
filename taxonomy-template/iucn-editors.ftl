@@ -7,10 +7,10 @@
 </#if>
 
 <form action="${baseURL}/iucn/editors/${group.qname}" method="post" id="groupForm">
-	<input type="hidden" name="groupEditorsId" value="${(groupEditors.id)!""}" />
+	<input type="hidden" name="editorsId" value="${(editors.id)!""}" />
 	<ul>
-	<#if groupEditors??>
-	<#list groupEditors.editors as editor>
+	<#if editors??>
+	<#list editors.editors as editor>
 		<li>
 			<select name="editor" data-placeholder="Select person" class="chosen">
 				<option value=""></option>

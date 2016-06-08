@@ -1,8 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
 
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
 		int selectedYear = selectedYear(req);
 		Map<String, InformalTaxonGroup> groups = getTaxonomyDAO().getInformalTaxonGroups();
 		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
-		Map<String, List<Qname>> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
+		Map<String, IUCNEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
 				.setData("draftYear", getDraftYear(evaluationYears))

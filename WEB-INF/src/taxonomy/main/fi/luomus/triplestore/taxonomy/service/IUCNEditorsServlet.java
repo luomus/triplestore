@@ -4,10 +4,10 @@ import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class IUCNEditorsServlet extends IUCNFrontpageServlet {
 		if (group == null) {
 			return redirectTo404(res);
 		}
-		List<Qname> editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 
 		return responseData.setViewName("iucn-editors")
 				.setData("group", group)
