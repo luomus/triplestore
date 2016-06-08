@@ -17,8 +17,9 @@ public class EditableTaxon extends Taxon {
 	
 	private final ExtendedTaxonomyDAO dao;
 	private Qname taxonConcept;
-	private final List<Qname> explicitlySetEditors = new ArrayList<Qname>();
-	private final List<Qname> explicitlySetExperts = new ArrayList<Qname>();
+	private final List<Qname> explicitlySetEditors = new ArrayList<>();
+	private final List<Qname> explicitlySetExperts = new ArrayList<>();
+	private final List<Qname> explicitlySetTaxonGroups = new ArrayList<>();
 	private Qname checklistStatus;
 	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 	private Occurrences occurrences;
@@ -107,6 +108,16 @@ public class EditableTaxon extends Taxon {
 		return this.explicitlySetExperts;
 	}
 
+	@Override
+	public Taxon addInformalTaxonGroup(Qname groupQname) {
+		explicitlySetTaxonGroups.add(groupQname);
+		return super.addInformalTaxonGroup(groupQname);
+	}
+
+	public List<Qname> getExplicitlySetInformalTaxonGroups() {
+		return this.explicitlySetTaxonGroups;
+	}
+	
 	public boolean allowsAlterationsBy(User user) {
 		if (user.isAdmin()) {
 			return true;

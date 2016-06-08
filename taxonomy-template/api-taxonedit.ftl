@@ -154,7 +154,16 @@
 	<@portletFooter />				
 
 	<@portletHeader "Informal groups" "" "reloadAfterSaveSection" />
-		<#list taxon.informalTaxonGroups as groupQname>
+		<#if taxon.informalTaxonGroups?has_content>
+			<label>Inherited groups</label>
+			<ul>
+			<#list taxon.informalTaxonGroups as groupQnameString>
+				<li>${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</li>
+			</#list>
+			</ul>
+			<br/>
+		</#if>
+		<#list taxon.explicitlySetInformalTaxonGroups as groupQname>
 			<p>
 			<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" class="chosen" <@checkPermissions/> >
 				<option value=""></option>
