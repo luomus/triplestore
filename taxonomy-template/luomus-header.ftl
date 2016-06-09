@@ -11,7 +11,7 @@
 	<!-- Set the viewport width to device width for supporting devices (iOS, Android etc) -->
 	<meta name="viewport" content="initial-scale=1.0" />
 
-	<title>Taxon Editor | ${text["title_"+page]} | LUOMUS</title>
+	<title>Taxon Editor | ${text["title_"+page]} | Lajitietokeskus</title>
 	<link href="${staticURL}/favicon.ico?${staticContentTimestamp}" type="image/ico" rel="shortcut icon" />
 
 	<script src="${staticURL}/jquery-1.11.3.min.js"></script>
