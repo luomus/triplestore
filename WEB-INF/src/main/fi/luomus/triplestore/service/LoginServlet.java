@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.utils.LoginUtil;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,21 +15,30 @@ public class LoginServlet extends EditorBaseServlet {
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
-		return LoginUtil.authorized();
+		return true;
+	}
+
+	private LoginUtil util = null;
+
+	private LoginUtil getLoginUtil() {
+		if (util == null) {
+			util = new LoginUtil(frontpage(), getConfig(), getErrorReporter(), Utils.set("MA.admin"));
+		}
+		return util; 
 	}
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter()).processGet(req);
-	}
-
-	private String frontpage() {
-		return getConfig().baseURL() + "/greet";
+		return getLoginUtil().processGet(req, getSession(req), super.initResponseData(req));
 	}
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return new LoginUtil(frontpage(), getConfig(), getSession(req), super.initResponseData(req), getErrorReporter()).processPost(req);
+		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req));
+	}
+
+	private String frontpage() {
+		return getConfig().baseURL() + "/greet";
 	}
 
 }

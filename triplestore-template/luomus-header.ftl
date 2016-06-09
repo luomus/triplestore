@@ -39,7 +39,7 @@
 					<ul>
              			<li><a href="${baseURL}/logout" class="button">Logout</a></li>
               			<#if user.admin><li style="color: green; font-weight: bold;">ADMIN</li></#if>
-              			<li>Logged in as <span class="name">${user.fullname}</span> (${user.adUserID})</li>
+              			<li>Logged in as <span class="name">${user.fullname}</span> (${user.qname})</li>
           			</ul>
 				</div>
 			</#if>

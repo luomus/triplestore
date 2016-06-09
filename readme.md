@@ -130,6 +130,8 @@ grant select on luonto.rdf_XX_seq to ; -- All used sequences..
 ###Example configuration file
 ~~~
 SystemID = triplestore
+SystemQname = 
+LajiAuthURL = 
 
 DevelopmentMode = YES
 StagingMode = NO
@@ -196,9 +198,8 @@ Taxon editor responds from /triplestore/taxonomy-editor
 ###Example configuration file
 ~~~
 SystemID = taxonomy-editor
-SystemQname = KE.
-LajiAuthURL = https://../laji-auth
-KotkaURL = https://kotkatest.luomus.fi
+SystemQname = 
+LajiAuthURL = 
 
 DevelopmentMode = YES
 StagingMode = NO
@@ -232,11 +233,15 @@ DBusername =
 DBpassword = 
 LuontoDbName = 
 
+#Used for taxon images
+KotkaURL = https://kotkatest.luomus.fi
+
 #Used by luomus-commons Taxonomy DAO Base Imple
 TriplestoreURL = http://localhost:8081/triplestore
 TriplestoreUsername = 
 TriplestorePassword = 
 
+#Used by IUCN editor
 TaxonomyAPIURL = http://laji.fi/api/taxonomy
 
 ~~~
