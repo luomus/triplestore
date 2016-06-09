@@ -81,7 +81,6 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 			try {
 				taxonQnames = getTaxons(taxon);
 			} catch (Exception e) {
-				e.printStackTrace();
 				throw new TaxonLoadException();
 			}
 		}

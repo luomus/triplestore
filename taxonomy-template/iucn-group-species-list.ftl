@@ -114,6 +114,19 @@ $(function() {
 		if (pageSize != defaultPageSize) {
 			url += "&pageSize=" + pageSize;
 		}
+		<#if redListStatuses??>
+			<#list redListStatuses as status>
+				url += "&redListStatus=${status}";
+			</#list>
+		</#if>
+		<#if states??>
+			<#list states as state>
+				url += "&state=${state}";
+			</#list>
+		</#if>
+		<#if taxon?has_content>
+			url += "&taxon=${taxon}";
+		</#if>
 		window.location.href = url;
 	});
 	
