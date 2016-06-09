@@ -51,6 +51,10 @@ public class IUCNEvaluation {
 		this.year = getEvaluationYear();
 	}
 
+	public String getId() {
+		return evaluation.getSubject().getQname();
+	}
+	
 	public int getYear() {
 		return year;
 	}

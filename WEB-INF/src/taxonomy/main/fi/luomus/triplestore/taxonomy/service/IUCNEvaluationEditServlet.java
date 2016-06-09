@@ -1,11 +1,14 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -26,13 +29,31 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
 		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(target.getQname()));
+
+		Map<String, RdfProperty> properties = getProperties();
+		
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxon)
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
-				.setData("properties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"))
-				.setData("taxonProperties", getTriplestoreDAO().getProperties("MX.taxon"));
+				.setData("properties", properties);
+	}
+
+	private Map<String, RdfProperty> properties = null;
+	
+	private Map<String, RdfProperty> getProperties() throws Exception {
+		if (properties != null) return properties;
+		properties = new HashMap<>();
+		propertiesOfClass(properties, "MKV.iucnRedListEvaluation");
+		propertiesOfClass(properties, "MX.taxon");
+		return properties;
+	}
+
+	private void propertiesOfClass(Map<String, RdfProperty> properties, String className) throws Exception {
+		for (RdfProperty p : getTriplestoreDAO().getProperties(className).getAllProperties()) {
+			properties.put(p.getQname().toString(), p);
+		}
 	}
 
 	private IUCNEvaluation getComparisonData(IUCNEvaluationTarget target, int year) throws Exception {

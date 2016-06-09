@@ -77,6 +77,11 @@
 
 <div class="clear"></div>
 
+<form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post">
+<input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
+<input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
+<input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
+
 <table class="resourceListTable evaluationEdit">
 	<thead>
 		<tr>
@@ -87,16 +92,64 @@
 	</thead>
 	<tbody>
 	
-	<#--MX.typeOfOccurrenceInFinland
-		MX.typeOfOccurrenceInFinlandNotes-->
-		
-	<#list properties.allProperties as property>
-		<tr>
-			<th>${property.label.forLocale("fi")!property.qname}</th>
-			<td>..</td>
-			<td>..</td>
-		</tr>
-	</#list>
+	<@section "Taksonomia - Huom: Vakinaisuus on julkinen tieto" />
+	<@input "MX.typeOfOccurrenceInFinland" "MX.typeOfOccurrenceInFinlandNotes" />
+	<@textarea "MKV.taxonomicNotes" />
+	
+	<@section "Luokka" />	
+	<@input "MKV.redListStatus" "MKV.redListStatusNotes" />
+	<@input "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+	<@textarea "MKV.redListStatusAccuracyNotes" />
+	<@input "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
+	<@minMax "Vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
+			
+	<@section "Kriteerit" />
+	<@input "MKV.criteriaA" "MKV.criteriaANotes" />
+	<@input "MKV.criteriaB" "MKV.criteriaBNotes" />
+	<@input "MKV.criteriaC" "MKV.criteriaCNotes" />
+	<@input "MKV.criteriaD" "MKV.criteriaDNotes" />
+	<@input "MKV.criteriaE" "MKV.criteriaENotes" />
+	
+	<@section "Esiintymisalueet" />
+	<@occurence "ML.690" />
+	<@occurence "ML.691" />
+	<@occurence "ML.692" />
+	<@occurence "ML.693" />
+	<@occurence "ML.694" />
+	<@occurence "ML.695" />
+	<@occurence "ML.696" />
+	<@occurence "ML.697" />
+	<@occurence "ML.698" />
+	<@occurence "ML.699" />
+	<@occurence "ML.670" />
+	<@textarea "MKV.occurrenceNotes" />
+	<@minMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
+	<@minMax "Esiintymiä alussa/lopussa" MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
+	<@input "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+	<@input "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+	<@input "MKV.borderGain" "MKV.borderGainNotes" />
+	<@minMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
+	
+	<@section "Elinympäristö" />   
+	<@habitatPair "MKV.primaryHabitat" "MKV.habitatNotes" />
+	<@habitatPair "MKV.secondaryHabitat" />   
+	<@input "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
+   
+	<@section "Kanta" />
+	<@minMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
+	<@input "MKV.generationAge" "MKV.generationAgeNotes" />
+	<@input "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
+	<@input "MKV.populationVaries" "MKV.populationVariesNotes" />
+	
+	<@section "Uhanalaisuus" />
+	<@input "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
+	<@textarea "MKV.actionNotes" />   
+	<@input "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
+	<@input "MKV.possiblyRE" />
+	<@textarea "MKV.lastSightingNotes" />
+
+	<@publications "MKV.publication" />   
+	
 	</tbody>
 </table>
 
