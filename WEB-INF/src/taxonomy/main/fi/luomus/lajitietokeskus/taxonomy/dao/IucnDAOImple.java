@@ -110,7 +110,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Object LOCK = new Object();
 
 	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
-		if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
+		//if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
 		List<String> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
@@ -184,18 +184,38 @@ public class IucnDAOImple implements IucnDAO {
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
 		IUCNEvaluationTarget target = new IUCNEvaluationTarget(speciesQname, taxon.getScientificName(), taxon.getVernacularName("fi"), container);
-		for (Model evaluation : getEvaluations(speciesQname)) {
-			target.setEvaluation(new IUCNEvaluation(evaluation));
+		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
+			target.setEvaluation(evaluation);
 		}
 		return target;
 	}
 
-	private Collection<Model> getEvaluations(String speciesQname) throws Exception {
-		return triplestoreDAO.getSearchDAO().search(
-				new SearchParams(Integer.MAX_VALUE, 0)
-				.type("MKV.iucnRedListEvaluation")
-				.predicate("MKV.evaluatedTaxon")
-				.objectresource(speciesQname));
+	private final Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
+
+	private Collection<IUCNEvaluation> getEvaluations(String speciesQname) throws Exception {
+		if (initialEvaluations.isEmpty()) {
+			synchronized (initialEvaluations) {
+				if (initialEvaluations.isEmpty()) {
+					loadInitialEvaluations();
+				}
+			}
+		}
+		if (initialEvaluations.containsKey(speciesQname)) return initialEvaluations.get(speciesQname);
+		return Collections.emptyList();
+	}
+
+	private void loadInitialEvaluations() throws Exception {
+		System.out.println("Loading IUCN evaluations...");
+		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("MKV.iucnRedListEvaluation"));
+		for (Model model :  evaluations) {
+			IUCNEvaluation evaluation = new IUCNEvaluation(model);
+			String speciesQname = evaluation.getSpeciesQname();
+			if (!initialEvaluations.containsKey(speciesQname)) {
+				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
+			}
+			initialEvaluations.get(speciesQname).add(evaluation);
+		}
+		System.out.println("IUCN evaluations loaded!");
 	}
 
 }
