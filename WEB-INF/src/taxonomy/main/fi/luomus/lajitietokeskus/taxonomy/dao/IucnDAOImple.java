@@ -110,7 +110,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Object LOCK = new Object();
 
 	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
-		//if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
+		if (config.developmentMode() && !(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
 		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
 		List<String> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
