@@ -106,7 +106,8 @@ public class LoginUtil  {
 		if (session.isAuthenticatedFor("triplestore")) {
 			return responseData.setRedirectLocation(frontPage);
 		}
-		String next = ""; // TODO
+		String next = req.getParameter("next");
+		if (next == null) next = "";
 		setLajiAuthLinks(next, responseData);
 		return responseData.setViewName("login");
 	}
@@ -133,7 +134,7 @@ public class LoginUtil  {
 			if (authentication.successful()) {
 				authenticateSession(session, authentication);
 				if (given(authentication.getNext())) {
-					return responseData.setRedirectLocation(frontPage + "/" + authentication.getNext());
+					return responseData.setRedirectLocation(config.baseURL() + authentication.getNext());
 				} else {
 					return responseData.setRedirectLocation(frontPage);
 				}
