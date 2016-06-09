@@ -35,5 +35,13 @@ public interface TriplestoreSearchDAO {
 	 * @throws TooManyResultsException if using result type on this resource provides too many results
 	 */
 	public Collection<Model> get(List<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception;
+
+	/**
+	 * Return count of models ignoring limit/offset
+	 * @param searchParams
+	 * @return
+	 * @throws Exception 
+	 */
+	public int count(SearchParams searchParams) throws Exception;
 		
 }

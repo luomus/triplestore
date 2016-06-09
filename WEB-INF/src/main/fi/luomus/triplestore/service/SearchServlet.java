@@ -2,6 +2,8 @@ package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.XMLWriter;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
@@ -29,7 +31,7 @@ public class SearchServlet extends ApiServlet {
 		String[] objectresources = req.getParameterValues("objectresource");
 		String[] objectliterals = req.getParameterValues("objectliteral");
 		String type = req.getParameter("type");
-		
+
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Format format = getFormat(req);
 		int limit = getLimit(req);
@@ -42,14 +44,37 @@ public class SearchServlet extends ApiServlet {
 				.subjects(subjects).predicates(predicates).objects(objects)
 				.objectresources(objectresources).objectliterals(objectliterals)
 				.type(type);
-		
-		String response = search(searchParams, format, dao);
+
+		String response = null;
+		if (countQuery(req)) {
+			response = count(searchParams, format, dao);
+		} else {
+			response = search(searchParams, format, dao);
+		}
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
 		} else {
 			return rdfResponse(response, res);
 		}
+	}
+
+	private String count(SearchParams searchParams, Format format, TriplestoreDAO dao) throws Exception {
+		int count = dao.getSearchDAO().count(searchParams);
+		if (format == Format.JSON) {
+			fi.luomus.commons.json.JSONObject response = new fi.luomus.commons.json.JSONObject();
+			response.setInteger("count", count);
+			return response.reveal().toString();
+		} else if (format == Format.XML) {
+			Document response = new Document("countResponse");
+			response.getRootNode().addAttribute("count", count);
+			return new XMLWriter(response).generateXML();
+		}
+		throw new UnsupportedOperationException("Count response can not be given in " + format + " format.");
+	}
+
+	private boolean countQuery(HttpServletRequest req) {
+		return req.getRequestURI().contains("/count");
 	}
 
 	public static String search(SearchParams searchParams, Format format, TriplestoreDAO dao) throws Exception {

@@ -412,4 +412,37 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return search(new SearchParams(1000, 0).predicate(predicate).objectresource(objectresource));
 	}
 
+	@Override
+	public int count(SearchParams searchParams) throws Exception {
+		List<String> values = new ArrayList<String>();
+		StringBuilder query = new StringBuilder();
+		query.append(" SELECT  count(DISTINCT subjectname)     \n");
+		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 
+		query.append(" WHERE   1=1                             \n");
+		subjects(searchParams.getSubjects(), values, query);
+		predicates(searchParams.getPredicates(), values, query);
+		objects(searchParams.getObjects(), values, query);
+		objectresources(searchParams.getObjectresources(), values, query);
+		objectliterals(searchParams.getObjectliterals(), values, query);
+		type(searchParams.getType(), values, query);
+		TransactionConnection con = null;
+		PreparedStatement p = null;
+		ResultSet rs = null;
+		try { 
+			//			System.out.println(sql);
+			//			System.out.println(values);
+			con = dao.openConnection();
+			p = con.prepareStatement(query.toString());
+			int i = 1;
+			for (String value : values) {
+				p.setString(i++, value);
+			}
+			rs = p.executeQuery(); 
+			rs.next();
+			return rs.getInt(1);
+		} finally {
+			Utils.close(p, rs, con);
+		}
+	}
+
 }
