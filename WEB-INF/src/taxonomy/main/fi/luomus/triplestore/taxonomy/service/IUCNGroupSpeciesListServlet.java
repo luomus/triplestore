@@ -65,7 +65,8 @@ public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
 				.setData("defaultPageSize", DEFAULT_PAGE_SIZE)
 				.setData("states", states)
 				.setData("taxon", taxon)
-				.setData("redListStatuses", redListStatuses);
+				.setData("redListStatuses", redListStatuses)
+				.setData("permissions", hasIucnPermissions(groupQname, req));
 	}
 
 	private static class TaxonLoadException extends Exception {

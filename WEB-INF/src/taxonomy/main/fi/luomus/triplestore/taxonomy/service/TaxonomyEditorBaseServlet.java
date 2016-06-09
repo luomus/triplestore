@@ -10,6 +10,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
 import fi.luomus.triplestore.utils.NameCleaner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -118,4 +119,18 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		checkPermissionsToAlterTaxon(taxon, req);
 	}
 
+	protected boolean hasIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
+		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		if (editors == null) return false;
+		User user = getUser(req);
+		return editors.getEditors().contains(user.getQname());
+	}
+	
+	protected void checkIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
+		if (!hasIucnPermissions(groupQname, req)) {
+			User user = getUser(req);
+			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter iucn group " + groupQname);
+		}
+	}
+	
 }

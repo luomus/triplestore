@@ -22,6 +22,7 @@ public class ApiIucnMarkNotEvaluatedServler extends ApiBaseServlet {
 		int year = Integer.valueOf(req.getParameter("year"));
 		if (!given(speciesQname)) return redirectTo500(res);
 		if (!given(groupQname)) return redirectTo500(res);
+		checkIucnPermissions(groupQname, req);
 		Qname editor = getUser(req).getQname();
 
 		IUCNEvaluation evaluation = getTaxonomyDAO().getIucnDAO().getIUCNContainer().markNotEvaluated(speciesQname, year, editor);

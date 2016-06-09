@@ -82,7 +82,7 @@
 			</#if>
 		</td>
 	<#else>
-		<td><span class="state notStarted">Ei aloitettu</span> <button class="markNEButton">NE</button></td>
+		<td><span class="state notStarted">Ei aloitettu</span> <#if permissions><button class="markNEButton">NE</button></#if></td>
 		<td>-</td>
 		<td>-</td>
 		<td>-</td>
