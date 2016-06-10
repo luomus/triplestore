@@ -32,8 +32,13 @@
 .evaluationEdit td {
   background-color: white;
 }
+.evaluationEdit {
+  border: 1px solid #ccc;
+}
 .evaluationEdit tr.section th {
   padding-top: 30px;
+  text-align: left;
+  border-right-style: none;
 }
 .evaluationEdit tr.section span {
   font-style: italic;
@@ -47,7 +52,10 @@
 .evaluationEdit tbody th:nth-child(1) {
   max-width: 200px;
   font-weight: normal;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
 }
+
 
 .iucnSpeciesTable td:nth-child(4),
 .iucnSpeciesTable td:nth-child(5),
@@ -135,4 +143,14 @@
 .noteViewer {
   white-space: nowrap;
   font-size: 50%;
+}
+
+textarea, input {
+  width: 400px;
+}
+textarea {
+  height: 50px;
+}
+label {
+  width: auto;
 }

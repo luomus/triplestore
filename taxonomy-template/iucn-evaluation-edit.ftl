@@ -92,7 +92,7 @@
 	</thead>
 	<tbody>
 	
-	<@iucnSection "Taksonomia <span>- Huom: Vakinaisuus ja sen kommentti on julkinen tieto</span>" /> 
+	<@iucnSection "Taksonomia <span>- Huom: Esiintymisen tila ja sen kommentti on julkinen tieto</span>" /> 
 	<@iucnInput "MX.typeOfOccurrenceInFinland" "MX.typeOfOccurrenceInFinlandNotes" />
 	<@iucnTextarea "MKV.taxonomicNotes" />
 	
@@ -234,7 +234,7 @@
 		<div class="notes hidden">
 			<p><label>${properties[notesFieldName].label.forLocale("fi")!notesFieldName}</label></p>
 			<textarea name="${notesFieldName}"></textarea>
-			<button onclick="return false;">Sulje kommentti</button>
+			<button class="closeNoteEditButton">Sulje kommentti</button>
 		</div>
 	</#if>
 </#macro>
@@ -251,9 +251,16 @@ $(function() {
 	});
 	
 	$(".noteViewer").tooltip();
+	
+	$(".closeNoteEditButton").on('click', function() {
+		$(this).closest('.notes').find('textarea').trigger("change");
+	});
+
 });
 
+
 function updateNotes(noteInput) {
+	noteInput.closest('td').find('.noteViewer').remove();
 	var noteViewerContent = '<div class="noteViewer noteViewerEditable">';
 	if (noteInput.val()) {
 		noteViewerContent += '<span class="ui-icon ui-icon-comment" title="'+noteInput.val()+'"></span>';
