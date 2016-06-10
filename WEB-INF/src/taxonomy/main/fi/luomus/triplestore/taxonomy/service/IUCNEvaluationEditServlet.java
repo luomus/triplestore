@@ -32,6 +32,8 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
 		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(target.getQname()));
 
+		
+		
 		Map<String, RdfProperty> properties = getProperties();
 
 		Map<String, Area> evaluationAreas = getTaxonomyDAO().getIucnDAO().getEvaluationAreas();

@@ -69,7 +69,7 @@
 		<h6>Hallinnolliset ominaisuudet</h6>
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
-				<li>${taxonProperties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
+				<li>${properties["MX.hasAdminStatus"].range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
 			</#list>
 		</ul>
 	</div>
@@ -77,7 +77,7 @@
 
 <div class="clear"></div>
 
-<form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post">
+<form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
 <input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
@@ -147,6 +147,8 @@
 	</tbody>
 </table>
 
+</form>
+
 <#macro iucnSection title>
 	<tr class="section">
 		<th>&nbsp;</th>
@@ -158,8 +160,8 @@
 	<#assign field = properties[fieldName] />
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td>comvalue</td>
-		<td>input ${notesFieldName}</td>
+		<td><@comparisonValue fieldName /> <@comparisonNotes notesFieldName /></td>
+		<td>input <@notes notesFieldName /></td>
 	</tr>
 </#macro>
 
@@ -167,25 +169,25 @@
 	<#assign field = properties[fieldName]/>
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td>comvalue</td>
-		<td><textarea name="fieldName">value</textarea></td>
+		<td><@comparisonValue fieldName /></td>
+		<td><textarea name="${fieldName}">value</textarea></td>
 	</tr>
 </#macro>
 
 <#macro iucnMinMax title fieldNameMin fieldNameMax notesFieldName="NONE">
-	<#assign minField = properties[fieldNameMin]/>
-	<#assign maxField = properties[fieldNameMax]/>
+	<#assign minField = properties[fieldNameMin] />
+	<#assign maxField = properties[fieldNameMax] />
 	<tr>
 		<th>${title}</th>
-		<td>comvalue - comvalue</td>
-		<td>input - input ${notesFieldName}</td>
+		<td><#if comparison??><@comparisonValue minField /> - <@comparisonValue maxField /> <@comparisonNotes notesFieldName /></#if></td>
+		<td>input - input <@notes notesFieldName /></td>
 	</tr>
 </#macro>
 
 <#macro iucnOccurrence areaQname>
 	<tr>
 		<th>${areas[areaQname].name.forLocale("fi")}</th>
-		<td>comvalue</td>
+		<td>comp</td>
 		<td>input</td>
 	</tr>
 </#macro>
@@ -194,8 +196,8 @@
 	<#assign field = properties[fieldName]/>
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td>comvalue</td>
-		<td>input ${notesFieldName}</td>
+		<td>comp <@comparisonNotes notesFieldName /></td>
+		<td>input <@notes notesFieldName /></td>
 	</tr>
 </#macro>
 
@@ -203,9 +205,74 @@
 	<#assign field = properties[fieldName]/>
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td>comvalue</td>
+		<td><@comparisonValue fieldName /></td>
 		<td>input</td>
 	</tr>
 </#macro>
+
+<#macro comparisonValue fieldName>
+	<#if comparison??>
+		<#list comparison.model.getStatements(fieldName) as statement>
+			<#if statement.literalStatement>
+				${statement.objectLiteral.content}
+			<#else>
+				${statement.objectResource.qname}
+			</#if>
+			<#if statement_has_next>, </#if>
+		</#list>
+	</#if>
+</#macro>
+
+<#macro comparisonNotes notesFieldName>
+	<#if notesFieldName != "NONE">
+		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="comp value"></span></div>
+	</#if>
+</#macro>
+
+<#macro notes notesFieldName>
+	<#if notesFieldName != "NONE">
+		<div class="notes hidden">
+			<p><label>${properties[notesFieldName].label.forLocale("fi")!notesFieldName}</label></p>
+			<textarea name="${notesFieldName}"></textarea>
+			<button onclick="return false;">Sulje kommentti</button>
+		</div>
+	</#if>
+</#macro>
+
+<script>
+$(function() {
+	
+	$(".notes textarea").each(function() {
+		updateNotes($(this));
+	});
+	
+	$(".notes textarea").on('change', function() {
+		$(this).closest('.notes').fadeOut('slow', updateNotes( $(this) ));
+	});
+	
+	$(".noteViewer").tooltip();
+});
+
+function updateNotes(noteInput) {
+	var noteViewerContent = '<div class="noteViewer noteViewerEditable">';
+	if (noteInput.val()) {
+		noteViewerContent += '<span class="ui-icon ui-icon-comment" title="'+noteInput.val()+'"></span>';
+	} else {
+		noteViewerContent += '<a href="#">kommentoi</a>';
+	}
+	noteViewerContent += '</div>'
+	var noteViewer = $(noteViewerContent);
+	noteInput.closest('td').append(noteViewer);
+	noteViewer.tooltip();
+	noteViewer.on('click', function() {
+		var notesContainer = $(this).closest('td').find('.notes').first();
+		$(this).fadeOut('slow', function() {
+			notesContainer.fadeIn('slow');
+		});
+		return false;
+	});
+}
+
+</script>
 
 <#include "luomus-footer.ftl">

@@ -1,7 +1,6 @@
 
 .info {
   max-width: none;
-  display: inline-block;
 }
 
 .stat, .state {
@@ -66,6 +65,10 @@
   border-bottom: 1px solid grey;
  }
  
+.evaluationEdit td {
+  border: 1px solid #ddd;
+}
+ 
 .iucnSpeciesTable th {
   background-color: rgb(174,208,234);
 }
@@ -111,7 +114,7 @@
   content: "«";
 }
 .taxonTree {
-  width: 300px;
+  max-width: 390px;
 }
 .taxonTree .vernacularName {
   float: right;
@@ -122,4 +125,14 @@
   display: block;
   float: left;
   margin: 1em;
+}
+
+.noteViewer {
+  display: inline-block;
+  float: right;
+}
+
+.noteViewer {
+  white-space: nowrap;
+  font-size: 50%;
 }
