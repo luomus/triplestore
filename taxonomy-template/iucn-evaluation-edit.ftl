@@ -92,65 +92,120 @@
 	</thead>
 	<tbody>
 	
-	<@section "Taksonomia - Huom: Vakinaisuus on julkinen tieto" />
-	<@input "MX.typeOfOccurrenceInFinland" "MX.typeOfOccurrenceInFinlandNotes" />
-	<@textarea "MKV.taxonomicNotes" />
+	<@iucnSection "Taksonomia <span>- Huom: Vakinaisuus ja sen kommentti on julkinen tieto</span>" /> 
+	<@iucnInput "MX.typeOfOccurrenceInFinland" "MX.typeOfOccurrenceInFinlandNotes" />
+	<@iucnTextarea "MKV.taxonomicNotes" />
 	
-	<@section "Luokka" />	
-	<@input "MKV.redListStatus" "MKV.redListStatusNotes" />
-	<@input "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
-	<@textarea "MKV.redListStatusAccuracyNotes" />
-	<@input "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
-	<@minMax "Vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
+	<@iucnSection "Luokka" />	
+	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
+	<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
+	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
+	<@iucnMinMax "Vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
 			
-	<@section "Kriteerit" />
-	<@input "MKV.criteriaA" "MKV.criteriaANotes" />
-	<@input "MKV.criteriaB" "MKV.criteriaBNotes" />
-	<@input "MKV.criteriaC" "MKV.criteriaCNotes" />
-	<@input "MKV.criteriaD" "MKV.criteriaDNotes" />
-	<@input "MKV.criteriaE" "MKV.criteriaENotes" />
+	<@iucnSection "Kriteerit" />
+	<@iucnInput "MKV.criteriaA" "MKV.criteriaANotes" />
+	<@iucnInput "MKV.criteriaB" "MKV.criteriaBNotes" />
+	<@iucnInput "MKV.criteriaC" "MKV.criteriaCNotes" />
+	<@iucnInput "MKV.criteriaD" "MKV.criteriaDNotes" />
+	<@iucnInput "MKV.criteriaE" "MKV.criteriaENotes" />
 	
-	<@section "Esiintymisalueet" />
-	<@occurence "ML.690" />
-	<@occurence "ML.691" />
-	<@occurence "ML.692" />
-	<@occurence "ML.693" />
-	<@occurence "ML.694" />
-	<@occurence "ML.695" />
-	<@occurence "ML.696" />
-	<@occurence "ML.697" />
-	<@occurence "ML.698" />
-	<@occurence "ML.699" />
-	<@occurence "ML.670" />
-	<@textarea "MKV.occurrenceNotes" />
-	<@minMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
-	<@minMax "Esiintymiä alussa/lopussa" MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
-	<@input "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
-	<@input "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
-	<@input "MKV.borderGain" "MKV.borderGainNotes" />
-	<@minMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
-	
-	<@section "Elinympäristö" />   
-	<@habitatPair "MKV.primaryHabitat" "MKV.habitatNotes" />
-	<@habitatPair "MKV.secondaryHabitat" />   
-	<@input "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
-   
-	<@section "Kanta" />
-	<@minMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
-	<@input "MKV.generationAge" "MKV.generationAgeNotes" />
-	<@input "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
-	<@input "MKV.populationVaries" "MKV.populationVariesNotes" />
-	
-	<@section "Uhanalaisuus" />
-	<@input "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
-	<@textarea "MKV.actionNotes" />   
-	<@input "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
-	<@input "MKV.possiblyRE" />
-	<@textarea "MKV.lastSightingNotes" />
+	<@iucnSection "Esiintymisalueet" />
+	<#list areas?keys as areaQname>
+		<@iucnOccurrence areaQname />
+	</#list>
+	<@iucnTextarea "MKV.occurrenceNotes" />
 
-	<@publications "MKV.publication" />   
+	<@iucnSection "Esiintyminen" />
+	<@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
+	<@iucnMinMax "Esiintymiä alussa/lopussa" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
+	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
+	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
+	
+	<@iucnSection "Elinympäristö" />   
+	<@iucnHabitatPair "MKV.primaryHabitat" "MKV.habitatNotes" />
+	<@iucnHabitatPair "MKV.secondaryHabitat" />   
+	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
+   
+	<@iucnSection "Kanta" />
+	<@iucnMinMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
+	<@iucnInput "MKV.generationAge" "MKV.generationAgeNotes" />
+	<@iucnInput "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
+	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
+	
+	<@iucnSection "Uhanalaisuus" />
+	<@iucnInput "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
+	<@iucnTextarea "MKV.actionNotes" />   
+	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
+	<@iucnInput "MKV.possiblyRE" />
+	<@iucnTextarea "MKV.lastSightingNotes" />
+
+	<@iucnSection "Lähteet" />
+	<@iucnPublications "MKV.publication" />   
 	
 	</tbody>
 </table>
+
+<#macro iucnSection title>
+	<tr class="section">
+		<th>&nbsp;</th>
+		<th colspan="2">${title}</th>
+	</tr>
+</#macro>
+
+<#macro iucnInput fieldName notesFieldName="NONE">
+	<#assign field = properties[fieldName] />
+	<tr>
+		<th>${field.label.forLocale("fi")!fieldName}</th>
+		<td>comvalue</td>
+		<td>input ${notesFieldName}</td>
+	</tr>
+</#macro>
+
+<#macro iucnTextarea fieldName>
+	<#assign field = properties[fieldName]/>
+	<tr>
+		<th>${field.label.forLocale("fi")!fieldName}</th>
+		<td>comvalue</td>
+		<td><textarea name="fieldName">value</textarea></td>
+	</tr>
+</#macro>
+
+<#macro iucnMinMax title fieldNameMin fieldNameMax notesFieldName="NONE">
+	<#assign minField = properties[fieldNameMin]/>
+	<#assign maxField = properties[fieldNameMax]/>
+	<tr>
+		<th>${title}</th>
+		<td>comvalue - comvalue</td>
+		<td>input - input ${notesFieldName}</td>
+	</tr>
+</#macro>
+
+<#macro iucnOccurrence areaQname>
+	<tr>
+		<th>${areas[areaQname].name.forLocale("fi")}</th>
+		<td>comvalue</td>
+		<td>input</td>
+	</tr>
+</#macro>
+
+<#macro iucnHabitatPair fieldName notesFieldName="NONE">
+	<#assign field = properties[fieldName]/>
+	<tr>
+		<th>${field.label.forLocale("fi")!fieldName}</th>
+		<td>comvalue</td>
+		<td>input ${notesFieldName}</td>
+	</tr>
+</#macro>
+
+<#macro iucnPublications fieldName>
+	<#assign field = properties[fieldName]/>
+	<tr>
+		<th>${field.label.forLocale("fi")!fieldName}</th>
+		<td>comvalue</td>
+		<td>input</td>
+	</tr>
+</#macro>
 
 <#include "luomus-footer.ftl">

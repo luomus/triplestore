@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
@@ -24,6 +25,7 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
 		String speciesQname = speciesQname(req);
+		if (!given(speciesQname)) return redirectTo404(res);
 		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
 		int year = selectedYear(req);
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
@@ -31,17 +33,20 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(target.getQname()));
 
 		Map<String, RdfProperty> properties = getProperties();
+
+		Map<String, Area> evaluationAreas = getTaxonomyDAO().getIucnDAO().getEvaluationAreas();
 		
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxon)
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
-				.setData("properties", properties);
+				.setData("properties", properties)
+				.setData("areas", evaluationAreas);
 	}
 
 	private Map<String, RdfProperty> properties = null;
-	
+
 	private Map<String, RdfProperty> getProperties() throws Exception {
 		if (properties != null) return properties;
 		properties = new HashMap<>();
@@ -75,8 +80,12 @@ public class IUCNEvaluationEditServlet extends IUCNFrontpageServlet {
 	}
 
 	private String speciesQname(HttpServletRequest req) {
-		String speciesQname = req.getRequestURI().split(Pattern.quote("/species/"))[1].split(Pattern.quote("/"))[0];
-		return speciesQname;
+		try {
+			String speciesQname = req.getRequestURI().split(Pattern.quote("/species/"))[1].split(Pattern.quote("/"))[0];
+			return speciesQname;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

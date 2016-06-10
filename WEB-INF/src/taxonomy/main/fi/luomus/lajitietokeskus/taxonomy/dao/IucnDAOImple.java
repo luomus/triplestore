@@ -1,7 +1,10 @@
 package fi.luomus.lajitietokeskus.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.http.HttpClientService;
@@ -23,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +35,23 @@ import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
+	private static final String ML_NAME = "ML.name";
+	private static final String IUCN_EVALUATION_AREA = "ML.iucnEvaluationArea";
+	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname(IUCN_EVALUATION_AREA);
+	private static final String AREA_TYPE = "ML.areaType";
+	private static final String AREA = "ML.area";
+	private static final String IUCN_RED_LIST_EVALUATION = "MKV.iucnRedListEvaluation";
+	private static final String FI = "fi";
+	private static final String IS_SPECIES = "isSpecies";
+	private static final String CHECKLIST = "checklist";
+	private static final String QNAME = "qname";
+	private static final String CHILDREN = "children";
+	private static final String ROOT = "root";
+	private static final String NAME_ACCORDING_TO = "MX.nameAccordingTo";
+	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
+	private static final String EVALUATION_YEAR = "MKV.evaluationYear";
+	private static final String IUCN_RED_LIST_EVALUATION_YEAR = "MKV.iucnRedListEvaluationYear";
+	private static final String RDF_TYPE = "rdf:type";
 	private static final String MASTER_CHECKLIST_QNAME = "MR.1";
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
@@ -52,7 +73,7 @@ public class IucnDAOImple implements IucnDAO {
 				public Map<String, IUCNEditors> load() {
 					try {
 						Map<String, IUCNEditors> map = new HashMap<>();
-						for (Model m : triplestoreDAO.getSearchDAO().search("rdf:type", "MKV.taxonGroupIucnEditors")) {
+						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, "MKV.taxonGroupIucnEditors")) {
 							IUCNEditors editors = new IUCNEditors(new Qname(m.getSubject().getQname()));
 							String groupQname = m.getStatements("MKV.taxonGroup").get(0).getObjectResource().getQname();
 							for (Statement editor : m.getStatements("MKV.iucnEditor")) {
@@ -85,8 +106,8 @@ public class IucnDAOImple implements IucnDAO {
 				public List<Integer> load() {
 					List<Integer> evaluationYears = new ArrayList<>();
 					try {
-						for (Model m : triplestoreDAO.getSearchDAO().search("rdf:type", "MKV.iucnRedListEvaluationYear")) {
-							int year = Integer.valueOf(m.getStatements("MKV.evaluationYear").get(0).getObjectLiteral().getContent());
+						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCN_RED_LIST_EVALUATION_YEAR)) {
+							int year = Integer.valueOf(m.getStatements(EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
 							evaluationYears.add(year);
 						}
 					} catch (Exception e) {
@@ -126,11 +147,11 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private Set<String> getRootTaxonsOfGroup(String groupQname) throws Exception {
-		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).predicate("MX.isPartOfInformalTaxonGroup").objectresource(groupQname);
+		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).predicate(IS_PART_OF_INFORMAL_TAXON_GROUP).objectresource(groupQname);
 		Set<String> rootTaxonsOfGroup = new HashSet<>();
 		for (Model m : triplestoreDAO.getSearchDAO().search(searchParams)) {
-			if (!m.hasStatements("MX.nameAccordingTo")) continue;
-			String checklist = m.getStatements("MX.nameAccordingTo").get(0).getObjectResource().getQname();
+			if (!m.hasStatements(NAME_ACCORDING_TO)) continue;
+			String checklist = m.getStatements(NAME_ACCORDING_TO).get(0).getObjectResource().getQname();
 			if (fromMasterChecklist(checklist)) {
 				rootTaxonsOfGroup.add(m.getSubject().getQname());
 			}
@@ -159,11 +180,11 @@ public class IucnDAOImple implements IucnDAO {
 		synchronized (LOCK) {
 			URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname,checklist,isSpecies");
 			JSONObject response = client.contentAsJson(new HttpGet(uri));
-			JSONObject root = response.getObject("root");
+			JSONObject root = response.getObject(ROOT);
 			if (validSpecies(root)) {
 				speciesOfGroup.add(getQname(root));
 			}
-			for (JSONObject species : response.getArray("children").iterateAsObject()) {
+			for (JSONObject species : response.getArray(CHILDREN).iterateAsObject()) {
 				if (validSpecies(species)) {
 					speciesOfGroup.add(getQname(species));
 				}
@@ -172,18 +193,18 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private String getQname(JSONObject taxon) {
-		return taxon.getObject("qname").getString("qname");
+		return taxon.getObject(QNAME).getString(QNAME);
 	}
 
 	private boolean validSpecies(JSONObject taxon) {
-		String checklistQname = taxon.getObject("checklist").getString("qname");
-		boolean isSpecies = taxon.getBoolean("isSpecies");
+		String checklistQname = taxon.getObject(CHECKLIST).getString(QNAME);
+		boolean isSpecies = taxon.getBoolean(IS_SPECIES);
 		return isSpecies && fromMasterChecklist(checklistQname);
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
-		IUCNEvaluationTarget target = new IUCNEvaluationTarget(speciesQname, taxon.getScientificName(), taxon.getVernacularName("fi"), container);
+		IUCNEvaluationTarget target = new IUCNEvaluationTarget(speciesQname, taxon.getScientificName(), taxon.getVernacularName(FI), container);
 		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
 			target.setEvaluation(evaluation);
 		}
@@ -206,7 +227,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("MKV.iucnRedListEvaluation"));
+		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCN_RED_LIST_EVALUATION));
 		for (Model model :  evaluations) {
 			IUCNEvaluation evaluation = new IUCNEvaluation(model);
 			String speciesQname = evaluation.getSpeciesQname();
@@ -216,6 +237,41 @@ public class IucnDAOImple implements IucnDAO {
 			initialEvaluations.get(speciesQname).add(evaluation);
 		}
 		System.out.println("IUCN evaluations loaded!");
+	}
+
+	private final SingleObjectCache<Map<String, Area>> cachedEvaluationAreas = 
+			new SingleObjectCache<Map<String, Area>>(
+					new CacheLoader<Map<String, Area>>() {
+						@Override
+						public Map<String, Area> load() {
+							Map<String, Area> areas = new LinkedHashMap<>();
+							try {
+								Collection<Model> models = triplestoreDAO.getSearchDAO().search(
+										new SearchParams(100, 0)
+										.type(AREA)
+										.predicate(AREA_TYPE)
+										.objectresource(IUCN_EVALUATION_AREA));
+								for (Model m : models) {
+									String id = m.getSubject().getQname();
+									LocalizedText name = new LocalizedText();
+									for (Statement nameStatement : m.getStatements(ML_NAME)) {
+										ObjectLiteral literal = nameStatement.getObjectLiteral();
+										name.set(literal.getLangcode(), literal.getContent());
+									}
+									Area area = new Area(new Qname(id), name, null, EVALUATION_AREA_TYPE_QNAME);
+									areas.put(id, area);
+								}
+							} catch (Exception e) {
+								throw new RuntimeException("Loading evaluation areas", e);
+							}
+							return areas;
+						}
+
+					}, 60*60);
+
+	@Override
+	public Map<String, Area> getEvaluationAreas() throws Exception {
+		return cachedEvaluationAreas.get();
 	}
 
 }
