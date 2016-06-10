@@ -156,12 +156,16 @@
 	</tr>
 </#macro>
 
+<#macro iucnInputField fieldName>
+	input
+</#macro>
+
 <#macro iucnInput fieldName notesFieldName="NONE">
 	<#assign field = properties[fieldName] />
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
 		<td><@comparisonValue fieldName /> <@comparisonNotes notesFieldName /></td>
-		<td>input <@notes notesFieldName /></td>
+		<td><@iucnInputField fieldName /> <@notes notesFieldName /></td>
 	</tr>
 </#macro>
 
@@ -170,7 +174,7 @@
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
 		<td><@comparisonValue fieldName /></td>
-		<td><textarea name="${fieldName}">value</textarea></td>
+		<td><textarea name="${fieldName}"><#if evaluation??>${evaluation.getValue(fieldName)}</#if></textarea></td>
 	</tr>
 </#macro>
 
@@ -180,7 +184,7 @@
 	<tr>
 		<th>${title}</th>
 		<td><#if comparison??><@comparisonValue minField /> - <@comparisonValue maxField /> <@comparisonNotes notesFieldName /></#if></td>
-		<td>input - input <@notes notesFieldName /></td>
+		<td><@iucnInputField minField /> - <@iucnInputField maxField /> <@notes notesFieldName /></td>
 	</tr>
 </#macro>
 
@@ -206,26 +210,42 @@
 	<tr>
 		<th>${field.label.forLocale("fi")!fieldName}</th>
 		<td><@comparisonValue fieldName /></td>
-		<td>input</td>
+		<td>
+			<label>Valitse julkaisu</label>
+			<#if evaluation??>
+			<#list evaluation.getValues(fieldName) as publication>
+				<select name="${fieldName}" class="chosen" >
+					<option value=""></option>
+					<#list publications?keys as publicationQname>
+						<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+					</#list>
+				</select>
+			</#list>
+			</#if>
+			<select name="${fieldName}" class="chosen" >
+				<option value=""></option>
+				<#list publications?keys as publicationQname>
+					<option value="${publicationQname}">${publications[publicationQname].citation}</option>
+				</#list>
+			</select>
+			<label>Tai luo uusi julkaisu</label>
+			<input type="text" name="newPublicationCitation" id="createNewPublicationInput" placeholder="Type citaction, for example 'Stubbs & Drake 2001, Stuke 2003' or 'Kasviatlas 2008'"/>
+		</td>
 	</tr>
 </#macro>
 
 <#macro comparisonValue fieldName>
 	<#if comparison??>
-		<#list comparison.model.getStatements(fieldName) as statement>
-			<#if statement.literalStatement>
-				${statement.objectLiteral.content}
-			<#else>
-				${statement.objectResource.qname}
-			</#if>
+		<#list comparison.getValues(fieldName) as value>
+			${value}
 			<#if statement_has_next>, </#if>
 		</#list>
 	</#if>
 </#macro>
 
 <#macro comparisonNotes notesFieldName>
-	<#if notesFieldName != "NONE">
-		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="comp value"></span></div>
+	<#if comparison?? && notesFieldName != "NONE">
+		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${comparison.getValue(notesFieldName)}"></span></div>
 	</#if>
 </#macro>
 
@@ -233,7 +253,7 @@
 	<#if notesFieldName != "NONE">
 		<div class="notes hidden">
 			<p><label>${properties[notesFieldName].label.forLocale("fi")!notesFieldName}</label></p>
-			<textarea name="${notesFieldName}"></textarea>
+			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)}</#if></textarea>
 			<button class="closeNoteEditButton">Sulje kommentti</button>
 		</div>
 	</#if>

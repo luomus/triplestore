@@ -8,8 +8,11 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.utils.DateUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IUCNEvaluation {
@@ -59,6 +62,26 @@ public class IUCNEvaluation {
 		return year;
 	}
 
+	public String getValue(String predicateQname) {
+		if (!evaluation.hasStatements(predicateQname)) return "";
+		Statement s = evaluation.getStatements(predicateQname).get(0); 
+		if (s.isLiteralStatement()) return s.getObjectLiteral().getContent();
+		return s.getObjectResource().getQname();
+	}
+	
+	public List<String> getValues(String predicateQname) {
+		if (!evaluation.hasStatements(predicateQname)) return Collections.emptyList();
+		List<String> values = new ArrayList<>();
+		for (Statement s : evaluation.getStatements(predicateQname)) {
+			if (s.isLiteralStatement()) {
+				values.add(s.getObjectLiteral().getContent()); 
+			} else {
+				values.add(s.getObjectResource().getQname());
+			}
+		}
+		return values;
+	}
+	
 	private int getEvaluationYear() {
 		return Integer.valueOf(evaluation.getStatements(EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
 	}
