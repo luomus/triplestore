@@ -3,6 +3,7 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -43,10 +44,26 @@ public class IUCNEvaluation {
 
 	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
+	private Map<String, Occurrence> occurrences = null;
 
 	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
 		this.evaluationProperties = evaluationProperties;
+	}
+
+	public void addOccurrence(Occurrence occurrence) {
+		if (occurrence == null) occurrences = new HashMap<>();
+		occurrences.put(occurrence.getArea().toString(), occurrence);
+	}
+
+	public boolean hasOccurrence(String areaQname) {
+		if (occurrences == null) return false;
+		return occurrences.containsKey(areaQname);
+	}
+
+	public Occurrence getOccurrence(String areaQname) {
+		if (occurrences == null) return null;
+		return occurrences.get(areaQname);
 	}
 
 	public String getId() {

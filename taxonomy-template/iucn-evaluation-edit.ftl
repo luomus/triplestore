@@ -256,8 +256,29 @@
 <#macro iucnOccurrence areaQname>
 	<tr>
 		<th>${areas[areaQname].name.forLocale("fi")}</th>
-		<td>comp</td>
-		<td>input</td>
+		<td>
+			<#if comparison?? && comparison.hasOccurrence(areaQname)>
+				${occurrenceProperties.getProperty("MO.state").range.valueFor(comparison.getOccurrence(areaQname).status).label.forLocale("fi")}
+			</#if>
+		</td>
+		<td>
+			<#if permissions>
+				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
+					<option value=""></option>
+					<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
+						<#if evaluation?? && same(evaluation.getOccurrence(areaQname), prop.qname)>
+							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")}</option>
+						<#else>
+							<option value="${prop.qname}">${prop.label.forLocale("fi")}</option>
+						</#if>
+					</#list>
+				</select>
+			<#else>
+				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
+					${occurrenceProperties.getProperty("MO.state").range.valueFor(evaluation.getOccurrence(areaQname).status).label.forLocale("fi")}
+				</#if>
+			</#if>
+		</td>
 	</tr>
 </#macro>
 

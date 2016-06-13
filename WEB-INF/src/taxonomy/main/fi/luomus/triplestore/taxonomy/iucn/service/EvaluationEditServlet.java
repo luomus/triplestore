@@ -41,7 +41,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
 				.setData("evaluationProperties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"))
-				.setData("properties", getTriplestoreDAO().getProperties("MX.taxon"))
 				.setData("areas", evaluationAreas)
 				.setData("permissions", permissions(req, target));
 	}

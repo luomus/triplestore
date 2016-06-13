@@ -10,6 +10,7 @@ import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.SingleObjectCache;
@@ -237,8 +238,24 @@ public class IucnDAOImple implements IucnDAO {
 				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
 			}
 			initialEvaluations.get(speciesQname).add(evaluation);
+			if (model.hasStatements("MKV.hasOccurrence")) {
+				for (Occurrence occurrence : getOccurrences(evaluation.getId())) {
+					evaluation.addOccurrence(occurrence);
+				}
+			}
 		}
 		System.out.println("IUCN evaluations loaded!");
+	}
+
+	private List<Occurrence> getOccurrences(String evaluationId) throws Exception {
+		Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(20, 0).subject(evaluationId).predicate("MKV.hasOccurrence"));
+		List<Occurrence> occurrences = new ArrayList<>();
+		for (Model model : models) {
+			String areaQname = model.getStatements("MO.area").get(0).getObjectResource().getQname();
+			String statusQname = model.getStatements("MO.status").get(0).getObjectResource().getQname();
+			occurrences.add(new Occurrence(new Qname(model.getSubject().getQname()), new Qname(areaQname), new Qname(statusQname)));
+		}
+		return occurrences;
 	}
 
 	private RdfProperties getEvaluationProperties() throws Exception {
