@@ -1,8 +1,9 @@
-package fi.luomus.triplestore.taxonomy.service;
+package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package fi.luomus.triplestore.taxonomy.models;
+package fi.luomus.triplestore.taxonomy.iucn.model;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package fi.luomus.lajitietokeskus.taxonomy.dao;
+package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.InformalTaxonGroup;

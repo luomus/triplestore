@@ -14,10 +14,10 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.lajitietokeskus.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.ValidationData;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
 import java.util.Map.Entry;

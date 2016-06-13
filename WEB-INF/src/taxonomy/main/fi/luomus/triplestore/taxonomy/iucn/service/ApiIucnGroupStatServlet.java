@@ -1,7 +1,8 @@
-package fi.luomus.triplestore.taxonomy.service;
+package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.models.IUCNYearlyGroupStat;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNYearlyGroupStat;
+import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;

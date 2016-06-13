@@ -1,4 +1,4 @@
-package fi.luomus.lajitietokeskus.taxonomy.dao;
+package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;

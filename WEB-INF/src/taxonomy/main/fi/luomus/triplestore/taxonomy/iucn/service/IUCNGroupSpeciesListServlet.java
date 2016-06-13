@@ -1,11 +1,11 @@
-package fi.luomus.triplestore.taxonomy.service;
+package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
 import java.util.ArrayList;
 import java.util.HashSet;

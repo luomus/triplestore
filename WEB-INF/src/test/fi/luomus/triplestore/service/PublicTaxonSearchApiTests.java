@@ -8,11 +8,11 @@ import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.lajitietokeskus.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;

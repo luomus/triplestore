@@ -3,8 +3,8 @@ package fi.luomus.triplestore.taxonomy.models;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.lajitietokeskus.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.models.User;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 import java.util.ArrayList;
 import java.util.Collection;

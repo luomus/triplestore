@@ -1,8 +1,8 @@
-package fi.luomus.lajitietokeskus.taxonomy.dao;
+package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.containers.Area;
-import fi.luomus.triplestore.taxonomy.models.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 
 import java.util.List;
 import java.util.Map;

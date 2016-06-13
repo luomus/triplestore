@@ -1,4 +1,4 @@
-package fi.luomus.lajitietokeskus.taxonomy.dao;
+package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
@@ -15,10 +15,10 @@ import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.models.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
 import java.net.URI;
 import java.util.ArrayList;

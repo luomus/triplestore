@@ -1,12 +1,12 @@
-package fi.luomus.triplestore.taxonomy.service;
+package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.models.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -61,7 +61,7 @@ public class ServletTests {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/login"));
-			assertTrue(response.contains("<h4>Login in using your FMNH username and password</h4>"));
+			assertTrue(response.contains("Use your organization's login"));
 		} finally {
 			if (noAutenticationClient != null) noAutenticationClient.close();
 		}

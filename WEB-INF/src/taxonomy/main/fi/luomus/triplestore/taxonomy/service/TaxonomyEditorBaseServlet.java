@@ -3,14 +3,14 @@ package fi.luomus.triplestore.taxonomy.service;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
-import fi.luomus.lajitietokeskus.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.lajitietokeskus.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.service.EditorBaseServlet;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.triplestore.taxonomy.models.IUCNEditors;
 import fi.luomus.triplestore.utils.NameCleaner;
 
 import javax.servlet.http.HttpServletRequest;

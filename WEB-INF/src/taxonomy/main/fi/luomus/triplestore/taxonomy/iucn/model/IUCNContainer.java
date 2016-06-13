@@ -1,8 +1,8 @@
-package fi.luomus.triplestore.taxonomy.models;
+package fi.luomus.triplestore.taxonomy.iucn.model;
 
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.lajitietokeskus.taxonomy.dao.IucnDAOImple;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
 import java.util.ArrayList;
 import java.util.Collections;
