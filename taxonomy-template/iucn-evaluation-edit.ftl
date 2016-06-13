@@ -266,7 +266,7 @@
 				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
 					<option value=""></option>
 					<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
-						<#if evaluation?? && same(evaluation.getOccurrence(areaQname), prop.qname)>
+						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
 							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")}</option>
 						<#else>
 							<option value="${prop.qname}">${prop.label.forLocale("fi")}</option>
@@ -368,7 +368,12 @@
 <#macro iucnHabitatPair fieldName notesFieldName="NONE">
 	<tr>
 		<th><@iucnLabel fieldName /></th>
-		<td>comp <@showNotes notesFieldName comparison /></td>
+		<td>
+			<#if comparison??>
+				
+				<@showNotes notesFieldName comparison />
+			</#if>
+		</td>
 		<td>input <@editableNotes notesFieldName /></td>
 	</tr>
 </#macro>

@@ -21,6 +21,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -237,25 +238,35 @@ public class IucnDAOImple implements IucnDAO {
 			if (!initialEvaluations.containsKey(speciesQname)) {
 				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
 			}
-			initialEvaluations.get(speciesQname).add(evaluation);
-			if (model.hasStatements("MKV.hasOccurrence")) {
-				for (Occurrence occurrence : getOccurrences(evaluation.getId())) {
-					evaluation.addOccurrence(occurrence);
-				}
+			for (Statement hasOccurrence : model.getStatements("MKV.hasOccurrence")) {
+				evaluation.addOccurrence(getOccurrence(hasOccurrence.getObjectResource().getQname()));
 			}
+			if (model.hasStatements("MKV.primaryHabitat")) {
+				evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements("MKV.primaryHabitat").get(0).getObjectResource().getQname()));
+			}
+			for (Statement secondaryHabitat : model.getStatements("MKV.secondaryHabitat")) {
+				evaluation.addSecondaryHabitat(getHabitatObject(secondaryHabitat.getObjectResource().getQname()));
+			}
+			initialEvaluations.get(speciesQname).add(evaluation);
 		}
 		System.out.println("IUCN evaluations loaded!");
 	}
 
-	private List<Occurrence> getOccurrences(String evaluationId) throws Exception {
-		Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(20, 0).subject(evaluationId).predicate("MKV.hasOccurrence"));
-		List<Occurrence> occurrences = new ArrayList<>();
-		for (Model model : models) {
-			String areaQname = model.getStatements("MO.area").get(0).getObjectResource().getQname();
-			String statusQname = model.getStatements("MO.status").get(0).getObjectResource().getQname();
-			occurrences.add(new Occurrence(new Qname(model.getSubject().getQname()), new Qname(areaQname), new Qname(statusQname)));
+	private IUCNHabitatObject getHabitatObject(String habitatObjectId) throws Exception {
+		Model model = triplestoreDAO.get(habitatObjectId);
+		String habitat = model.getStatements("MKV.habitat").get(0).getObjectResource().getQname();
+		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, habitat);
+		for (Statement type : model.getStatements("MKV.habitatSpecificType")) {
+			habitatObject.addHabitatSpecificType(type.getObjectResource().getQname());
 		}
-		return occurrences;
+		return habitatObject;
+	}
+
+	private Occurrence getOccurrence(String occurrenceId) throws Exception {
+		Model model = triplestoreDAO.get(occurrenceId);
+		String areaQname = model.getStatements("MO.area").get(0).getObjectResource().getQname();
+		String statusQname = model.getStatements("MO.status").get(0).getObjectResource().getQname();
+		return new Occurrence(new Qname(model.getSubject().getQname()), new Qname(areaQname), new Qname(statusQname));
 	}
 
 	private RdfProperties getEvaluationProperties() throws Exception {

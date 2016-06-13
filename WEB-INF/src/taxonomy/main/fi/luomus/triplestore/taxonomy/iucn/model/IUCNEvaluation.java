@@ -25,7 +25,6 @@ public class IUCNEvaluation {
 	public static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
 	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
 	public static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
-
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
@@ -45,14 +44,34 @@ public class IUCNEvaluation {
 	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
 	private Map<String, Occurrence> occurrences = null;
+	private IUCNHabitatObject primaryHabitat;
+	private List<IUCNHabitatObject> secondaryHabitats = null;
 
 	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
 		this.evaluationProperties = evaluationProperties;
 	}
 
+	public void setPrimaryHabitat(IUCNHabitatObject habitat) {
+		primaryHabitat = habitat;
+	}
+
+	public void addSecondaryHabitat(IUCNHabitatObject habitat) {
+		if (secondaryHabitats == null) secondaryHabitats = new ArrayList<>();
+		secondaryHabitats.add(habitat);
+	}
+
+	public IUCNHabitatObject getPrimaryHabitat() {
+		return primaryHabitat;
+	}
+
+	public List<IUCNHabitatObject> getSecondaryHabitats() {
+		if (secondaryHabitats == null) return Collections.emptyList();
+		return Collections.unmodifiableList(secondaryHabitats);
+	}
+
 	public void addOccurrence(Occurrence occurrence) {
-		if (occurrence == null) occurrences = new HashMap<>();
+		if (occurrences == null) occurrences = new HashMap<>();
 		occurrences.put(occurrence.getArea().toString(), occurrence);
 	}
 
