@@ -196,3 +196,9 @@
   font-weight: bold;
 }
 
+
+.submitButtonContainer {
+  margin: 2em;
+  text-align: right;
+  width: 650px;
+}

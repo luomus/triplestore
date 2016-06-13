@@ -69,7 +69,7 @@
 		<h6>Hallinnolliset ominaisuudet</h6>
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
-				<li>${evaluationProperties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
+				<li>${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
 			</#list>
 		</ul>
 	</div>
@@ -78,6 +78,7 @@
 <div class="clear"></div>
 
 <#if permissions>
+<@submitButtons/>
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
@@ -153,7 +154,15 @@
 
 <#if permissions>
 </form>
+<@submitButtons/>
 </#if>
+
+<#macro submitButtons>
+	<div class="submitButtonContainer">
+		<button>Tallenna</button>
+		<button class="ready">Valmis</button>
+	</div>
+</#macro>
 
 <#macro iucnSection title>
 	<tr class="section">
