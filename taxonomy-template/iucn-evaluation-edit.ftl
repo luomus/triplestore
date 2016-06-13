@@ -162,7 +162,34 @@
 </#macro>
 
 <#macro iucnInputField fieldName>
-	input
+	<#assign property = evaluationProperties.getProperty(fieldName)>
+	<#if property.literalProperty>
+		<#if property.integerProperty>
+			<input class="integerProperty" name=""${fieldName}" type="number" min="0" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
+		<#elseif property.booleanProperty>
+			<select name="${fieldName}">
+				<option value=""></optioin>
+				<#list property.range.values as optionValue>
+					<option value="${optionValue.qname}" <#if booleanValue(value) == optionValue.qname>selected="selected"</#if>>${optionValue.label.forLocale("fi")}</option>
+				</#list>
+			</select>
+		<#else>
+			<input name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
+		</#if>
+	<#else>
+		<select name="${fieldName}" class="chosen" data-placeholder="...">
+			<option value=""></option>
+			<#list property.range.values as enumValue>
+				<#assign hasValue = false>
+				<#if evaluation??>
+				<#list evaluation.getValues(fieldName) as evaluationValue>
+					<#if same(enumValue.qname, evaluationValue)><#assign hasValue = true><#break></#if>
+				</#list>
+				</#if>
+				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")}</option>	
+			</#list>
+		</select>
+	</#if>
 </#macro>
 
 <#macro iucnInput fieldName notesFieldName="NONE">
@@ -194,7 +221,7 @@
 </#macro>
 
 <#macro iucnMinMax title minFieldName maxFieldName notesFieldName="NONE">
-	<tr>
+	<tr class="minMax">
 		<th>${title}</th>
 		<td>
 			<#if comparison?? && (comparison.hasValue(minFieldName) || comparison.hasValue(maxFieldName))>

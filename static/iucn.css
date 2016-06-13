@@ -145,16 +145,27 @@
   font-size: 50%;
 }
 
+.evaluationEdit select,
+ .evaluationEdit .minMax select {
+  width: 200px !important;
+}
 .evaluationEdit textarea, 
-.evaluationEdit  input {
+.evaluationEdit input,
+.evaluationEdit select.chosen {
   width: 400px;
 }
+.evaluationEdit .minMax input,
+.evaluationEdit input.integerProperty {
+  width: 90px;
+}
+
 .evaluationEdit textarea {
   height: 50px;
 }
 .evaluationEdit label {
   width: auto;
 }
+
 .evaluationEdit td table td,
 .evaluationEdit td table th,
 .evaluationEdit td table tr {
