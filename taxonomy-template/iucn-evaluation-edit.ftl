@@ -250,6 +250,7 @@
 </#macro>
 
 <#macro taxonOccurenceInFinland>
+<#if permissions>
 	<tr>
 		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
 		<td colspan="2">
@@ -303,6 +304,32 @@
 			<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
 		</td>
 	</tr>
+<#else>
+	<tr>
+		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
+		<td colspan="2">
+			<#list taxon.typesOfOccurrenceInFinland as type>
+				${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(type).label.forLocale("fi")}
+				<#if type_has_next>, </#if>
+			</#list>
+		</td>
+	</tr>
+	<tr>
+		<th><@label "MX.occurrenceInFinlandPublication" "" "fi" /></th>
+		<td colspan="2">
+			<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
+				${publication.citation}
+				<#if publication_has_next>, </#if>
+			</#list>
+		</td>
+	</tr>
+	<tr>
+		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
+		<td colspan="2">
+			${taxon.typeOfOccurrenceInFinlandNotes!""}
+		</td>
+	</tr>
+</#if>
 </#macro>
 
 <#macro iucnHabitatPair fieldName notesFieldName="NONE">
@@ -375,15 +402,20 @@
 
 <#macro showValue fieldName data="NONE">
 	<#if data != "NONE">
+		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
-			${value}
-			<#if statement_has_next>, </#if>
+			<#if property.literalProperty>
+				${value}
+			<#else>
+				${property.range.getValueFor(value).label.forLocale("fi")}
+			</#if>
+			<#if value_has_next>, </#if>
 		</#list>
 	</#if>
 </#macro>
 
 <#macro showNotes notesFieldName data="NONE">
-	<#if data != "NONE" && notesFieldName != "NONE">
+	<#if data != "NONE" && notesFieldName != "NONE" && data.hasValue(notesFieldName)>
 		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${data.getValue(notesFieldName)}"></span></div>
 	</#if>
 </#macro>
