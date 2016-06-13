@@ -143,14 +143,24 @@
 }
 
 .evaluationEdit select,
- .evaluationEdit .minMax select {
-  width: 200px !important;
-}
-.evaluationEdit textarea, 
 .evaluationEdit input,
-.evaluationEdit select.chosen {
-  width: 400px;
+.evaluationEdit textarea {
   margin-right: 5px;
+  margin-left: 5px;
+}
+
+.evaluationEdit textarea, 
+.evaluationEdit select,
+.evaluationEdit input.createPublication {
+  width: 400px;
+}
+.evaluationEdit .minMax select,
+.evaluationEdit select.booleanChosen {
+  width: 200px;
+}
+.evaluationEdit input,
+.evaluationEdit input.integerProperty {
+  width: 120px;
 }
 .evaluationEdit .minMax input,
 .evaluationEdit input.integerProperty {
@@ -198,4 +208,9 @@
   margin: 2em;
   text-align: right;
   width: 650px;
+}
+
+button.add {
+  color: green;
+  font-size: 10px;
 }

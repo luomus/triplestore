@@ -176,7 +176,7 @@
 		<#if property.integerProperty>
 			<input class="integerProperty" name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
 		<#elseif property.booleanProperty>
-			<select name="${fieldName}">
+			<select name="${fieldName}" class="booleanChosen" data-placeholder="Kyllä/Ei">
 				<option value=""></optioin>
 				<#list property.range.values as optionValue>
 					<option value="${optionValue.qname}" <#if booleanValue(value) == optionValue.qname>selected="selected"</#if>>${optionValue.label.forLocale("fi")}</option>
@@ -186,7 +186,7 @@
 			<input name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
 		</#if>
 	<#else>
-		<select name="${fieldName}" class="chosen" data-placeholder="...">
+		<select name="${fieldName}"  data-placeholder="...">
 			<option value=""></option>
 			<#list property.range.values as enumValue>
 				<#assign hasValue = false>
@@ -198,6 +198,9 @@
 				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")}</option>	
 			</#list>
 		</select>
+	</#if>
+	<#if property.repeated>
+		<button class="add">+ Lisää</button>
 	</#if>
 </#macro>
 
@@ -266,7 +269,7 @@
 			<#list taxon.typesOfOccurrenceInFinland as type>
 				<@select "MX.typeOfOccurrenceInFinland" type />
 			</#list>
-			<@select "MX.typeOfOccurrenceInFinland" "" />
+			<button class="add">+ Lisää</button>
 		</td>
 	</tr>
 	<tr>
@@ -279,7 +282,7 @@
 				<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
 				<tr>
 					<td>
-						<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
+						<select name="MX.occurrenceInFinlandPublication">
 							<option value=""></option>
 							<#list publications?keys as publicationQname>
 								<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
@@ -290,7 +293,7 @@
 				</#list>
 				<tr>
 					<td>
-						<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
+						<select name="MX.occurrenceInFinlandPublication" data-placeholder="Select existing publication" >
 							<option value=""></option>
 							<#list publications?keys as publicationQname>
 								<option value="${publicationQname}">${publications[publicationQname].citation}</option>
@@ -302,7 +305,7 @@
 					<th>Tai luo uusi julkaisu</th> 
 				</tr>
 				<tr>
-					<td><input type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
+					<td><input class="createPublication" type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Esim 'Juutinen, R. & Ulvinen, T. 2015: Suomen sammalien levinneisyys eliömaakunnissa. – Suomen ympäristökeskus. 27.3.2015'"/></td>
 				</tr>	
 			</table>
 		</td>
@@ -371,7 +374,7 @@
 					<#list evaluation.getValues(fieldName) as publication>
 						<tr>
 							<td>
-								<select name="${fieldName}" class="chosen" >
+								<select name="${fieldName}">
 									<option value=""></option>
 									<#list publications?keys as publicationQname>
 										<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
@@ -383,7 +386,7 @@
 					</#if>
 					<tr>
 						<td>
-							<select name="${fieldName}" class="chosen" data-placeholder="Valitse julkaisu" >
+							<select name="${fieldName}"  data-placeholder="Valitse julkaisu" >
 								<option value=""></option>
 								<#list publications?keys as publicationQname>
 									<option value="${publicationQname}">${publications[publicationQname].citation}</option>
@@ -395,7 +398,7 @@
 						<th>Tai luo uusi julkaisu</th> 
 					</tr>
 					<tr>
-						<td><input type="text" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Kirjoita lähdeviite, for example 'Stubbs & Drake 2001, Stuke 2003' or 'Kasviatlas 2008'"/></td>
+						<td><input class="createPublication" type="text" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Stubbs & Drake 2001, Stuke 2003' tai 'Kasviatlas 2008'"/></td>
 					</tr>	
 				</table>
 			<#else>
@@ -444,6 +447,8 @@
 <script>
 $(function() {
 	
+	$("select").chosen();
+	
 	$("label").tooltip();
 	
 	$(".notes textarea").each(function() {
@@ -459,7 +464,17 @@ $(function() {
 	$(".closeNoteEditButton").on('click', function() {
 		$(this).closest('.notes').find('textarea').trigger("change");
 	});
-
+ 
+ 	$("button.add").on('click', function() {
+ 		var input = $(this).prevAll("input, select").first();
+ 		var clone = input.clone();
+ 		$(this).before('<br />').before(clone);
+ 		clone.show().hide();
+ 		clone.fadeIn('fast');
+ 		if (clone.is("select")) {
+ 			clone.chosen();
+ 		}
+ 	});
 });
 
 function shorten(text) {
