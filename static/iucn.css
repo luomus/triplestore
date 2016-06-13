@@ -145,12 +145,13 @@
   font-size: 50%;
 }
 
-textarea, input {
+.evaluationEdit textarea, 
+.evaluationEdit  input {
   width: 400px;
 }
-textarea {
+.evaluationEdit textarea {
   height: 50px;
 }
-label {
+.evaluationEdit label {
   width: auto;
 }
