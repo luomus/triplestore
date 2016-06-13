@@ -165,7 +165,7 @@
 	<#assign property = evaluationProperties.getProperty(fieldName)>
 	<#if property.literalProperty>
 		<#if property.integerProperty>
-			<input class="integerProperty" name=""${fieldName}" type="number" min="0" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
+			<input class="integerProperty" name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
 		<#elseif property.booleanProperty>
 			<select name="${fieldName}">
 				<option value=""></optioin>
@@ -391,9 +391,10 @@
 <#macro editableNotes notesFieldName>
 	<#if notesFieldName != "NONE">
 		<div class="notes hidden">
-			<p><label><@iucnLabel notesFieldName /></label></p>
+			<@iucnLabel notesFieldName />
 			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)!""}</#if></textarea>
-			<button class="closeNoteEditButton">Sulje kommentti</button>
+			<br />
+			<button class="closeNoteEditButton">Sulje</button>
 		</div>
 	</#if>
 </#macro>
@@ -406,7 +407,7 @@ $(function() {
 	});
 	
 	$(".notes textarea").on('change', function() {
-		$(this).closest('.notes').fadeOut('slow', updateNotes( $(this) ));
+		$(this).closest('.notes').fadeOut('fast', updateNotes( $(this) ));
 	});
 	
 	$(".noteViewer").tooltip();
@@ -417,12 +418,16 @@ $(function() {
 
 });
 
-
+function shorten(text) {
+	if (text.length <= 35) return text;
+	return text.substring(0, 32) + '...';
+}
 function updateNotes(noteInput) {
 	noteInput.closest('td').find('.noteViewer').remove();
 	var noteViewerContent = '<div class="noteViewer noteViewerEditable">';
 	if (noteInput.val()) {
-		noteViewerContent += '<span class="ui-icon ui-icon-comment" title="'+noteInput.val()+'"></span>';
+		var shortText = shorten(noteInput.val());
+		noteViewerContent += '<span title="'+noteInput.val()+'"><span class="ui-icon ui-icon-comment"></span>'+shortText+'</span>';
 	} else {
 		noteViewerContent += '<a href="#">kommentoi</a>';
 	}
@@ -432,8 +437,8 @@ function updateNotes(noteInput) {
 	noteViewer.tooltip();
 	noteViewer.on('click', function() {
 		var notesContainer = $(this).closest('td').find('.notes').first();
-		$(this).fadeOut('slow', function() {
-			notesContainer.fadeIn('slow');
+		$(this).fadeOut('fast', function() {
+			notesContainer.fadeIn('fast');
 		});
 		return false;
 	});

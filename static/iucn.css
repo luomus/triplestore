@@ -153,6 +153,7 @@
 .evaluationEdit input,
 .evaluationEdit select.chosen {
   width: 400px;
+  margin-right: 2px;
 }
 .evaluationEdit .minMax input,
 .evaluationEdit input.integerProperty {
@@ -172,3 +173,20 @@
   border-style: none !important;
   background-color: inherit !important;
 }
+
+.notes label {
+  margin-top: 1em;
+  display: block;
+}
+.notes textarea {
+  width: 350px;
+}
+.notes {
+  display: block;
+  display: none;
+  box-shadow: rgba(0,0,0,0.7) 0px 2px 3px, inset rgba(0,0,0,0.7) 0px -1px 2px;
+  border-radius: 3px;
+  padding: 0.5em;
+  margin: 1em;
+}
+
