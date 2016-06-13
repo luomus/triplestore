@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
-public class IUCNGroupSpeciesListServlet extends IUCNFrontpageServlet {
+public class GroupSpeciesListServlet extends FrontpageServlet {
 
 	private static final int DEFAULT_PAGE_SIZE = 100;
 	private static final long serialVersionUID = -9070472068743470346L;

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.Iterables;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
-public class IUCNFrontpageServlet extends TaxonomyEditorBaseServlet {
+public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	private static final long serialVersionUID = 3517803575719451136L;
 

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-stat/*"})
-public class ApiIucnGroupStatServlet extends ApiBaseServlet {
+public class ApiGroupStatServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -3859060737786587345L;
 

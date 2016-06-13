@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/editors/*"})
-public class IUCNEditorsServlet extends IUCNFrontpageServlet {
+public class EditorsServlet extends FrontpageServlet {
 
 	private static final Predicate TAXON_GROUP_PREDICATE = new Predicate("MKV.taxonGroup");
 	private static final Predicate IUCN_EDITOR_PREDICATE = new Predicate("MKV.iucnEditor");

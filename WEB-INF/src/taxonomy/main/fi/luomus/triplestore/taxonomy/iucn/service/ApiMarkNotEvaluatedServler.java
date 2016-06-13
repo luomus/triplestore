@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-evaluated/*"})
-public class ApiIucnMarkNotEvaluatedServler extends ApiBaseServlet {
+public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 
 	private static final long serialVersionUID = 2710161794053100703L;
 
