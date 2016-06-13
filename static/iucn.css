@@ -35,7 +35,7 @@
 .evaluationEdit {
   border: 1px solid #ccc;
 }
-.evaluationEdit tr.section th {
+.evaluationEdit .section label {
   padding-top: 30px;
   text-align: left;
   font-weight: bold !important;
@@ -138,11 +138,8 @@
 .noteViewer {
   display: inline-block;
   float: right;
-}
-
-.noteViewer {
   white-space: nowrap;
-  font-size: 50%;
+  font-size: 0.7em;
 }
 
 .evaluationEdit select,
@@ -153,7 +150,7 @@
 .evaluationEdit input,
 .evaluationEdit select.chosen {
   width: 400px;
-  margin-right: 2px;
+  margin-right: 5px;
 }
 .evaluationEdit .minMax input,
 .evaluationEdit input.integerProperty {

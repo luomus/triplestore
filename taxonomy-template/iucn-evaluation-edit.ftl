@@ -444,6 +444,8 @@
 <script>
 $(function() {
 	
+	$("label").tooltip();
+	
 	$(".notes textarea").each(function() {
 		updateNotes($(this));
 	});
