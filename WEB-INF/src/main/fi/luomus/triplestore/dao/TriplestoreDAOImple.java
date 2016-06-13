@@ -81,7 +81,12 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" ORDER BY predicatename                                                       ";
 
 	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" + 
-			" SELECT DISTINCT propertyName, ranges.objectname AS range, sortOrder.resourceliteral as sortOrder " +
+			" SELECT DISTINCT 													" +
+			" 		propertyName, 												" + 
+			" 		ranges.objectname AS range,									" +
+			"		sortOrder.resourceliteral AS sortOrder,						" +
+			"		min.resourceLiteral AS minOccurs,							" + 
+			"		max.resourceLiteral As maxOccurs 							" + 
 			" FROM																" +
 			" ((																" +
 			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
@@ -95,7 +100,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			"   WHERE predicatename = 'rdfs:domain' AND objectname = ?			" +
 			" )) properties														" +
 			" LEFT JOIN "+SCHEMA+".rdf_statementview ranges ON (ranges.subjectname = propertyName AND ranges.predicatename = 'rdfs:range')	" +
-			" LEFT JOIN "+SCHEMA+".rdf_statementview sortOrder ON (sortOrder.subjectname = propertyName AND sortOrder.predicatename = 'sortOrder')	";
+			" LEFT JOIN "+SCHEMA+".rdf_statementview sortOrder ON (sortOrder.subjectname = propertyName AND sortOrder.predicatename = 'sortOrder')	" +
+			" LEFT JOIN "+SCHEMA+".rdf_statementview min on (min.subjectname = propertyName AND min.predicatename = 'xsd:minOccurs') " + 
+			" LEFT JOIN "+SCHEMA+".rdf_statementview max on (max.subjectname = propertyName AND max.predicatename = 'xsd:maxOccurs') ";
 
 	private final static String GET_PROPERTY_BY_PREDICATE_NAME_SQL = "" + 
 			" SELECT ranges.objectname AS range, sortOrder.resourceliteral as sortOrder " +
@@ -302,7 +309,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		store(model);
 		return group;
 	}
-	
+
 	@Override
 	public Publication storePublication(Publication publication) throws Exception {
 		Model model = new Model(publication.getQname());
@@ -428,11 +435,27 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 					Qname predicate = new Qname(rs.getString(1));
 					Qname range = rs.getString(2) == null ? null : new Qname(rs.getString(2));
 					String sortOrder = rs.getString(3);
+					String minOccurs = rs.getString(4);
+					String maxOccurs = rs.getString(5);
 					RdfProperty property = dao.createProperty(predicate, range);
 					if (sortOrder != null) {
 						try {
 							property.setOrder(Integer.valueOf(sortOrder));
 						} catch (NumberFormatException e) {}
+					}
+					if (minOccurs != null) {
+						try {
+							property.setMinOccurs(Integer.valueOf(minOccurs));
+						} catch (NumberFormatException e) {}
+					}
+					if (maxOccurs != null) {
+						if ("unbounded".equals(maxOccurs)) {
+							property.setMaxOccurs(Integer.MAX_VALUE);
+						} else {
+							try {
+								property.setMaxOccurs(Integer.valueOf(maxOccurs));
+							} catch (NumberFormatException e) {}
+						}
 					}
 					properties.addProperty(property);
 				}

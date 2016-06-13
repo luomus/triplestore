@@ -157,7 +157,7 @@
 
 <#macro iucnSection title>
 	<tr class="section">
-		<th colspan="3">${title}</th>
+		<th colspan="3"><label>${title}</label></th>
 	</tr>
 </#macro>
 
@@ -397,7 +397,8 @@
 </#macro>
 
 <#macro iucnLabel fieldName>
-	<label>${(evaluationProperties.getProperty(fieldName).label.forLocale("fi"))!fieldName}</label>
+	<#assign property = evaluationProperties.getProperty(fieldName)> 
+	<label>${property.label.forLocale("fi")!fieldName} <#if property.required><span class="required" title="Pakollinen tieto">*</span></#if></label>
 </#macro>
 
 <#macro showValue fieldName data="NONE">
