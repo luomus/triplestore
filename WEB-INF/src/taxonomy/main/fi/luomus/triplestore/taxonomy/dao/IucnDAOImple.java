@@ -6,6 +6,7 @@ import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
@@ -35,12 +36,13 @@ import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
+	private static final String IUCN_RED_LIST_EVALUATION_CLASS = "MKV.iucnRedListEvaluation";
+	private static final String IUCN_EVALUATION_NAMESPACE = "MKV";
 	private static final String ML_NAME = "ML.name";
 	private static final String IUCN_EVALUATION_AREA = "ML.iucnEvaluationArea";
 	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname(IUCN_EVALUATION_AREA);
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
-	private static final String IUCN_RED_LIST_EVALUATION = "MKV.iucnRedListEvaluation";
 	private static final String FI = "fi";
 	private static final String IS_SPECIES = "isSpecies";
 	private static final String CHECKLIST = "checklist";
@@ -49,10 +51,10 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String ROOT = "root";
 	private static final String NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
-	private static final String EVALUATION_YEAR = "MKV.evaluationYear";
-	private static final String IUCN_RED_LIST_EVALUATION_YEAR = "MKV.iucnRedListEvaluationYear";
+	private static final String IUCN_RED_LIST_EVALUATION_YEAR_CLASS = "MKV.iucnRedListEvaluationYear";
 	private static final String RDF_TYPE = "rdf:type";
 	private static final String MASTER_CHECKLIST_QNAME = "MR.1";
+
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
@@ -106,8 +108,8 @@ public class IucnDAOImple implements IucnDAO {
 				public List<Integer> load() {
 					List<Integer> evaluationYears = new ArrayList<>();
 					try {
-						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCN_RED_LIST_EVALUATION_YEAR)) {
-							int year = Integer.valueOf(m.getStatements(EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
+						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCN_RED_LIST_EVALUATION_YEAR_CLASS)) {
+							int year = Integer.valueOf(m.getStatements(IUCNEvaluation.EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
 							evaluationYears.add(year);
 						}
 					} catch (Exception e) {
@@ -227,9 +229,9 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCN_RED_LIST_EVALUATION));
+		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCN_RED_LIST_EVALUATION_CLASS));
 		for (Model model :  evaluations) {
-			IUCNEvaluation evaluation = new IUCNEvaluation(model);
+			IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
 			String speciesQname = evaluation.getSpeciesQname();
 			if (!initialEvaluations.containsKey(speciesQname)) {
 				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
@@ -237,6 +239,10 @@ public class IucnDAOImple implements IucnDAO {
 			initialEvaluations.get(speciesQname).add(evaluation);
 		}
 		System.out.println("IUCN evaluations loaded!");
+	}
+
+	private RdfProperties getEvaluationProperties() throws Exception {
+		return triplestoreDAO.getProperties(IUCN_RED_LIST_EVALUATION_CLASS);
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedEvaluationAreas = 
@@ -272,6 +278,19 @@ public class IucnDAOImple implements IucnDAO {
 	@Override
 	public Map<String, Area> getEvaluationAreas() throws Exception {
 		return cachedEvaluationAreas.get();
+	}
+
+	@Override
+	public IUCNEvaluation createEvaluation() throws Exception {
+		Qname evaluationId = triplestoreDAO.getSeqNextValAndAddResource(IUCN_EVALUATION_NAMESPACE);
+		Model model = new Model(evaluationId);
+		model.setType(IUCN_RED_LIST_EVALUATION_CLASS);
+		return new IUCNEvaluation(model, getEvaluationProperties());
+	}
+
+	@Override
+	public Qname getSeqNextValAndAddResource() throws Exception {
+		return triplestoreDAO.getSeqNextValAndAddResource(IUCN_EVALUATION_NAMESPACE);
 	}
 
 }

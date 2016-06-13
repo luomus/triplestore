@@ -1,8 +1,10 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 
 import java.util.List;
 import java.util.Map;
@@ -21,4 +23,7 @@ public interface IucnDAO {
 
 	public Map<String, Area> getEvaluationAreas() throws Exception;
 
+	public IUCNEvaluation createEvaluation() throws Exception;
+
+	public Qname getSeqNextValAndAddResource() throws Exception;
 }

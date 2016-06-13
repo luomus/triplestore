@@ -1,6 +1,12 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
@@ -12,13 +18,14 @@ import java.util.Map;
 
 public class IUCNContainer {
 
+	private static final Object LOCK = new Object();
+
 	private final TriplestoreDAO triplestoreDAO;
 	private final IucnDAOImple iucnDAO;
 	private final Map<Integer, Map<String, IUCNYearlyGroupStat>> stats = new HashMap<>();
 	private final Map<String, List<IUCNEvaluationTarget>> targetsOfGroup = new HashMap<>();
 	private final Map<String, List<String>> groupsOfTarget = new HashMap<>();
 	private final Map<String, IUCNEvaluationTarget> targets = new HashMap<>();
-	private static final Object LOCK = new Object();
 
 	public IUCNContainer(TriplestoreDAO triplestoreDAO, IucnDAOImple iucnDAO) {
 		this.triplestoreDAO = triplestoreDAO;
@@ -79,19 +86,31 @@ public class IUCNContainer {
 			IUCNEvaluationTarget target = getTarget(speciesQname);
 			target.setEvaluation(evaluation);
 			for (String groupQname : target.getGroups()) {
-				getStat(evaluation.getYear(), groupQname).invalidate();
+				getStat(evaluation.getEvaluationYear(), groupQname).invalidate();
 			}
 		}
 	}
 
 	public IUCNEvaluation markNotEvaluated(String speciesQname, int year, Qname editorQname) throws Exception {
 		synchronized (LOCK) {
-			Qname evaluationId = triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
-			IUCNEvaluation evaluation = IUCNEvaluation.notEvaluated(evaluationId, speciesQname, year, editorQname);
+			IUCNEvaluation evaluation = createNotEvaluatedEvaluation(speciesQname, year, editorQname);
 			triplestoreDAO.store(evaluation.getModel());
 			this.setEvaluation(evaluation);
 			return evaluation;	
 		}
+	}
+
+	private IUCNEvaluation createNotEvaluatedEvaluation(String speciesQname, int year, Qname editorQname) throws Exception {
+		IUCNEvaluation evaluation = iucnDAO.createEvaluation();
+		Model model = evaluation.getModel();
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EVALUATED_TAXON), new ObjectResource(speciesQname)));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EVALUATION_YEAR), new ObjectLiteral(String.valueOf(year))));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.LAST_MODIFIED), new ObjectLiteral(DateUtils.getCurrentDate())));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.LAST_MODIFIED_BY), new ObjectResource(editorQname)));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.RED_LIST_STATUS), new ObjectResource("MX.iucnNE")));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.RED_LIST_STATUS_NOTES), new ObjectLiteral(IUCNEvaluation.NE_MARK_NOTES, "fi")));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.STATE), new ObjectResource(IUCNEvaluation.STATE_READY)));
+		return evaluation;
 	}
 
 }

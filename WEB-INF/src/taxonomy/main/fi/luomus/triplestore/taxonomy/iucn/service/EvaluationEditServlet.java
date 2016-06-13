@@ -2,13 +2,11 @@ package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -26,41 +24,36 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		ResponseData responseData = super.processGet(req, res);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return redirectTo404(res);
+
 		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
+
 		int year = selectedYear(req);
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
+
 		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(target.getQname()));
 
-		
-		
-		Map<String, RdfProperty> properties = getProperties();
-
 		Map<String, Area> evaluationAreas = getTaxonomyDAO().getIucnDAO().getEvaluationAreas();
-		
+
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxon)
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
-				.setData("properties", properties)
-				.setData("areas", evaluationAreas);
+				.setData("evaluationProperties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"))
+				.setData("properties", getTriplestoreDAO().getProperties("MX.taxon"))
+				.setData("areas", evaluationAreas)
+				.setData("permissions", permissions(req, target));
 	}
 
-	private Map<String, RdfProperty> properties = null;
-
-	private Map<String, RdfProperty> getProperties() throws Exception {
-		if (properties != null) return properties;
-		properties = new HashMap<>();
-		propertiesOfClass(properties, "MKV.iucnRedListEvaluation");
-		propertiesOfClass(properties, "MX.taxon");
-		return properties;
-	}
-
-	private void propertiesOfClass(Map<String, RdfProperty> properties, String className) throws Exception {
-		for (RdfProperty p : getTriplestoreDAO().getProperties(className).getAllProperties()) {
-			properties.put(p.getQname().toString(), p);
+	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target) throws Exception {
+		boolean userHasPermissions = false;
+		for (String groupQname : target.getGroups()) {
+			if (hasIucnPermissions(groupQname, req)) {
+				userHasPermissions = true;
+			}
 		}
+		return userHasPermissions;
 	}
 
 	private IUCNEvaluation getComparisonData(IUCNEvaluationTarget target, int year) throws Exception {

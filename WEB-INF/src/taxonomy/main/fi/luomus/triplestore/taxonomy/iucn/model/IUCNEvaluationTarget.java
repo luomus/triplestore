@@ -36,7 +36,7 @@ public class IUCNEvaluationTarget {
 	}
 
 	public void setEvaluation(IUCNEvaluation evaluation) {
-		evaluations.put(evaluation.getYear(), evaluation);
+		evaluations.put(evaluation.getEvaluationYear(), evaluation);
 	}
 
 	public IUCNEvaluation getEvaluation(int year) {

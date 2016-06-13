@@ -1,10 +1,7 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
 import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.ObjectLiteral;
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.utils.DateUtils;
 
@@ -17,59 +14,64 @@ import java.util.Map;
 
 public class IUCNEvaluation {
 
-	public static final String IUCN_EVALUATION_NAMESPACE = "MKV";
-	private static final String STATE = "MKV.state";
-	private static final String STATE_READY = "MKV.stateReady";
-	private static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
-	private static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
-	private static final String RED_LIST_STATUS = "MKV.redListStatus";
-	private static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
-	private static final String LAST_MODIFIED = "MKV.lastModified";
-	private static final String EVALUATION_YEAR = "MKV.evaluationYear";
-	private static final String EVALUATED_TAXON = "MKV.evaluatedTaxon";
-	private static final String IUCN_RED_LIST_EVALUATION_CLASS = "MKV.iucnRedListEvaluation";
-	private static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
+	public static final String STATE = "MKV.state";
+	public static final String STATE_READY = "MKV.stateReady";
+	public static final String RED_LIST_STATUS = "MKV.redListStatus";
+	public static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
+	public static final String LAST_MODIFIED = "MKV.lastModified";
+	public static final String EVALUATION_YEAR = "MKV.evaluationYear";
+	public static final String EVALUATED_TAXON = "MKV.evaluatedTaxon";
+	public static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
+	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
+	public static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
 
-	public static final Map<String, Integer> CLASS_TO_INDEX;
+	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
-		CLASS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
-		CLASS_TO_INDEX.put("MX.iucnEX", 5);
-		CLASS_TO_INDEX.put("MX.iucnEW", 5);
-		CLASS_TO_INDEX.put("MX.iucnRE", 5);
-		CLASS_TO_INDEX.put("MX.iucnCR", 4);
-		CLASS_TO_INDEX.put("MX.iucnEN", 3);
-		CLASS_TO_INDEX.put("MX.iucnVU", 2);
-		CLASS_TO_INDEX.put("MX.iucnNT", 1);
-		CLASS_TO_INDEX.put("MX.iucnLC", 0);
-		CLASS_TO_INDEX.put("MX.iucnDD", 0);
-		CLASS_TO_INDEX.put("MX.iucnNA", 0);
-		CLASS_TO_INDEX.put("MX.iucnNE", 0); 
+		RED_LIST_STATUS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEX", 5);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEW", 5);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnRE", 5);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnCR", 4);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEN", 3);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnVU", 2);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNT", 1);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnLC", 0);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnDD", 0);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNA", 0);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNE", 0); 
 	}
 
+	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
-	private final int year;
 
-	public IUCNEvaluation(Model evaluation) {
+	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
-		this.year = getEvaluationYear();
+		this.evaluationProperties = evaluationProperties;
 	}
 
 	public String getId() {
 		return evaluation.getSubject().getQname();
 	}
-	
-	public int getYear() {
-		return year;
+
+	public boolean hasValue(String predicateQname) {
+		validate(predicateQname);
+		return evaluation.hasStatements(predicateQname);
 	}
 
 	public String getValue(String predicateQname) {
-		if (!evaluation.hasStatements(predicateQname)) return "";
+		validate(predicateQname);
+		if (!evaluation.hasStatements(predicateQname)) return null;
 		Statement s = evaluation.getStatements(predicateQname).get(0); 
 		if (s.isLiteralStatement()) return s.getObjectLiteral().getContent();
 		return s.getObjectResource().getQname();
 	}
-	
+
+	private void validate(String predicateQname) {
+		if (!evaluationProperties.hasProperty(predicateQname)) throw new IllegalArgumentException("No such property: " + predicateQname);
+	}
+
 	public List<String> getValues(String predicateQname) {
+		validate(predicateQname);
 		if (!evaluation.hasStatements(predicateQname)) return Collections.emptyList();
 		List<String> values = new ArrayList<>();
 		for (Statement s : evaluation.getStatements(predicateQname)) {
@@ -81,9 +83,12 @@ public class IUCNEvaluation {
 		}
 		return values;
 	}
-	
-	private int getEvaluationYear() {
-		return Integer.valueOf(evaluation.getStatements(EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
+
+	public Integer getEvaluationYear() {
+		if (hasValue(EVALUATION_YEAR)) {
+			return Integer.valueOf(getValue(EVALUATION_YEAR));
+		}
+		return null;
 	}
 
 	public boolean isReady() {
@@ -91,28 +96,22 @@ public class IUCNEvaluation {
 	}
 
 	private String getState() {
-		return evaluation.getStatements(STATE).get(0).getObjectResource().getQname();
+		return getValue(STATE);
 	}
 
 	public Date getLastModified() throws Exception {
 		if (evaluation.hasStatements(LAST_MODIFIED)) {
-			return DateUtils.convertToDate(evaluation.getStatements(LAST_MODIFIED).get(0).getObjectLiteral().getContent(), "yyyy-MM-dd");
+			return DateUtils.convertToDate(getValue(LAST_MODIFIED), "yyyy-MM-dd");
 		}
 		return null;
 	}
 
 	public String getLastModifiedBy() {
-		if (evaluation.hasStatements(LAST_MODIFIED_BY)) {
-			return evaluation.getStatements(LAST_MODIFIED_BY).get(0).getObjectResource().getQname();
-		}
-		return null;
+		return getValue(LAST_MODIFIED_BY);
 	}
 
 	public String getIucnStatus() {
-		if (hasIucnStatus()) {
-			return evaluation.getStatements(RED_LIST_STATUS).get(0).getObjectResource().getQname();
-		}
-		return null;
+		return getValue(RED_LIST_STATUS);
 	}
 
 	public boolean hasIucnStatus() {
@@ -125,33 +124,20 @@ public class IUCNEvaluation {
 
 	public Integer getCorrectedIucnIndex() {
 		if (hasCorrectedIndex()) {
-			return Integer.valueOf(evaluation.getStatements(RED_LIST_INDEX_CORRECTION).get(0).getObjectLiteral().getContent());
+			return Integer.valueOf(getValue(RED_LIST_INDEX_CORRECTION));
 		}
 		return null;
 	}
 
 	public Integer getCalculatedIucnIndex() {
 		if (!hasIucnStatus()) return null;
-		String iucnClass = getIucnStatus();
-		if (!CLASS_TO_INDEX.containsKey(iucnClass)) throw new UnsupportedOperationException("Unknown class " + iucnClass);
-		return CLASS_TO_INDEX.get(iucnClass);
+		String iucnStatus = getIucnStatus();
+		if (!RED_LIST_STATUS_TO_INDEX.containsKey(iucnStatus)) throw new UnsupportedOperationException("Unknown redListStatus " + iucnStatus);
+		return RED_LIST_STATUS_TO_INDEX.get(iucnStatus);
 	}
 
 	public String getSpeciesQname() {
-		return evaluation.getStatements(EVALUATED_TAXON).get(0).getObjectResource().getQname();
-	}
-
-	public static IUCNEvaluation notEvaluated(Qname evaluationId, String speciesQname, int year, Qname editorQname) {
-		Model evaluation = new Model(evaluationId);
-		evaluation.setType(IUCN_RED_LIST_EVALUATION_CLASS);
-		evaluation.addStatement(new Statement(new Predicate(EVALUATED_TAXON), new ObjectResource(speciesQname)));
-		evaluation.addStatement(new Statement(new Predicate(EVALUATION_YEAR), new ObjectLiteral(String.valueOf(year))));
-		evaluation.addStatement(new Statement(new Predicate(LAST_MODIFIED), new ObjectLiteral(DateUtils.getCurrentDate())));
-		evaluation.addStatement(new Statement(new Predicate(LAST_MODIFIED_BY), new ObjectResource(editorQname)));
-		evaluation.addStatement(new Statement(new Predicate(RED_LIST_STATUS), new ObjectResource("MX.iucnNE")));
-		evaluation.addStatement(new Statement(new Predicate(RED_LIST_STATUS_NOTES), new ObjectLiteral(NE_MARK_NOTES, "fi")));
-		evaluation.addStatement(new Statement(new Predicate(STATE), new ObjectResource(STATE_READY)));
-		return new IUCNEvaluation(evaluation);
+		return getValue(EVALUATED_TAXON);
 	}
 
 	public Model getModel() {

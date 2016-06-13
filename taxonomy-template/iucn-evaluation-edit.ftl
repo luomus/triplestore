@@ -69,7 +69,7 @@
 		<h6>Hallinnolliset ominaisuudet</h6>
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
-				<li>${properties["MX.hasAdminStatus"].range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
+				<li>${evaluationProperties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
 			</#list>
 		</ul>
 	</div>
@@ -77,10 +77,12 @@
 
 <div class="clear"></div>
 
+<#if permissions>
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
 <input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
+</#if>
 
 <table class="resourceListTable evaluationEdit">
 	<thead>
@@ -91,10 +93,6 @@
 		</tr>
 	</thead>
 	<tbody>
-	
-	<@iucnSection "Taksonomia <span>- Huom: Esiintymisen tila ja sen kommentti on julkinen tieto</span>" /> 
-	<@iucnInput "MX.typeOfOccurrenceInFinland" "MX.typeOfOccurrenceInFinlandNotes" />
-	<@iucnTextarea "MKV.taxonomicNotes" />
 	
 	<@iucnSection "Luokka" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
@@ -143,16 +141,23 @@
 
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
-	
+
+	<@iucnSection "Arvioinnissa käytetty taksonominen tulkinta" />
+	<@iucnTextarea "MKV.taxonomicNotes" />
+		
+	<@iucnSection "Vakinaisuus <span>- Huom: Nämä tiedot ovat julkisia ja alla muokataan lajien varsinaisia taksonomiatietoja!</span>" /> 
+	<@taxonOccurenceInFinland />
+		
 	</tbody>
 </table>
 
+<#if permissions>
 </form>
+</#if>
 
 <#macro iucnSection title>
 	<tr class="section">
-		<th>&nbsp;</th>
-		<th colspan="2">${title}</th>
+		<th colspan="3">${title}</th>
 	</tr>
 </#macro>
 
@@ -161,30 +166,51 @@
 </#macro>
 
 <#macro iucnInput fieldName notesFieldName="NONE">
-	<#assign field = properties[fieldName] />
 	<tr>
-		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td><@comparisonValue fieldName /> <@comparisonNotes notesFieldName /></td>
-		<td><@iucnInputField fieldName /> <@notes notesFieldName /></td>
+		<th><@iucnLabel fieldName /></th>
+		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
+		<td>
+			<#if permissions>
+				<@iucnInputField fieldName /> <@editableNotes notesFieldName />
+			<#else>
+				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
+			</#if>
+		</td>
 	</tr>
 </#macro>
 
 <#macro iucnTextarea fieldName>
-	<#assign field = properties[fieldName]/>
 	<tr>
-		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td><@comparisonValue fieldName /></td>
-		<td><textarea name="${fieldName}"><#if evaluation??>${evaluation.getValue(fieldName)}</#if></textarea></td>
+		<th><@iucnLabel fieldName /></th>
+		<td><@showValue fieldName comparison /></td>
+		<td>
+			<#if permissions>
+				<textarea name="${fieldName}"><#if evaluation??>${evaluation.getValue(fieldName)!""}</#if></textarea>
+			<#else>
+				<@showValue fieldName evaluation />
+			</#if>
+		</td>
 	</tr>
 </#macro>
 
-<#macro iucnMinMax title fieldNameMin fieldNameMax notesFieldName="NONE">
-	<#assign minField = properties[fieldNameMin] />
-	<#assign maxField = properties[fieldNameMax] />
+<#macro iucnMinMax title minFieldName maxFieldName notesFieldName="NONE">
 	<tr>
 		<th>${title}</th>
-		<td><#if comparison??><@comparisonValue minField /> - <@comparisonValue maxField /> <@comparisonNotes notesFieldName /></#if></td>
-		<td><@iucnInputField minField /> - <@iucnInputField maxField /> <@notes notesFieldName /></td>
+		<td>
+			<#if comparison?? && (comparison.hasValue(minFieldName) || comparison.hasValue(maxFieldName))>
+				<@showValue minFieldName comparison /> - <@showValue maxFieldName comparison />
+			</#if>
+			<@showNotes notesFieldName comparison />
+		</td>
+		<td>
+			<#if permissions>
+				<@iucnInputField minFieldName /> - <@iucnInputField maxFieldName /> <@editableNotes notesFieldName />
+			<#else>
+				<#if evaluation?? && (evaluation.hasValue(minFieldName) || evaluation.hasValue(maxFieldName))>
+					<@showValue minFieldName evaluation /> - <@showValue maxFieldName evaluation /> <@showNotes notesFieldName evaluation />
+				</#if>
+			</#if>
+		</td>
 	</tr>
 </#macro>
 
@@ -196,64 +222,150 @@
 	</tr>
 </#macro>
 
-<#macro iucnHabitatPair fieldName notesFieldName="NONE">
-	<#assign field = properties[fieldName]/>
+<#macro taxonOccurenceInFinland>
 	<tr>
-		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td>comp <@comparisonNotes notesFieldName /></td>
-		<td>input <@notes notesFieldName /></td>
-	</tr>
-</#macro>
-
-<#macro iucnPublications fieldName>
-	<#assign field = properties[fieldName]/>
-	<tr>
-		<th>${field.label.forLocale("fi")!fieldName}</th>
-		<td><@comparisonValue fieldName /></td>
-		<td>
-			<label>Valitse julkaisu</label>
-			<#if evaluation??>
-			<#list evaluation.getValues(fieldName) as publication>
-				<select name="${fieldName}" class="chosen" >
-					<option value=""></option>
-					<#list publications?keys as publicationQname>
-						<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
-					</#list>
-				</select>
+		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
+		<td colspan="2">
+			<#list taxon.typesOfOccurrenceInFinland as type>
+				<@select "MX.typeOfOccurrenceInFinland" type />
 			</#list>
-			</#if>
-			<select name="${fieldName}" class="chosen" >
-				<option value=""></option>
-				<#list publications?keys as publicationQname>
-					<option value="${publicationQname}">${publications[publicationQname].citation}</option>
+			<@select "MX.typeOfOccurrenceInFinland" "" />
+		</td>
+	</tr>
+	<tr>
+		<th><@label "MX.occurrenceInFinlandPublication" "" "fi" /></th>
+		<td colspan="2">
+			<table class="publicationSelect">
+				<tr>
+					<th>Valitse julkaisu</th> 
+				</tr>
+				<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
+				<tr>
+					<td>
+						<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
+							<option value=""></option>
+							<#list publications?keys as publicationQname>
+								<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+							</#list>
+						</select>
+					</td>
+				</tr>
 				</#list>
-			</select>
-			<label>Tai luo uusi julkaisu</label>
-			<input type="text" name="newPublicationCitation" id="createNewPublicationInput" placeholder="Type citaction, for example 'Stubbs & Drake 2001, Stuke 2003' or 'Kasviatlas 2008'"/>
+				<tr>
+					<td>
+						<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
+							<option value=""></option>
+							<#list publications?keys as publicationQname>
+								<option value="${publicationQname}">${publications[publicationQname].citation}</option>
+							</#list>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>Tai luo uusi julkaisu</th> 
+				</tr>
+				<tr>
+					<td><input type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
+				</tr>	
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
+		<td colspan="2">
+			<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
 		</td>
 	</tr>
 </#macro>
 
-<#macro comparisonValue fieldName>
-	<#if comparison??>
-		<#list comparison.getValues(fieldName) as value>
+<#macro iucnHabitatPair fieldName notesFieldName="NONE">
+	<tr>
+		<th><@iucnLabel fieldName /></th>
+		<td>comp <@showNotes notesFieldName comparison /></td>
+		<td>input <@editableNotes notesFieldName /></td>
+	</tr>
+</#macro>
+
+<#macro taxonInput fieldName notesFieldName="NONE">
+	<tr>
+		<th><@iucnLabel fieldName /></th>
+		<td>comp <@showNotes notesFieldName comparison /></td>
+		<td>input <@editableNotes notesFieldName /></td>
+	</tr>
+</#macro>
+
+<#macro iucnPublications fieldName>
+	<tr>
+		<th><@iucnLabel fieldName /></th>
+		<td><@showValue fieldName comparison /></td>
+		<td>
+			<#if permissions>
+				<table class="publicationSelect">
+					<tr>
+						<th>Valitse julkaisu</th> 
+					</tr>
+					<#if evaluation??>
+					<#list evaluation.getValues(fieldName) as publication>
+						<tr>
+							<td>
+								<select name="${fieldName}" class="chosen" >
+									<option value=""></option>
+									<#list publications?keys as publicationQname>
+										<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+									</#list>
+								</select>
+							</td>
+						</tr>
+					</#list>
+					</#if>
+					<tr>
+						<td>
+							<select name="${fieldName}" class="chosen" data-placeholder="Valitse julkaisu" >
+								<option value=""></option>
+								<#list publications?keys as publicationQname>
+									<option value="${publicationQname}">${publications[publicationQname].citation}</option>
+								</#list>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th>Tai luo uusi julkaisu</th> 
+					</tr>
+					<tr>
+						<td><input type="text" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Kirjoita lähdeviite, for example 'Stubbs & Drake 2001, Stuke 2003' or 'Kasviatlas 2008'"/></td>
+					</tr>	
+				</table>
+			<#else>
+				<@showValue fieldName evaluation />
+			</#if>
+		</td>
+	</tr>
+</#macro>
+
+<#macro iucnLabel fieldName>
+	<label>${(evaluationProperties.getProperty(fieldName).label.forLocale("fi"))!fieldName}</label>
+</#macro>
+
+<#macro showValue fieldName data="NONE">
+	<#if data != "NONE">
+		<#list data.getValues(fieldName) as value>
 			${value}
 			<#if statement_has_next>, </#if>
 		</#list>
 	</#if>
 </#macro>
 
-<#macro comparisonNotes notesFieldName>
-	<#if comparison?? && notesFieldName != "NONE">
-		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${comparison.getValue(notesFieldName)}"></span></div>
+<#macro showNotes notesFieldName data="NONE">
+	<#if data != "NONE" && notesFieldName != "NONE">
+		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${data.getValue(notesFieldName)}"></span></div>
 	</#if>
 </#macro>
 
-<#macro notes notesFieldName>
+<#macro editableNotes notesFieldName>
 	<#if notesFieldName != "NONE">
 		<div class="notes hidden">
-			<p><label>${properties[notesFieldName].label.forLocale("fi")!notesFieldName}</label></p>
-			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)}</#if></textarea>
+			<p><label><@iucnLabel notesFieldName /></label></p>
+			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)!""}</#if></textarea>
 			<button class="closeNoteEditButton">Sulje kommentti</button>
 		</div>
 	</#if>

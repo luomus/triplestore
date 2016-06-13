@@ -38,9 +38,9 @@
 .evaluationEdit tr.section th {
   padding-top: 30px;
   text-align: left;
-  border-right-style: none;
+  font-weight: bold !important;
 }
-.evaluationEdit tr.section span {
+.evaluationEdit th span {
   font-style: italic;
   font-size: 80%;
 }
@@ -154,4 +154,10 @@
 }
 .evaluationEdit label {
   width: auto;
+}
+.evaluationEdit td table td,
+.evaluationEdit td table th,
+.evaluationEdit td table tr {
+  border-style: none !important;
+  background-color: inherit !important;
 }

@@ -149,6 +149,11 @@
 				<td><input <@checkPermissions/> type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
 			</tr>
 		</table>
+		
+		<br /><br />
+		<@label "MX.typeOfOccurrenceInFinlandNotes" "longtext" />
+		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
+		
 		<div></div>
 		
 	<@portletFooter />				
@@ -244,7 +249,7 @@
 				<td><@input "MX.misappliedName" "off" "" /></td>
 			</tr>
 		</table>
-		<@label "MX.misappliedNameNotes" "longtext" locale />
+		<@label "MX.misappliedNameNotes" "longtext" />
 		<@textarea "MX.misappliedNameNotes" />
 	<@portletFooter />	
 

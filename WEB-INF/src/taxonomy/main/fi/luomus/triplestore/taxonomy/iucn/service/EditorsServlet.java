@@ -8,7 +8,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +93,7 @@ public class EditorsServlet extends FrontpageServlet {
 		if (given(groupEditorsQname)) {
 			model = getTriplestoreDAO().get(groupEditorsQname);
 		} else {
-			model = new Model(getTriplestoreDAO().getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE));
+			model = new Model(getTaxonomyDAO().getIucnDAO().getSeqNextValAndAddResource());
 			model.setType("MKV.taxonGroupIucnEditors");
 			model.addStatement(new Statement(TAXON_GROUP_PREDICATE, new ObjectResource(groupQname)));
 		}
