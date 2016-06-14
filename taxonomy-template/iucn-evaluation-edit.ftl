@@ -9,7 +9,7 @@
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
-<h2><@printScientificNameAndAuthor taxon /> ${taxon.getVernacularName("fi")!""}</h2>
+<h2><a href="#"><@printScientificNameAndAuthor taxon /> ${taxon.getVernacularName("fi")!""}</a></h2>
 
 <@toolbox/>		
 
@@ -172,35 +172,50 @@
 
 <#macro iucnInputField fieldName>
 	<#assign property = evaluationProperties.getProperty(fieldName)>
-	<#if property.literalProperty>
-		<#if property.integerProperty>
-			<input class="integerProperty" name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
-		<#elseif property.booleanProperty>
-			<select name="${fieldName}" class="booleanChosen" data-placeholder="Kyllä/Ei">
-				<option value=""></optioin>
-				<#list property.range.values as optionValue>
-					<option value="${optionValue.qname}" <#if booleanValue(value) == optionValue.qname>selected="selected"</#if>>${optionValue.label.forLocale("fi")}</option>
-				</#list>
-			</select>
-		<#else>
-			<input name=""${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)!""}</#if>">
+	<#assign values = ['']>
+	<#if evaluation?? && evaluation.hasValue(fieldName)>
+		<#assign values = evaluation.getValues(fieldName)>
+	</#if>
+	<@iucnInputFieldWithValues property values />
+</#macro>
+
+<#macro iucnInputFieldWithValues property values>
+	<#if property.literalProperty && !property.booleanProperty>
+		<#list values as value>
+			<#if property.integerProperty>
+				<input class="integerProperty" name=""${property.qname}" type="text" value="${value}">
+			<#else>
+				<input name="${property.qname}" type="text" value="${value}">
+			</#if>
+			<#if value_has_next><br /></#if>
+		</#list>
+		<#if property.repeated>
+			<button class="add">+ Lisää</button>
 		</#if>
+	<#elseif property.booleanProperty>
+		<#assign value = values?first>
+		<select name="${property.qname}" class="booleanChosen" data-placeholder="Kyllä/Ei">
+			<option value=""></optioin>
+			<#list property.range.values as optionValue>
+				<#if value == optionValue.qname>
+					<option value="${optionValue.qname}" selected="selected">${optionValue.label.forLocale("fi")}</option>
+				<#else>
+					<option value="${optionValue.qname}" >${optionValue.label.forLocale("fi")}</option>
+				</#if>
+			</#list>
+		</select>
 	<#else>
-		<select name="${fieldName}"  data-placeholder="...">
+		<select name="${property.qname}"  data-placeholder="..." <#if property.repeated>multiple="multiple"</#if> >
 			<option value=""></option>
 			<#list property.range.values as enumValue>
 				<#assign hasValue = false>
-				<#if evaluation??>
-				<#list evaluation.getValues(fieldName) as evaluationValue>
+				<#list values as evaluationValue>
 					<#if same(enumValue.qname, evaluationValue)><#assign hasValue = true><#break></#if>
 				</#list>
-				</#if>
 				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")}</option>	
 			</#list>
 		</select>
-	</#if>
-	<#if property.repeated>
-		<button class="add">+ Lisää</button>
+		<#if property.repeated>(voi valita useita)</#if>
 	</#if>
 </#macro>
 
@@ -492,16 +507,32 @@ $(function() {
 	});
  
  	$("button.add").on('click', function() {
- 		var input = $(this).prevAll("input, select").first();
+ 		var input = $(this).prevAll(":input").first();
  		var clone = input.clone();
+ 		clone.val('');
  		$(this).before('<br />').before(clone);
- 		clone.show().hide();
+ 		clone.hide();
  		clone.fadeIn('fast');
- 		if (clone.is("select")) {
- 			clone.chosen();
+ 	});
+ 	
+ 	$(window).on('scroll', function() {
+ 		var scrollTop = $(window).scrollTop();
+ 		if (scrollTop > 350) {
+ 			if (!headerAbsolute) {
+ 				$('h2').addClass('floatingHeader');
+ 				headerAbsolute = true;
+ 			}
+ 		} else {
+ 			if (headerAbsolute) {
+ 				$('h2').removeClass('floatingHeader');
+ 				headerAbsolute = false;
+ 			}
  		}
  	});
+ 	
 });
+
+var headerAbsolute = false;
 
 function shorten(text) {
 	if (text.length <= 35) return text;

@@ -214,3 +214,21 @@ button.add {
   color: green;
   font-size: 10px;
 }
+
+#toolbox {
+  position: absolute;
+}
+
+.floatingHeader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 5px;
+  background-color: white;
+  box-shadow: rgba(0,0,0,0.7) 0px 2px 3px, inset rgba(0,0,0,0.7) 0px -1px 2px;
+  border-radius: 3px;
+  z-index: 5;
+  font-size: 1em;
+}
+h2 a, h2 a:visited, h2 a:hover { color: inherit; }
