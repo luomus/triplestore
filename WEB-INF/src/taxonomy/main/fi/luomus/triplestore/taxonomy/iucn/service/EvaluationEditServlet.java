@@ -42,6 +42,13 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
 
+		// TODO show revision history
+		//		select * from rdf_statement_history
+		//		where SUBJECTFK = (select resourceid from rdf_resource where resourcename = 'MKV.121')
+		//		and predicatefk = (select resourceid from rdf_resource where resourcename = 'MKV.editNotes');
+		//  sort by created
+		// userfk:ta voi käyttää henkilöön
+		
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxon)
