@@ -1,18 +1,21 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.Area;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -25,22 +28,27 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return redirectTo404(res);
 
-		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
+		TriplestoreDAO dao = getTriplestoreDAO();
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
+
+		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
 		int year = selectedYear(req);
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
 
-		Taxon taxon = getTaxonomyDAO().getTaxon(new Qname(target.getQname()));
+		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
 
-		Map<String, Area> evaluationAreas = getTaxonomyDAO().getIucnDAO().getEvaluationAreas();
+		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
 
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxon)
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
-				.setData("evaluationProperties", getTriplestoreDAO().getProperties("MKV.iucnRedListEvaluation"))
+				.setData("evaluationProperties", dao.getProperties("MKV.iucnRedListEvaluation"))
+				.setData("habitatObjectProperties", dao.getProperties("MKV.habitatObject"))
 				.setData("areas", evaluationAreas)
 				.setData("permissions", permissions(req, target));
 	}

@@ -123,8 +123,7 @@
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
 	
 	<@iucnSection "Elinympäristö" />   
-	<@iucnHabitatPair "MKV.primaryHabitat" "MKV.habitatNotes" />
-	<@iucnHabitatPair "MKV.secondaryHabitat" />   
+	<@iucnHabitatFields />   
 	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
    
 	<@iucnSection "Kanta" />
@@ -183,7 +182,7 @@
 	<#if property.literalProperty && !property.booleanProperty>
 		<#list values as value>
 			<#if property.integerProperty>
-				<input class="integerProperty" name=""${property.qname}" type="text" value="${value}">
+				<input class="integerProperty" name="${property.qname}" type="text" value="${value}">
 			<#else>
 				<input name="${property.qname}" type="text" value="${value}">
 			</#if>
@@ -194,8 +193,8 @@
 		</#if>
 	<#elseif property.booleanProperty>
 		<#assign value = values?first>
-		<select name="${property.qname}" class="booleanChosen" data-placeholder="Kyllä/Ei">
-			<option value=""></optioin>
+		<select name="${property.qname}" class="shortChosen" data-placeholder="Kyllä/Ei">
+			<option value=""></option>
 			<#list property.range.values as optionValue>
 				<#if value == optionValue.qname>
 					<option value="${optionValue.qname}" selected="selected">${optionValue.label.forLocale("fi")}</option>
@@ -329,7 +328,7 @@
 				</#list>
 				<tr>
 					<td>
-						<select name="MX.occurrenceInFinlandPublication" data-placeholder="Select existing publication" >
+						<select name="MX.occurrenceInFinlandPublication" data-placeholder="Valitse julkaisu" >
 							<option value=""></option>
 							<#list publications?keys as publicationQname>
 								<option value="${publicationQname}">${publications[publicationQname].citation}</option>
@@ -380,25 +379,93 @@
 </#if>
 </#macro>
 
-<#macro iucnHabitatPair fieldName notesFieldName="NONE">
+<#macro iucnHabitatFields>
 	<tr>
-		<th><@iucnLabel fieldName /></th>
+		<th><@iucnLabel "MKV.primaryHabitat" /></th>
 		<td>
-			<#if comparison??>
-				
-				<@showNotes notesFieldName comparison />
+			<#if comparison?? && comparison.primaryHabitat??>
+				<@showHabitatPairValue comparison.primaryHabitat />
+			</#if>
+			<@showNotes "MKV.habitatNotes" comparison />
+		</td>
+		<td>
+			<#if permissions>
+				<#if evaluation?? && evaluation.primaryHabitat??>
+					<@editableHabitatPair "MKV.primaryHabitat" evaluation.primaryHabitat />
+				<#else>
+					<@editableHabitatPair "MKV.primaryHabitat" "NONE" />
+				</#if>
+				<@editableNotes "MKV.habitatNotes" />
+			<#else>
+				<#if evaluation?? && evaluation.primaryHabitat??>
+					<@showHabitatPairValue evaluation.primaryHabitat />
+				</#if>
+				<@showNotes "MKV.habitatNotes" evaluation />
 			</#if>
 		</td>
-		<td>input <@editableNotes notesFieldName /></td>
+	</tr>
+	<tr>
+		<th><@iucnLabel "MKV.secondaryHabitat" /></th>
+		<td>
+			<#if comparison??>
+				<#list comparison.secondaryHabitats as habitat>
+					<@showHabitatPairValue habitat />
+					<#if habitat_has_next><br /></#if>
+				</#list>
+			</#if>
+		</td>
+		<td>
+			<#if permissions>
+				<#if evaluation??>
+					<#list evaluation.secondaryHabitats as habitat>
+						<@editableHabitatPair "MKV.secondaryHabitat" habitat habitat_index />
+						<#if habitat_has_next><br /></#if>
+					</#list>
+				</#if>
+				<#if !(evaluation??) || !(evaluation.secondaryHabitats?has_content)>
+					<@editableHabitatPair "MKV.secondaryHabitat" "NONE" />
+				</#if>
+				<button class="addHabitatPair">+ Lisää</button>
+			<#else>
+				<#if evaluation??>
+					<#list evaluation.secondaryHabitats as habitat>
+						<@showHabitatPairValue habitat />
+						<#if habitat_has_next><br /></#if>
+					</#list>
+				</#if>	
+			</#if>
+		</td>
 	</tr>
 </#macro>
 
-<#macro taxonInput fieldName notesFieldName="NONE">
-	<tr>
-		<th><@iucnLabel fieldName /></th>
-		<td>comp <@showNotes notesFieldName comparison /></td>
-		<td>input <@editableNotes notesFieldName /></td>
-	</tr>
+<#macro editableHabitatPair fieldName habitatObject index=0>
+	<div class="habitatPair">
+		<select name ="${fieldName}___${index}___MKV.habitat" data-placeholder="...">
+			<option value=""></option>
+			<#list habitatObjectProperties.getProperty("MKV.habitat").range.values as value>
+				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitat == value.qname>selected="selected"</#if>>
+					${value.label.forLocale("fi")}
+				</option>
+			</#list>
+		</select>
+		<br />
+		<select name ="${fieldName}___${index}___MKV.habitatSpecificType" data-placeholder="Tarkenteet" multiple="multiple">
+			<option value=""></option>
+			<#list habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.values as value>
+				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitatSpecificTypes?seq_contains(value.qname)>selected="selected"</#if>>
+					${value.label.forLocale("fi")}
+				</option>
+			</#list>
+		</select>
+	</div>
+</#macro>
+
+<#macro showHabitatPairValue habitatObject>
+	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(type).label.forLocale("fi")}
+	<#list habitatObject.habitatSpecificTypes as type>
+		${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")}
+		<#if type_has_next>, </#if>
+	</#list>
 </#macro>
 
 <#macro iucnPublications fieldName>

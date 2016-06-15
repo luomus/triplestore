@@ -155,7 +155,7 @@
   width: 400px;
 }
 .evaluationEdit .minMax select,
-.evaluationEdit select.booleanChosen {
+.evaluationEdit select.shortChosen {
   width: 200px;
 }
 .evaluationEdit input,
