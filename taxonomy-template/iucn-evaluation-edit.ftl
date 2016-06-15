@@ -383,7 +383,6 @@
 				<#if evaluation??>
 					<#list evaluation.secondaryHabitats as habitat>
 						<@showHabitatPairValue habitat />
-						<#if habitat_has_next><br /></#if>
 					</#list>
 				</#if>	
 			</#if>
@@ -401,7 +400,6 @@
 				</option>
 			</#list>
 		</select>
-		<br />
 		<select name ="${fieldName}___${index}___MKV.habitatSpecificType" data-placeholder="Tarkenteet" multiple="multiple">
 			<option value=""></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.values as value>
@@ -533,6 +531,20 @@ $(function() {
  		$(this).before('<br />').before(clone);
  		clone.hide();
  		clone.fadeIn('fast');
+ 	});
+ 	
+ 	$("button.addHabitatPair").on('click', function() {
+ 		var countOfExistingPairs = $(this).parent().find('.habitatPair').size();
+ 		var pair = $(this).parent().find('.habitatPair').first();
+ 		var clone = $('<div class="habitatPair"></div>');
+ 		pair.find("select").each(function() {
+ 			var clonedSelect = $(this).clone().val('').show().removeAttr('display');
+ 			var newNameAttribute = clonedSelect.attr('name').replace('___0___', '___'+(countOfExistingPairs+1)+'___');
+ 			clonedSelect.attr('name', newNameAttribute);  
+ 			clone.append(clonedSelect);
+ 		});
+ 		$(this).before(clone);
+ 		clone.find('select').chosen();
  	});
  	
  	$(window).on('scroll', function() {
