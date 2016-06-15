@@ -232,3 +232,7 @@ button.add {
   font-size: 1em;
 }
 h2 a, h2 a:visited, h2 a:hover { color: inherit; }
+
+label {
+	cursor: default !important;
+}

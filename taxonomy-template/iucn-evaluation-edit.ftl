@@ -95,6 +95,9 @@
 	</thead>
 	<tbody>
 	
+	<@iucnSection "Arvioinnissa käytetty taksonominen tulkinta" />
+	<@iucnTextarea "MKV.taxonomicNotes" />
+		
 	<@iucnSection "Luokka" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
 	<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
@@ -142,9 +145,6 @@
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
 
-	<@iucnSection "Arvioinnissa käytetty taksonominen tulkinta" />
-	<@iucnTextarea "MKV.taxonomicNotes" />
-		
 	<@iucnSection "Vakinaisuus <span>- Huom: Nämä tiedot ovat julkisia ja alla muokataan lajien varsinaisia taksonomiatietoja!</span>" /> 
 	<@taxonOccurenceInFinland />
 		
@@ -248,7 +248,7 @@
 
 <#macro iucnMinMax title minFieldName maxFieldName notesFieldName="NONE">
 	<tr class="minMax">
-		<th>${title}</th>
+		<th><label>${title}</label></th>
 		<td>
 			<#if comparison?? && (comparison.hasValue(minFieldName) || comparison.hasValue(maxFieldName))>
 				<@showValue minFieldName comparison /> - <@showValue maxFieldName comparison />
@@ -269,7 +269,7 @@
 
 <#macro iucnOccurrence areaQname>
 	<tr>
-		<th>${areas[areaQname].name.forLocale("fi")}</th>
+		<th><label>${areas[areaQname].name.forLocale("fi")}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
 				${occurrenceProperties.getProperty("MO.state").range.valueFor(comparison.getOccurrence(areaQname).status).label.forLocale("fi")}
