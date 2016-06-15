@@ -142,6 +142,10 @@
   font-size: 0.7em;
 }
 
+.evaluationEdit tbody tr td:nth-child(2) {
+	max-width: 200px;
+}
+
 .evaluationEdit select,
 .evaluationEdit input,
 .evaluationEdit textarea {
@@ -222,7 +226,7 @@ button.add {
 .floatingHeader {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   margin: 0;
   padding: 5px;
   background-color: white;
@@ -243,4 +247,8 @@ label {
 
 .habitatPair {
 	margin-bottom: 1em;
+}
+
+.editNotesInput {
+	width: 30em;
 }

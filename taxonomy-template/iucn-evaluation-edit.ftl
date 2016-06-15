@@ -89,8 +89,8 @@
 	<thead>
 		<tr>
 			<th>Muuttuja</th>
-			<th>${(comparison.year)!"Ei edellisiä tietoja"}</th>
-			<th>${selectedYear}</th>
+			<th><#if comparison??>${comparison.evaluationYear} tiedot<#else>Ei edellisiä tietoja</#if></th>
+			<th>${selectedYear} tiedot</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -159,7 +159,8 @@
 <#macro submitButtons>
 	<div class="submitButtonContainer">
 		<button>Tallenna</button>
-		<button class="ready">Valmis</button>
+		<button class="ready">Arviointi valmis</button>
+		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="editNotes"></textarea>
 	</div>
 </#macro>
 
@@ -483,7 +484,7 @@
 			<#else>
 				${property.range.getValueFor(value).label.forLocale("fi")}
 			</#if>
-			<#if value_has_next><br /></#if>
+			<#if value_has_next><br /><br /></#if>
 		</#list>
 	</#if>
 </#macro>
