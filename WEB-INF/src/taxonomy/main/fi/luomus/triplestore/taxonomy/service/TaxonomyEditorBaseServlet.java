@@ -1,7 +1,11 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
@@ -13,14 +17,11 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = 6941260573571219110L;
 	private static final int TAXON_DELETE_THRESHOLD_SECONDS = 60*60*5;
-	
+
 	private static ExtendedTaxonomyDAO taxonomyDAO;
 
 	@Override
@@ -54,13 +55,16 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		} else {
 			responseData.setData("synonymsMode", "show");
 		}
-		responseData.setData("checklists", getTaxonomyDAO().getChecklists());
-		responseData.setData("persons", getTaxonomyDAO().getPersons());
-		responseData.setData("publications", getTaxonomyDAO().getPublications());
-		responseData.setData("areas", getTaxonomyDAO().getAreas());
-		responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroups());
-		responseData.setData("properties", getTriplestoreDAO().getProperties("MX.taxon"));
-		responseData.setData("occurrenceProperties", getTriplestoreDAO().getProperties("MO.occurrence"));
+		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		TriplestoreDAO dao = getTriplestoreDAO();
+
+		responseData.setData("checklists", taxonomyDAO.getChecklists());
+		responseData.setData("persons", taxonomyDAO.getPersons());
+		responseData.setData("publications", taxonomyDAO.getPublications());
+		responseData.setData("areas", taxonomyDAO.getAreas());
+		responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
+		responseData.setData("properties", dao.getProperties("MX.taxon"));
+		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
 		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
@@ -125,12 +129,12 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		User user = getUser(req);
 		return editors.getEditors().contains(user.getQname());
 	}
-	
+
 	protected void checkIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
 		if (!hasIucnPermissions(groupQname, req)) {
 			User user = getUser(req);
 			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter iucn group " + groupQname);
 		}
 	}
-	
+
 }
