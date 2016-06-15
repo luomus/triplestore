@@ -308,44 +308,6 @@
 		</td>
 	</tr>
 	<tr>
-		<th><@label "MX.occurrenceInFinlandPublication" "" "fi" /></th>
-		<td colspan="2">
-			<table class="publicationSelect">
-				<tr>
-					<th>Valitse julkaisu</th> 
-				</tr>
-				<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
-				<tr>
-					<td>
-						<select name="MX.occurrenceInFinlandPublication">
-							<option value=""></option>
-							<#list publications?keys as publicationQname>
-								<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
-							</#list>
-						</select>
-					</td>
-				</tr>
-				</#list>
-				<tr>
-					<td>
-						<select name="MX.occurrenceInFinlandPublication" data-placeholder="Valitse julkaisu" >
-							<option value=""></option>
-							<#list publications?keys as publicationQname>
-								<option value="${publicationQname}">${publications[publicationQname].citation}</option>
-							</#list>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<th>Tai luo uusi julkaisu</th> 
-				</tr>
-				<tr>
-					<td><input class="createPublication" type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Esim 'Juutinen, R. & Ulvinen, T. 2015: Suomen sammalien levinneisyys eliömaakunnissa. – Suomen ympäristökeskus. 27.3.2015'"/></td>
-				</tr>	
-			</table>
-		</td>
-	</tr>
-	<tr>
 		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
 		<td colspan="2">
 			<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
@@ -358,15 +320,6 @@
 			<#list taxon.typesOfOccurrenceInFinland as type>
 				${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(type).label.forLocale("fi")}
 				<#if type_has_next>, </#if>
-			</#list>
-		</td>
-	</tr>
-	<tr>
-		<th><@label "MX.occurrenceInFinlandPublication" "" "fi" /></th>
-		<td colspan="2">
-			<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
-				${publication.citation}
-				<#if publication_has_next>, </#if>
 			</#list>
 		</td>
 	</tr>
