@@ -272,7 +272,7 @@
 		<th><label>${areas[areaQname].name.forLocale("fi")}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
-				${occurrenceProperties.getProperty("MO.state").range.valueFor(comparison.getOccurrence(areaQname).status).label.forLocale("fi")}
+				${occurrenceProperties.getProperty("MO.status").range.getValueFor(comparison.getOccurrence(areaQname).status.toString()).label.forLocale("fi")}
 			</#if>
 		</td>
 		<td>
@@ -289,7 +289,7 @@
 				</select>
 			<#else>
 				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
-					${occurrenceProperties.getProperty("MO.state").range.valueFor(evaluation.getOccurrence(areaQname).status).label.forLocale("fi")}
+					${occurrenceProperties.getProperty("MO.status").range.getValueFor(evaluation.getOccurrence(areaQname).status.toString()).label.forLocale("fi")}
 				</#if>
 			</#if>
 		</td>
@@ -412,11 +412,13 @@
 </#macro>
 
 <#macro showHabitatPairValue habitatObject>
-	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(type).label.forLocale("fi")}
+	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")}
+	<br />
 	<#list habitatObject.habitatSpecificTypes as type>
-		${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")}
-		<#if type_has_next>, </#if>
+		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")}
+		<#if type_has_next><br /></#if>
 	</#list>
+	<br />
 </#macro>
 
 <#macro iucnPublications fieldName>
@@ -476,12 +478,12 @@
 	<#if data != "NONE">
 		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
-			<#if property.literalProperty>
+			<#if property.literalProperty && !property.booleanProperty>
 				${value}
 			<#else>
 				${property.range.getValueFor(value).label.forLocale("fi")}
 			</#if>
-			<#if value_has_next>, </#if>
+			<#if value_has_next><br /></#if>
 		</#list>
 	</#if>
 </#macro>
