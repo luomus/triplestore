@@ -1,5 +1,12 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -8,13 +15,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/editors/*"})
 public class EditorsServlet extends FrontpageServlet {
@@ -43,13 +43,13 @@ public class EditorsServlet extends FrontpageServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins.");
 		String groupQname = getQname(req);
-		String groupEditorsQname = req.getParameter("groupEditorsId");
+		String groupEditorsQname = req.getParameter("editorsId");
 		List<String> editors = editors(req);
 
 		if (given(groupEditorsQname) && editors.isEmpty()) {
 			delete(groupEditorsQname);
 			getSession(req).setFlashSuccess("Editors removed");
-		} else if (editors.isEmpty()){
+		} else if (editors.isEmpty()) {
 			getSession(req).setFlashSuccess("Nothing modified");
 		} else {
 			insertOrUpdate(groupQname, groupEditorsQname, editors);
@@ -69,14 +69,13 @@ public class EditorsServlet extends FrontpageServlet {
 	private void insertOrUpdate(String groupQname, String groupEditorsQname, List<String> editors) throws Exception {
 		Model model = getOrInit(groupQname, groupEditorsQname);
 		updateEditors(editors, model);
-
 		getTriplestoreDAO().store(model);
-
 		getTaxonomyDAO().getIucnDAO().clearEditorCache();
 	}
 
 	private void delete(String groupEditorsQname) throws Exception {
 		getTriplestoreDAO().delete(new Subject(groupEditorsQname));
+		getTaxonomyDAO().getIucnDAO().clearEditorCache();
 	}
 
 	private void updateEditors(List<String> editors, Model model) {
