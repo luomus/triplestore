@@ -219,10 +219,6 @@ button.add {
   font-size: 10px;
 }
 
-#toolbox {
-  position: absolute;
-}
-
 .floatingHeader {
   position: fixed;
   top: 0;
