@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
@@ -13,12 +16,10 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public interface TriplestoreDAO {
 
@@ -41,7 +42,7 @@ public interface TriplestoreDAO {
 	 * @return the same checklist.
 	 * @throws Exception
 	 */
-	public Checklist storeChecklist(Checklist checklist) throws Exception;
+	public Checklist store(Checklist checklist) throws Exception;
 
 	/**
 	 * Adds or modifies an informal taxon group. For new groups the ID must be already set.
@@ -182,8 +183,16 @@ public interface TriplestoreDAO {
 	 * @param newOccurrences
 	 * @throws Exception
 	 */
-	public void storeOccurrences(Occurrences existingOccurrences, Occurrences newOccurrences) throws Exception;
+	public void store(Occurrences existingOccurrences, Occurrences newOccurrences) throws Exception;
 
+	/**
+	 * Insert or update occurrence. ID of occurrence may or may not be set for insert; if not given it will be generated and set to object.
+	 * @param taxonQname
+	 * @param occurrence
+	 * @throws Exception
+	 */
+	public void store(Qname taxonQname, Occurrence occurrence) throws Exception;
+	
 	/**
 	 * Get search dao
 	 * @return
@@ -229,8 +238,6 @@ public interface TriplestoreDAO {
 	 * @throws SQLException 
 	 */
 	public boolean resourceExists(Qname resourceQname) throws Exception;
-
-
 
 
 }

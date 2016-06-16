@@ -83,7 +83,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 		if (occurrenceDataGiven) {
-			dao.storeOccurrences(taxon.getOccurrences(), occurrences);
+			dao.store(taxon.getOccurrences(), occurrences);
 		}
 	}
 

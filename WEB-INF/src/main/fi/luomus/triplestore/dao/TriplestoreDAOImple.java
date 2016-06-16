@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -28,17 +39,6 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -281,7 +281,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public Checklist storeChecklist(Checklist checklist) throws Exception {
+	public Checklist store(Checklist checklist) throws Exception {
 		Model model = new Model(checklist.getQname());
 		model.setType("MR.checklist");
 
@@ -726,14 +726,14 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void storeOccurrences(Occurrences existingOccurrences, Occurrences alteredOccurrences) throws Exception {
+	public void store(Occurrences existingOccurrences, Occurrences alteredOccurrences) throws Exception {
 		// TODO voiko nyt käyttää jonkin muun toteutuksen logiikkaa?  Voi: store(model), mutta tämä hakee jokaisen occurences kannasta erikseen ja tämä on jo tehtynä -- ok?
 		for (Occurrence o : alteredOccurrences.getOccurrences()) {
 			Qname area = o.getArea();
 			Occurrence existing = existingOccurrences.getOccurrence(area);
 			if (existing == null) {
 				// insert
-				insertOccurrence(alteredOccurrences.getTaxonQname(), o);
+				store(alteredOccurrences.getTaxonQname(), o);
 			} else if (!existing.getStatus().equals(o.getStatus())) {
 				// update
 				existing.setStatus(o.getStatus());
@@ -749,17 +749,20 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private void insertOccurrence(Qname taxonQname, Occurrence o) throws SQLException {
-		Model model = new Model(this.getSeqNextValAndAddResource("MO"));
-		model.setType("MO.occurrence");
-		model.addStatementIfObjectGiven("MO.taxon", taxonQname);
-		model.addStatementIfObjectGiven("MO.status", o.getStatus());
-		model.addStatementIfObjectGiven("MO.area", o.getArea());
-		this.store(model);
-	}
-
 	private void updateOccurrence(Occurrence o) throws SQLException, Exception {
 		this.store(new Subject(o.getId()), new Statement(new Predicate("MO.status"), new ObjectResource(o.getStatus())));
+	}
+	
+	@Override
+	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
+		Qname id = given(occurrence.getId()) ? this.getSeqNextValAndAddResource("MO") : occurrence.getId(); 
+		Model model = new Model(id);
+		model.setType("MO.occurrence");
+		model.addStatementIfObjectGiven("MO.taxon", taxonQname);
+		model.addStatementIfObjectGiven("MO.status", occurrence.getStatus());
+		model.addStatementIfObjectGiven("MO.area", occurrence.getArea());
+		this.store(model);
+		occurrence.setId(id);
 	}
 
 	private boolean given(Qname qname) {

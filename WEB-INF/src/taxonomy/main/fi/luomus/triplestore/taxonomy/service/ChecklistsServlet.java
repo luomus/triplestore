@@ -84,7 +84,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 			checklist.setOwner(new Qname(owner));
 		}
 
-		triplestoreDAO.storeChecklist(checklist);
+		triplestoreDAO.store(checklist);
 		getTaxonomyDAO().getChecklistsForceReload();
 
 		if (addNew) {
