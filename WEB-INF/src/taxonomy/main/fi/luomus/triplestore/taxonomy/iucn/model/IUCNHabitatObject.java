@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fi.luomus.commons.utils.Utils;
+
 public class IUCNHabitatObject {
 
-	private final String id;
+	private String id;
 	private final String habitat;
 	private List<String> habitatSpecificTypes = null;
 
@@ -31,6 +33,27 @@ public class IUCNHabitatObject {
 
 	public String getHabitat() {
 		return habitat;
+	}
+
+	@Override
+	public String toString() {
+		return Utils.debugS(id, habitat, habitatSpecificTypes);
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public boolean hasValues() {
+		if (given(getHabitat())) return true;
+		for (String habitat : getHabitatSpecificTypes()) {
+			if (given(habitat)) return true;
+		}
+		return false;
+	}
+
+	private boolean given(String s) {
+		return s != null && s.length() > 0;
 	}
 
 }

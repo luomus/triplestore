@@ -13,6 +13,13 @@
 
 <@toolbox/>		
 
+<#if successMessage?has_content>
+	<p class="successMessage">${successMessage}</p>
+</#if>
+<#if errorMessage?has_content>
+	<div class="errorMessage">${errorMessage}</div>
+</#if>
+
 <#macro tree taxon>
 	<#if taxon.hasParent()>
 		<@tree taxon.parent />
@@ -78,11 +85,12 @@
 <div class="clear"></div>
 
 <#if permissions>
-<@submitButtons/>
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
 <input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
+<input type="hidden" name="MKV.state" id="evaluationState" />
+<@submitButtons/>
 </#if>
 
 <table class="resourceListTable evaluationEdit">
@@ -152,14 +160,14 @@
 </table>
 
 <#if permissions>
-</form>
 <@submitButtons/>
+</form>
 </#if>
 
 <#macro submitButtons>
 	<div class="submitButtonContainer">
-		<button>Tallenna</button>
-		<button class="ready">Arviointi valmis</button>
+		<button class="saveButton">Tallenna</button>
+		<button class="ready readyButton">Arviointi valmis</button>
 		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="editNotes"></textarea>
 	</div>
 </#macro>
@@ -563,6 +571,15 @@ $(function() {
  				headerAbsolute = false;
  			}
  		}
+ 	});
+ 	
+ 	$(".saveButton").on('click', function() {
+ 		$("#evaluationState").val("MKV.stateStarted");
+ 		document.getElementById("evaluationEditForm").submit();
+ 	});
+ 	$(".readyButton").on('click', function() {
+ 		$("#evaluationState").val("MKV.stateReady");
+ 		document.getElementById("evaluationEditForm").submit();
  	});
  	
 });

@@ -101,7 +101,7 @@ public class IUCNContainer {
 	}
 
 	private IUCNEvaluation createNotEvaluatedEvaluation(String speciesQname, int year, Qname editorQname) throws Exception {
-		IUCNEvaluation evaluation = iucnDAO.createEvaluation();
+		IUCNEvaluation evaluation = iucnDAO.createNewEvaluation();
 		Model model = evaluation.getModel();
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EVALUATED_TAXON), new ObjectResource(speciesQname)));
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EVALUATION_YEAR), new ObjectLiteral(String.valueOf(year))));

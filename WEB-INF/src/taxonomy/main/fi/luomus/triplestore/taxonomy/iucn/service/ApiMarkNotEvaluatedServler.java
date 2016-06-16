@@ -1,15 +1,18 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-evaluated/*"})
 public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
@@ -26,14 +29,18 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		checkIucnPermissions(groupQname, req);
 		Qname editor = getUser(req).getQname();
 
-		IUCNEvaluation evaluation = getTaxonomyDAO().getIucnDAO().getIUCNContainer().markNotEvaluated(speciesQname, year, editor);
-		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(evaluation.getSpeciesQname());
-		
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
+		IUCNContainer container = iucnDAO.getIUCNContainer();
+
+		IUCNEvaluation evaluation = container.markNotEvaluated(speciesQname, year, editor);
+		IUCNEvaluationTarget target = container.getTarget(evaluation.getSpeciesQname());
+
 		return new ResponseData().setViewName("iucn-species-row-update")
 				.setData("evaluation", evaluation)
 				.setData("target", target)
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
-				.setData("persons", getTaxonomyDAO().getPersons())
+				.setData("persons", taxonomyDAO.getPersons())
 				.setData("selectedYear", year);
 	}
 

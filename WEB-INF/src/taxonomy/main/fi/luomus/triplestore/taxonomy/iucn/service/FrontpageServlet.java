@@ -1,10 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
-
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.Iterables;
+
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
 public class FrontpageServlet extends TaxonomyEditorBaseServlet {
@@ -48,6 +48,19 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 	}
 
+	protected int selectedYearFailForNoneGiven(HttpServletRequest req) throws Exception {
+		String selectedYearParam = getId(req);
+		if (!given(selectedYearParam)) {
+			throw new IllegalArgumentException("Must give evaluation year.");
+		}
+		try {
+			int selectedYear = Integer.valueOf(selectedYearParam);
+			return selectedYear;
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Invalid evaluation year: " + selectedYearParam);
+		}
+	}
+	
 	private int getDraftYear(List<Integer> allYears) throws Exception {
 		return Iterables.getLast(allYears);
 	}

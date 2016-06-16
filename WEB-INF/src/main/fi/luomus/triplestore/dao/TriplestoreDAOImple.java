@@ -229,10 +229,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			return new IllegalArgumentException("Predicate '" + statement.getPredicate().getQname() + "' does not exist.");
 		}
 		if (statement.isResourceStatement() && !resourceExists(statement.getObjectResource().getQname())) {
-			return new IllegalArgumentException("Object '" + statement.getObjectResource().getQname() + "' does not exist.");
+			return new IllegalArgumentException("Object '" + statement.getObjectResource().getQname() + "' does not exist for predicate: " + statement.getPredicate().getQname());
 		}
 		if (!statement.isForDefaultContext() && !resourceExists(statement.getContext().getQname())) {
-			return new IllegalArgumentException("Context '" + statement.getContext().getQname() + "' does not exist.");
+			return new IllegalArgumentException("Context '" + statement.getContext().getQname() + "' does not exist for predicate: " + statement.getPredicate().getQname());
 		}
 		return new IllegalArgumentException(sqle);
 	}

@@ -1,30 +1,44 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.RdfProperties;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.utils.DateUtils;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.RdfProperties;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.utils.DateUtils;
+
 public class IUCNEvaluation {
 
-	public static final String STATE = "MKV.state";
-	public static final String STATE_READY = "MKV.stateReady";
-	public static final String RED_LIST_STATUS = "MKV.redListStatus";
-	public static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
-	public static final String LAST_MODIFIED = "MKV.lastModified";
+	public static final String IUCN_EVALUATION_NAMESPACE = "MKV";
+	public static final String IUCN_RED_LIST_EVALUATION_YEAR_CLASS = "MKV.iucnRedListEvaluationYear";
+	public static final String EVALUATION_CLASS = "MKV.iucnRedListEvaluation";
 	public static final String EVALUATION_YEAR = "MKV.evaluationYear";
 	public static final String EVALUATED_TAXON = "MKV.evaluatedTaxon";
+	public static final String STATE = "MKV.state";
+	public static final String STATE_READY = "MKV.stateReady";
+	public static final String STATE_STARTED = "MKV.stateStarted";
+	public static final String RED_LIST_STATUS = "MKV.redListStatus";
+	public static final String HABITAT_OBJECT_CLASS = "MKV.habitatObject";
+	public static final String PRIMARY_HABITAT = "MKV.primaryHabitat";
+	public static final String SECONDARY_HABITAT = "MKV.secondaryHabitat";
+	public static final String HABITAT = "MKV.habitat";
+	public static final String HABITAT_SPECIFIC_TYPE = "MKV.habitatSpecificType";
+	public static final String HAS_OCCURRENCE = "MKV.hasOccurrence";
+	public static final String PUBLICATION = "MKV.publication";
+	public static final String EDIT_NOTES = "MKV.editNotes";
+	public static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
+	public static final String LAST_MODIFIED = "MKV.lastModified";
 	public static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
-	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
 	public static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
+	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
+
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
@@ -83,6 +97,11 @@ public class IUCNEvaluation {
 	public Occurrence getOccurrence(String areaQname) {
 		if (occurrences == null) return null;
 		return occurrences.get(areaQname);
+	}
+
+	public Collection<Occurrence> getOccurrences() {
+		if (occurrences == null) return Collections.emptyList();
+		return Collections.unmodifiableCollection(occurrences.values());
 	}
 
 	public String getId() {
@@ -179,5 +198,6 @@ public class IUCNEvaluation {
 	public Model getModel() {
 		return evaluation;
 	}
+
 
 }

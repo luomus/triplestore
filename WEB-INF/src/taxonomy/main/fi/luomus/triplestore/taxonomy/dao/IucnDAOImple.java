@@ -1,13 +1,29 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.http.client.methods.HttpGet;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
@@ -23,26 +39,10 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.http.client.methods.HttpGet;
-
 public class IucnDAOImple implements IucnDAO {
 
-	private static final String IUCN_RED_LIST_EVALUATION_CLASS = "MKV.iucnRedListEvaluation";
-	private static final String IUCN_EVALUATION_NAMESPACE = "MKV";
 	private static final String ML_NAME = "ML.name";
-	private static final String IUCN_EVALUATION_AREA = "ML.iucnEvaluationArea";
-	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname(IUCN_EVALUATION_AREA);
+	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname("ML.iucnEvaluationArea");
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
 	private static final String FI = "fi";
@@ -53,7 +53,6 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String ROOT = "root";
 	private static final String NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
-	private static final String IUCN_RED_LIST_EVALUATION_YEAR_CLASS = "MKV.iucnRedListEvaluationYear";
 	private static final String RDF_TYPE = "rdf:type";
 	private static final String MASTER_CHECKLIST_QNAME = "MR.1";
 
@@ -110,7 +109,7 @@ public class IucnDAOImple implements IucnDAO {
 				public List<Integer> load() {
 					List<Integer> evaluationYears = new ArrayList<>();
 					try {
-						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCN_RED_LIST_EVALUATION_YEAR_CLASS)) {
+						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCNEvaluation.IUCN_RED_LIST_EVALUATION_YEAR_CLASS)) {
 							int year = Integer.valueOf(m.getStatements(IUCNEvaluation.EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
 							evaluationYears.add(year);
 						}
@@ -231,7 +230,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCN_RED_LIST_EVALUATION_CLASS));
+		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS));
 		for (Model model :  evaluations) {
 			IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
 			String speciesQname = evaluation.getSpeciesQname();
@@ -270,7 +269,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private RdfProperties getEvaluationProperties() throws Exception {
-		return triplestoreDAO.getProperties(IUCN_RED_LIST_EVALUATION_CLASS);
+		return triplestoreDAO.getProperties(IUCNEvaluation.EVALUATION_CLASS);
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedEvaluationAreas = 
@@ -284,7 +283,7 @@ public class IucnDAOImple implements IucnDAO {
 										new SearchParams(100, 0)
 										.type(AREA)
 										.predicate(AREA_TYPE)
-										.objectresource(IUCN_EVALUATION_AREA));
+										.objectresource(EVALUATION_AREA_TYPE_QNAME.toString()));
 								for (Model m : models) {
 									String id = m.getSubject().getQname();
 									LocalizedText name = new LocalizedText();
@@ -309,16 +308,40 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	@Override
-	public IUCNEvaluation createEvaluation() throws Exception {
-		Qname evaluationId = triplestoreDAO.getSeqNextValAndAddResource(IUCN_EVALUATION_NAMESPACE);
+	public IUCNEvaluation createNewEvaluation() throws Exception {
+		Qname evaluationId = getSeqNextValAndAddResource();
 		Model model = new Model(evaluationId);
-		model.setType(IUCN_RED_LIST_EVALUATION_CLASS);
+		model.setType(IUCNEvaluation.EVALUATION_CLASS);
+		return new IUCNEvaluation(model, getEvaluationProperties());
+	}
+
+	@Override
+	public IUCNEvaluation createEvaluation(String id) throws Exception {
+		Model model = new Model(new Qname(id));
+		model.setType(IUCNEvaluation.EVALUATION_CLASS);
 		return new IUCNEvaluation(model, getEvaluationProperties());
 	}
 
 	@Override
 	public Qname getSeqNextValAndAddResource() throws Exception {
-		return triplestoreDAO.getSeqNextValAndAddResource(IUCN_EVALUATION_NAMESPACE);
+		return triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
+	}
+
+	@Override
+	public void store(IUCNHabitatObject habitat) throws Exception {
+		String id = given(habitat.getId()) ? habitat.getId() : getSeqNextValAndAddResource().toString();
+		habitat.setId(id);
+		Model model = new Model(new Subject(id));
+		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT), new ObjectResource(habitat.getHabitat())));
+		for (String type : habitat.getHabitatSpecificTypes()) {
+			model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE), new ObjectResource(type)));
+		}
+		triplestoreDAO.store(model);
+	}
+
+	private boolean given(String id) {
+		return id != null && id.length() > 0;
 	}
 
 }
