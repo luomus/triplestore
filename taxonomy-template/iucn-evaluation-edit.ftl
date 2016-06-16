@@ -82,6 +82,22 @@
 	</div>
 </#if>
 
+<#if editHistory?has_content>
+	<div class="taxonInfo">
+		<h6>Tallennushistoria</h6>
+		<ul>
+			<#list editHistory.entries as entry>
+				<li>
+					${entry.notes}
+					<#if entry.editorQname??>
+						${persons[entry.editorQname].fullName}
+					</#if> 
+				</li>				
+			</#list>
+		</ul>
+	</div>
+</#if>
+
 <div class="clear"></div>
 
 <#if permissions>

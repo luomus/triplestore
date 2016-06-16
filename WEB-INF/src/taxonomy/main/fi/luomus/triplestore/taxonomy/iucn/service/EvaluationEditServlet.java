@@ -19,6 +19,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
@@ -68,12 +69,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
 
-		// TODO show revision history
-		//		select * from rdf_statement_history
-		//		where SUBJECTFK = (select resourceid from rdf_resource where resourcename = 'MKV.121')
-		//		and predicatefk = (select resourceid from rdf_resource where resourcename = 'MKV.editNotes');
-		//  sort by created
-		// userfk:ta voi käyttää henkilöön
+		if (thisPeriodData != null) {
+			EditHistory editHistory = iucnDAO.getEditHistory(thisPeriodData);
+			responseData.setData("editHistory", editHistory);
+		}
 
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
@@ -133,7 +132,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String state = req.getParameter(IUCNEvaluation.STATE);
 		if (invalidState(state)) throw new IllegalArgumentException("Invalid state: " + state);
 
-		TriplestoreDAO dao = getTriplestoreDAO();
+		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
@@ -316,6 +315,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private void setEditNotes(IUCNEvaluation givenData) {
 		String notes = givenData.isReady() ? "Merkitty valmiiksi" : "Tallennettu";
+		notes += " " + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 		Model model = givenData.getModel();
 		if (model.hasStatements(EDIT_NOTES_PREDICATE.getQname())) {
 			notes += ": " + model.getStatements(EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
