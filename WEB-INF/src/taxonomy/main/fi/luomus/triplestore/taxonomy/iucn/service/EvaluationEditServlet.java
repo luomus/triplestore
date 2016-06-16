@@ -1,15 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -32,6 +22,16 @@ import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -155,9 +155,9 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
 			storeTaxonProperties(req, speciesQname, dao, taxonomyDAO);
 
-			if (req.getParameter(NEW_IUCN_PUBLICATION_CITATION) != null) {
-				String citation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
-				insertPublicationAndSetToModel(dao, model, citation);
+			String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
+			if (given(newPublicationCitation)) {
+				insertPublicationAndSetToModel(dao, model, newPublicationCitation);
 				taxonomyDAO.getPublicationsForceReload();
 			}
 
@@ -278,7 +278,9 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitat);
 			if (habitatSpecificTypes != null) {
 				for (String type : habitatSpecificTypes) {
-					habitatObject.addHabitatSpecificType(type);
+					if (given(type)) {
+						habitatObject.addHabitatSpecificType(type);
+					}
 				}
 			}
 			if (habitatObject.hasValues()) {
@@ -316,7 +318,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String notes = givenData.isReady() ? "Merkitty valmiiksi" : "Tallennettu";
 		Model model = givenData.getModel();
 		if (model.hasStatements(EDIT_NOTES_PREDICATE.getQname())) {
-			notes = ": " + model.getStatements(EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
+			notes += ": " + model.getStatements(EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
 		}
 		model.removeAll(EDIT_NOTES_PREDICATE);
 		model.addStatement(new Statement(EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
@@ -390,7 +392,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		} else {
 			usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value)));
 		}
-		// XXX dao.store(new Subject(speciesQname), usedAndGivenStatements);
+		// XXX disabloitu toistaiseksi: dao.store(new Subject(speciesQname), usedAndGivenStatements);
 		System.out.println("taxon data: " + usedAndGivenStatements.getGivenStatements());
 	}
 

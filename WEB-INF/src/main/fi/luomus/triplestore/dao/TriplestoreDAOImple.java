@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -39,6 +28,17 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
+
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -755,7 +755,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	
 	@Override
 	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
-		Qname id = given(occurrence.getId()) ? this.getSeqNextValAndAddResource("MO") : occurrence.getId(); 
+		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO"); 
 		Model model = new Model(id);
 		model.setType("MO.occurrence");
 		model.addStatementIfObjectGiven("MO.taxon", taxonQname);
