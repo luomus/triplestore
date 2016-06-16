@@ -223,16 +223,16 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private RuntimeException reportMissingResource(Statement statement, Subject subject, SQLException sqle) throws SQLException {
 		if (!resourceExists(subject.getQname())) {
-			return new IllegalArgumentException("Subject " + subject.getQname() + " does not exist.");
+			return new IllegalArgumentException("Subject '" + subject.getQname() + "' does not exist.");
 		}
 		if (!resourceExists(statement.getPredicate().getQname())) {
-			return new IllegalArgumentException("Predicate " + statement.getPredicate().getQname() + " does not exist.");
+			return new IllegalArgumentException("Predicate '" + statement.getPredicate().getQname() + "' does not exist.");
 		}
 		if (statement.isResourceStatement() && !resourceExists(statement.getObjectResource().getQname())) {
-			return new IllegalArgumentException("Object " + statement.getObjectResource().getQname() + " does not exist.");
+			return new IllegalArgumentException("Object '" + statement.getObjectResource().getQname() + "' does not exist.");
 		}
 		if (!statement.isForDefaultContext() && !resourceExists(statement.getContext().getQname())) {
-			return new IllegalArgumentException("Context " + statement.getContext().getQname() + " does not exist.");
+			return new IllegalArgumentException("Context '" + statement.getContext().getQname() + "' does not exist.");
 		}
 		return new IllegalArgumentException(sqle);
 	}
