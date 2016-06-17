@@ -146,8 +146,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		if (!validationResult.hasErrors()) {
 			IUCNEvaluation existingEvaluation = target.getEvaluation(year);
-			deleteOccurrences(dao, existingEvaluation);
-			deleteHabitatObjects(dao, existingEvaluation);
+			if (existingEvaluation != null) {
+				deleteOccurrences(dao, existingEvaluation);
+				deleteHabitatObjects(dao, existingEvaluation);
+			}
 
 			Model model = givenData.getModel();
 			storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
