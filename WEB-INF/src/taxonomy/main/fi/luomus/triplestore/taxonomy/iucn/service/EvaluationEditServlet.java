@@ -162,8 +162,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 			setEditNotes(givenData);
 
-			System.out.println(model.getRDF());
-
 			dao.store(model);
 			iucnDAO.getIUCNContainer().setEvaluation(givenData);
 		}
@@ -393,7 +391,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value)));
 		}
 		// XXX disabloitu toistaiseksi: dao.store(new Subject(speciesQname), usedAndGivenStatements);
-		System.out.println("taxon data: " + usedAndGivenStatements.getGivenStatements());
 	}
 
 	private ValidationResult validate(IUCNEvaluation givenData, IUCNEvaluation comparisonData) {

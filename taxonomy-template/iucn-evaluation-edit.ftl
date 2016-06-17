@@ -88,9 +88,9 @@
 		<ul>
 			<#list editHistory.entries as entry>
 				<li>
-					${entry.notes}
+					${entry.notes!""}
 					<#if entry.editorQname??>
-						${persons[entry.editorQname].fullName}
+						&mdash; ${persons[entry.editorQname].fullname}
 					</#if> 
 				</li>				
 			</#list>

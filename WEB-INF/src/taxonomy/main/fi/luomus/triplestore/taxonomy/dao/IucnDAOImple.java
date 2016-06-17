@@ -56,8 +56,8 @@ public class IucnDAOImple implements IucnDAO {
 			" FROM 		"+SCHEMA+".rdf_statement_history notes " + 
 			" JOIN		"+SCHEMA+".rdf_resource notesliteral ON (notes.objectfk = notesliteral.resourceid) " + 
 			" JOIN		"+SCHEMA+".rdf_resource userqname ON (notes.userfk = userqname.resourceid) " + 
-			" WHERE		notes.SUBJECTFK = (select resourceid from rdf_resource where resourcename = ?) " + 
-			" AND		notes.predicatefk = (select resourceid from rdf_resource where resourcename = '"+IUCNEvaluation.EDIT_NOTES+"') " + 
+			" WHERE		notes.SUBJECTFK = (select resourceid from "+SCHEMA+".rdf_resource where resourcename = ?) " + 
+			" AND		notes.predicatefk = (select resourceid from "+SCHEMA+".rdf_resource where resourcename = '"+IUCNEvaluation.EDIT_NOTES+"') " + 
 			" ORDER BY	notes.created DESC ";
 
 	private static final String ML_NAME = "ML.name";
@@ -378,7 +378,6 @@ public class IucnDAOImple implements IucnDAO {
 		try {
 			con = triplestoreDAO.openConnection();
 			p = con.prepareStatement(EDIT_HISTORY_SQL);
-			System.out.println(EDIT_HISTORY_SQL);
 			p.setString(1, thisPeriodData.getId());
 			rs = p.executeQuery();
 			while (rs.next()) {
