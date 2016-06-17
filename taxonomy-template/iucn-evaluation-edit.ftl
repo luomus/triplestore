@@ -27,6 +27,8 @@
 	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.getVernacularName("fi")!""}</span></li>
 </#macro>
 
+<div id="evaluationMeta">
+
 <div class="taxonInfo">
 	<h6>Taksonomia</h6>
 	<ul class="taxonTree">
@@ -98,6 +100,7 @@
 	</div>
 </#if>
 
+</div>
 <div class="clear"></div>
 
 <#if permissions>

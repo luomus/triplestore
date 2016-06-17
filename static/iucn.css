@@ -248,3 +248,7 @@ label {
 .editNotesInput {
 	width: 30em;
 }
+
+div#evaluationMeta {
+  max-width: 900px;
+}
