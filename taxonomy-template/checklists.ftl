@@ -39,7 +39,7 @@
 				</#if>
 			</td>
 			<td>${checklist.public?string("Public","Hidden")}</td>
-			<td><a class="button" href="${baseURL}/checklists/${checklist.qname}">Modify</button></td>
+			<td><a class="button" href="${baseURL}/checklists/${checklist.qname}">Modify</a></td>
 		</tr>
 	</#list>
 	</tbody>

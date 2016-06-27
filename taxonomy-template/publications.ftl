@@ -19,7 +19,7 @@
 					<a href="${publication.getURI()?html}">Link</a>
 				</#if>
 			</td>
-			<td><a class="button" href="${baseURL}/publications/${publication.qname}">Modify</button></td>
+			<td><a class="button" href="${baseURL}/publications/${publication.qname}">Modify</a></td>
 		</tr>
 	</#list>
 	</tbody>
