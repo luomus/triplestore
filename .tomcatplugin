@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
     <rootDir>/</rootDir>
+    <workDir></workDir>
     <exportSource>false</exportSource>
     <reloadable>true</reloadable>
     <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
-    <warLocation>c:\triplestore.war</warLocation>
+    <warLocation>c:\esko-local\triplestore.war</warLocation>
     <extraInfo></extraInfo>
     <webPath></webPath>
 </tomcatProjectProperties>
