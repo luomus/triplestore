@@ -11,11 +11,10 @@
 <table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
-			<th>Id</th>
 			<th>Finnish</th>
 			<th>English</th>
 			<th>Swedish</th>
-			<th>&nbsp;</th>
+			<th colspan="2">&nbsp;</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -27,11 +26,11 @@
 
 <#macro printGroup group indent=0>
 	<tr>
-		<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
 		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("fi")!""}</td>
 		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("en")!""}</td>
 		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("sv")!""}</td>
-		<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</button></td>
+		<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</a></td>
+		<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
 	</tr>
 	<#list informalGroups?values as subGroupCandidate>
 		<#if group.hasSubGroup(subGroupCandidate.qname)>
