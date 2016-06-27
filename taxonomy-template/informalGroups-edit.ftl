@@ -8,7 +8,7 @@
 	<h1>Create a new informal group</h1>
 	<form action="${baseURL}/informalGroups/add" method="post" id="groupForm">
 <#else>
-	<h1>Modify informal group "${group.name.forLocale("en")!""}"</h1>
+	<h1>Modify informal group "${group.name.forLocale("fi")!""} - ${group.name.forLocale("en")!groupQnameString}"</h1>
 	<form action="${baseURL}/informalGroups/${group.qname}" method="post" id="groupForm">
 </#if>
 
@@ -24,6 +24,15 @@
 		<li>
 			<label>Name, swedish</label>
 			<input type="text" name="name_sv" class="required checklistName" value="${(group.name.forLocale("sv")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
+		</li>
+		<li>
+			<label>Has sub groups</label>
+			<select name="MVL.hasSubGroup" data-placeholder="Select group" class="chosen" multiple="multiple">
+				<option value=""></option>
+				<#list informalGroups?keys as groupQnameString>
+					<option value="${groupQnameString}" <#if group.hasSubGroup(groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
+				</#list>
+			</select>
 		</li>
 	</ul>
 	<br />

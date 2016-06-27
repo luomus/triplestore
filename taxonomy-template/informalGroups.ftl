@@ -8,7 +8,7 @@
 
 <p><a href="${baseURL}/informalGroups/add">&raquo; Create new group</a></p>
  
-<table class="resourceListTable">
+<table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
 			<th>Id</th>
@@ -19,16 +19,25 @@
 		</tr>
 	</thead>
 	<tbody>
-	<#list informalGroups?values as group>
-		<tr>
-			<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
-			<td>${group.getName("fi")!""}</td>
-			<td>${group.getName("en")!""}</td>
-			<td>${group.getName("sv")!""}</td>
-			<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</button></td>
-		</tr>
+	<#list roots as rootQname>
+		<@printGroup informalGroups[rootQname] />
 	</#list>
 	</tbody>
 </table>
+
+<#macro printGroup group indent=0>
+	<tr>
+		<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
+		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("fi")!""}</td>
+		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("en")!""}</td>
+		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("sv")!""}</td>
+		<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</button></td>
+	</tr>
+	<#list informalGroups?values as subGroupCandidate>
+		<#if group.hasSubGroup(subGroupCandidate.qname)>
+			<@printGroup subGroupCandidate indent + 1 />
+		</#if>
+	</#list>
+</#macro>
 
 <#include "luomus-footer.ftl">

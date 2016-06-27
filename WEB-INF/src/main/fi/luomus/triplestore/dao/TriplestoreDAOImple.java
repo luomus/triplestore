@@ -306,6 +306,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
 			model.addStamentIfObjectGiven("MVL.name", e.getValue(), e.getKey());
 		}
+		for (Qname parent : group.getSubGroups()) {
+			model.addStatementIfObjectGiven("MVL.hasSubGroup", parent);
+		}
 		store(model);
 		return group;
 	}
