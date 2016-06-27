@@ -219,10 +219,6 @@ button.add {
   font-size: 10px;
 }
 
-#toolbox {
-  position: absolute;
-}
-
 .floatingHeader {
   position: fixed;
   top: 0;
@@ -251,4 +247,8 @@ label {
 
 .editNotesInput {
 	width: 30em;
+}
+
+div#evaluationMeta {
+  max-width: 900px;
 }

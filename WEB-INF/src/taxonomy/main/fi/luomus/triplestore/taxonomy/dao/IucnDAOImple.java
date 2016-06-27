@@ -1,6 +1,40 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.LocalizedText;
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
+import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.http.HttpClientService;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.utils.SingleObjectCache;
+import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.SearchParams;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+
 import java.net.URI;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,33 +47,18 @@ import java.util.Set;
 
 import org.apache.http.client.methods.HttpGet;
 
-import fi.luomus.commons.config.Config;
-import fi.luomus.commons.containers.Area;
-import fi.luomus.commons.containers.LocalizedText;
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.ObjectLiteral;
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperties;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.containers.rdf.Subject;
-import fi.luomus.commons.http.HttpClientService;
-import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.utils.SingleObjectCache;
-import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
-import fi.luomus.triplestore.dao.SearchParams;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
 public class IucnDAOImple implements IucnDAO {
+
+	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
+	
+	private static final String EDIT_HISTORY_SQL = "" + 
+			" SELECT 	notesliteral.RESOURCELITERAL, userqname.RESOURCENAME " + 
+			" FROM 		"+SCHEMA+".rdf_statement_history notes " + 
+			" JOIN		"+SCHEMA+".rdf_resource notesliteral ON (notes.objectfk = notesliteral.resourceid) " + 
+			" JOIN		"+SCHEMA+".rdf_resource userqname ON (notes.userfk = userqname.resourceid) " + 
+			" WHERE		notes.SUBJECTFK = (select resourceid from "+SCHEMA+".rdf_resource where resourcename = ?) " + 
+			" AND		notes.predicatefk = (select resourceid from "+SCHEMA+".rdf_resource where resourcename = '"+IUCNEvaluation.EDIT_NOTES+"') " + 
+			" ORDER BY	notes.created DESC ";
 
 	private static final String ML_NAME = "ML.name";
 	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname("ML.iucnEvaluationArea");
@@ -65,7 +84,7 @@ public class IucnDAOImple implements IucnDAO {
 		this.config = config;
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
-		this.container = new IUCNContainer(triplestoreDAO, this);
+		this.container = new IUCNContainer(this);
 	}
 
 	private final SingleObjectCache<Map<String, IUCNEditors>> 
@@ -342,6 +361,37 @@ public class IucnDAOImple implements IucnDAO {
 
 	private boolean given(String id) {
 		return id != null && id.length() > 0;
+	}
+
+	@Override
+	public EditHistory getEditHistory(IUCNEvaluation thisPeriodData) throws Exception {
+		EditHistory editHistory = new EditHistory();
+		editHistory.add(buildEditHistory(thisPeriodData));
+		getEditNotesFromHistory(thisPeriodData, editHistory);
+		return editHistory;
+	}
+
+	private void getEditNotesFromHistory(IUCNEvaluation thisPeriodData, EditHistory editHistory) throws Exception, SQLException {
+		TransactionConnection con = null;
+		PreparedStatement p = null;
+		ResultSet rs = null;
+		try {
+			con = triplestoreDAO.openConnection();
+			p = con.prepareStatement(EDIT_HISTORY_SQL);
+			p.setString(1, thisPeriodData.getId());
+			rs = p.executeQuery();
+			while (rs.next()) {
+				String notes = rs.getString(1);
+				String editorQname = rs.getString(2);
+				editHistory.add(new EditHistoryEntry(notes, editorQname));
+			}
+		} finally {
+			Utils.close(p, rs, con);
+		}
+	}
+
+	private EditHistoryEntry buildEditHistory(IUCNEvaluation thisPeriodData) {
+		return new EditHistoryEntry(thisPeriodData.getValue(IUCNEvaluation.EDIT_NOTES), thisPeriodData.getValue(IUCNEvaluation.LAST_MODIFIED_BY));
 	}
 
 }

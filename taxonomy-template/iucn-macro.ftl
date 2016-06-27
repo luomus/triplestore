@@ -73,7 +73,7 @@
 		<td>
 			<#if evaluation.hasIucnStatus()>
 				<#if evaluation.hasCorrectedIndex()>
-					${evaluation.correctedIucnIndex}<span class="correctedIndex">[KORJATTU]</span>
+					${evaluation.correctedIucnIndex} <span class="correctedIndex">[KORJATTU]</span>
 				<#else>
 					${evaluation.calculatedIucnIndex}
 				</#if>

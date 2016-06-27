@@ -27,6 +27,8 @@
 	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.getVernacularName("fi")!""}</span></li>
 </#macro>
 
+<div id="evaluationMeta">
+
 <div class="taxonInfo">
 	<h6>Taksonomia</h6>
 	<ul class="taxonTree">
@@ -82,6 +84,23 @@
 	</div>
 </#if>
 
+<#if editHistory?has_content>
+	<div class="taxonInfo">
+		<h6>Tallennushistoria</h6>
+		<ul>
+			<#list editHistory.entries as entry>
+				<li>
+					${entry.notes!""}
+					<#if entry.editorQname??>
+						&mdash; ${persons[entry.editorQname].fullname}
+					</#if> 
+				</li>				
+			</#list>
+		</ul>
+	</div>
+</#if>
+
+</div>
 <div class="clear"></div>
 
 <#if permissions>
@@ -168,7 +187,7 @@
 	<div class="submitButtonContainer">
 		<button class="saveButton">Tallenna</button>
 		<button class="ready readyButton">Arviointi valmis</button>
-		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="editNotes"></textarea>
+		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes"></textarea>
 	</div>
 </#macro>
 
@@ -447,7 +466,7 @@
 								<select name="${fieldName}">
 									<option value=""></option>
 									<#list publications?keys as publicationQname>
-										<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+										<option value="${publicationQname}" <#if same(publication, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 									</#list>
 								</select>
 							</td>
@@ -509,6 +528,7 @@
 			<@iucnLabel notesFieldName />
 			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)!""}</#if></textarea>
 			<br />
+			<button class="emptyNoteButton">Tyhjennä</button>
 			<button class="closeNoteEditButton">Sulje</button>
 		</div>
 	</#if>
@@ -532,9 +552,13 @@ $(function() {
 	$(".noteViewer").tooltip();
 	
 	$(".closeNoteEditButton").on('click', function() {
-		$(this).closest('.notes').find('textarea').trigger("change");
+		$(this).closest('.notes').find('textarea').trigger('change');
 	});
- 
+ 	
+ 	$(".emptyNoteButton").on('click', function() {
+ 		$(this).closest('.notes').find('textarea').val('').trigger('change');
+ 	});
+ 	
  	$("button.add").on('click', function() {
  		var input = $(this).prevAll(":input").first();
  		var clone = input.clone();
