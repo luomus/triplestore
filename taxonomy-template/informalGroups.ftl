@@ -11,7 +11,6 @@
 <table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
-			<th>Id</th>
 			<th>Finnish</th>
 			<th>English</th>
 			<th>Swedish</th>
@@ -20,22 +19,25 @@
 	</thead>
 	<tbody>
 	<#list roots as rootQname>
-		<@printGroup informalGroups[rootQname] />
+		<#if (rootQname_index) % 2 == 0>
+			<@printGroup informalGroups[rootQname] 0 "even" />
+		<#else>
+			<@printGroup informalGroups[rootQname] 0 "odd" />
+		</#if>
 	</#list>
 	</tbody>
 </table>
 
-<#macro printGroup group indent=0>
-	<tr>
-		<td><a href="${baseURL}/informalGroups/${group.qname}">${group.qname}</a></td>
-		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("fi")!""}</td>
-		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("en")!""}</td>
-		<td> <span class="indent indent_${indent}">&mdash;</span> ${group.getName("sv")!""}</td>
+<#macro printGroup group indent evenOdd>
+	<tr class="indent_${indent} ${evenOdd}">
+		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("fi")!""}</a> </td>
+		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("en")!""}</a> </td>
+		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("sv")!""}</a> </td>
 		<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</a></td>
 	</tr>
 	<#list informalGroups?values as subGroupCandidate>
 		<#if group.hasSubGroup(subGroupCandidate.qname)>
-			<@printGroup subGroupCandidate indent + 1 />
+			<@printGroup subGroupCandidate indent + 1 evenOdd />
 		</#if>
 	</#list>
 </#macro>
