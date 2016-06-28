@@ -255,8 +255,8 @@ tr.errorMessage td {
 
 .informalGroupsTable tr.even { background-color: #eee !important; }
 
-span.indent {display: inline-block; }
-.indent_0 td { padding-top: 20px; padding-bottom: 5px; }
+span.indent { display: inline-block; }
+.indent_0 td { padding-bottom: 5px; border-top: 20px solid transparent; }
 .indent_1 span.indent { padding-left: 20px; }
 .indent_2 span.indent { padding-left: 50px; }
 .indent_3 span.indent { padding-left: 70px; }

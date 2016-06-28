@@ -20,9 +20,9 @@
 	<tbody>
 	<#list roots as rootQname>
 		<#if (rootQname_index) % 2 == 0>
-			<@printGroup informalGroups[rootQname] 0 "even" />
-		<#else>
 			<@printGroup informalGroups[rootQname] 0 "odd" />
+		<#else>
+			<@printGroup informalGroups[rootQname] 0 "even" />
 		</#if>
 	</#list>
 	</tbody>
