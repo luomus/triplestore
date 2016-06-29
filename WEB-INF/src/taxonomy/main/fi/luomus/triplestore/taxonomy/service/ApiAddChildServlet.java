@@ -2,9 +2,10 @@ package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +30,9 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		checkPermissionsToAlterTaxon(parentQname, req);
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		
-		Taxon taxon = createTaxonAndFetchNextId(scientificName, dao);
+		EditableTaxon taxon = createTaxon(scientificName, taxonomyDAO);
 		taxon.setChecklist(new Qname(checklistQname)); 
 		taxon.setParentQname(new Qname(parentQname)); 
 		taxon.setScientificNameAuthorship(author);
@@ -39,11 +41,11 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		}
 		
 		dao.addTaxon(taxon);
-		getTaxonomyDAO().invalidateTaxon(new Qname(parentQname));
+		taxon.invalidate();
 		
 		responseData.setData("newTaxon", taxon);
 		
-		ValidationData validationData = new TaxonValidator(dao, getErrorReporter()).validate(taxon);
+		ValidationData validationData = new TaxonValidator(taxonomyDAO, getErrorReporter()).validate(taxon);
 		responseData.setData("validationResults", validationData);
 		
 		return responseData;

@@ -18,6 +18,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
 import java.util.Map.Entry;
@@ -60,12 +61,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 		dao.store(new Subject(taxonQname), usedAndGivenStatements);
 
-		Taxon taxon = taxonomyDAO.getTaxon(taxonQname);
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 		storeOccurrences(req, dao, taxon);
-		taxonomyDAO.invalidateTaxon(taxonQname);
-
-		taxon = taxonomyDAO.getTaxon(taxonQname);
-		ValidationData validationData = new TaxonValidator(dao, getErrorReporter()).validate(taxon);
+		
+		taxon.invalidate();
+		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
+		ValidationData validationData = new TaxonValidator(taxonomyDAO, getErrorReporter()).validate(taxon);
+		
 		return new ResponseData().setViewName("api-taxoneditsubmit").setData("validationResults", validationData);
 	}
 

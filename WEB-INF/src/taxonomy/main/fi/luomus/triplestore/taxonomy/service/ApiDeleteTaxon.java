@@ -3,7 +3,6 @@ package fi.luomus.triplestore.taxonomy.service;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import javax.servlet.annotation.WebServlet;
@@ -35,13 +34,7 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 			throw new IllegalStateException("Can not delete "+taxonQname+": It has children.");
 		}
 		
-		for (Taxon synonym : taxon.getSynonymTaxons()) {
-			getTaxonomyDAO().invalidateTaxon(synonym);
-		}
-		if (taxon.hasParent()) {
-			getTaxonomyDAO().invalidateTaxon(taxon.getParent());
-		}
-		getTaxonomyDAO().invalidateTaxon(taxon);
+		taxon.invalidate();
 		
 		getTriplestoreDAO(req).delete(new Subject(taxonQname));
 		

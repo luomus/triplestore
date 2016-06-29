@@ -23,6 +23,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,7 +189,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			}
 		}
 		if (hadTaxonProperties) {
-			taxonomyDAO.invalidateTaxon(new Qname(speciesQname));
+			EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(speciesQname));
+			taxon.invalidate();
 		}
 	}
 

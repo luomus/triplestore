@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
@@ -20,6 +17,10 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public interface TriplestoreDAO {
 
@@ -58,7 +59,7 @@ public interface TriplestoreDAO {
 	 * @return the same taxon with possibly a newly created taxon concept.
 	 * @throws Exception
 	 */
-	public Taxon addTaxon(Taxon taxon) throws Exception;
+	public Taxon addTaxon(EditableTaxon taxon) throws Exception;
 
 	/**
 	 * Removes all existing [subject, predicate, context]-objects from the db and adds this new statement. 
@@ -161,16 +162,6 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public Qname addTaxonConcept() throws Exception;
-
-	/**
-	 * Checks if given name (scientific, vernacular or other name) exists in the given checklist, ignoring the taxon qname in question.
-	 * @param name
-	 * @param checklist
-	 * @param taxonQnameToIgnore
-	 * @return List of matcing taxons
-	 * @throws Exception 
-	 */
-	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception;
 
 	/**
 	 * Clears for example Properties cache

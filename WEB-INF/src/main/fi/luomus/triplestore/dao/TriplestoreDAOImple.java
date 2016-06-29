@@ -28,6 +28,7 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
@@ -324,7 +325,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public Taxon addTaxon(Taxon taxon) throws SQLException {
+	public Taxon addTaxon(EditableTaxon taxon) throws SQLException {
 		Model model = new Model(taxon.getQname());
 		model.setType("MX.taxon");
 
@@ -671,48 +672,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			removePredicatesStatement.setString(4, langCode);
 		}
 		removePredicatesStatement.executeUpdate();
-	}
-
-	@Override
-	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception { // TODO miksei tämä ole taxonomydaossa?
-		List<Taxon> matches = new ArrayList<Taxon>();
-		TransactionConnection con = null;
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			con = openConnection();
-			if (checklist == null) {
-				p = con.prepareStatement("" +
-						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
-						" WHERE checklist IS NULL AND name = ? AND qname != ? ");
-				p.setString(1, name.toUpperCase());
-				p.setString(2, taxonQnameToIgnore.toString());
-			} else {
-				p = con.prepareStatement("" +
-						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
-						" WHERE checklist = ? AND name = ? AND qname != ? ");
-				p.setString(1, checklist.toString());
-				p.setString(2, name.toUpperCase());
-				p.setString(3, taxonQnameToIgnore.toString());
-			}
-			rs = p.executeQuery();
-			while (rs.next()) {
-				Qname matchQname = new Qname(rs.getString(1));
-				String matchScientificName = rs.getString(2);
-				String matchAuthor = rs.getString(3);
-				String matchRank = rs.getString(4);
-				Taxon match = new Taxon(matchQname, null, null, null);
-				match.setScientificName(matchScientificName);
-				match.setScientificNameAuthorship(matchAuthor);
-				if (given(matchRank)) {
-					match.setTaxonRank(new Qname(matchRank));
-				}
-				matches.add(match);
-			}
-		} finally {
-			Utils.close(p, rs, con);
-		}
-		return matches;
 	}
 
 	@Override

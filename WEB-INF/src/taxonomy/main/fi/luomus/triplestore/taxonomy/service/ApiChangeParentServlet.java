@@ -45,9 +45,9 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 			throw new IllegalAccessException("Can not move a taxon from some other checklist to be a child of another checklist");
 		}
 
-		taxonomyDAO.invalidateTaxon(taxon);
-		taxonomyDAO.invalidateTaxon(newParent);
-		taxonomyDAO.invalidateTaxon(oldParent);
+		taxon.invalidate();
+		newParent.invalidate();
+		oldParent.invalidate();
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentQname)));

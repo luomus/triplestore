@@ -6,6 +6,8 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,13 +27,14 @@ public class ApiSaveOrderServlet extends ApiBaseServlet {
 		checkPermissionsToAlterTaxon(parent, req);
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		
 		int i = 0;
 		for (String taxon : order.split(",")) {
 			taxon = taxon.trim().replace("MX", "MX.");
 			dao.store(new Subject(taxon), new Statement(new Predicate("sortOrder"), i++));
-			getTaxonomyDAO().invalidateTaxon(new Qname(taxon));
+			((EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxon))).invalidate();
 		}
-		getTaxonomyDAO().invalidateTaxon(new Qname(parent));
 		
 		return new ResponseData().setOutputAlreadyPrinted();
 	}

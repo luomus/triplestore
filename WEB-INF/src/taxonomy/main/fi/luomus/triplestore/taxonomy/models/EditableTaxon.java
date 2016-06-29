@@ -4,52 +4,43 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
+import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class EditableTaxon extends Taxon {
 
 	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
-	
-	private final ExtendedTaxonomyDAO dao;
-	private Qname taxonConcept;
+	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
+
+
+	private final ExtendedTaxonomyDAO taxonomyDAO;
+	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final List<Qname> explicitlySetEditors = new ArrayList<>();
 	private final List<Qname> explicitlySetExperts = new ArrayList<>();
 	private final List<Qname> explicitlySetTaxonGroups = new ArrayList<>();
+	private Qname parent;
+	private Qname taxonConcept;
 	private Qname checklistStatus;
-	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 	private Occurrences occurrences;
 
-	public EditableTaxon(Qname qname, ExtendedTaxonomyDAO dao) {
-		super(qname, null, null, null);
-		this.dao = dao;
+	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer, ExtendedTaxonomyDAO taxonomyDao) {
+		super(qname, taxonContainer);
+		this.taxonomyDAO = taxonomyDao;
+		this.taxonContainer = taxonContainer;
+	}
+
+	public void setParentQname(Qname parent) {
+		this.parent = parent;
 	}
 
 	@Override
-	public Collection<Taxon> getChildTaxons() {
-		return dao.getChildTaxons(this);
+	public Qname getParentQname() {
+		return parent;
 	}
 
-	@Override
-	public Collection<Taxon> getChildTaxons(boolean onlyFinnish) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public EditableTaxon getParent() {
-		if (!hasParent()) return null;
-		try {
-			return (EditableTaxon) dao.getTaxon(getParentQname());
-		} catch (Exception e) {
-			throw new RuntimeException("Getting parent with qname " + getParentQname(), e);
-		}
-	}
-
-	@Override
 	public void setTaxonConcept(Qname taxonConcept) {
 		this.taxonConcept = taxonConcept;
 	}
@@ -57,19 +48,6 @@ public class EditableTaxon extends Taxon {
 	@Override
 	public Qname getTaxonConcept() {
 		return taxonConcept;
-	}
-
-	@Override
-	public Collection<Taxon> getSynonymTaxons() {
-		if (taxonConcept == null) {
-			return Collections.emptyList();
-		} 
-		return dao.getSynonymTaxons(this);
-	}
-
-	@Override
-	public boolean hasChildren() {
-		return !getChildTaxons().isEmpty();
 	}
 
 	@Override
@@ -117,7 +95,7 @@ public class EditableTaxon extends Taxon {
 	public List<Qname> getExplicitlySetInformalTaxonGroups() {
 		return this.explicitlySetTaxonGroups;
 	}
-	
+
 	public boolean allowsAlterationsBy(User user) {
 		if (user.isAdmin()) {
 			return true;
@@ -176,9 +154,15 @@ public class EditableTaxon extends Taxon {
 	public Occurrences getOccurrences() {
 		if (occurrences == null) {
 			occurrences = new Occurrences(getQname());
-			dao.addOccurrences(this);
+			taxonomyDAO.addOccurrences(this);
 		}
 		return occurrences;
 	}
+
+	public void invalidate() {
+		taxonContainer.invalidateTaxon(this);
+	}
+
+
 
 }

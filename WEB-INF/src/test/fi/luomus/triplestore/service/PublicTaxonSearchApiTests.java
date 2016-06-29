@@ -52,9 +52,7 @@ public class PublicTaxonSearchApiTests {
 		assertEquals("Linnaeus, 1758", match.getAttribute("scientificNameAuthorship"));
 		assertEquals("MX.species", match.getAttribute("taxonRank"));
 		assertEquals(1, match.getChildNodes("informalGroups").size());
-		assertEquals(1, match.getNode("informalGroups").getChildNodes().size());
-		assertEquals("MVL.2", match.getNode("informalGroups").getChildNodes().get(0).getName());
-		assertEquals("Nisäkkäät", match.getNode("informalGroups").getChildNodes().get(0).getAttribute("fi"));
+		assertEquals(2, match.getNode("informalGroups").getChildNodes().size()); // petoeläimet, nisäkkäät
 	}
 
 	@Test

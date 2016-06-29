@@ -9,10 +9,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
-import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
-import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.Document.Node;
@@ -25,8 +21,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,173 +53,26 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			" WHERE    (name = ? AND COALESCE(checklist, '.') = ? )              " +
 			" OR       qname = ?                                                 ";
 
-	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
-	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 1*60*60, 5000);
-	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
-	private final Cached<Qname, Set<Qname>> cachedSynonyms = new Cached<Qname, Set<Qname>>(new SynonymLoader(), 1*60*60, 5000);
 	private final TriplestoreDAO triplestoreDAO;
 	private final IucnDAO iucnDAO;
-	
+	private final CachedLiveLoadingTaxonContainer taxonContainer;
+
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO) {
 		super(config, 60 * 5, 20);
 		this.triplestoreDAO = triplestoreDAO;
 		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this);
+		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO, this);
 	}
 
 	@Override
 	public void clearCaches() {
 		super.clearCaches();
-		cachedTaxons.invalidateAll();
-		cachedChildren.invalidateAll();
-		cachedSynonyms.invalidateAll();
-	}
-
-	private class TaxonLoader implements CacheLoader<Qname, EditableTaxon> {
-		@Override
-		public EditableTaxon load(Qname qname) {
-			try {
-				Model model = triplestoreDAO.get(qname);
-				return createTaxon(model);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
-	private class ChildrenLoader implements CacheLoader<Qname, Set<Qname>> {
-		@Override
-		public Set<Qname> load(Qname taxonQname) {
-			try {
-				Set<Qname> childTaxons = new HashSet<Qname>();
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search("MX.isPartOf", taxonQname.toString());
-				for (Model model : models) {
-					EditableTaxon child = createTaxon(model);
-					cachedTaxons.put(child.getQname(), child);
-					childTaxons.add(child.getQname());
-				}
-				return childTaxons;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
-	private class SynonymLoader implements CacheLoader<Qname, Set<Qname>> {
-		@Override
-		public Set<Qname> load(Qname taxonQname) {
-			try {
-				Taxon taxon = getTaxon(taxonQname);
-				Set<Qname> synonyms = new HashSet<Qname>();
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search("MX.circumscription", taxon.getTaxonConcept().toString());
-				for (Model model : models) {
-					EditableTaxon synonymTaxon = createTaxon(model);
-					cachedTaxons.put(synonymTaxon.getQname(), synonymTaxon);
-					if (!synonymTaxon.getQname().equals(taxon.getQname())) {
-						synonyms.add(synonymTaxon.getQname());
-					}
-				}
-				return synonyms;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
+		taxonContainer.clearCaches();
 	}
 
 	@Override
 	public EditableTaxon getTaxon(Qname qname) {
-		return cachedTaxons.get(qname);
-	}
-
-	public EditableTaxon createTaxon(Model model) {
-		Qname qname = q(model.getSubject());
-		EditableTaxon taxon = new EditableTaxon(qname, this);
-		for (Statement statement : model.getStatements()) {
-			if ("MX.isPartOf".equals(statement.getPredicate().getQname())) {
-				Qname parentQname = q(statement.getObjectResource());
-				taxon.setParentQname(parentQname);
-			} else {
-				addPropertyToTaxon(taxon, statement);
-			}
-		}
-		return taxon;
-	}
-
-	private Qname q(RdfResource resource) {
-		return new Qname(resource.getQname());
-	}
-
-	private void addPropertyToTaxon(Taxon taxon, Statement statement) {
-		Qname context = statement.isForDefaultContext() ? null : q(statement.getContext());
-		Qname predicatename = q(statement.getPredicate());
-		Qname objectname = null;
-		String resourceliteral = null;
-		String langcode = null;
-
-		if (statement.isLiteralStatement()) {
-			resourceliteral = statement.getObjectLiteral().getContent();
-			langcode = statement.getObjectLiteral().getLangcode();
-			if (!given(langcode)) langcode = null;
-		} else {
-			objectname = q(statement.getObjectResource());
-		}
-
-		TripletToTaxonHandler handler = tripletToTaxonHandlers.getHandler(predicatename);
-		handler.setToTaxon(context, predicatename, objectname, resourceliteral, langcode, taxon);
-	}
-
-	@Override
-	public Collection<Taxon> getChildTaxons(Taxon taxon) {
-		List<Taxon> childTaxons = new ArrayList<Taxon>();
-		for (Qname childQname : cachedChildren.get(taxon.getQname())) {
-			childTaxons.add(getTaxon(childQname));
-		}
-		Collections.sort(childTaxons);
-		return childTaxons;
-	}
-
-	@Override
-	public Collection<Taxon> getSynonymTaxons(Taxon taxon) {
-		if (taxon.getTaxonConcept() == null) return Collections.emptyList();
-
-		List<Taxon> synonymTaxons = new ArrayList<Taxon>();
-		Set<Qname> synonyms = cachedSynonyms.get(taxon.getQname());
-		for (Qname synonym : synonyms) {
-			synonymTaxons.add(cachedTaxons.get(synonym));
-		}
-		return synonymTaxons;
-	}
-
-	@Override
-	public void invalidateTaxon(Qname qname) {
-		if (qname == null) return;
-		Taxon taxon = getTaxon(qname);
-		invalidateTaxon(taxon);		
-	}
-
-	@Override
-	public void invalidateTaxon(Taxon taxon) {
-		if (taxon == null) return;
-		synchronized (this) {
-			alreadyInvalidatedTaxonsInIsolation.clear();
-			invalidateTaxonInIsolation(taxon);
-			alreadyInvalidatedTaxonsInIsolation.clear();
-		}
-	}
-
-	private final Set<Qname> alreadyInvalidatedTaxonsInIsolation = new HashSet<>();
-
-	private void invalidateTaxonInIsolation(Taxon taxon) {
-		if (alreadyInvalidatedTaxonsInIsolation.contains(taxon.getQname())) return;
-		alreadyInvalidatedTaxonsInIsolation.add(taxon.getQname());
-		for (Taxon synonym : taxon.getSynonymTaxons()) {
-			invalidateTaxonInIsolation(synonym);
-		}
-		if (taxon.hasParent()) {
-			invalidateTaxonInIsolation(taxon.getParent());
-		}
-		cachedTaxons.invalidate(taxon.getQname());
-		cachedChildren.invalidate(taxon.getQname());
-		cachedSynonyms.invalidate(taxon.getQname());
+		return taxonContainer.getTaxon(qname);
 	}
 
 	@Override
@@ -249,6 +96,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Qname q(RdfResource resource) {
+		return new Qname(resource.getQname());
 	}
 
 	@Override
@@ -292,7 +143,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				addIfHasMatches(partialMatches, results);
 			}
 		} catch (Exception e) {
-			results.getRootNode().addAttribute("error", e.getMessage());
+			e.printStackTrace();
+			String message = e.getMessage() == null ? "" : ": " + e.getMessage();
+			results.getRootNode().addAttribute("error", e.getClass().getSimpleName() + message);
 		} finally {
 			Utils.close(con);
 		}
@@ -417,4 +270,57 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return iucnDAO;
 	}
 
+	@Override
+	public CachedLiveLoadingTaxonContainer getTaxonContainer() throws Exception {
+		return taxonContainer;
+	}
+
+	@Override
+	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception {
+		List<Taxon> matches = new ArrayList<Taxon>();
+		TransactionConnection con = null;
+		PreparedStatement p = null;
+		ResultSet rs = null;
+		try {
+			con = triplestoreDAO.openConnection();
+			if (checklist == null) {
+				p = con.prepareStatement("" +
+						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
+						" WHERE checklist IS NULL AND name = ? AND qname != ? ");
+				p.setString(1, name.toUpperCase());
+				p.setString(2, taxonQnameToIgnore.toString());
+			} else {
+				p = con.prepareStatement("" +
+						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
+						" WHERE checklist = ? AND name = ? AND qname != ? ");
+				p.setString(1, checklist.toString());
+				p.setString(2, name.toUpperCase());
+				p.setString(3, taxonQnameToIgnore.toString());
+			}
+			rs = p.executeQuery();
+			while (rs.next()) {
+				Qname matchQname = new Qname(rs.getString(1));
+				String matchScientificName = rs.getString(2);
+				String matchAuthor = rs.getString(3);
+				String matchRank = rs.getString(4);
+				Taxon match = new Taxon(matchQname, null);
+				match.setScientificName(matchScientificName);
+				match.setScientificNameAuthorship(matchAuthor);
+				if (given(matchRank)) {
+					match.setTaxonRank(new Qname(matchRank));
+				}
+				matches.add(match);
+			}
+		} finally {
+			Utils.close(p, rs, con);
+		}
+		return matches;
+	}
+
+	@Override
+	public EditableTaxon createTaxon() throws Exception {
+		Qname qname = triplestoreDAO.getSeqNextValAndAddResource("MX");
+		return new EditableTaxon(qname, taxonContainer, this);
+	}
+	
 }

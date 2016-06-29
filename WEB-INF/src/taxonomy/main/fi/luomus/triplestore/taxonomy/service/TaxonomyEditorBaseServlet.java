@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
@@ -16,6 +13,9 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
@@ -98,9 +98,8 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		return redirectTo404(res);
 	}
 
-	protected EditableTaxon createTaxonAndFetchNextId(String scientificName, TriplestoreDAO dao) throws Exception {
-		Qname qname = dao.getSeqNextValAndAddResource("MX");
-		EditableTaxon taxon = new EditableTaxon(qname, getTaxonomyDAO());
+	protected EditableTaxon createTaxon(String scientificName, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		EditableTaxon taxon = taxonomyDAO.createTaxon();
 		if (given(scientificName)) {
 			taxon.setScientificName(scientificName);
 		}

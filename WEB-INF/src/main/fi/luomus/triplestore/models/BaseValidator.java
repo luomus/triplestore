@@ -1,16 +1,13 @@
 package fi.luomus.triplestore.models;
 
 import fi.luomus.commons.reporting.ErrorReporter;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 public abstract class BaseValidator<T> {
 
-	protected final TriplestoreDAO dao;
 	protected final ErrorReporter errorReporter;
 	protected final ValidationData validationData;
 
-	public BaseValidator(TriplestoreDAO dao, ErrorReporter errorReporter) {
-		this.dao = dao;
+	public BaseValidator(ErrorReporter errorReporter) {
 		this.errorReporter = errorReporter;
 		this.validationData = new ValidationData();
 	}

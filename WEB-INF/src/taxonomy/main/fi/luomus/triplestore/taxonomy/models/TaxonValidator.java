@@ -2,15 +2,18 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.BaseValidator;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 import java.util.List;
 
 public class TaxonValidator extends BaseValidator<Taxon> {
 
-	public TaxonValidator(TriplestoreDAO dao, ErrorReporter errorReporter) {
-		super(dao, errorReporter);
+	private final ExtendedTaxonomyDAO dao;
+	
+	public TaxonValidator(ExtendedTaxonomyDAO dao, ErrorReporter errorReporter) {
+		super(errorReporter);
+		this.dao = dao;
 	}
 
 	@Override

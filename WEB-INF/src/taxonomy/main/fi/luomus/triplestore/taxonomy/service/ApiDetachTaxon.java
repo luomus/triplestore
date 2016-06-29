@@ -29,10 +29,7 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 			throw new IllegalStateException("Can not delete "+taxonQname+": It has children.");
 		}
 		
-		if (taxon.hasParent()) {
-			getTaxonomyDAO().invalidateTaxon(taxon.getParent());
-		}
-		getTaxonomyDAO().invalidateTaxon(taxon);
+		taxon.invalidate();
 		
 		getTriplestoreDAO(req).delete(new Subject(taxonQname), new Predicate("MX.isPartOf"));
 		getTriplestoreDAO(req).delete(new Subject(taxonQname), new Predicate("MX.nameAccordingTo"));

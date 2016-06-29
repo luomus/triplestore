@@ -7,6 +7,8 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.User;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +66,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		names.set("fi", nameFI);
 
 		if (createRootTaxon(createRoot)) {
-			Taxon rootTaxon = createTaxon(qname, triplestoreDAO);
+			Taxon rootTaxon = createTaxon(qname, getTaxonomyDAO(), triplestoreDAO);
 			rootTaxonQname = rootTaxon.getQname().toString();
 		}
 
@@ -110,8 +112,8 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		return "yes".equals(createRoot);
 	}
 
-	private Taxon createTaxon(Qname checklistQname, TriplestoreDAO dao) throws Exception {
-		Taxon taxon = createTaxonAndFetchNextId("Rename me!", dao);
+	private Taxon createTaxon(Qname checklistQname, ExtendedTaxonomyDAO taxonomyDAO, TriplestoreDAO dao) throws Exception {
+		EditableTaxon taxon = createTaxon("Rename me!", taxonomyDAO);
 		taxon.setChecklist(checklistQname);
 		dao.addTaxon(taxon);
 		return taxon;

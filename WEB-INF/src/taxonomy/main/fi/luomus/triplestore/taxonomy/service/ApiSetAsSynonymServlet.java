@@ -42,11 +42,13 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 		if (taxon.getChecklist() != null && !taxon.getSynonymTaxons().isEmpty()) {
 			return new ResponseData().setData("error", "Can not switch taxon to be a synonym while it itself has synonyms. Move the synonyms of this taxon first.").setViewName("api-error");
 		}
-		
-		taxonomyDAO.invalidateTaxon(taxon);
-		taxonomyDAO.invalidateTaxon(newSynonymParent);
-		taxonomyDAO.invalidateTaxon(oldParent);
 
+		taxon.invalidate();
+		newSynonymParent.invalidate();
+		if (given(oldParent)) {
+			((EditableTaxon) taxonomyDAO.getTaxon(oldParent)).invalidate();
+		}
+		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
 		if (!given(newSynonymParent.getTaxonConcept())) { // All taxons should have taxon concept, but just in case the parent doesn't have we create it
@@ -54,19 +56,19 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 			changeTaxonConcept(newSynonymParent, taxonConcept, dao);
 			newSynonymParent.setTaxonConcept(taxonConcept);
 		}
-		
+
 		Qname newTaxonConcept = newSynonymParent.getTaxonConcept();
 
 		changeTaxonConcept(taxon, newTaxonConcept, dao);
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.isPartOf"));
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.nameAccordingTo"));
-				
+
 		return apiSuccessResponse(res);
 	}
 
-	
+
 	private void changeTaxonConcept(Taxon taxon, Qname concept, TriplestoreDAO dao) throws Exception {
 		dao.store(new Subject(taxon.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(concept)));
 	}
-	
+
 }

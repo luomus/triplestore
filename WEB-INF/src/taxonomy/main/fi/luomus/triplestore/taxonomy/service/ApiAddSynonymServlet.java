@@ -6,8 +6,8 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import javax.servlet.annotation.WebServlet;
@@ -28,32 +28,27 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		String author = req.getParameter("author");
 		String rank = req.getParameter("taxonRank");
 		
-		EditableTaxon synonymParent = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(synonymParentQname));
-		
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		EditableTaxon synonymParent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(synonymParentQname));
 		checkPermissionsToAlterTaxon(synonymParent, req);
 		
-		TriplestoreDAO dao = getTriplestoreDAO(req);
-		Taxon taxon = createTaxonAndFetchNextId(scientificName, dao);
+		EditableTaxon taxon = createTaxon(scientificName, taxonomyDAO);
 		taxon.setScientificNameAuthorship(author);
 		if (given(rank)) {
 			taxon.setTaxonRank(new Qname(rank));
 		}
-				
+		
+		TriplestoreDAO dao = getTriplestoreDAO(req);
 		if (!given(synonymParent.getTaxonConcept())) {
 			Qname taxonConcept = dao.addTaxonConcept();
 			dao.store(new Subject(synonymParent.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxonConcept)));
 			synonymParent.setTaxonConcept(taxonConcept);
 		}
-		
 		taxon.setTaxonConcept(synonymParent.getTaxonConcept());
-						
 		dao.addTaxon(taxon);
+		synonymParent.invalidate();
 		
-		getTaxonomyDAO().invalidateTaxon(synonymParent.getQname());
-		
-		responseData.setData("synonymTaxon", taxon);
-		
-		return responseData;
+		return responseData.setData("synonymTaxon", taxon);
 	}
 	
 }
