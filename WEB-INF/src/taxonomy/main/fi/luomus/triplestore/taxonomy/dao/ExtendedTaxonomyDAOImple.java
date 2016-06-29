@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -322,5 +323,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		Qname qname = triplestoreDAO.getSeqNextValAndAddResource("MX");
 		return new EditableTaxon(qname, taxonContainer, this);
 	}
-	
+
+	@Override
+	public Set<String> getInformalTaxonGroupRoots() {
+		Map<String, InformalTaxonGroup> allGroups = getInformalTaxonGroups();
+		Set<String> roots = new LinkedHashSet<>(allGroups.keySet());
+		for (InformalTaxonGroup group : allGroups.values()) {
+			for (Qname subGroup : group.getSubGroups()) {
+				roots.remove(subGroup.toString());
+			}
+		}
+		return roots;
+	}
+
 }

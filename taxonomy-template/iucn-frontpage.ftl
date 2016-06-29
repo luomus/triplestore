@@ -15,21 +15,22 @@
 		</tr>
 	</thead>
 	<tbody>
-		<#list taxonGroups?values as taxonGroup>
-		<tr>
-			<td>
-				<a href="${baseURL}/iucn/group/${taxonGroup.qname}/${selectedYear}">
-					${taxonGroup.name.forLocale("fi")!""}
-				</a>
-			</td>
-			<td class="taxonGroupStat" id="${taxonGroup.qname}">
-				<@loadingSpinner "" />
-			</td>
-			<td>
-				<@editors taxonGroup.qname.toString() />
-			</td>
-			<#if user.isAdmin??><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
-		</tr>
+		<#list taxonGroupRoots as rootTaxonGroupQname>
+			<#assign taxonGroup = taxonGroups[rootTaxonGroupQname]>
+			<tr>
+				<td>
+					<a href="${baseURL}/iucn/group/${taxonGroup.qname}/${selectedYear}">
+						${taxonGroup.name.forLocale("fi")!""}
+					</a>
+				</td>
+				<td class="taxonGroupStat" id="${taxonGroup.qname}">
+					<@loadingSpinner "" />
+				</td>
+				<td>
+					<@editors taxonGroup.qname.toString() />
+				</td>
+				<#if user.isAdmin??><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
+			</tr>
 		</#list>
 	</tbody>
 </table>

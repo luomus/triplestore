@@ -1,19 +1,15 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*"})
 public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
@@ -23,32 +19,23 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
+		
 		if (req.getRequestURI().endsWith("/informalGroups")) {
-			Map<String, InformalTaxonGroup> informalGroups = getTaxonomyDAO().getInformalTaxonGroupsForceReload();
-			Set<String> roots = getRoots(informalGroups);
-			responseData.setData("informalGroups", informalGroups);
-			responseData.setData("roots", roots);
+			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload());
+			responseData.setData("roots", getTaxonomyDAO().getInformalTaxonGroupRoots());
 			return responseData.setViewName("informalGroups");
 		}
+		
 		if (addNew(req)) {
 			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalTaxonGroup());
 		}
+		
 		String qname = getQname(req);
 		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
 			return redirectTo404(res);
 		}
 		return responseData.setViewName("informalGroups-edit").setData("action", "modify").setData("group", group);
-	}
-
-	private Set<String> getRoots(Map<String, InformalTaxonGroup> informalGroups) {
-		Set<String> allGroups = new LinkedHashSet<>(informalGroups.keySet());
-		for (InformalTaxonGroup group : informalGroups.values()) {
-			for (Qname subGroup : group.getSubGroups()) {
-				allGroups.remove(subGroup.toString());
-			}
-		}
-		return allGroups;
 	}
 
 	private boolean addNew(HttpServletRequest req) {

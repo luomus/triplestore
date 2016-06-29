@@ -19,6 +19,7 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
+import fi.luomus.commons.utils.URIBuilder;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -31,7 +32,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
-import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,18 +39,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
-	
+
 	private static final String EDIT_HISTORY_SQL = "" + 
 			" SELECT 	notesliteral.RESOURCELITERAL, userqname.RESOURCENAME " + 
 			" FROM 		"+SCHEMA+".rdf_statement_history notes " + 
@@ -65,15 +63,10 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
 	private static final String FI = "fi";
-	private static final String IS_SPECIES = "isSpecies";
-	private static final String CHECKLIST = "checklist";
 	private static final String QNAME = "qname";
 	private static final String CHILDREN = "children";
-	private static final String ROOT = "root";
-	private static final String NAME_ACCORDING_TO = "MX.nameAccordingTo";
-	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
 	private static final String RDF_TYPE = "rdf:type";
-	private static final String MASTER_CHECKLIST_QNAME = "MR.1";
+	private static final String BIOTA_QNAME = "MX.37600";
 
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
@@ -153,75 +146,68 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Object LOCK = new Object();
 
 	public List<String> loadSpeciesOfGroup(String groupQname) throws Exception {
-		if (!(groupQname.equals("MVL.27") || groupQname.equals("MVL.1") || groupQname.equals("MVL.26"))) return Collections.emptyList(); //XXX
-		Set<String> rootTaxonsOfGroup = getRootTaxonsOfGroup(groupQname);
-		List<String> speciesOfGroup = new ArrayList<>();
 		HttpClientService client = null;
 		try {
 			client = new HttpClientService();
-			for (String rootTaxonQname : rootTaxonsOfGroup) {
-				addSpeciesOfTaxon(speciesOfGroup, client, rootTaxonQname);
-			}
+			return loadSpeciesOfGroup(groupQname, client);
 		} finally {
 			if (client !=  null) client.close();
+		}
+	}
+
+	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
+		List<String> speciesOfGroup = new ArrayList<>();
+		synchronized (LOCK) { // To prevent too many requests at once
+			System.out.println("Loading finnish species for informal group " + groupQname);
+			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL")+"/" + BIOTA_QNAME + "/finnish/species");
+			uri.addParameter("selectedFields", "qname");
+			uri.addParameter("informalGroupFilters", groupQname);
+			JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
+			for (JSONObject species : response.getArray(CHILDREN).iterateAsObject()) {
+				speciesOfGroup.add(getQname(species));
+			}
 		}
 		return speciesOfGroup;
 	}
 
-	private Set<String> getRootTaxonsOfGroup(String groupQname) throws Exception {
-		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).predicate(IS_PART_OF_INFORMAL_TAXON_GROUP).objectresource(groupQname);
-		Set<String> rootTaxonsOfGroup = new HashSet<>();
-		for (Model m : triplestoreDAO.getSearchDAO().search(searchParams)) {
-			if (!m.hasStatements(NAME_ACCORDING_TO)) continue;
-			String checklist = m.getStatements(NAME_ACCORDING_TO).get(0).getObjectResource().getQname();
-			if (fromMasterChecklist(checklist)) {
-				rootTaxonsOfGroup.add(m.getSubject().getQname());
-			}
-		}
-		return rootTaxonsOfGroup;
-	}
-
-	private boolean fromMasterChecklist(String checklistQname) {
-		return MASTER_CHECKLIST_QNAME.equals(checklistQname);
-	}
-
 	@Override
 	public List<String> getFinnishSpecies(String taxonQname) throws Exception {
-		List<String> list = new ArrayList<>();
+		Taxon root = taxonomyDAO.getTaxon(new Qname(taxonQname));
+		if (!root.hasChildren()) {
+			if (root.isFinnishSpecies()) {
+				return Utils.list(root.getQname().toString());
+			}
+			return Collections.emptyList();
+		}
+
 		HttpClientService client = null;
 		try {
 			client = new HttpClientService();
-			addSpeciesOfTaxon(list, client, taxonQname);
+			List<String> species = getFinnishSpecies(taxonQname, client);
+			if (root.isFinnishSpecies()) {
+				species.add(root.getQname().toString());
+			}
+			return species;
 		} finally {
 			if (client != null) client.close();
 		}
-		return list;
 	}
-	private void addSpeciesOfTaxon(List<String> speciesOfGroup, HttpClientService client, String rootTaxonQname) throws Exception {
-		System.out.println("Loading finnish species for " + rootTaxonQname);
-		synchronized (LOCK) {
-			URI uri = new URI(config.get("TaxonomyAPIURL")+"/" + rootTaxonQname + "/finnish/species?selectedFields=qname,checklist,isSpecies");
-			JSONObject response = client.contentAsJson(new HttpGet(uri));
-			JSONObject root = response.getObject(ROOT);
-			if (validSpecies(root)) {
-				speciesOfGroup.add(getQname(root));
-			}
-			for (JSONObject species : response.getArray(CHILDREN).iterateAsObject()) {
-				if (validSpecies(species)) {
-					speciesOfGroup.add(getQname(species));
-				}
+	private List<String> getFinnishSpecies(String taxonQname, HttpClientService client) throws Exception {
+		List<String> species = new ArrayList<>();
+		synchronized (LOCK) { // To prevent too many request going out at once
+			System.out.println("Loading finnish species for " + taxonQname);
+			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL")+"/" + taxonQname + "/finnish/species");
+			uri.addParameter("selectedFields", "qname");
+			JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
+			for (JSONObject child : response.getArray(CHILDREN).iterateAsObject()) {
+				species.add(getQname(child));
 			}
 		}
+		return species;
 	}
 
 	private String getQname(JSONObject taxon) {
 		return taxon.getObject(QNAME).getString(QNAME);
-	}
-
-	private boolean validSpecies(JSONObject taxon) {
-		String checklistQname = taxon.getObject(CHECKLIST).getString(QNAME);
-		boolean isSpecies = taxon.getBoolean(IS_SPECIES);
-		return isSpecies && fromMasterChecklist(checklistQname);
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {

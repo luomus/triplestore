@@ -6,6 +6,7 @@ import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
@@ -29,5 +30,7 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	 * @throws Exception 
 	 */
 	public EditableTaxon createTaxon() throws Exception;
+
+	public Set<String> getInformalTaxonGroupRoots();
 
 }
