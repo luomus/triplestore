@@ -1,14 +1,14 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class EditableTaxon extends Taxon {
 
@@ -21,8 +21,6 @@ public class EditableTaxon extends Taxon {
 	private final List<Qname> explicitlySetEditors = new ArrayList<>();
 	private final List<Qname> explicitlySetExperts = new ArrayList<>();
 	private final List<Qname> explicitlySetTaxonGroups = new ArrayList<>();
-	private Qname parent;
-	private Qname taxonConcept;
 	private Qname checklistStatus;
 	private Occurrences occurrences;
 
@@ -30,24 +28,6 @@ public class EditableTaxon extends Taxon {
 		super(qname, taxonContainer);
 		this.taxonomyDAO = taxonomyDao;
 		this.taxonContainer = taxonContainer;
-	}
-
-	public void setParentQname(Qname parent) {
-		this.parent = parent;
-	}
-
-	@Override
-	public Qname getParentQname() {
-		return parent;
-	}
-
-	public void setTaxonConcept(Qname taxonConcept) {
-		this.taxonConcept = taxonConcept;
-	}
-
-	@Override
-	public Qname getTaxonConcept() {
-		return taxonConcept;
 	}
 
 	@Override

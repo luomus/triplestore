@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -10,10 +14,6 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/setAsSynonym/*"})
 public class ApiSetAsSynonymServlet extends ApiBaseServlet {
@@ -48,16 +48,16 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 		if (given(oldParent)) {
 			((EditableTaxon) taxonomyDAO.getTaxon(oldParent)).invalidate();
 		}
-		
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
-		if (!given(newSynonymParent.getTaxonConcept())) { // All taxons should have taxon concept, but just in case the parent doesn't have we create it
+		if (!given(newSynonymParent.getTaxonConceptQname())) { // All taxons should have taxon concept, but just in case the parent doesn't have we create it
 			Qname taxonConcept = dao.addTaxonConcept();
 			changeTaxonConcept(newSynonymParent, taxonConcept, dao);
-			newSynonymParent.setTaxonConcept(taxonConcept);
+			newSynonymParent.setTaxonConceptQname(taxonConcept);
 		}
 
-		Qname newTaxonConcept = newSynonymParent.getTaxonConcept();
+		Qname newTaxonConcept = newSynonymParent.getTaxonConceptQname();
 
 		changeTaxonConcept(taxon, newTaxonConcept, dao);
 		dao.delete(new Subject(taxon.getQname()), new Predicate("MX.isPartOf"));

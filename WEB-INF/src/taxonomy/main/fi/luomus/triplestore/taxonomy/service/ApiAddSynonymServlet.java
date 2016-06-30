@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -9,10 +13,6 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/addsynonym/*"})
 public class ApiAddSynonymServlet extends ApiBaseServlet {
@@ -39,12 +39,12 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		}
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
-		if (!given(synonymParent.getTaxonConcept())) {
+		if (!given(synonymParent.getTaxonConceptQname())) {
 			Qname taxonConcept = dao.addTaxonConcept();
 			dao.store(new Subject(synonymParent.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxonConcept)));
-			synonymParent.setTaxonConcept(taxonConcept);
+			synonymParent.setTaxonConceptQname(taxonConcept);
 		}
-		taxon.setTaxonConcept(synonymParent.getTaxonConcept());
+		taxon.setTaxonConceptQname(synonymParent.getTaxonConceptQname());
 		dao.addTaxon(taxon);
 		synonymParent.invalidate();
 		

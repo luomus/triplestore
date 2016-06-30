@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -16,10 +20,6 @@ import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private static final Object LOCK = new Object();
@@ -27,7 +27,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 1*60*60, 5000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
-	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConcepLoader(), 1*60*60, 5000);
+	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConceptLoader(), 1*60*60, 5000);
 	private final TriplestoreDAO triplestoreDAO;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
 
@@ -57,7 +57,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				Qname parentQname = q(statement.getObjectResource());
 				taxon.setParentQname(parentQname);
 			} else if ("MX.circumscription".equals(statement.getPredicate().getQname())) {
-				taxon.setTaxonConcept(q(statement.getObjectResource()));
+				taxon.setTaxonConceptQname(q(statement.getObjectResource()));
 			} else {
 				addPropertyToTaxon(taxon, statement);
 			}
@@ -110,7 +110,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
-	private class TaxonConcepLoader implements CacheLoader<Qname, TaxonConcept> {
+	private class TaxonConceptLoader implements CacheLoader<Qname, TaxonConcept> {
 		@Override
 		public TaxonConcept load(Qname conceptQname) {
 			try {
@@ -144,18 +144,11 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	public Set<Qname> getChildren(Qname parentId) {
 		return cachedChildren.get(parentId);
 	}
-
+	
 	@Override
-	public Qname getParent(Qname taxonId) {
-		return getTaxon(taxonId).getParentQname();
-	}
-
-	@Override
-	public TaxonConcept getTaxonConcept(Qname taxonId) {
-		EditableTaxon taxon = getTaxon(taxonId);
-		Qname taxonConceptId = taxon.getTaxonConcept();
-		if (!given(taxonConceptId)) return null;
-		return cachedTaxonConcepts.get(taxonConceptId);
+	public TaxonConcept getTaxonConcept(Qname taxonConceptQname) {
+		if (!given(taxonConceptQname)) return null;
+		return cachedTaxonConcepts.get(taxonConceptQname);
 	}
 
 	private boolean given(Qname qname) {
@@ -215,7 +208,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 		cachedTaxons.invalidate(taxon.getQname());
 		cachedChildren.invalidate(taxon.getQname());
-		cachedTaxonConcepts.invalidate(taxon.getTaxonConcept());
+		cachedTaxonConcepts.invalidate(taxon.getTaxonConceptQname());
 	}
 
 }

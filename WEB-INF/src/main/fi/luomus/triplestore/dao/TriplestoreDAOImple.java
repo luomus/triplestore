@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -29,17 +40,6 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -336,10 +336,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven("MX.nameAccordingTo", taxon.getChecklist());
 		model.addStatementIfObjectGiven("MX.isPartOf", taxon.getParentQname());
 
-		if (!given(taxon.getTaxonConcept())) {
-			taxon.setTaxonConcept(this.addTaxonConcept());
+		if (!given(taxon.getTaxonConceptQname())) {
+			taxon.setTaxonConceptQname(this.addTaxonConcept());
 		}
-		model.addStatement(new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxon.getTaxonConcept())));
+		model.addStatement(new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxon.getTaxonConceptQname())));
 
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate("MZ.createdAtTimestamp"), new ObjectLiteral(createdAt)));
