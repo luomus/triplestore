@@ -271,7 +271,11 @@ span.indent { display: inline-block; }
 	font-size: 9px;
 }
 
-
+.inheritedGroups li {
+  max-width: 350px;
+  white-space: nowrap;
+  overflow: hidden;
+}
 
 
 

@@ -80,6 +80,13 @@
 		</table>
 		<div></div>
 	<@portletFooter />
+	
+	<@portletHeader "Administrative statuses" "" "reloadAfterSaveSection" />
+		<#list taxon.administrativeStatuses as status>
+			<@labeledSelect "MX.hasAdminStatus" status />
+		</#list>
+		<@labeledSelect "MX.hasAdminStatus" "" />
+	<@portletFooter />	 
 		
 </div>
 
@@ -155,13 +162,12 @@
 		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
 		
 		<div></div>
-		
 	<@portletFooter />				
 
 	<@portletHeader "Informal groups" "" "reloadAfterSaveSection" />
 		<#if taxon.informalTaxonGroups?has_content>
 			<label>Inherited groups</label>
-			<ul>
+			<ul class="inheritedGroups">
 			<#list taxon.informalTaxonGroups as groupQnameString>
 				<li>${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</li>
 			</#list>
@@ -186,13 +192,6 @@
 		</select>
 	<@portletFooter />				
 
-	<#if taxon.isSpecies()>
-	<@portletHeader "Finnish Red list statuses (species only)" />
-		<@labeledSelect "MX.redListStatus2010Finland" />
-		<@labeledSelect "MX.redListStatus2015Finland" />
-	<@portletFooter />
-	</#if>
-	
 </div>
 
 <div class="column">
@@ -235,6 +234,25 @@
 		</table>
 	<@portletFooter />	
 
+	<@portletHeader "Trade names" "" "multirowSection" />
+		<table>
+			<tr>
+				<th>Name</th> 
+				<th>Language</th>
+			</tr>
+			<#list taxon.tradeNamesWithLangCodes as tradeName>
+			<tr>
+				<td><@input "MX.tradeName___${tradeName.langcode}" "off" tradeName.name /></td>
+				<td><@languageSelector tradeName.langcode/></td>
+			</tr>
+			</#list>
+			<tr>
+				<td><@input "MX.tradeName___fi" "off" "" /></td>
+				<td><@languageSelector "fi" /></td>
+			</tr>
+		</table>
+	<@portletFooter />
+	
 	<@portletHeader "Misapplied scientific names" "" "multirowSection" />
 		<table>
 			<tr>
@@ -253,87 +271,24 @@
 		<@textarea "MX.misappliedNameNotes" />
 	<@portletFooter />	
 
-
 	<#if user.isAdmin()>
-		<@portletHeader "Admin only" "initiallyClosed" />
-			<p class="info">Applicable for taxon rank order or a higher level</p>
-			<@labeledSelect "MX.checklistStatus" />
-			<@labeledSelect "MX.higherTaxaStatus" />
-			<@labeledSelect "MX.finnishSpeciesTaggingStatus" />
-			<hr />
-			<@labeledInput "MX.customReportFormLink" "on" taxon.adminContent.getDefaultContextText("MX.customReportFormLink") />
-			<hr />
-			<label>External links</label>
-			<table>
-			<#list taxon.externalLinks as link>
-				<tr>
-					<td><@input "MX.externalLinkURL___${link.langcode}" "on" link.toString()!"" /></td>
-					<td><@languageSelector link.langcode /></td>
-				</tr>
+	<@portletHeader "AKA names (Admin only)" "" "multirowSection" />
+		<table>
+			<tr>
+				<th>Name</th> 
+			</tr>
+			<#list taxon.alsoKnownAsNames as name>
+			<tr>
+				<td><@input "MX.alsoKnownAs" "off" name /></td>
+			</tr>
 			</#list>
-				<tr>
-					<td><@input "MX.externalLinkURL___fi" "on" "" /></td>
-					<td><@languageSelector "fi" /></td>
-				</tr>
-			</table>
-		<@portletFooter />	
-	</#if>
-	
-  <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
-	<@portletHeader "Editors and Experts" />
-  <#else>
-	<@portletHeader "Editors and Experts" "initiallyClosed" />
-  </#if>
-		<div class="info">
-			Here you can explicitly set or change the editors and experts of this taxon. This will affect this taxon and all child taxons. However, if a child taxon 
-			has a different explicitly set experts or editors, that will override what is set here.
-		</div>
-	
-		<p><label>Editors</label></p>
-		<#list taxon.explicitlySetEditors as editorQname>
-			<p>
-			<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-				<option value=""></option>
-				<#list persons?keys as personQnameString>
-					<option value="${personQnameString}" <#if same(editorQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
-				</#list>
-			</select>
-			</p>
-		</#list>
-		<p>
-		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-		</p>
-		
-		<p><label>Experts</label></p>
-		<#list taxon.explicitlySetExperts as expertQname>
-			<p>
-			<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-				<option value=""></option>
-				<#list persons?keys as personQnameString>
-					<option value="${personQnameString}" <#if same(expertQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
-				</#list>
-			</select>
-			</p>
-		</#list>
-		<p>
-		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-		</p>
-		
-		<div class="info">
-			Note that after saving the changes you must close and re-open the affected branches in the taxonomy tree to be able to see the changes.  
-		</div>
+			<tr>
+				<td><@input "MX.alsoKnownAs" "off" "" /></td>
+			</tr>
+		</table>
 	<@portletFooter />	
-	
+	</#if>
+		
 </div>
 
 <div class="clear"></div>
@@ -392,6 +347,95 @@
 	
 </div>
 
+<div class="column">
+	<#if user.isAdmin()>
+		<@portletHeader "Admin only" "initiallyClosed" />
+			<@labeledSelect "MX.secureLevel" />
+			<@labeledSelect "MX.breedingSecureLevel" />
+			<@labeledSelect "MX.winteringSecureLevel" />
+			<@labeledSelect "MX.natureAreaSecureLevel" />
+			
+			<hr />
+			<p class="info">Applicable for taxon rank order or a higher level</p>
+			<@labeledSelect "MX.checklistStatus" />
+			<@labeledSelect "MX.higherTaxaStatus" />
+			<@labeledSelect "MX.finnishSpeciesTaggingStatus" />
+			<hr />
+			<@labeledInput "MX.customReportFormLink" "on" taxon.adminContent.getDefaultContextText("MX.customReportFormLink") />
+			<hr />
+			<label>External links</label>
+			<table>
+			<#list taxon.externalLinks as link>
+				<tr>
+					<td><@input "MX.externalLinkURL___${link.langcode}" "on" link.toString()!"" /></td>
+					<td><@languageSelector link.langcode /></td>
+				</tr>
+			</#list>
+				<tr>
+					<td><@input "MX.externalLinkURL___fi" "on" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</table>
+		<@portletFooter />	
+	</#if>
+	
+</div>
+<div class="column">
+  <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
+	<@portletHeader "Editors and Experts" />
+  <#else>
+	<@portletHeader "Editors and Experts" "initiallyClosed" />
+  </#if>
+		<div class="info">
+			Here you can explicitly set or change the editors and experts of this taxon. This will affect this taxon and all child taxons. However, if a child taxon 
+			has a different explicitly set experts or editors, that will override what is set here.
+		</div>
+	
+		<p><label>Editors</label></p>
+		<#list taxon.explicitlySetEditors as editorQname>
+			<p>
+			<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+				<option value=""></option>
+				<#list persons?keys as personQnameString>
+					<option value="${personQnameString}" <#if same(editorQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+				</#list>
+			</select>
+			</p>
+		</#list>
+		<p>
+		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
+		</p>
+		
+		<p><label>Experts</label></p>
+		<#list taxon.explicitlySetExperts as expertQname>
+			<p>
+			<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+				<option value=""></option>
+				<#list persons?keys as personQnameString>
+					<option value="${personQnameString}" <#if same(expertQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+				</#list>
+			</select>
+			</p>
+		</#list>
+		<p>
+		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
+		</p>
+		
+		<div class="info">
+			Note that after saving the changes you must close and re-open the affected branches in the taxonomy tree to be able to see the changes.  
+		</div>
+	<@portletFooter />	
+</div>
 
 <div class="column">
 
