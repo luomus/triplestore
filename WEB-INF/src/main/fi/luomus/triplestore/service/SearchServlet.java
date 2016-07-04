@@ -1,13 +1,9 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.XMLWriter;
-import fi.luomus.triplestore.dao.SearchParams;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.json.XML;
+
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.XMLWriter;
+import fi.luomus.triplestore.dao.SearchParams;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 @WebServlet(urlPatterns = {"/search/*"})
 public class SearchServlet extends ApiServlet {
@@ -25,11 +28,11 @@ public class SearchServlet extends ApiServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		String[] subjects = req.getParameterValues("subject");
-		String[] predicates = req.getParameterValues("predicate");
-		String[] objects = req.getParameterValues("object");
-		String[] objectresources = req.getParameterValues("objectresource");
-		String[] objectliterals = req.getParameterValues("objectliteral");
+		Set<String> subjects = getMultiParam("subject", req);
+		Set<String> predicates = getMultiParam("predicate", req);
+		Set<String> objects = getMultiParam("object", req);
+		Set<String> objectresources = getMultiParam("objectresource", req);
+		Set<String> objectliterals = getMultiParam("objectliteral", req);
 		String type = req.getParameter("type");
 
 		TriplestoreDAO dao = getTriplestoreDAO();
@@ -59,6 +62,23 @@ public class SearchServlet extends ApiServlet {
 		}
 	}
 
+	protected Set<String> getMultiParam(String fieldName, HttpServletRequest req) {
+		if (req.getParameter(fieldName) == null) return null;
+		Set<String> fields = new HashSet<>();
+		for (String param : req.getParameterValues(fieldName)) {
+			param = param.trim();
+			if (!given(param)) continue;
+			for (String paramPart : param.split(Pattern.quote(","))) {
+				paramPart = paramPart.trim();
+				if (given(paramPart)) {
+					fields.add(paramPart);
+				}
+			}
+		}
+		if (fields.isEmpty()) return null;
+		return fields;
+	}
+	
 	private String count(SearchParams searchParams, Format format, TriplestoreDAO dao) throws Exception {
 		int count = dao.getSearchDAO().count(searchParams);
 		if (format == Format.JSON) {
@@ -109,9 +129,9 @@ public class SearchServlet extends ApiServlet {
 		}
 	}
 
-	private boolean noneGiven(String[] values) {
+	private boolean noneGiven(Set<String> values) {
 		if (values == null) return true;
-		if (values.length == 0) return true;
+		if (values.isEmpty()) return true;
 		for (String v : values) {
 			if (!notGiven(v)) return false;
 		}

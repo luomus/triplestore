@@ -1,14 +1,14 @@
 package fi.luomus.triplestore.dao;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SearchParams {
-	private final List<String> subjects = new ArrayList<>();
-	private final List<String> predicates = new ArrayList<>();
-	private final List<String> objects = new ArrayList<>();
-	private final List<String> objectresources = new ArrayList<>();
-	private final List<String> objectliterals = new ArrayList<>();
+	private final Set<String> subjects = new HashSet<>();
+	private final Set<String> predicates = new HashSet<>();
+	private final Set<String> objects = new HashSet<>();
+	private final Set<String> objectresources = new HashSet<>();
+	private final Set<String> objectliterals = new HashSet<>();
 	private String type;
 	private final int limit;
 	private final int offset;
@@ -20,7 +20,7 @@ public class SearchParams {
 		subjects.add(qname);
 		return this;
 	}
-	public SearchParams subjects(String[] qnames) {
+	public SearchParams subjects(Set<String> qnames) {
 		addTo(subjects, qnames);
 		return this;
 	}
@@ -28,7 +28,7 @@ public class SearchParams {
 		predicates.add(qname);
 		return this;
 	}
-	public SearchParams predicates(String[] qnames) {
+	public SearchParams predicates(Set<String> qnames) {
 		addTo(predicates, qnames);
 		return this;
 	}
@@ -36,7 +36,7 @@ public class SearchParams {
 		objects.add(qnameOrLiteral);
 		return this;
 	}
-	public SearchParams objects(String[] qnames) {
+	public SearchParams objects(Set<String> qnames) {
 		addTo(objects, qnames);
 		return this;
 	}
@@ -44,7 +44,7 @@ public class SearchParams {
 		objectresources.add(qname);
 		return this;
 	}
-	public SearchParams objectresources(String[] qnames) {
+	public SearchParams objectresources(Set<String> qnames) {
 		addTo(objectresources, qnames);
 		return this;
 	}
@@ -52,7 +52,7 @@ public class SearchParams {
 		objectliterals.add(literal);
 		return this;
 	}
-	public SearchParams objectliterals(String[] literals) {
+	public SearchParams objectliterals(Set<String> literals) {
 		addTo(objectliterals, literals);
 		return this;
 	}
@@ -60,25 +60,23 @@ public class SearchParams {
 		this.type = qname;
 		return this;
 	}
-	private void addTo(List<String> list, String[] qnames) {
-		if (qnames == null) return;
-		for (String qname : qnames) {
-			list.add(qname);
-		}
+	private void addTo(Set<String> allValues, Set<String> newValues) {
+		if (newValues == null) return;
+		allValues.addAll(newValues);
 	}
-	public List<String> getSubjects() {
+	public Set<String> getSubjects() {
 		return subjects;
 	}
-	public List<String> getPredicates() {
+	public Set<String> getPredicates() {
 		return predicates;
 	}
-	public List<String> getObjects() {
+	public Set<String> getObjects() {
 		return objects;
 	}
-	public List<String> getObjectresources() {
+	public Set<String> getObjectresources() {
 		return objectresources;
 	}
-	public List<String> getObjectliterals() {
+	public Set<String> getObjectliterals() {
 		return objectliterals;
 	}
 	public String getType() {

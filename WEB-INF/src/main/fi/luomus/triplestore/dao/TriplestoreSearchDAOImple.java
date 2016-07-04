@@ -1,14 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.db.connectivity.TransactionConnection;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +10,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 
 public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
@@ -108,7 +108,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		values.add(type);
 	}
 
-	private void objectliterals(List<String> literals, List<String> values, StringBuilder query) {
+	private void objectliterals(Set<String> literals, List<String> values, StringBuilder query) {
 		if (literals.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String literal : literals) {
@@ -123,7 +123,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void objectresources(List<String> resources, List<String> values, StringBuilder query) {
+	private void objectresources(Set<String> resources, List<String> values, StringBuilder query) {
 		if (resources.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String qname : resources) {
@@ -138,7 +138,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void objects(List<String> resourcesOrLiterals, List<String> values, StringBuilder query) {
+	private void objects(Set<String> resourcesOrLiterals, List<String> values, StringBuilder query) {
 		if (resourcesOrLiterals.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String resourceOrLiteral : resourcesOrLiterals) {
@@ -160,7 +160,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void predicates(List<String> predicates, List<String> values, StringBuilder query) {
+	private void predicates(Set<String> predicates, List<String> values, StringBuilder query) {
 		if (predicates.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String predicate : predicates) {
@@ -174,7 +174,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void subjects(List<String> subjects, List<String> values, StringBuilder query) {
+	private void subjects(Set<String> subjects, List<String> values, StringBuilder query) {
 		if (subjects.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
 		for (String subject : subjects) {
