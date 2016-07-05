@@ -1,14 +1,11 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
-import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 public class EditableTaxon extends Taxon {
 
@@ -16,64 +13,16 @@ public class EditableTaxon extends Taxon {
 	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 
 
-	private final ExtendedTaxonomyDAO taxonomyDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
-	private final List<Qname> explicitlySetEditors = new ArrayList<>();
-	private final List<Qname> explicitlySetExperts = new ArrayList<>();
-	private final List<Qname> explicitlySetTaxonGroups = new ArrayList<>();
-	private Qname checklistStatus;
-	private Occurrences occurrences;
 
-	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer, ExtendedTaxonomyDAO taxonomyDao) {
+	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer) {
 		super(qname, taxonContainer);
-		this.taxonomyDAO = taxonomyDao;
 		this.taxonContainer = taxonContainer;
 	}
 
 	@Override
 	public int getCountOfSpecies() {
 		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Taxon setChecklistStatus(Qname checklistStatus) {
-		this.checklistStatus = checklistStatus;
-		return this;
-	}
-
-	@Override
-	public Qname getChecklistStatus() {
-		return checklistStatus;
-	}
-
-	@Override
-	public Taxon addExpert(Qname personQname) {
-		this.explicitlySetExperts.add(personQname);
-		return super.addExpert(personQname);
-	}
-
-	@Override
-	public Taxon addEditor(Qname personQname) {
-		this.explicitlySetEditors.add(personQname);
-		return super.addEditor(personQname);
-	}
-
-	public List<Qname> getExplicitlySetEditors() {
-		return this.explicitlySetEditors;
-	}
-
-	public List<Qname> getExplicitlySetExperts() {
-		return this.explicitlySetExperts;
-	}
-
-	@Override
-	public Taxon addInformalTaxonGroup(Qname groupQname) {
-		explicitlySetTaxonGroups.add(groupQname);
-		return super.addInformalTaxonGroup(groupQname);
-	}
-
-	public List<Qname> getExplicitlySetInformalTaxonGroups() {
-		return this.explicitlySetTaxonGroups;
 	}
 
 	public boolean allowsAlterationsBy(User user) {
@@ -97,7 +46,7 @@ public class EditableTaxon extends Taxon {
 		if (this.getChecklist() != null) {
 			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
 		}
-		for (Taxon synonym : this.getSynonymTaxons()) {
+		for (Taxon synonym : this.getSynonyms()) {
 			if (MASTER_CHECKLIST.equals(synonym.getChecklist())) { // This taxon is used in the master checklist as a synonym
 				if (allowsAlterationForUserDirectly(user, synonym)) {
 					return true; // User has permissions to the master checklist taxon, so allow to edit this taxon
@@ -108,7 +57,7 @@ public class EditableTaxon extends Taxon {
 
 		// This taxon is not from any checklist and not used in the master checklist as a synonym: 
 		// If this user has edit permissions to one of the taxons that are a synonym of this taxon, allow to edit this taxon
-		for (Taxon synonym : this.getSynonymTaxons()) {
+		for (Taxon synonym : this.getSynonyms()) {
 			if (allowsAlterationForUserDirectly(user, synonym)) {
 				return true; // User has permissions to the edit one of the synonyms of this taxon, allow to edit this
 			}
@@ -121,22 +70,8 @@ public class EditableTaxon extends Taxon {
 		return allowsAlterationForUserDirectly(user, taxon.getEditors());
 	}
 
-	private boolean allowsAlterationForUserDirectly(User user, List<Qname> editors) {
-		for (Qname editor : editors) {
-			if (editor.equals(user.getQname())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public Occurrences getOccurrences() {
-		if (occurrences == null) {
-			occurrences = new Occurrences(getQname());
-			taxonomyDAO.addOccurrences(this);
-		}
-		return occurrences;
+	private boolean allowsAlterationForUserDirectly(User user, Set<Qname> editors) {
+		return editors.contains(user.getQname());
 	}
 
 	public void invalidate() {

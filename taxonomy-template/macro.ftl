@@ -7,7 +7,7 @@
 	<#return value?string("true","false")>
 </#function>
 
-<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.getVernacularName("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
+<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
 <#macro printEditorExpert taxon><@printEditorExpertSpecific taxon.editors taxon.experts /></#macro>
 
@@ -27,7 +27,7 @@
 <#macro taxonChildsTools parentTaxon><@compress single_line=true>
 	<div class="taxonChildTools">
 		<div>
-			<h3>Children of ${parentTaxon.scientificName!parentTaxon.getVernacularName("en")!parentTaxon.qname}</h3>
+			<h3>Children of ${parentTaxon.scientificName!parentTaxon.vernacularName.forLocale("en")!parentTaxon.qname}</h3>
 			<button class="closeTaxonChildsButton" title="Close" onclick="collapseTaxonByCloseButton(this)">&#215;</button>
 			<#if parentTaxon.allowsAlterationsBy(user)>
 				<button class="enableSortingButton" onclick="enableSorting(this);">Enable sorting</button>
@@ -56,7 +56,7 @@
 			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> 
 			
 			<@printScientificNameAndAuthor taxon />
-			<span class="vernacularNameFI">${taxon.getVernacularName("fi")!""}</span>
+			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			
 			<#if additionalClass == "rootTaxon">
 				<div class="taxonEditorExpert">
@@ -86,12 +86,12 @@
 				<button class="treePlusMinusSign taxonToolButton" onclick="treePlusMinusSignClick(this);">
 					<span class="ui-icon ui-icon-plus"></span>
 				</button>
-				<span class="taxonChildCount">(${taxon.childTaxons?size})</span>
+				<span class="taxonChildCount">(${taxon.children?size})</span>
 			</div>
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
-				<#list taxon.synonymTaxons as synonymTaxon>	 
+				<#list taxon.synonyms as synonymTaxon>	 
 					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>
 				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add synonym</button></#if>

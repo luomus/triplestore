@@ -1,13 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperty;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +9,14 @@ import java.util.Set;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/taxon-descriptions/*"})
 public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
@@ -78,11 +78,12 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	private boolean hasContent(Taxon taxon, List<RdfProperty> descriptionVariables) {
 		for (RdfProperty descriptionVariable : descriptionVariables) {
 			String property = descriptionVariable.getQname().toString();
-			if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "fi"))) {
+			
+			if (given(taxon.getDescriptions().getDefaultContext().getText(property, "fi"))) {
 				return true;
-			} else if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "sv"))) {
+			} else if (given(taxon.getDescriptions().getDefaultContext().getText(property, "sv"))) {
 				return true;
-			} else if (given(taxon.getBasicDescriptionTexts().getDefaultContextText(property, "en"))) {
+			} else if (given(taxon.getDescriptions().getDefaultContext().getText(property, "en"))) {
 				return true;
 			}
 		}

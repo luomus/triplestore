@@ -49,7 +49,7 @@
 			<tr>
 				<th>Select publications</th> 
 			</tr>
-			<#list taxon.getOriginalPublicationsSortedByPublication(publications) as publication>
+			<#list taxon.explicitlySetOriginalPublications as publication>
 			<tr>
 				<td>
 					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> >
@@ -100,15 +100,15 @@
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___fi">FI</label> </td>
-				<td> <@input "MX.vernacularName___fi" "off" taxon.getVernacularName("fi") /> </td>
+				<td> <@input "MX.vernacularName___fi" "off" taxon.vernacularName.forLocale("fi")!"" /> </td>
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___sv">SV</label> </td>
-				<td> <@input "MX.vernacularName___sv" "off" taxon.getVernacularName("sv") /> </td>
+				<td> <@input "MX.vernacularName___sv" "off" taxon.vernacularName.forLocale("sv")!"" /> </td>
 			</tr>
 			<tr>
 				<td> <label for="vernacularName___en">EN</label> </td>
-				<td> <@input "MX.vernacularName___en" "off" taxon.getVernacularName("en") /> </td>
+				<td> <@input "MX.vernacularName___en" "off" taxon.vernacularName.forLocale("en")!"" /> </td>
 			</tr>
 		</table>
 	<@portletFooter />	
@@ -127,7 +127,7 @@
 			<tr>
 				<th>Select publication</th> 
 			</tr>
-			<#list taxon.getOccurrenceInFinlandPublicationsSortedByPublication(publications) as publication>
+			<#list taxon.explicitlySetOccurrenceInFinlandPublications as publication>
 			<tr>
 				<td>
 					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
@@ -202,11 +202,13 @@
 				<th>Name</th> 
 				<th>Language</th>
 			</tr>
-			<#list taxon.alternativeVernacularNamesWithLangCodes as alternativeVernaculaName>
-			<tr>
-				<td><@input "MX.alternativeVernacularName___${alternativeVernaculaName.langcode}" "off" alternativeVernaculaName.name /></td>
-				<td><@languageSelector alternativeVernaculaName.langcode/></td>
-			</tr>
+			<#list ["fi", "sv", "en"] as localeSelector>
+				<#list taxon.alternativeVernacularNames.forLocale(localeSelector) as alternativeVernaculaName>
+					<tr>
+						<td><@input "MX.alternativeVernacularName___${localeSelector}" "off" alternativeVernaculaName /></td>
+						<td><@languageSelector localeSelector /></td>
+					</tr>
+				</#list>
 			</#list>
 			<tr>
 				<td><@input "MX.alternativeVernacularName___fi" "off" "" /></td>
@@ -221,11 +223,13 @@
 				<th>Name</th> 
 				<th>Language</th>
 			</tr>
-			<#list taxon.obsoleteVernacularNamesWithLangCodes as obsoleteVernaculaName>
-			<tr>
-				<td><@input "MX.obsoleteVernacularName___${obsoleteVernaculaName.langcode}" "off" obsoleteVernaculaName.name /></td>
-				<td><@languageSelector obsoleteVernaculaName.langcode/></td>
-			</tr>
+			<#list ["fi", "sv", "en"] as localeSelector>
+				<#list taxon.obsoleteVernacularNames.forLocale(localeSelector) as obsoleteVernaculaName>
+					<tr>
+						<td><@input "MX.obsoleteVernacularName___${localeSelector}" "off" obsoleteVernaculaName /></td>
+						<td><@languageSelector localeSelector /></td>
+					</tr>
+				</#list>
 			</#list>
 			<tr>
 				<td><@input "MX.obsoleteVernacularName___fi" "off" "" /></td>
@@ -240,11 +244,13 @@
 				<th>Name</th> 
 				<th>Language</th>
 			</tr>
-			<#list taxon.tradeNamesWithLangCodes as tradeName>
-			<tr>
-				<td><@input "MX.tradeName___${tradeName.langcode}" "off" tradeName.name /></td>
-				<td><@languageSelector tradeName.langcode/></td>
-			</tr>
+			<#list ["fi", "sv", "en"] as localeSelector>
+				<#list taxon.tradeNames.forLocale(localeSelector) as tradeName>
+					<tr>
+						<td><@input "MX.tradeName___${localeSelector}" "off" tradeName /></td>
+						<td><@languageSelector localeSelector /></td>
+					</tr>
+				</#list>
 			</#list>
 			<tr>
 				<td><@input "MX.tradeName___fi" "off" "" /></td>
@@ -301,7 +307,6 @@
   <#else>
 	<@portletHeader "Biogeographical province occurrences" "initiallyClosed" />
   </#if>
-	
 		<table>
 			<tr>
 				<th colspan="2">Area</th>
@@ -310,13 +315,13 @@
 			<#list occurrenceProperties.getProperty("MO.area").range.values as areaProp>
 				<#assign area = areas[areaProp.qname]>
 				<tr>
-					<td>${area.abbreviation}</td><td>&nbsp;${area.name.forLocale("fi")}</td>
+					<td>${area.abbreviation}</td><td>&nbsp;${area.name.forLocale("fi")!""}</td>
 					<td>
 						<select name="MO.occurrence___${area.qname}">
 							<option value=""></option>
 							<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
 								<#if taxon.occurrences.hasStatus(area.qname, prop.qname)>
-									<option value="${prop.qname}" selected="selected">${prop.label.forLocale("en")}</option>
+									<option value="${prop.qname}" selected="selected">${prop.label.forLocale("en")!prop.qname}</option>
 								<#else>
 									<option value="${prop.qname}">${prop.label.forLocale("en")!prop.qname}</option>
 								</#if>
@@ -332,43 +337,35 @@
 
 
 <div class="column">
-
 	<@portletHeader "Invasive species (Admin only)" "initiallyClosed" />
 		<@labeledSelect "MX.invasiveSpeciesCategory" "taxonValue" "requireAdminPermissions" />
 		<@labeledSelect "MX.invasiveSpeciesEstablishment" "taxonValue" "requireAdminPermissions" />
 		
-		<#list taxon.adminContent.getDefaultContextTexts("HBE.invasiveSpeciesMainGroup") as mainGroup>
+		<#list taxon.invasiveSpeciesMainGroups as mainGroup>
 			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup "requireAdminPermissions" />
 		</#list>
 		<@labeledSelect "HBE.invasiveSpeciesMainGroup" "" "requireAdminPermissions" />
-		
-		<@labeledInput "HBE.invasiveSpeciesCustomReportFormLink" "on" taxon.adminContent.getDefaultContextText("HBE.invasiveSpeciesCustomReportFormLink") "requireAdminPermissions" />
 	<@portletFooter />
-	
 </div>
 
-<div class="column">
-	<#if user.isAdmin()>
+<#if user.isAdmin()>
+	<div class="column">
 		<@portletHeader "Admin only" "initiallyClosed" />
 			<@labeledSelect "MX.secureLevel" />
 			<@labeledSelect "MX.breedingSecureLevel" />
 			<@labeledSelect "MX.winteringSecureLevel" />
-			<@labeledSelect "MX.natureAreaSecureLevel" />
-			
+			<@labeledSelect "MX.naturaAreaSecureLevel" />
+
 			<hr />
-			<p class="info">Applicable for taxon rank order or a higher level</p>
-			<@labeledSelect "MX.checklistStatus" />
-			<@labeledSelect "MX.higherTaxaStatus" />
-			<@labeledSelect "MX.finnishSpeciesTaggingStatus" />
-			<hr />
-			<@labeledInput "MX.customReportFormLink" "on" taxon.adminContent.getDefaultContextText("MX.customReportFormLink") />
+			<@labeledInput "MX.customReportFormLink" "on" />
+
 			<hr />
 			<label>External links</label>
 			<table>
 			<#list taxon.externalLinks as link>
 				<tr>
-					<td><@input "MX.externalLinkURL___${link.langcode}" "on" link.toString()!"" /></td>
-					<td><@languageSelector link.langcode /></td>
+					<td><@input "MX.externalLinkURL___${link.locale}" "on" link.toString()!"" /></td>
+					<td><@languageSelector link.locale /></td>
 				</tr>
 			</#list>
 				<tr>
@@ -377,9 +374,9 @@
 				</tr>
 			</table>
 		<@portletFooter />	
-	</#if>
-	
-</div>
+	</div>
+</#if>
+
 <div class="column">
   <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
 	<@portletHeader "Editors and Experts" />
@@ -434,25 +431,23 @@
 		<div class="info">
 			Note that after saving the changes you must close and re-open the affected branches in the taxonomy tree to be able to see the changes.  
 		</div>
+		
 	<@portletFooter />	
 </div>
 
 <div class="column">
-
 	<@portletHeader "Ringing department" "initiallyClosed" />
-		<@labeledInput "MX.euringCode" "off" taxon.birdContent.getDefaultContextText("MX.euringCode") />
-		<@labeledInput "MX.euringNumber" "off" taxon.birdContent.getDefaultContextText("MX.euringNumber") />
-		<@labeledInput "MX.birdlifeCode" "off" taxon.birdContent.getDefaultContextText("MX.birdlifeCode") />
+		<@labeledInput "MX.euringCode" "off" />
+		<@labeledInput "MX.euringNumber" "off" />
+		<@labeledInput "MX.birdlifeCode" "off" />
 	<@portletFooter />
-	
 </div>
-
 
 <#if !taxon.hasChildren()>
-<div class="taxonDeleteContainer">
-	<button id="detachTaxon" class="ui-state-error">Detach taxon</button>
-	<button id="deleteTaxon" class="ui-state-error">Delete taxon</button>
-</div>
+	<div class="taxonDeleteContainer">
+		<button id="detachTaxon" class="ui-state-error">Detach taxon</button>
+		<button id="deleteTaxon" class="ui-state-error">Delete taxon</button>
+	</div>
 </#if>
 
 <div class="clear"></div>

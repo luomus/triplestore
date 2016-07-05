@@ -9,7 +9,7 @@
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
-<h2><a href="#"><@printScientificNameAndAuthor taxon /> ${taxon.getVernacularName("fi")!""}</a></h2>
+<h2><a href="#"><@printScientificNameAndAuthor taxon /> ${taxon.vernacularName.forLocale("fi")!""}</a></h2>
 
 <@toolbox/>		
 
@@ -24,7 +24,7 @@
 	<#if taxon.hasParent()>
 		<@tree taxon.parent />
 	</#if>
-	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.getVernacularName("fi")!""}</span></li>
+	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.vernacularName("fi")!""}</span></li>
 </#macro>
 
 <div id="evaluationMeta">
@@ -36,11 +36,11 @@
 	</ul>
 </div>
 
-<#if taxon.synonymTaxons?has_content>
+<#if taxon.synonyms?has_content>
 	<div class="taxonInfo">
 		<h6>Synonyymit</h6>
 		<ul>
-			<#list taxon.synonymTaxons as synonym>
+			<#list taxon.synonyms as synonym>
 				<li><@printScientificNameAndAuthor synonym /></li>
 			</#list>
 		</ul>

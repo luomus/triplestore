@@ -19,8 +19,8 @@
 
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon />
-	<#if taxon.getVernacularName("fi")?has_content>
-		&mdash; ${taxon.getVernacularName("fi")}
+	<#if taxon.vernacularName.forLocale("fi")?has_content>
+		&mdash; ${taxon.vernacularName.forLocale("fi")}
 	</#if>
 	&nbsp;
 	${taxon.qname}
@@ -58,7 +58,7 @@
 					<#list variables[group.qname.toString()] as descriptionVariable>
 						<#assign qname = descriptionVariable.qname.toString() /> 
 						<@label qname "longtext" locale />
-						<@longText qname + "___" + locale taxon.basicDescriptionTexts.getDefaultContextText(qname, locale) />
+						<@longText qname + "___" + locale taxon.descriptions.defaultContext.getText(qname, locale) />
 					</#list>
 				</div>
 			</#list>

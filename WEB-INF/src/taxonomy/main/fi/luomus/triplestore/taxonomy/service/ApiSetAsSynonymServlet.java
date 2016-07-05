@@ -39,7 +39,7 @@ public class ApiSetAsSynonymServlet extends ApiBaseServlet {
 
 		}
 
-		if (taxon.getChecklist() != null && !taxon.getSynonymTaxons().isEmpty()) {
+		if (taxon.getChecklist() != null && !taxon.getSynonyms().isEmpty()) {
 			return new ResponseData().setData("error", "Can not switch taxon to be a synonym while it itself has synonyms. Move the synonyms of this taxon first.").setViewName("api-error");
 		}
 

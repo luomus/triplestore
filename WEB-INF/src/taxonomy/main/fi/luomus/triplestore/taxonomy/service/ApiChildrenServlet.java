@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/children/*"})
 public class ApiChildrenServlet extends ApiBaseServlet {
@@ -28,7 +28,7 @@ public class ApiChildrenServlet extends ApiBaseServlet {
 		
 		Taxon parent = dao.getTaxon(new Qname(parentQname));
 		responseData.setData("parent", parent);
-		responseData.setData("children", parent.getChildTaxons());
+		responseData.setData("children", parent.getChildren());
 		return responseData;
 	}
 	

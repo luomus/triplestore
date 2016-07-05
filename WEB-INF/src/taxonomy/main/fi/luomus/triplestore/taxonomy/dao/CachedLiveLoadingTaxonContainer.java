@@ -51,7 +51,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	public EditableTaxon createTaxon(Model model) {
 		Qname qname = q(model.getSubject());
-		EditableTaxon taxon = new EditableTaxon(qname, this, taxonomyDAO);
+		EditableTaxon taxon = new EditableTaxon(qname, this);
 		for (Statement statement : model.getStatements()) {
 			if ("MX.isPartOf".equals(statement.getPredicate().getQname())) {
 				Qname parentQname = q(statement.getObjectResource());
@@ -200,7 +200,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private void invalidateTaxonInIsolation(Taxon taxon) {
 		if (alreadyInvalidatedTaxonsInIsolation.contains(taxon.getQname())) return;
 		alreadyInvalidatedTaxonsInIsolation.add(taxon.getQname());
-		for (Taxon synonym : taxon.getSynonymTaxons()) {
+		for (Taxon synonym : taxon.getSynonyms()) {
 			invalidateTaxonInIsolation(synonym);
 		}
 		if (taxon.hasParent()) {
