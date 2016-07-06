@@ -1,9 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -20,6 +16,10 @@ import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private static final Object LOCK = new Object();
@@ -29,11 +29,9 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
 	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConceptLoader(), 1*60*60, 5000);
 	private final TriplestoreDAO triplestoreDAO;
-	private final ExtendedTaxonomyDAO taxonomyDAO;
 
-	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO) {
+	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO) {
 		this.triplestoreDAO = triplestoreDAO;
-		this.taxonomyDAO = taxonomyDAO;
 	}
 
 	private class TaxonLoader implements CacheLoader<Qname, EditableTaxon> {
