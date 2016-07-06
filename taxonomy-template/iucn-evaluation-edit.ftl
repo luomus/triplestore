@@ -24,7 +24,7 @@
 	<#if taxon.hasParent()>
 		<@tree taxon.parent />
 	</#if>
-	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.vernacularName("fi")!""}</span></li>
+	<li><@printScientificNameAndAuthor taxon /> <span class="vernacularName">${taxon.vernacularName.forLocale("fi")!""}</span></li>
 </#macro>
 
 <div id="evaluationMeta">

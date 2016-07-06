@@ -44,18 +44,18 @@
 		<@labeledSelect "MX.hiddenTaxon" />
 	<@portletFooter />
 	
-	<@portletHeader "Publications" "" "reloadAfterSaveSection" />
+	<@portletHeader "Source of taxonomy" "" "reloadAfterSaveSection" />
 		<table class="publicationSelect">
 			<tr>
 				<th>Select publications</th> 
 			</tr>
-			<#list taxon.explicitlySetOriginalPublications as publication>
+			<#list taxon.originalPublications as existingPublicationQname>
 			<tr>
 				<td>
 					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+							<option value="${publicationQname}" <#if same(existingPublicationQname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 						</#list>
 					</select>
 				</td>
@@ -127,13 +127,13 @@
 			<tr>
 				<th>Select publication</th> 
 			</tr>
-			<#list taxon.explicitlySetOccurrenceInFinlandPublications as publication>
+			<#list taxon.occurrenceInFinlandPublications as existingPublicationQname>
 			<tr>
 				<td>
 					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
 						<option value=""></option>
 						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}" <#if same(publication.qname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+							<option value="${publicationQname}" <#if same(existingPublicationQname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 						</#list>
 					</select>
 				</td>
@@ -165,15 +165,23 @@
 	<@portletFooter />				
 
 	<@portletHeader "Informal groups" "" "reloadAfterSaveSection" />
-		<#if taxon.informalTaxonGroups?has_content>
-			<label>Inherited groups</label>
-			<ul class="inheritedGroups">
-			<#list taxon.informalTaxonGroups as groupQnameString>
-				<li>${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</li>
-			</#list>
+		<#assign headerPrinted = false>
+		
+		<#list taxon.informalTaxonGroups as groupQname>
+			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
+				<#if !headerPrinted>
+					<label>Inherited groups</label>
+					<ul class="inheritedGroups">
+					<#assign headerPrinted = true>
+				</#if>
+				<li>${informalGroups[groupQname.toString()].name.forLocale("fi")!""} - ${informalGroups[groupQname.toString()].name.forLocale("en")!groupQnameString}</li>
+			</#if>	
+		</#list>
+		<#if headerPrinted>
 			</ul>
 			<br/>
 		</#if>
+		
 		<#list taxon.explicitlySetInformalTaxonGroups as groupQname>
 			<p>
 			<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" class="chosen" <@checkPermissions/> >
@@ -184,6 +192,7 @@
 			</select>
 			</p>
 		</#list>
+		
 		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Add new group" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list informalGroups?keys as groupQnameString>
