@@ -99,7 +99,9 @@ public class IucnDAOImple implements IucnDAO {
 							for (Statement editor : m.getStatements("MKV.iucnEditor")) {
 								editors.addEditor(new Qname(editor.getObjectResource().getQname()));
 							}
-							map.put(groupQname, editors);
+							if (!editors.getEditors().isEmpty()) {
+								map.put(groupQname, editors);
+							}
 						}
 						return map;
 					} catch (Exception e) {
