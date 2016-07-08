@@ -1,18 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.methods.HttpGet;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -45,6 +32,19 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.client.methods.HttpGet;
+
 public class IucnDAOImple implements IucnDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
@@ -62,12 +62,17 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Qname EVALUATION_AREA_TYPE_QNAME = new Qname("ML.iucnEvaluationArea");
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
+	private static final String BIOTA_QNAME = "MX.37600";
 	private static final String FI = "fi";
 	private static final String QNAME = "qname";
-	private static final String CHILDREN = "children";
 	private static final String RDF_TYPE = "rdf:type";
-	private static final String BIOTA_QNAME = "MX.37600";
-
+	private static final String ONLY_FINNISH = "onlyFinnish";
+	private static final String SELECTED_FIELDS = "selectedFields";
+	private static final String PAGE_SIZE = "pageSize";
+	private static final String PAGE = "page";
+	private static final String NEXT_PAGE = "nextPage";
+	private static final String RESULTS = "results";
+	
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
@@ -158,13 +163,24 @@ public class IucnDAOImple implements IucnDAO {
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once
-			System.out.println("Loading finnish species for informal group " + groupQname);
-			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL")+"/" + BIOTA_QNAME + "/finnish/species");
-			uri.addParameter("selectedFields", "qname");
-			uri.addParameter("informalGroupFilters", groupQname);
-			JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
-			for (JSONObject species : response.getArray(CHILDREN).iterateAsObject()) {
-				speciesOfGroup.add(getQname(species));
+			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
+					.addParameter(ONLY_FINNISH, true)
+					.addParameter(SELECTED_FIELDS, "qname")
+					.addParameter("informalGroupFilters", groupQname)
+					.addParameter(PAGE, "1")
+					.addParameter(PAGE_SIZE, "1000");
+			System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
+			while (true) {
+				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
+				if (!response.hasKey(RESULTS)) throw new RuntimeException("Failed to get species: " + uri.toString());
+				for (JSONObject species : response.getArray(RESULTS).iterateAsObject()) {
+					speciesOfGroup.add(getQname(species));
+				}
+				if (response.hasKey(NEXT_PAGE)) {
+					uri.replaceParameter(PAGE, response.getInteger(NEXT_PAGE));
+				} else {
+					break;
+				}
 			}
 		}
 		return speciesOfGroup;
@@ -192,22 +208,35 @@ public class IucnDAOImple implements IucnDAO {
 			if (client != null) client.close();
 		}
 	}
+	
 	private List<String> getFinnishSpecies(String taxonQname, HttpClientService client) throws Exception {
-		List<String> species = new ArrayList<>();
+		List<String> speciesOfTaxon = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many request going out at once
-			System.out.println("Loading finnish species for " + taxonQname);
-			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL")+"/" + taxonQname + "/finnish/species");
-			uri.addParameter("selectedFields", "qname");
-			JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
-			for (JSONObject child : response.getArray(CHILDREN).iterateAsObject()) {
-				species.add(getQname(child));
+			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + taxonQname + "/species")
+					.addParameter(ONLY_FINNISH, true)
+					.addParameter(SELECTED_FIELDS, "qname")
+					.addParameter(PAGE, "1")
+					.addParameter(PAGE_SIZE, "1000");
+			System.out.println("Loading finnish species for " + taxonQname + " -> " + uri);
+			while (true) {
+				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
+				if (!response.hasKey(RESULTS)) throw new RuntimeException("Failed to get species: " + uri.toString());
+				for (JSONObject species : response.getArray(RESULTS).iterateAsObject()) {
+					speciesOfTaxon.add(getQname(species));
+				}
+				if (response.hasKey(NEXT_PAGE)) {
+					uri.replaceParameter(PAGE, response.getInteger(NEXT_PAGE));
+				} else {
+					break;
+				}
 			}
+			
 		}
-		return species;
+		return speciesOfTaxon;
 	}
 
 	private String getQname(JSONObject taxon) {
-		return taxon.getObject(QNAME).getString(QNAME);
+		return taxon.getString(QNAME);
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
