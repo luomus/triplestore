@@ -363,6 +363,7 @@
 			<@labeledSelect "MX.secureLevel" />
 			<@labeledSelect "MX.breedingSecureLevel" />
 			<@labeledSelect "MX.winteringSecureLevel" />
+			<@labeledSelect "MX.nestSiteSecureLevel" />
 			<@labeledSelect "MX.naturaAreaSecureLevel" />
 
 			<hr />
