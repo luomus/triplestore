@@ -1,5 +1,15 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
@@ -15,16 +25,6 @@ import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
@@ -237,8 +237,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		if (given(taxonrank)) {
 			match.addAttribute("taxonRank", taxonrank);
 		}
-		Taxon taxon = getTaxon(new Qname(qname));
-		if (taxon != null) {
+		Qname taxonId = new Qname(qname);
+		if (taxonContainer.hasTaxon(taxonId)) {
+			Taxon taxon = getTaxon(taxonId);
 			Set<Qname> informalGroups = taxon.getInformalTaxonGroups();
 			if (informalGroups.isEmpty()) return match;
 			Node informalGroupsNode = match.addChildNode("informalGroups");
