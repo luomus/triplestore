@@ -210,6 +210,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			subjectsToInclude = fetchAllChildren(qname);
 		} else if (resultType == ResultType.TREE) {
 			models.addAll(fetchTree(model));
+		} else if (resultType == ResultType.DEEP) {
+			models.addAll(deep(model));
 		} else {
 			throw new UnsupportedOperationException("Not impleted for " + resultType);
 		}
@@ -217,6 +219,18 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		if (!subjectsToInclude.isEmpty()) {
 			models.addAll(get(subjectsToInclude));
 		}
+	}
+
+	private Collection<Model> deep(Model model) throws SQLException {
+		List<Model> models = new ArrayList<Model>();
+		Set<String> objects = new HashSet<>();
+		for (Statement s : model) {
+			if (s.isResourceStatement()) {
+				objects.add(s.getObjectResource().getQname());
+			}
+		}
+		models.addAll(get(objects));
+		return models;
 	}
 
 	private Collection<Model> fetchTree(Model parent) throws TooManyResultsException, SQLException {

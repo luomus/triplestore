@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
@@ -19,12 +22,9 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import java.sql.SQLException;
-import java.util.List;
-
 public interface TriplestoreDAO {
 
-	public static enum ResultType { NORMAL, CHAIN, CHILDREN, TREE }
+	public static enum ResultType { NORMAL, CHAIN, CHILDREN, TREE, DEEP }
 
 	public static final Qname SYSTEM_USER = null;
 	public static final Qname TEST_USER = new Qname("MA.5"); // Esko Piirainen
