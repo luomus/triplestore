@@ -58,7 +58,7 @@
 					<#list variables[group.qname.toString()] as descriptionVariable>
 						<#assign qname = descriptionVariable.qname.toString() /> 
 						<@label qname "longtext" locale />
-						<@longText qname + "___" + locale taxon.descriptions.defaultContext.getText(qname, locale) />
+						<@longText qname + "___" + locale (taxon.descriptions.defaultContext.getText(qname, locale))!"" />
 					</#list>
 				</div>
 			</#list>
