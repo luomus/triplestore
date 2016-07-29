@@ -202,7 +202,7 @@ tr.errorMessage td {
 	display: inline-block;
 }
 
-#taxonEditHeader button, #taxonEditHeader .button {
+#descriptionTextButton, #imagesButton  {
 	font-size: 0.8em;
 	padding: 0.2em;
 	padding-left: 1em;

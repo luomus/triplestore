@@ -9,10 +9,10 @@
 				<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 			</form>
 		</div>
+		<button id="imagesButton">Images</button>
 	</div>
 </div>
-		
-		
+
 <div id="editTaxonDescriptions" class="ui-widget-content">
 
 <h6><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h6>
@@ -29,7 +29,6 @@
 <#if noPermissions??>
 	<div class="noPermissionsToAlterTaxon"><span class="ui-icon ui-icon-info" title="Note!"></span> You do not have permissions to edit descriptions for this taxon.</div>
 </#if>
-
 
 <#assign locales = ["fi","sv","en"] />
 
@@ -99,6 +98,27 @@ $(function() {
   		}
   	});
 	
+	$("#imagesButton").on('click', function() {
+		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}"></iframe></div>');
+		$("body").append(container);
+		var windowHeight = $(window).height();
+        var dialogHeight = windowHeight * 0.9;
+		container.dialog({
+			title: 'Add/modify taxon images',
+			autoOpen: true,
+      		height: dialogHeight,
+      		width: "95%",
+      		modal: true,
+      		buttons: {
+        		"Close": function() {
+          			container.dialog("close");
+        		}
+			},
+      		close: function() {
+				container.remove();
+      		}
+    	});
+	});
 });
 
 function updateOriginal(e) {
