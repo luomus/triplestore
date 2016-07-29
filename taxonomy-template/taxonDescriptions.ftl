@@ -56,9 +56,13 @@
 			<#list locales as locale>
 				<div id="group-${index}-${locale}">
 					<#list variables[group.qname.toString()] as descriptionVariable>
-						<#assign qname = descriptionVariable.qname.toString() /> 
+						<#assign qname = descriptionVariable.qname.toString() />
+						<#assign existingValue = "" />
+						<#if taxon.descriptions.defaultContext??>
+							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
+						</#if>
 						<@label qname "longtext" locale />
-						<@longText qname + "___" + locale (taxon.descriptions.defaultContext.getText(qname, locale))!"" />
+						<@longText qname + "___" + locale existingValue />
 					</#list>
 				</div>
 			</#list>
