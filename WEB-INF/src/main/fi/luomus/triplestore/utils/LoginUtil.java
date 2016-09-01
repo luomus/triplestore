@@ -127,7 +127,6 @@ public class LoginUtil  {
 
 	public ResponseData processPost(HttpServletRequest req, SessionHandler session, ResponseData responseData) throws Exception {
 		String lajiAuthToken = req.getParameter("token");
-		System.out.println(lajiAuthToken);
 		responseData.setViewName("login");
 		setLajiAuthLinks("", responseData);
 		AuthenticationResult authentication = authenticateViaLajiAuthentication(lajiAuthToken);
