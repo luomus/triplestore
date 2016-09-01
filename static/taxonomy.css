@@ -276,8 +276,3 @@ span.indent { display: inline-block; }
   white-space: nowrap;
   overflow: hidden;
 }
-
-.unitOfMeasurement {
-	font-size: 80%;
-}
-

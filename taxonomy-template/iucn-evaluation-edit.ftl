@@ -213,9 +213,9 @@
 	<#if property.literalProperty && !property.booleanProperty>
 		<#list values as value>
 			<#if property.integerProperty>
-				<input class="integerProperty" name="${property.qname}" type="text" value="${value}">
+				<input class="integerProperty" name="${property.qname}" type="text" value="${value?html}">
 			<#else>
-				<input name="${property.qname}" type="text" value="${value}">
+				<input name="${property.qname}" type="text" value="${value?html}">
 			</#if>
 			<#if value_has_next><br /></#if>
 		</#list>
@@ -269,7 +269,7 @@
 		<td><@showValue fieldName comparison /></td>
 		<td>
 			<#if permissions>
-				<textarea name="${fieldName}"><#if evaluation??>${evaluation.getValue(fieldName)!""}</#if></textarea>
+				<textarea name="${fieldName}"><#if evaluation??>${(evaluation.getValue(fieldName)?html)!""}</#if></textarea>
 			<#else>
 				<@showValue fieldName evaluation />
 			</#if>
@@ -284,7 +284,7 @@
 			<label>${title}</label> 
 			<#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if>
 			<#if (property.comments.forLocale("fi"))??>
-				<span class="info">${property.comments.forLocale("fi")}</span>
+				<div class="propertyComments">${property.comments.forLocale("fi")}</div>
 			</#if>
 		</th>
 		<td>
@@ -517,7 +517,7 @@
 		<span class="unitOfMeasurement">(kokonaisluku)</span>
 	</#if>
 	<#if (property.comments.forLocale("fi"))??>
-		<span class="info">${property.comments.forLocale("fi")}</span>
+		<div class="propertyComments">${property.comments.forLocale("fi")}</div>
 	</#if>
 </#macro>
 
@@ -545,7 +545,7 @@
 	<#if notesFieldName != "NONE">
 		<div class="notes hidden">
 			<@iucnLabel notesFieldName />
-			<textarea name="${notesFieldName}"><#if evaluation??>${evaluation.getValue(notesFieldName)!""}</#if></textarea>
+			<textarea name="${notesFieldName}"><#if evaluation??>${(evaluation.getValue(notesFieldName)?html)!""}</#if></textarea>
 			<br />
 			<button class="emptyNoteButton">Tyhjennä</button>
 			<button class="closeNoteEditButton">Sulje</button>
@@ -625,6 +625,19 @@ $(function() {
  		document.getElementById("evaluationEditForm").submit();
  	});
  	
+ 	$(".propertyComments").each(function() {
+ 		var comments = $(this); 
+ 		comments.hide();
+ 		var info = $('<span class="ui-icon ui-icon-info" />');
+ 		$(this).before(info);
+ 		info.on('mouseover click', function() {
+ 			comments.addClass('modalInfoContainer');
+ 			comments.fadeIn(500);
+ 		});
+ 		info.on('mouseleave', function() {
+ 			$('.modalInfoContainer').fadeOut(200);
+ 		});
+ 	});
 });
 
 var headerAbsolute = false;

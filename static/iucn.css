@@ -192,7 +192,7 @@
 .notes textarea {
   width: 350px;
 }
-.notes {
+.notes, .modalInfoContainer {
   display: block;
   display: none;
   box-shadow: rgba(0,0,0,0.7) 0px 2px 3px, inset rgba(0,0,0,0.7) 0px -1px 2px;
@@ -251,4 +251,19 @@ label {
 
 div#evaluationMeta {
   max-width: 900px;
+}
+
+.unitOfMeasurement {
+	font-size: 80%;
+}
+
+.modalInfoContainer {
+	position: fixed;
+	top: 100px;
+	left: 250px;
+	height: auto;
+	width: 600px;
+	background-color: white;
+	z-index: 3;
+	min-height: 500px;
 }
