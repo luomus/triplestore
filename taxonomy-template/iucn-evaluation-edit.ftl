@@ -204,6 +204,9 @@
 		<#assign values = evaluation.getValues(fieldName)>
 	</#if>
 	<@iucnInputFieldWithValues property values />
+	<#if property.hasUnitOfMeasurement()>
+		${property.unitOfMeasurement.label.forLocale("fi")}
+	</#if>
 </#macro>
 
 <#macro iucnInputFieldWithValues property values>

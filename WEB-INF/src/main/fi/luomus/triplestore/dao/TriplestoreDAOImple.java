@@ -87,7 +87,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" 		ranges.objectname AS range,									" +
 			"		sortOrder.resourceliteral AS sortOrder,						" +
 			"		min.resourceLiteral AS minOccurs,							" + 
-			"		max.resourceLiteral As maxOccurs 							" + 
+			"		max.resourceLiteral As maxOccurs, 							" + 
+			"       unit.objectname AS unitOfMeasurement                        " +
 			" FROM																" +
 			" ((																" +
 			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
@@ -103,7 +104,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" LEFT JOIN "+SCHEMA+".rdf_statementview ranges ON (ranges.subjectname = propertyName AND ranges.predicatename = 'rdfs:range')	" +
 			" LEFT JOIN "+SCHEMA+".rdf_statementview sortOrder ON (sortOrder.subjectname = propertyName AND sortOrder.predicatename = 'sortOrder')	" +
 			" LEFT JOIN "+SCHEMA+".rdf_statementview min on (min.subjectname = propertyName AND min.predicatename = 'xsd:minOccurs') " + 
-			" LEFT JOIN "+SCHEMA+".rdf_statementview max on (max.subjectname = propertyName AND max.predicatename = 'xsd:maxOccurs') ";
+			" LEFT JOIN "+SCHEMA+".rdf_statementview max on (max.subjectname = propertyName AND max.predicatename = 'xsd:maxOccurs') " + 
+			" LEFT JOIN "+SCHEMA+".rdf_statementview unit on (unit.subjectname = propertyName AND unit.predicatename = 'MZ.unitOfMeasurement') ";
 
 	private final static String GET_PROPERTY_BY_PREDICATE_NAME_SQL = "" + 
 			" SELECT ranges.objectname AS range, sortOrder.resourceliteral as sortOrder " +
@@ -441,6 +443,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 					String sortOrder = rs.getString(3);
 					String minOccurs = rs.getString(4);
 					String maxOccurs = rs.getString(5);
+					Qname unitOfMeasurement = rs.getString(6) == null ? null : new Qname(rs.getString(6));
 					RdfProperty property = dao.createProperty(predicate, range);
 					if (sortOrder != null) {
 						try {
@@ -460,6 +463,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 								property.setMaxOccurs(Integer.valueOf(maxOccurs));
 							} catch (NumberFormatException e) {}
 						}
+					}
+					if (unitOfMeasurement != null && range != null) {
+						property.getRange().setUnitOfMeasurement(dao.createProperty(unitOfMeasurement, null));
 					}
 					properties.addProperty(property);
 				}
