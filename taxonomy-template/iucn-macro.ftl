@@ -6,7 +6,7 @@
 			<div>
 				Vaihda arviointikautta: 
 				<select name="yearSelector" id="yearSelector" onchange="changeYear()">
-					<#list evaluationYears as year>
+					<#list evaluationYears?reverse as year>
 						<option value="${year}" <#if selectedYear == year> selected="selected" </#if> >
 							${year}
 						</option>
