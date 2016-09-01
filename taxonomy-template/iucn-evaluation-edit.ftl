@@ -280,7 +280,13 @@
 <#macro iucnMinMax title minFieldName maxFieldName notesFieldName="NONE">
 	<#assign property = evaluationProperties.getProperty(minFieldName)>
 	<tr class="minMax">
-		<th><label>${title}</label> <#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if></th>
+		<th>
+			<label>${title}</label> 
+			<#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if>
+			<#if (property.comments.forLocale("fi"))??>
+				<span class="info">${property.comments.forLocale("fi")}</span>
+			</#if>
+		</th>
 		<td>
 			<#if comparison?? && (comparison.hasValue(minFieldName) || comparison.hasValue(maxFieldName))>
 				<@showValue minFieldName comparison /> - <@showValue maxFieldName comparison />
