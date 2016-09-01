@@ -510,6 +510,9 @@
 	<#if property.integerProperty>
 		<span class="unitOfMeasurement">(kokonaisluku)</span>
 	</#if>
+	<#if (property.comments.forLocale("fi"))??>
+		<span class="info">${property.comments.forLocale("fi")}</span>
+	</#if>
 </#macro>
 
 <#macro showValue fieldName data="NONE">

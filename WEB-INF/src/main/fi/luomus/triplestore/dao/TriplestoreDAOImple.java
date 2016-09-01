@@ -486,17 +486,22 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			addRangeValues(property);
 		}
 
-		addLabels(property);
+		addLabelsAndComments(property);
 		return property;
 	}
 
-	private void addLabels(RdfProperty property) throws SQLException {
-		LocalizedText localizedText = new LocalizedText();
+	private void addLabelsAndComments(RdfProperty property) throws SQLException {
 		Model model = get(property.getQname());
+		LocalizedText labels = new LocalizedText();
+		LocalizedText comments = new LocalizedText();
 		for (Statement s : model.getStatements("rdfs:label")) {
-			localizedText.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+			labels.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
 		}
-		property.setLabels(localizedText);
+		for (Statement s : model.getStatements("rdfs:comment")) {
+			comments.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+		}
+		property.setLabels(labels);
+		property.setComments(comments);
 	}
 
 	private void addRangeValues(RdfProperty property) throws Exception {
