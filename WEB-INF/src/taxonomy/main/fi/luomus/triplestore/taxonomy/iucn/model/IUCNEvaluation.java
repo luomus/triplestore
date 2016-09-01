@@ -41,7 +41,7 @@ public class IUCNEvaluation {
 
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
-		RED_LIST_STATUS_TO_INDEX = new HashMap<>(); // TODO get real mapping from Aino
+		RED_LIST_STATUS_TO_INDEX = new HashMap<>();
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEX", 5);
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEW", 5);
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnRE", 5);
@@ -50,9 +50,9 @@ public class IUCNEvaluation {
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnVU", 2);
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNT", 1);
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnLC", 0);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnDD", 0);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNA", 0);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNE", 0); 
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnDD", null);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNA", null);
+		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNE", null); 
 	}
 
 	private final RdfProperties evaluationProperties;
