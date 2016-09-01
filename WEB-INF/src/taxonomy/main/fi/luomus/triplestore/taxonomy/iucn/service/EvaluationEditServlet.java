@@ -1,5 +1,15 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -24,16 +34,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -179,19 +179,23 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private void storeTaxonProperties(HttpServletRequest req, String speciesQname, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
 		RdfProperties taxonProperties = dao.getProperties("MX.taxon");
-		boolean hadTaxonProperties = false;
+		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
 		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
 			if (!parameterName.startsWith("MX.")) continue;
+			Predicate predicate = new Predicate(parameterName);
+			usedAndGivenStatements.addUsed(predicate, null, null);
 			for (String value : e.getValue()) {
-				storeTaxonProperties(speciesQname, dao, taxonProperties, parameterName, value);
-				hadTaxonProperties = true;
+				if (taxonProperties.getProperty(predicate).isLiteralProperty()) {
+					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value)));
+				} else {
+					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value)));
+				}
 			}
 		}
-		if (hadTaxonProperties) {
-			EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(speciesQname));
-			taxon.invalidate();
-		}
+		dao.store(new Subject(speciesQname), usedAndGivenStatements);
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(speciesQname));
+		taxon.invalidate();
 	}
 
 	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, ValidationResult validationResult) {
@@ -383,18 +387,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		publication.setCitation(citation);
 		dao.storePublication(publication);
 		model.addStatement(new Statement(PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
-	}
-
-	private void storeTaxonProperties(String speciesQname, TriplestoreDAO dao, RdfProperties taxonProperties, String parameterName, String value) throws Exception {
-		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
-		Predicate predicate = new Predicate(parameterName);
-		usedAndGivenStatements.addUsed(predicate, null, null);
-		if (taxonProperties.getProperty(predicate).isLiteralProperty()) {
-			usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value)));
-		} else {
-			usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value)));
-		}
-		// XXX disabloitu toistaiseksi: dao.store(new Subject(speciesQname), usedAndGivenStatements);
 	}
 
 	private ValidationResult validate(IUCNEvaluation givenData, IUCNEvaluation comparisonData) {

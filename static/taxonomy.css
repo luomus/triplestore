@@ -277,5 +277,7 @@ span.indent { display: inline-block; }
   overflow: hidden;
 }
 
-
+.unitOfMeasurement {
+	font-size: 80%;
+}
 

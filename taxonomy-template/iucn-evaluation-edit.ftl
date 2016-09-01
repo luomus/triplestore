@@ -139,13 +139,7 @@
 	<@iucnInput "MKV.criteriaD" "MKV.criteriaDNotes" />
 	<@iucnInput "MKV.criteriaE" "MKV.criteriaENotes" />
 	
-	<@iucnSection "Esiintymisalueet" />
-	<#list areas?keys as areaQname>
-		<@iucnOccurrence areaQname />
-	</#list>
-	<@iucnTextarea "MKV.occurrenceNotes" />
-
-	<@iucnSection "Esiintyminen" />
+		<@iucnSection "Esiintyminen" />
 	<@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
 	<@iucnMinMax "Esiintymiä alussa/lopussa" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
@@ -172,9 +166,15 @@
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
 
-	<@iucnSection "Vakinaisuus <span>- Huom: Nämä tiedot ovat julkisia ja alla muokataan lajien varsinaisia taksonomiatietoja!</span>" /> 
+	<@iucnSection "Vakinaisuus alueittain" />
+	<#list areas?keys as areaQname>
+		<@iucnOccurrence areaQname />
+	</#list>
+	<@iucnTextarea "MKV.occurrenceNotes" />
+	
+	<@iucnSection "Vakinaisuus Suomessa tällä hetkellä <span>- Huom: Nämä tiedot ovat julkisia ja alla muokataan lajin varsinaista taksonomiaa (ei vuosikohtaista IUCN-arviointitietoa)!</span>" /> 
 	<@taxonOccurenceInFinland />
-		
+	
 	</tbody>
 </table>
 
@@ -185,9 +185,9 @@
 
 <#macro submitButtons>
 	<div class="submitButtonContainer">
+		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes"></textarea>
 		<button class="saveButton">Tallenna</button>
 		<button class="ready readyButton">Arviointi valmis</button>
-		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes"></textarea>
 	</div>
 </#macro>
 
@@ -275,8 +275,9 @@
 </#macro>
 
 <#macro iucnMinMax title minFieldName maxFieldName notesFieldName="NONE">
+	<#assign property = evaluationProperties.getProperty(minFieldName)>
 	<tr class="minMax">
-		<th><label>${title}</label></th>
+		<th><label>${title}</label> <#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if></th>
 		<td>
 			<#if comparison?? && (comparison.hasValue(minFieldName) || comparison.hasValue(maxFieldName))>
 				<@showValue minFieldName comparison /> - <@showValue maxFieldName comparison />
@@ -332,6 +333,9 @@
 			<#list taxon.typesOfOccurrenceInFinland as type>
 				<@select "MX.typeOfOccurrenceInFinland" type />
 			</#list>
+			<#if !taxon.typesOfOccurrenceInFinland?has_content>
+				<@select "MX.typeOfOccurrenceInFinland" type />
+			</#if>
 			<button class="add">+ Lisää</button>
 		</td>
 	</tr>
@@ -500,6 +504,9 @@
 <#macro iucnLabel fieldName>
 	<#assign property = evaluationProperties.getProperty(fieldName)> 
 	<label>${property.label.forLocale("fi")!fieldName} <#if property.required><span class="required" title="Pakollinen tieto">*</span></#if></label>
+	<#if property.integerProperty>
+		<span class="unitOfMeasurement">(kokonaisluku)</span>
+	</#if>
 </#macro>
 
 <#macro showValue fieldName data="NONE">
