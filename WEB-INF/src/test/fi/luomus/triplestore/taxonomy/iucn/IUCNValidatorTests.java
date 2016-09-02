@@ -112,4 +112,26 @@ public class IUCNValidatorTests {
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU - Vaarantunut\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimainen\"", result.listErrors().get(0));
 	}
+	
+	@Test
+	public void test_endagerement_reason_3() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
+		givenModel.addStamentIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
+		givenModel.addStamentIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
+		givenModel.addStamentIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
+		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+		
+		givenModel.addStamentIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
+		result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals("Uhkatekijät on määriteltävä uhanalaisuusluokalle \"VU - Vaarantunut\"", result.listErrors().get(0));
+		
+		givenModel.addStamentIfObjectGiven("MKV.endangermentReason", "MKV.endangermentReasonR", null);
+		result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+	
 }

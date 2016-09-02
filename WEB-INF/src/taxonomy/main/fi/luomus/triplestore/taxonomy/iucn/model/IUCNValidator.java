@@ -23,7 +23,7 @@ public class IUCNValidator {
 	public IUCNValidationResult validate(IUCNEvaluation givenData, IUCNEvaluation comparisonData) {
 		IUCNValidationResult validationResult = new IUCNValidationResult();
 		try {
-			tryToValidate(givenData, validationResult);
+			tryToValidate(givenData, comparisonData, validationResult);
 		} catch (Exception e) {
 			validationResult.setError("Tarkistuksissa tapahtui odottamaton virhe. Ylläpitoa on tiedotettu asiasta. ");
 			errorReporter.report(e);
@@ -31,14 +31,46 @@ public class IUCNValidator {
 		return validationResult;
 	}
 
-	private void tryToValidate(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
+	private void tryToValidate(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) throws Exception {
 		if (givenData.isReady()) {
 			validateRequiredFields(givenData, validationResult);
+			validateEndangermentReason(givenData, validationResult);
+			validateStatusChange(givenData, comparisonData, validationResult);
 		}
 		validateMinMaxPair("MKV.countOfOccurrencesMin", "MKV.countOfOccurrencesMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.distributionAreaMin", "MKV.distributionAreaMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);		
+	}
+
+	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
+		String statusChangeReason = givenData.getValue("MKV.reasonForStatusChange");
+		if (given(statusChangeReason)) return;
+		if (comparisonData == null) return;
+		String thisStatus = givenData.getIucnStatus();
+		String prevStatus = comparisonData.getIucnStatus();
+		if (!given(prevStatus) || !given(thisStatus)) return;
+		Integer thisStatusOrder = IUCN_COMPARATOR_VALUES.get(thisStatus);
+		Integer prevStatusOrder = IUCN_COMPARATOR_VALUES.get(prevStatus);
+		if (thisStatusOrder == null || prevStatusOrder == null) return;
+		if (thisStatusOrder != prevStatusOrder) {
+			validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka");
+		}
+	}
+
+	private void validateEndangermentReason(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
+		String reason = givenData.getValue("MKV.endangermentReason");
+		if (given(reason)) return;
+		String status = givenData.getIucnStatus();
+		Integer statusOrderValue = IUCN_COMPARATOR_VALUES.get(status);
+		if (statusOrderValue == null) return;
+		if (statusOrderValue >= ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST) {
+			validationResult.setError("Uhkatekijät on määriteltävä uhanalaisuusluokalle " + getLabel(status));
+		}
+	}
+
+	private boolean given(String s) {
+		return s != null && s.length() > 0;
 	}
 
 	private Comparator<String> IUCN_RANGE_COMPARATOR = new Comparator<String>() {
@@ -90,7 +122,9 @@ public class IUCNValidator {
 		for (RdfProperty p : properties.getAllProperties()) {
 			if (p.isRequired()) {
 				if (!givenData.getModel().hasStatements(p.getQname())) {
-					validationResult.setError("Pakollinen tieto: " + p.getLabel().forLocale("fi"));
+					String label = p.getLabel().forLocale("fi");
+					if (label == null) label = p.getQname().toString();
+					validationResult.setError("Pakollinen tieto: " + label);
 				}
 			}
 		}
@@ -111,4 +145,5 @@ public class IUCNValidator {
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNA", null);
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
 	}
+	private static final int ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST = IUCN_COMPARATOR_VALUES.get("MX.iucnNT");
 }
