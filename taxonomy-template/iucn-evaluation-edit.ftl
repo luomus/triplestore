@@ -212,7 +212,9 @@
 <#macro iucnInputFieldWithValues property values>
 	<#if property.literalProperty && !property.booleanProperty>
 		<#list values as value>
-			<#if property.integerProperty>
+			<#if property.hasUnitOfMeasurement() && property.unitOfMeasurement.qname == "MZ.unitOfMeasurementPercent">
+				<input class="percentProperty" name="${property.qname}" type="text" value="${value?html}">
+			<#elseif property.integerProperty>
 				<input class="integerProperty" name="${property.qname}" type="text" value="${value?html}">
 			<#else>
 				<input name="${property.qname}" type="text" value="${value?html}">
@@ -638,7 +640,35 @@ $(function() {
  			$('.modalInfoContainer').fadeOut(200);
  		});
  	});
+ 	
+ 	$(".integerProperty").on('change', function() {
+ 		var val = $(this).val();
+ 		if (val == '' || isPositiveInteger(val)) {
+ 			$(this).removeClass('validationError');
+ 		} else {
+ 			$(this).addClass('validationError');
+ 		}
+ 	});
+ 	
+ 	$(".percentProperty").on('change', function() {
+ 		var val = $(this).val();
+ 		if (val == '' || isInteger(val)) {
+ 			$(this).removeClass('validationError');
+ 		} else {
+ 			$(this).addClass('validationError');
+ 		}
+ 	});
 });
+
+function isPositiveInteger(str) {
+    var n = ~~Number(str);
+    return String(n) === str && n >= 0;
+}
+
+function isInteger(str) {
+	var n = ~~Number(str);
+    return String(n) === str;
+}
 
 var headerAbsolute = false;
 

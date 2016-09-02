@@ -1,4 +1,6 @@
-
+input.validationError {
+	background-color: rgb(250,200,200);
+}
 .info {
   max-width: none;
 }
