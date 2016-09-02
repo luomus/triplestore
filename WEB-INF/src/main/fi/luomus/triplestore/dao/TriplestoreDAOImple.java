@@ -82,13 +82,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" ORDER BY predicatename                                                       ";
 
 	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" + 
-			" SELECT DISTINCT 													" +
-			" 		propertyName, 												" + 
-			" 		ranges.objectname AS range,									" +
-			"		sortOrder.resourceliteral AS sortOrder,						" +
-			"		min.resourceLiteral AS minOccurs,							" + 
-			"		max.resourceLiteral As maxOccurs, 							" + 
-			"       unit.objectname AS unitOfMeasurement                        " +
+			" SELECT DISTINCT propertyName 										" + 
 			" FROM																" +
 			" ((																" +
 			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
@@ -100,18 +94,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			"   SELECT DISTINCT subjectname as propertyName						" +
 			"   FROM "+SCHEMA+".rdf_statementview 								" +
 			"   WHERE predicatename = 'rdfs:domain' AND objectname = ?			" +
-			" )) properties														" +
-			" LEFT JOIN "+SCHEMA+".rdf_statementview ranges ON (ranges.subjectname = propertyName AND ranges.predicatename = 'rdfs:range')	" +
-			" LEFT JOIN "+SCHEMA+".rdf_statementview sortOrder ON (sortOrder.subjectname = propertyName AND sortOrder.predicatename = 'sortOrder')	" +
-			" LEFT JOIN "+SCHEMA+".rdf_statementview min on (min.subjectname = propertyName AND min.predicatename = 'xsd:minOccurs') " + 
-			" LEFT JOIN "+SCHEMA+".rdf_statementview max on (max.subjectname = propertyName AND max.predicatename = 'xsd:maxOccurs') " + 
-			" LEFT JOIN "+SCHEMA+".rdf_statementview unit on (unit.subjectname = propertyName AND unit.predicatename = 'MZ.unitOfMeasurement') ";
-
-	private final static String GET_PROPERTY_BY_PREDICATE_NAME_SQL = "" + 
-			" SELECT ranges.objectname AS range, sortOrder.resourceliteral as sortOrder " +
-			" FROM "+SCHEMA+".rdf_statementview ranges " +
-			" LEFT JOIN "+SCHEMA+".rdf_statementview sortOrder ON (sortOrder.subjectname = ranges.subjectname AND sortOrder.predicatename = 'sortOrder')	" + 
-			" WHERE ranges.subjectname = ? AND ranges.predicatename = 'rdfs:range' ";
+			" )) properties														";
 
 	@Override
 	public TransactionConnection openConnection() throws SQLException {
@@ -439,34 +422,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				RdfProperties properties = new RdfProperties();
 				while (rs.next()) {
 					Qname predicate = new Qname(rs.getString(1));
-					Qname range = rs.getString(2) == null ? null : new Qname(rs.getString(2));
-					String sortOrder = rs.getString(3);
-					String minOccurs = rs.getString(4);
-					String maxOccurs = rs.getString(5);
-					Qname unitOfMeasurement = rs.getString(6) == null ? null : new Qname(rs.getString(6));
-					RdfProperty property = dao.createProperty(predicate, range);
-					if (sortOrder != null) {
-						try {
-							property.setOrder(Integer.valueOf(sortOrder));
-						} catch (NumberFormatException e) {}
-					}
-					if (minOccurs != null) {
-						try {
-							property.setMinOccurs(Integer.valueOf(minOccurs));
-						} catch (NumberFormatException e) {}
-					}
-					if (maxOccurs != null) {
-						if ("unbounded".equals(maxOccurs)) {
-							property.setMaxOccurs(Integer.MAX_VALUE);
-						} else {
-							try {
-								property.setMaxOccurs(Integer.valueOf(maxOccurs));
-							} catch (NumberFormatException e) {}
-						}
-					}
-					if (unitOfMeasurement != null && range != null) {
-						property.getRange().setUnitOfMeasurement(dao.createProperty(unitOfMeasurement, null));
-					}
+					Model model = dao.get(predicate);
+					RdfProperty property = dao.createProperty(model);
 					properties.addProperty(property);
 				}
 				return properties;
@@ -479,19 +436,46 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private RdfProperty createProperty(Qname propertyQname, Qname range) throws Exception {
-		RdfProperty property = new RdfProperty(propertyQname, range);
+	private RdfProperty createProperty(Model model) throws Exception {
+		String range = getValue("rdfs:range", model);
+		String sortOrder = getValue("sortOrder", model);
+		String minOccurs = getValue("xsd:minOccurs", model);
+		String maxOccurs = getValue("xsd:maxOccurs", model);
+		String unitOfMeasurement = getValue("MZ.unitOfMeasurement", model);
 
-		if (property.hasRange() && !property.isLiteralProperty()) {
-			addRangeValues(property);
+		Qname rangeQname = range == null ? null : new Qname(range); 
+		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
+
+		if (sortOrder != null) {
+			try {
+				property.setOrder(Integer.valueOf(sortOrder));
+			} catch (NumberFormatException e) {}
 		}
 
-		addLabelsAndComments(property);
-		return property;
-	}
+		if (minOccurs != null) {
+			try {
+				property.setMinOccurs(Integer.valueOf(minOccurs));
+			} catch (NumberFormatException e) {}
+		}
 
-	private void addLabelsAndComments(RdfProperty property) throws SQLException {
-		Model model = get(property.getQname());
+		if (maxOccurs != null ) {
+			if ("unbounded".equals(maxOccurs)) {
+				property.setMaxOccurs(Integer.MAX_VALUE);
+			} else {
+				try {
+					property.setMaxOccurs(Integer.valueOf(maxOccurs));
+				} catch (NumberFormatException e) {}
+			}
+		}
+
+		if (unitOfMeasurement != null && range != null) {
+			property.getRange().setUnitOfMeasurement(createProperty(get(unitOfMeasurement)));
+		}
+
+		if (property.hasRange() && !property.isLiteralProperty()) {
+			addRangeValues(property, model);
+		}
+
 		LocalizedText labels = new LocalizedText();
 		LocalizedText comments = new LocalizedText();
 		for (Statement s : model.getStatements("rdfs:label")) {
@@ -502,22 +486,26 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		property.setLabels(labels);
 		property.setComments(comments);
+
+		return property;
 	}
 
-	private void addRangeValues(RdfProperty property) throws Exception {
+	private String getValue(String string, Model model) {
+		if (!model.hasStatements(string)) return null;
+		Statement s = model.getStatements(string).get(0);
+		if (s.isLiteralStatement()) return s.getObjectLiteral().getContent();
+		return s.getObjectResource().getQname();
+	}
+
+	private void addRangeValues(RdfProperty property, Model model) throws Exception {
 		if (property.getRange().getQname().toString().equals("MA.person")) {
 			addPersons(property);
-			return;
+		} else {
+			Model range = get(property.getRange().getQname());
+			if ("rdf:Alt".equals(range.getType())) {
+				property.getRange().setRangeValues(getAltValues(range));
+			}
 		}
-		String rangeType = getTypeOTheRange(property.getRange().getQname());
-		if ("rdf:Alt".equals(rangeType)) {
-			addRangeValuesForAlt(property);
-		}
-	}
-
-	private String getTypeOTheRange(Qname rangeQname) throws SQLException {
-		Model model = get(rangeQname);
-		return model.getType();
 	}
 
 	private static final SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO> CACHED_PERSONS = new SingleObjectCacheResourceInjected<>(new SingleObjectCacheResourceInjected.CacheLoader<List<RdfProperty>, TriplestoreDAO>() {
@@ -546,11 +534,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		property.getRange().setRangeValues(CACHED_PERSONS.get(this));
 	}
 
-	private void addRangeValuesForAlt(RdfProperty property) throws Exception {
-		List<RdfProperty> values = getAltValues(property.getRange().getQname());
-		property.getRange().setRangeValues(values);
-	}
-
 	@Override
 	public List<RdfProperty> getAltValues(Qname qname) throws Exception {
 		Model model = get(qname);
@@ -565,7 +548,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			String predicate = s.getPredicate().getQname();
 			if (!predicate.startsWith("rdf:_")) continue;
 			String object = s.getObjectResource().getQname();
-			RdfProperty property = createProperty(new Qname(object), null);
+			Model altmodel = get(object);
+			RdfProperty property = createProperty(altmodel);
 			property.setOrder(Integer.valueOf(predicate.replace("rdf:_", "")));
 			values.add(property);
 		}
@@ -586,30 +570,12 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		public RdfProperty load(ResourceWrapper<String, TriplestoreDAOImple> key) {
 			String predicateQname = key.getKey();
 			TriplestoreDAOImple dao = key.getResource();
-			TransactionConnection con = null;
-			PreparedStatement p = null;
-			ResultSet rs = null;
 			try {
-				con = dao.openConnection();
-				p = con.prepareStatement(GET_PROPERTY_BY_PREDICATE_NAME_SQL);
-				p.setString(1, predicateQname);
-				rs = p.executeQuery();
-				while (rs.next()) {
-					Qname range = rs.getString(1) == null ? null : new Qname(rs.getString(1));
-					String sortOrder = rs.getString(2);
-					RdfProperty property = dao.createProperty(new Qname(predicateQname), range);
-					if (sortOrder != null) {
-						try {
-							property.setOrder(Integer.valueOf(sortOrder));
-						} catch (NumberFormatException e) {}
-					}
-					return property;
-				}
-				return new RdfProperty(new Qname(predicateQname), null);
+				Model model = dao.get(predicateQname);
+				RdfProperty property = dao.createProperty(model);
+				return property;
 			} catch (Exception e) {
 				throw new RuntimeException("Single property cache loader for predicate " + predicateQname + ". " + e.getMessage());
-			} finally {
-				Utils.close(p, rs, con);
 			}
 		}
 
@@ -725,7 +691,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private void updateOccurrence(Occurrence o) throws SQLException, Exception {
 		this.store(new Subject(o.getId()), new Statement(new Predicate("MO.status"), new ObjectResource(o.getStatus())));
 	}
-	
+
 	@Override
 	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
 		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO"); 

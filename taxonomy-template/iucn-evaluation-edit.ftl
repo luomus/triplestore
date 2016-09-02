@@ -17,7 +17,10 @@
 	<p class="successMessage">${successMessage}</p>
 </#if>
 <#if errorMessage?has_content>
-	<div class="errorMessage">${errorMessage}</div>
+	<div class="errorMessage">
+		<h4>Tietoja ei tallennettu</h4>
+		${errorMessage}
+	</div>
 </#if>
 
 <#macro tree taxon>

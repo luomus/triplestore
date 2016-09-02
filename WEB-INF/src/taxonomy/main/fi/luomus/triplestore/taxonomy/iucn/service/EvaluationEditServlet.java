@@ -1,8 +1,6 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -33,6 +31,8 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
@@ -143,7 +143,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
 		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 
-		ValidationResult validationResult = validate(givenData, comparisonData);
+		IUCNValidationResult validationResult = new IUCNValidator(dao, getErrorReporter()).validate(givenData, comparisonData);
 
 		if (!validationResult.hasErrors()) {
 			IUCNEvaluation existingEvaluation = target.getEvaluation(year);
@@ -198,7 +198,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		taxon.invalidate();
 	}
 
-	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, ValidationResult validationResult) {
+	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (validationResult.hasErrors()) {
 			getSession(req).setFlashError(validationResult.getErrors());
 		} else {
@@ -389,30 +389,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		model.addStatement(new Statement(PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
 	}
 
-	private ValidationResult validate(IUCNEvaluation givenData, IUCNEvaluation comparisonData) {
-		ValidationResult validationResult = new ValidationResult();
-		// TODO Auto-generated method stub
-		if ("foo".equals("bar")) {
-			validationResult.setError("blaablaa");
-		}
-		return validationResult;
-	}
 
-	private static class ValidationResult {
-		private final List<String> errors = new ArrayList<>();
-		public boolean hasErrors() {
-			return !errors.isEmpty();
-		}
-		public void setError(String errorMessage) {
-			errors.add(errorMessage);
-		}
-		public String getErrors() {
-			StringBuilder b = new StringBuilder();
-			for (String error : errors) {
-				b.append("<p>").append(error).append("</p>");
-			}
-			return b.toString();
-		}
-	}
+	
 
+	
 }

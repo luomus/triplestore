@@ -127,7 +127,7 @@ label.error {
 	width: 180px;
 }
 
-.flashMessage, .successMessage {
+.flashMessage, .successMessage, .errorMessage {
 	padding: 10px;
 	display: block;
 	margin: 10px;
@@ -155,7 +155,7 @@ label.error {
 	padding: 5px;
 	padding-right: 10px;
 }
-h4.errorMessage {
+h4.errorMessage, .errorMessage h4 {
 	border-style: none;
 	color: red;
 	font-size: large;
