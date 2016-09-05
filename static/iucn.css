@@ -279,3 +279,7 @@ div#evaluationMeta {
 	z-index: 3;
 	min-height: 500px;
 }
+
+#copyButton {
+	margin-left: 20px;
+}

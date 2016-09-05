@@ -14,7 +14,7 @@
 <@toolbox/>		
 
 <#if successMessage?has_content>
-	<p class="successMessage">${successMessage}</p>
+	<p class="successMessage">${successMessage?html}</p>
 </#if>
 <#if errorMessage?has_content>
 	<div class="errorMessage">
@@ -54,10 +54,10 @@
 	<div class="taxonInfo">
 		<h6>Huomioita taksonomiasta</h6>
 		<#if taxon.notes?has_content>
-			<p class="info">${taxon.notes}</p>
+			<p class="info">${taxon.notes?html}</p>
 		</#if>
 		<#if taxon.privateNotes?has_content>
-			<p class="info">${taxon.privateNotes}</p>
+			<p class="info">${taxon.privateNotes?html}</p>
 		</#if>
 	</div>
 </#if>
@@ -93,9 +93,9 @@
 		<ul>
 			<#list editHistory.entries as entry>
 				<li>
-					${entry.notes!""}
+					${(entry.notes?html)!""}
 					<#if entry.editorQname??>
-						&mdash; ${persons[entry.editorQname].fullname}
+						&mdash; ${persons[entry.editorQname].fullname?html}
 					</#if> 
 				</li>				
 			</#list>
@@ -119,7 +119,14 @@
 	<thead>
 		<tr>
 			<th>Muuttuja</th>
-			<th><#if comparison??>${comparison.evaluationYear} tiedot<#else>Ei edellisiä tietoja</#if></th>
+			<th>
+				<#if comparison??>
+					${comparison.evaluationYear} tiedot
+					<button id="copyButton">Kopio &raquo;</button>
+				<#else>
+					Ei edellisiä tietoja
+				</#if>
+			</th>
 			<th>${selectedYear} tiedot</th>
 		</tr>
 	</thead>
@@ -208,7 +215,7 @@
 	</#if>
 	<@iucnInputFieldWithValues property values />
 	<#if property.hasUnitOfMeasurement()>
-		${property.unitOfMeasurement.label.forLocale("fi")}
+		${property.unitOfMeasurement.label.forLocale("fi")?html}
 	</#if>
 </#macro>
 
@@ -233,9 +240,9 @@
 			<option value=""></option>
 			<#list property.range.values as optionValue>
 				<#if value == optionValue.qname>
-					<option value="${optionValue.qname}" selected="selected">${optionValue.label.forLocale("fi")}</option>
+					<option value="${optionValue.qname}" selected="selected">${optionValue.label.forLocale("fi")?html}</option>
 				<#else>
-					<option value="${optionValue.qname}" >${optionValue.label.forLocale("fi")}</option>
+					<option value="${optionValue.qname}" >${optionValue.label.forLocale("fi")?html}</option>
 				</#if>
 			</#list>
 		</select>
@@ -247,7 +254,7 @@
 				<#list values as evaluationValue>
 					<#if same(enumValue.qname, evaluationValue)><#assign hasValue = true><#break></#if>
 				</#list>
-				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")}</option>	
+				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
 			</#list>
 		</select>
 		<#if property.repeated>(voi valita useita)</#if>
@@ -286,7 +293,7 @@
 	<#assign property = evaluationProperties.getProperty(minFieldName)>
 	<tr class="minMax">
 		<th>
-			<label>${title}</label> 
+			<label>${title?html}</label> 
 			<#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if>
 			<#if (property.comments.forLocale("fi"))??>
 				<div class="propertyComments">${property.comments.forLocale("fi")}</div>
@@ -312,10 +319,11 @@
 
 <#macro iucnOccurrence areaQname>
 	<tr>
-		<th><label>${areas[areaQname].name.forLocale("fi")}</label></th>
+		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
-				${occurrenceProperties.getProperty("MO.status").range.getValueFor(comparison.getOccurrence(areaQname).status.toString()).label.forLocale("fi")}
+				${occurrenceProperties.getProperty("MO.status").range.getValueFor(comparison.getOccurrence(areaQname).status.toString()).label.forLocale("fi")?html}
+				<span class="hidden copyValue copyValue_MKV.hasOccurrence___${areaQname}">${comparison.getOccurrence(areaQname).status}</span>
 			</#if>
 		</td>
 		<td>
@@ -324,15 +332,15 @@
 					<option value=""></option>
 					<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
 						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
-							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")}</option>
+							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")?html}</option>
 						<#else>
-							<option value="${prop.qname}">${prop.label.forLocale("fi")}</option>
+							<option value="${prop.qname}">${prop.label.forLocale("fi")?html}</option>
 						</#if>
 					</#list>
 				</select>
 			<#else>
 				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
-					${occurrenceProperties.getProperty("MO.status").range.getValueFor(evaluation.getOccurrence(areaQname).status.toString()).label.forLocale("fi")}
+					${occurrenceProperties.getProperty("MO.status").range.getValueFor(evaluation.getOccurrence(areaQname).status.toString()).label.forLocale("fi")?html}
 				</#if>
 			</#if>
 		</td>
@@ -364,7 +372,7 @@
 		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
 		<td colspan="2">
 			<#list taxon.typesOfOccurrenceInFinland as type>
-				${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(type).label.forLocale("fi")}
+				${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(type).label.forLocale("fi")?html}
 				<#if type_has_next>, </#if>
 			</#list>
 		</td>
@@ -372,7 +380,7 @@
 	<tr>
 		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
 		<td colspan="2">
-			${taxon.typeOfOccurrenceInFinlandNotes!""}
+			${(taxon.typeOfOccurrenceInFinlandNotes?html)!""}
 		</td>
 	</tr>
 </#if>
@@ -442,7 +450,7 @@
 			<option value=""></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitat").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitat == value.qname>selected="selected"</#if>>
-					${value.label.forLocale("fi")}
+					${value.label.forLocale("fi")?html}
 				</option>
 			</#list>
 		</select>
@@ -450,7 +458,7 @@
 			<option value=""></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitatSpecificTypes?seq_contains(value.qname)>selected="selected"</#if>>
-					${value.label.forLocale("fi")}
+					${value.label.forLocale("fi")?html}
 				</option>
 			</#list>
 		</select>
@@ -458,10 +466,12 @@
 </#macro>
 
 <#macro showHabitatPairValue habitatObject>
-	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")}
+	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")?html}
+	<span class="hidden copyValue copyValue_MKV.habitat">${habitatObject.habitat?html}</span>
 	<br />
 	<#list habitatObject.habitatSpecificTypes as type>
-		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")}
+		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
+		<span class="hidden copyValue copyValue_MKV.habitatSpecificType">${type?html}</span>
 		<#if type_has_next><br /></#if>
 	</#list>
 	<br />
@@ -484,7 +494,7 @@
 								<select name="${fieldName}">
 									<option value=""></option>
 									<#list publications?keys as publicationQname>
-										<option value="${publicationQname}" <#if same(publication, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+										<option value="${publicationQname}" <#if same(publication, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation?html}</option>
 									</#list>
 								</select>
 							</td>
@@ -496,7 +506,7 @@
 							<select name="${fieldName}"  data-placeholder="Valitse julkaisu" >
 								<option value=""></option>
 								<#list publications?keys as publicationQname>
-									<option value="${publicationQname}">${publications[publicationQname].citation}</option>
+									<option value="${publicationQname}">${publications[publicationQname].citation?html}</option>
 								</#list>
 							</select>
 						</td>
@@ -517,7 +527,7 @@
 
 <#macro iucnLabel fieldName>
 	<#assign property = evaluationProperties.getProperty(fieldName)> 
-	<label>${property.label.forLocale("fi")!fieldName} <#if property.required><span class="required" title="Pakollinen tieto">*</span></#if></label>
+	<label>${(property.label.forLocale("fi")?html)!fieldName} <#if property.required><span class="required" title="Pakollinen tieto">*</span></#if></label>
 	<#if property.integerProperty>
 		<span class="unitOfMeasurement">(kokonaisluku)</span>
 	</#if>
@@ -531,10 +541,11 @@
 		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
 			<#if property.literalProperty && !property.booleanProperty>
-				${value}
+				${value?html}
 			<#else>
-				${property.range.getValueFor(value).label.forLocale("fi")}
+				${property.range.getValueFor(value).label.forLocale("fi")?html}
 			</#if>
+			<span class="hidden copyValue copyValue_${fieldName}">${value?html}</span>
 			<#if value_has_next><br /><br /></#if>
 		</#list>
 	</#if>
@@ -542,7 +553,7 @@
 
 <#macro showNotes notesFieldName data="NONE">
 	<#if data != "NONE" && notesFieldName != "NONE" && data.hasValue(notesFieldName)>
-		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${data.getValue(notesFieldName)}"></span></div>
+		<div class="noteViewer"><span class="ui-icon ui-icon-comment" title="${data.getValue(notesFieldName)?html}"></span></div>
 	</#if>
 </#macro>
 
@@ -661,6 +672,21 @@ $(function() {
  			$(this).addClass('validationError');
  		}
  	});
+ 	
+ 	$('#evaluationEditForm').find('input,select').keydown(function(event){
+        if ( event.keyCode == 13 ){
+            event.preventDefault();
+        }
+    });
+    
+    $('#copyButton').on('click', function() {
+    	$(".copyValue").each(function() {
+    		// XXX
+    		//var targetFieldName = $(this).
+    		//var targetContainer = $(this).closest('tr').find('td').last();
+    		
+    	});
+    });
 });
 
 function isPositiveInteger(str) {
