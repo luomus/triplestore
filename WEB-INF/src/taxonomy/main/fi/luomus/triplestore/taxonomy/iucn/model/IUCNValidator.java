@@ -9,6 +9,7 @@ import java.util.Set;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.RdfProperty;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -35,6 +36,7 @@ public class IUCNValidator {
 	}
 
 	private void tryToValidate(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) throws Exception {
+		validateDataTypes(givenData, validationResult);
 		if (givenData.isReady()) {
 			validateRequiredFields(givenData, validationResult);
 			validateEndangermentReason(givenData, validationResult);
@@ -45,6 +47,48 @@ public class IUCNValidator {
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
+	}
+
+	private void validateDataTypes(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
+		RdfProperties properties = dao.getProperties(IUCNEvaluation.EVALUATION_CLASS);
+		for (RdfProperty p : properties.getAllProperties()) {
+			if (p.isIntegerProperty()) {
+				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
+					if (notValidInteger(s.getObjectLiteral().getContent())) {
+						String label = getLabel(p);
+						validationResult.setError("Epäkelpo luku kentässä " + label + ": " + s.getObjectLiteral().getContent());
+					}
+				}
+			} else if (p.isBooleanProperty()) {
+				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
+					if (notValidBoolean(s.getObjectLiteral().getContent())) {
+						String label = getLabel(p);
+						validationResult.setError("Epäkelpo arvo kentässä " + label + ": " + s.getObjectLiteral().getContent());
+					}
+				}
+			}
+		}
+	}
+
+	private boolean notValidBoolean(String content) {
+		if ("true".equals(content)) return false;
+		if ("false".equals(content)) return false;
+		return true;
+	}
+
+	private String getLabel(RdfProperty p) {
+		String label = p.getLabel().forLocale("fi");
+		if (label == null) label = p.getQname().toString();
+		return label;
+	}
+
+	private boolean notValidInteger(String content) {
+		try {
+			Integer.valueOf(content);
+			return false;
+		} catch (Exception e) {
+			return true;
+		}
 	}
 
 	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -144,8 +188,7 @@ public class IUCNValidator {
 		for (RdfProperty p : properties.getAllProperties()) {
 			if (p.isRequired()) {
 				if (!givenData.getModel().hasStatements(p.getQname())) {
-					String label = p.getLabel().forLocale("fi");
-					if (label == null) label = p.getQname().toString();
+					String label = getLabel(p);
 					validationResult.setError("Pakollinen tieto: " + label);
 				}
 			}

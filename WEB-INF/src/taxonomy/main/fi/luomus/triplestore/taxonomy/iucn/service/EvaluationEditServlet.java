@@ -52,7 +52,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		ResponseData responseData = super.processGet(req, res);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return redirectTo404(res);
 
@@ -69,6 +68,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
 
 		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
+
+		return showView(req, res, dao, iucnDAO, target, comparisonData, thisPeriodData, taxon, evaluationAreas);
+	}
+
+	private ResponseData showView(HttpServletRequest req, HttpServletResponse res, TriplestoreDAO dao, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation comparisonData, IUCNEvaluation thisPeriodData, Taxon taxon, Map<String, Area> evaluationAreas) throws Exception {
+		ResponseData responseData = super.processGet(req, res);
 
 		if (thisPeriodData != null) {
 			EditHistory editHistory = iucnDAO.getEditHistory(thisPeriodData);
@@ -137,7 +142,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
-
+		
 		if (!permissions(req, target)) throw new IllegalAccessException();
 
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
@@ -146,28 +151,37 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IUCNValidationResult validationResult = new IUCNValidator(dao, getErrorReporter()).validate(givenData, comparisonData);
 
 		if (!validationResult.hasErrors()) {
-			IUCNEvaluation existingEvaluation = target.getEvaluation(year);
-			if (existingEvaluation != null) {
-				deleteOccurrences(dao, existingEvaluation);
-				deleteHabitatObjects(dao, existingEvaluation);
-			}
-
-			Model model = givenData.getModel();
-			storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
-			storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
-			storeTaxonProperties(req, speciesQname, dao, taxonomyDAO);
-
-			String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
-			if (given(newPublicationCitation)) {
-				insertPublicationAndSetToModel(dao, model, newPublicationCitation);
-				taxonomyDAO.getPublicationsForceReload();
-			}
-
-			setEditNotes(givenData);
-
-			dao.store(model);
-			iucnDAO.getIUCNContainer().setEvaluation(givenData);
+			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, givenData, validationResult);
 		}
+
+		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
+		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
+		
+		return showView(req, res, dao, iucnDAO, target, comparisonData, givenData, taxon, evaluationAreas).setData("errorMessage", validationResult.getErrors());
+	}
+
+	private ResponseData storeAndRedirectToGet(HttpServletRequest req, HttpServletResponse res, String speciesQname, int year, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
+		IUCNEvaluation existingEvaluation = target.getEvaluation(year);
+		if (existingEvaluation != null) {
+			deleteOccurrences(dao, existingEvaluation);
+			deleteHabitatObjects(dao, existingEvaluation);
+		}
+
+		Model model = givenData.getModel();
+		storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
+		storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
+		storeTaxonProperties(req, speciesQname, dao, taxonomyDAO);
+
+		String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
+		if (given(newPublicationCitation)) {
+			insertPublicationAndSetToModel(dao, model, newPublicationCitation);
+			taxonomyDAO.getPublicationsForceReload();
+		}
+
+		setEditNotes(givenData);
+
+		dao.store(model);
+		iucnDAO.getIUCNContainer().setEvaluation(givenData);
 
 		setFlashMessage(req, givenData, validationResult);
 		return redirectTo(getConfig().baseURL() + "/iucn/species/" + speciesQname + "/" + year , res);
@@ -186,6 +200,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			Predicate predicate = new Predicate(parameterName);
 			usedAndGivenStatements.addUsed(predicate, null, null);
 			for (String value : e.getValue()) {
+				if (!given(value)) continue;
 				if (taxonProperties.getProperty(predicate).isLiteralProperty()) {
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value)));
 				} else {
@@ -199,14 +214,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if (validationResult.hasErrors()) {
-			getSession(req).setFlashError(validationResult.getErrors());
+		if (givenData.isReady()) {
+			getSession(req).setFlashSuccess("Tallennettu ja merkitty valmiiksi!");
 		} else {
-			if (givenData.isReady()) {
-				getSession(req).setFlashSuccess("Tallennettu ja merkitty valmiiksi!");
-			} else {
-				getSession(req).setFlashSuccess("Tallennettu onnistuneesti!");
-			}
+			getSession(req).setFlashSuccess("Tallennettu onnistuneesti!");
 		}
 	}
 
@@ -390,7 +401,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 
-	
 
-	
+
+
 }
