@@ -2,12 +2,15 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 public class IUCNValidator {
@@ -40,7 +43,26 @@ public class IUCNValidator {
 		validateMinMaxPair("MKV.countOfOccurrencesMin", "MKV.countOfOccurrencesMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.distributionAreaMin", "MKV.distributionAreaMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
-		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);		
+		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
+		validateCriteriaFormat(givenData, validationResult);
+	}
+
+	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		validateCriteriaFormat(givenData.getValues("MKV.criteriaA"), "A", validationResult);
+		validateCriteriaFormat(givenData.getValues("MKV.criteriaB"), "B", validationResult);
+		validateCriteriaFormat(givenData.getValues("MKV.criteriaC"), "C", validationResult);
+		validateCriteriaFormat(givenData.getValues("MKV.criteriaD"), "D", validationResult);
+		validateCriteriaFormat(givenData.getValues("MKV.criteriaE"), "E", validationResult);
+	}
+
+	private void validateCriteriaFormat(List<String> values, String criteriaPrefix, IUCNValidationResult validationResult) {
+		Set<String> validCriteria = VALID_CRITERIA.get(criteriaPrefix);
+		for (String value : values) {
+			if (!validCriteria.contains(value)) {
+				validationResult.setError("Kriteeri " + value +" ei ole sallittujen arvojen joukossa: " + validCriteria);
+			}
+		}
+		
 	}
 
 	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
@@ -146,4 +168,23 @@ public class IUCNValidator {
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
 	}
 	private static final int ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST = IUCN_COMPARATOR_VALUES.get("MX.iucnNT");
+	
+	private static final Map<String, Set<String>> VALID_CRITERIA = new HashMap<>();
+	static {
+		Set<String> a = Utils.set(
+				"A1", "A1a", "A1b", "A1c", "A1d", "A1e", 
+				"A2", "A2a", "A2b", "A2c", "A2d", "A2e", 
+				"A3", "A3b", "A3c", "A3d", "A3e", 
+				"A4", "A4a", "A4b", "A4c", "A4d", "A4e");
+		Set<String> b = Utils.set(
+				"B1", "B1a", "B1b", "B1b(i)");
+		Set<String> c = Utils.set("");
+		Set<String> d = Utils.set("");
+		Set<String> e = Utils.set("");
+		VALID_CRITERIA.put("A", a);
+		VALID_CRITERIA.put("B", b);
+		VALID_CRITERIA.put("C", c);
+		VALID_CRITERIA.put("D", d);
+		VALID_CRITERIA.put("E", e);
+	}
 }
