@@ -272,10 +272,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.setType("MR.checklist");
 
 		for (Map.Entry<String, String> e : checklist.getFullname().getAllTexts().entrySet()) {
-			model.addStamentIfObjectGiven("dc:bibliographicCitation", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven("dc:bibliographicCitation", e.getValue(), e.getKey());
 		}
 		for (Map.Entry<String, String> e : checklist.getNotes().getAllTexts().entrySet()) {
-			model.addStamentIfObjectGiven("rdfs:comment", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven("rdfs:comment", e.getValue(), e.getKey());
 		}
 		model.addStatementIfObjectGiven("MR.rootTaxon", checklist.getRootTaxon());
 		model.addStatementIfObjectGiven("MR.owner", checklist.getOwner());
@@ -290,7 +290,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Model model = new Model(group.getQname());
 		model.setType("MVL.informalTaxonGroup");
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
-			model.addStamentIfObjectGiven("MVL.name", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven("MVL.name", e.getValue(), e.getKey());
 		}
 		for (Qname parent : group.getSubGroups()) {
 			model.addStatementIfObjectGiven("MVL.hasSubGroup", parent);
@@ -303,8 +303,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public Publication storePublication(Publication publication) throws Exception {
 		Model model = new Model(publication.getQname());
 		model.setType("MP.publication");
-		model.addStamentIfObjectGiven("dc:bibliographicCitation", publication.getCitation(), null);
-		model.addStamentIfObjectGiven("dc:URI", publication.getURI(), null);
+		model.addStatementIfObjectGiven("dc:bibliographicCitation", publication.getCitation(), null);
+		model.addStatementIfObjectGiven("dc:URI", publication.getURI(), null);
 		store(model);
 		return publication;
 	}

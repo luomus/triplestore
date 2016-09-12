@@ -52,21 +52,21 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven("MKV.countOfOccurrencesMin", "4", null);
+		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMin", "4", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven("MKV.countOfOccurrencesMax", "4", null);
-		result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
-		givenModel.removeAll(new Predicate("MKV.countOfOccurrencesMax"));
-		givenModel.addStamentIfObjectGiven("MKV.countOfOccurrencesMax", "5", null);
+		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "4", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
 		givenModel.removeAll(new Predicate("MKV.countOfOccurrencesMax"));
-		givenModel.addStamentIfObjectGiven("MKV.countOfOccurrencesMax", "3", null);
+		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "5", null);
+		result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+		
+		givenModel.removeAll(new Predicate("MKV.countOfOccurrencesMax"));
+		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "3", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo 4 ei saa olla suurempi kuin yläarvo 3", result.listErrors().get(0));
@@ -79,8 +79,8 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMax", "MX.iucnNE", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnNE", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvoa \"NE - Arvioimatta jätetty\" ei voi käyttää arvovälinä", result.listErrors().get(0));
@@ -93,8 +93,8 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMax", "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnVU", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
@@ -106,8 +106,8 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMin", "MX.iucnVU", null);
-		givenModel.addStamentIfObjectGiven("MKV.redListStatusMax", "MX.iucnLC", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnLC", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU - Vaarantunut\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimainen\"", result.listErrors().get(0));
@@ -117,19 +117,19 @@ public class IUCNValidatorTests {
 	public void test_endagerement_reason_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
-		givenModel.addStamentIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
-		givenModel.addStamentIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
-		givenModel.addStamentIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
 		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStamentIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Uhkatekijät on määriteltävä uhanalaisuusluokalle \"VU - Vaarantunut\"", result.listErrors().get(0));
 		
-		givenModel.addStamentIfObjectGiven("MKV.endangermentReason", "MKV.endangermentReasonR", null);
+		givenModel.addStatementIfObjectGiven("MKV.endangermentReason", "MKV.endangermentReasonR", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
