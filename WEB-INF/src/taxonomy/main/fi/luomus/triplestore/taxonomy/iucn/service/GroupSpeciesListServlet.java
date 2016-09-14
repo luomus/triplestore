@@ -1,12 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +9,14 @@ import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.xml.Document.Node;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -133,7 +134,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	}
 
 	private Set<String> getTaxons(String taxon) throws Exception {
-		Node result = getTaxonomyDAO().search(taxon, 1000).getRootNode();
+		Node result = getTaxonomyDAO().search(new TaxonSearch(taxon, 1000)).getRootNode();
 		Set<String> qnames = new HashSet<>();
 		for (Node exactmatch : result.getChildNodes("exactMatch")) {
 			for (Node match : exactmatch.getChildNodes()) {

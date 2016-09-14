@@ -99,6 +99,7 @@ To delete a literal statement, give empty resourceliteral ("") as parameter. Thi
 
 ### Parameters
 * checklist - Qname of checklist, default MR.1 (master checklist)
+* requiredInformalTaxonGroup - One or more informal taxon group Qnames; names matching searchword must belong to one of these groups
 * format - JSON, XML, JSONP (taxon-search)
 
 Returns HTTP 200 on success, HTTP 500 on failure.
