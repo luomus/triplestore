@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -128,7 +129,9 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		String[] groups = req.getParameterValues("requiredInformalTaxonGroup");
 		Set<Qname> set = new HashSet<>();
 		for (String group : groups) {
-			set.add(new Qname(group));
+			for (String groupPart : group.split(Pattern.quote(","))) {
+				set.add(new Qname(groupPart));
+			}
 		}
 		return set;
 	}
