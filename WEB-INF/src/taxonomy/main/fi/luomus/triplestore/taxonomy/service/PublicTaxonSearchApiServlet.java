@@ -1,7 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
 import fi.luomus.commons.utils.Cached;
@@ -23,7 +25,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
 import org.json.XML;
 
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
@@ -98,6 +99,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		int limit = getLimit(req);
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
+		int version = getVersion(req);
 
 		Format format = getFormat(req);
 
@@ -115,13 +117,82 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			return jsonpResponse(toJsonp(response, callback), res);
 		}
 		if (jsonRequest(format)) {
-			String xml = new XMLWriter(response).generateXML();
-			JSONObject jsonObject = XML.toJSONObject(xml);
-			String json = jsonObject.toString();
-			return jsonResponse(json, res);
+			if (version == 2) {
+				return jsonResponse(toJsonV2(response).toString(), res);
+			} else {
+				String xml = new XMLWriter(response).generateXML();
+				org.json.JSONObject jsonObject = XML.toJSONObject(xml);
+				String json = jsonObject.toString();
+				return jsonResponse(json, res);
+			}
 		} else {
 			return xmlResponse(response, res);
 		}
+	}
+
+	private JSONObject toJsonV2(Document response) {
+		JSONObject json = new JSONObject();
+		Node root = response.getRootNode();
+		addJsonV2Matches(json, root, "exactMatch", "exactMatches");
+		addJsonV2Matches(json, root, "likelyMatches", "likelyMatches");
+		addJsonV2Matches(json, root, "partialMatches", "partialMatches");
+		return json;
+	}
+
+	private void addJsonV2Matches(JSONObject json, Node root, String nodeName, String fieldName) {
+		if (root.hasChildNodes(nodeName)) {
+			for (Node match : root.getNode(nodeName).getChildNodes()) {
+				json.getArray(fieldName).appendObject(toJsonV2(match));
+			}
+		}
+	}
+
+	private JSONObject toJsonV2(Node match) {
+		JSONObject json = new JSONObject();
+		json.setString("id", match.getName());
+		json.setString("matchingName", match.getAttribute("matchingName"));
+		json.setString("scientficName", match.getAttribute("scientificName"));
+		if (match.hasAttribute("scientificNameAuthorship")) {
+			json.setString("scientificNameAuthorship", match.getAttribute("scientificNameAuthorship"));
+		}
+		Qname taxonRank = getTaxonRank(match);
+		if (given(taxonRank)) {
+			json.setString("taxonRankId", taxonRank.toString());	
+		}
+		json.setBoolean("isSpecies", Taxon.isSpecies(taxonRank));
+		json.setBoolean("isCursiveName", Taxon.shouldCusive(taxonRank));
+		if (match.hasChildNodes("informalGroups")) {
+			for (Node group : match.getNode("informalGroups").getChildNodes()) {
+				json.getArray("informalGroups").appendObject(toJSONV2InformalGroup(group));
+			}
+		}
+		return json;
+	}
+
+	private JSONObject toJSONV2InformalGroup(Node group) {
+		JSONObject json = new JSONObject();
+		json.setString("id", group.getName());
+		addJSONV2GroupName(group, json, "fi");
+		addJSONV2GroupName(group, json, "sv");
+		addJSONV2GroupName(group, json, "en");
+		return json;
+	}
+
+	private void addJSONV2GroupName(Node group, JSONObject json, String locale) {
+		if (group.hasAttribute(locale)) {
+			json.getObject("name").setString(locale, group.getAttribute(locale));
+		}
+	}
+
+	private Qname getTaxonRank(Node match) {
+		if (match.hasAttribute("taxonRank")) return new Qname(match.getAttribute("taxonRank"));
+		return null;
+	}
+
+	private int getVersion(HttpServletRequest req) {
+		String version = req.getParameter("v");
+		if (version == null) return 1;
+		return Integer.valueOf(version);
 	}
 
 	private Set<Qname> parseRequiredInformalGroups(HttpServletRequest req) {
@@ -159,6 +230,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 	private ResponseData jsonpResponse(String response, HttpServletResponse res) throws Exception {
 		res.setContentType("application/javascript; charset=utf-8");
+		res.setHeader("Access-Control-Allow-Origin", "*");
 		PrintWriter out = res.getWriter();
 		out.write(response);
 		out.flush();

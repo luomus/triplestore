@@ -192,6 +192,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	protected ResponseData jsonResponse(String json, HttpServletResponse res) throws Exception {
 		res.setContentType("application/json; charset=utf-8");
+		res.setHeader("Access-Control-Allow-Origin", "*");
 		PrintWriter out = res.getWriter();
 		out.write(json);
 		out.flush();
