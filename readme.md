@@ -95,9 +95,12 @@ To delete a literal statement, give empty resourceliteral ("") as parameter. Thi
 * On error returns HTTP 500
 
 
+## GET /triplestore/taxon-search?q={searchword}
 ## GET /triplestore/taxon-search/{searchword}
 
 ### Parameters
+* q - The search word
+* depracated: giving search word as path parameter
 * checklist - Qname of checklist, default MR.1 (master checklist)
 * requiredInformalTaxonGroup - One or more informal taxon group Qnames; names matching searchword must belong to one of these groups
 * format - JSON, XML, JSONP

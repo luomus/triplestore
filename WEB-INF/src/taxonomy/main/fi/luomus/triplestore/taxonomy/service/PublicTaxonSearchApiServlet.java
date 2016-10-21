@@ -1,17 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.commons.xml.XMLWriter;
-
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,6 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.XML;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.Cached;
+import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.Document.Node;
+import fi.luomus.commons.xml.XMLWriter;
 
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
@@ -94,7 +95,10 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		String searchword = getQname(req);
+		String searchword = req.getParameter("q");
+		if (!given(searchword)) {
+			searchword = Utils.urlDecode(getQname(req)); // Yes, the path needs to encoded and decoded.. but it fails for some cases. It is not reccomended to use parameter
+		}
 		int limit = getLimit(req);
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
