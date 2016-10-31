@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -9,10 +13,6 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/changeparent/*"})
 public class ApiChangeParentServlet extends ApiBaseServlet {
@@ -47,8 +47,10 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 		taxon.invalidate();
 		newParent.invalidate();
-		oldParent.invalidate();
-		
+		if (oldParent != null) {
+			oldParent.invalidate();
+		}
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentQname)));
 		if (taxon.getChecklist() == null) {
@@ -56,7 +58,7 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 			Qname newTaxonConcept = dao.addTaxonConcept();
 			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.circumscription"), new ObjectResource(newTaxonConcept)));
 		}
-		
+
 		return apiSuccessResponse(res);
 	}
 
