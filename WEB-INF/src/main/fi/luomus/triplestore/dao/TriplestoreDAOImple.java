@@ -57,16 +57,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" WHERE subjectname = ? AND predicatename = ? " + 
 			" AND coalesce(contextname,'.') = ? AND coalesce(langcodefk,'.') = ? ";
 
-	private static final String PERSON_NEXTVAL_SQL = "" + 
-			" SELECT max(to_number(substr(qname, 4))) 			" + 
-			" FROM ( 											" +  
-			" 	SELECT DISTINCT subjectname AS qname 			" + 
-			"	FROM "+SCHEMA+".rdf_statementview 				" + 
-			"	WHERE predicatename = 'rdf:type' 				" + 
-			"	AND objectname = 'MA.person' 	 				" +
-			" )													" +	
-			" WHERE to_number(substr(qname, 4)) < 10000 		";
-
 	private static final String CALL_LTKM_LUONTO_ADD_STATEMENT_L = " {CALL "+SCHEMA+".AddStatementL(?, ?, ?, ?, ?, ?)} ";
 
 	private static final String CALL_LTKM_LUONTO_ADD_STATEMENT = " {CALL "+SCHEMA+".AddStatement(?, ?, ?, ?, ?)} ";
@@ -225,11 +215,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public Qname getSeqNextValAndAddResource(String qnamePrefix) throws SQLException {
-		if (qnamePrefix.equalsIgnoreCase("MA")) {
-			Qname personQname = personNextVal();
-			addResource(personQname);
-			return personQname;
-		}
 		String query = " SELECT "+SCHEMA+".rdf_"+qnamePrefix.toLowerCase()+"_seq.nextval FROM dual ";
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -243,24 +228,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			Qname qname = new Qname(qnamePrefix.toUpperCase() + "." + nextval);
 			addResource(qname, con);
 			return qname;
-		} finally {
-			Utils.close(p, rs, con);
-		}
-	}
-
-	private Qname personNextVal() throws SQLException {
-		String sql = PERSON_NEXTVAL_SQL;
-		TransactionConnection con = null;
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			con = openConnection();
-			p = con.prepareStatement(sql);
-			rs = p.executeQuery();
-			rs.next();
-			int max = rs.getInt(1);
-			int nextval = max + 1;
-			return new Qname("MA." + nextval);
 		} finally {
 			Utils.close(p, rs, con);
 		}
