@@ -1,16 +1,16 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.XMLWriter;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 import org.json.XML;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.XMLWriter;
 
 @WebServlet(urlPatterns = {"/uri/*"})
 public class UriGeneratorServlet extends EditorBaseServlet {
@@ -24,7 +24,6 @@ public class UriGeneratorServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		// TODO remove
 		return processPost(req, res);
 	}
 
