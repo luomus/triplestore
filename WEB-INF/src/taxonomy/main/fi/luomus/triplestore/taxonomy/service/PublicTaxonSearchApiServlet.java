@@ -154,7 +154,9 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		JSONObject json = new JSONObject();
 		json.setString("id", match.getName());
 		json.setString("matchingName", match.getAttribute("matchingName"));
-		json.setString("scientificName", match.getAttribute("scientificName"));
+		if (match.hasAttribute("scientificName")) {
+			json.setString("scientificName", match.getAttribute("scientificName"));			
+		}
 		if (match.hasAttribute("scientificNameAuthorship")) {
 			json.setString("scientificNameAuthorship", match.getAttribute("scientificNameAuthorship"));
 		}
