@@ -563,8 +563,7 @@
 			<@iucnLabel notesFieldName />
 			<textarea name="${notesFieldName}"><#if evaluation??>${(evaluation.getValue(notesFieldName)?html)!""}</#if></textarea>
 			<br />
-			<button class="emptyNoteButton">Tyhjennä</button>
-			<button class="closeNoteEditButton">Sulje</button>
+			<button class="closeNoteEditButton">Tallenna ja sulje</button>
 		</div>
 	</#if>
 </#macro>
@@ -589,10 +588,6 @@ $(function() {
 	$(".closeNoteEditButton").on('click', function() {
 		$(this).closest('.notes').find('textarea').trigger('change');
 	});
- 	
- 	$(".emptyNoteButton").on('click', function() {
- 		$(this).closest('.notes').find('textarea').val('').trigger('change');
- 	});
  	
  	$("button.add").on('click', function() {
  		var input = $(this).prevAll(":input").first();
