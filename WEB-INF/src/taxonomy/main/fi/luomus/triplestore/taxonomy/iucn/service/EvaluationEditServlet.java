@@ -1,7 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -23,6 +27,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
@@ -88,8 +93,32 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
 				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
 				.setData("areas", evaluationAreas)
+				.setData("regionalOccurrences", getRegionalOccurrences())
 				.setData("permissions", permissions(req, target));
 	}
+
+	private static Collection<RdfProperty> regionalOccurrences;
+
+	private Collection<RdfProperty> getRegionalOccurrences() throws Exception {
+		if (regionalOccurrences == null) {
+			regionalOccurrences = initRegionalOccurrences();
+		}
+		return regionalOccurrences;
+	}
+
+	private Collection<RdfProperty> initRegionalOccurrences() throws Exception {
+		List<RdfProperty> occurrences = new ArrayList<>();
+		Set<Qname> whitelist = Utils.set(
+				new Qname("MX.typeOfOccurrenceOccurs"), 
+				new Qname("MX.typeOfOccurrenceExtirpated"), 
+				new Qname("MX.typeOfOccurrenceAnthropogenic"), 
+				new Qname("MX.doesNotOccur"));
+		TriplestoreDAO dao = getTriplestoreDAO();
+		for (RdfProperty p : dao.getProperty(new Predicate("MO.status")).getRange().getValues()) {
+			if (whitelist.contains(p.getQname())) occurrences.add(p);
+		}
+		return occurrences;
+	} 
 
 	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target) throws Exception {
 		boolean userHasPermissions = false;
@@ -142,7 +171,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
-		
+
 		if (!permissions(req, target)) throw new IllegalAccessException();
 
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
@@ -156,7 +185,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
 		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
-		
+
 		return showView(req, res, dao, iucnDAO, target, comparisonData, givenData, taxon, evaluationAreas).setData("errorMessage", validationResult.getErrors());
 	}
 

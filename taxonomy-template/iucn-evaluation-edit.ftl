@@ -63,7 +63,7 @@
 </#if>
 
 <div class="taxonInfo">
-	<h6>Elöryhmät</h6>
+	<h6>Eliöryhmä</h6>
 	<ul>
 		<#list target.groups as groupQname>
 			<li>
@@ -330,7 +330,7 @@
 			<#if permissions>
 				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
 					<option value=""></option>
-					<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
+					<#list regionalOccurrences as prop>
 						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
 							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")?html}</option>
 						<#else>
