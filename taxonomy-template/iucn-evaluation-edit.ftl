@@ -185,7 +185,7 @@
 	<@iucnTextarea "MKV.lastSightingNotes" />
 	
 	<#if draftYear != selectedYear>
-		<@iucnSection "Indeksikorjaus" />
+		<@iucnSection "Uhanalaisuusindeksi" />
 		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
 	</#if>
 	
