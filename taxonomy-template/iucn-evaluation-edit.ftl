@@ -163,15 +163,10 @@
 	<@iucnInput "MKV.threats" "MKV.threatNotes" />
 
 	<@iucnSection "Kriteerit" />
-	<@iucnInput "MKV.criteriaA" "MKV.criteriaANotes" />
-	<@iucnInput "MKV.criteriaB" "MKV.criteriaBNotes" />
-	<@iucnInput "MKV.criteriaC" "MKV.criteriaCNotes" />
-	<@iucnInput "MKV.criteriaD" "MKV.criteriaDNotes" />
-	<@iucnInput "MKV.criteriaE" "MKV.criteriaENotes" />
-
-    <#--- tähän asti järjestys oikein -->
-
-	
+	<#list ["A", "B", "C", "D", "E"] as criteria>
+		<@iucnInput "MKV.criteria"+criteria "MKV.criteria"+criteria+"Notes" />
+		<@iucnInput "MKV.status"+criteria "MKV.status"+criteria+"Notes" />
+	</#list>
 	
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
