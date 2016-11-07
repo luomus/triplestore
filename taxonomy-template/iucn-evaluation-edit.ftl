@@ -134,7 +134,16 @@
 	
 	<@iucnSection "Arvioinnissa käytetty taksonominen tulkinta" />
 	<@iucnTextarea "MKV.taxonomicNotes" />
-		
+	
+	<@iucnSection "Esiintymistä koskevat tiedot" />
+	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" occurrenceStatuses />
+
+
+
+    <#--- tähän asti järjestys oikein -->
+
+
+	
 	<@iucnSection "Luokka" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
 	<#if draftYear != selectedYear>
@@ -151,7 +160,7 @@
 	<@iucnInput "MKV.criteriaD" "MKV.criteriaDNotes" />
 	<@iucnInput "MKV.criteriaE" "MKV.criteriaENotes" />
 	
-		<@iucnSection "Esiintyminen" />
+	<@iucnSection "Esiintyminen" />
 	<@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
 	<@iucnMinMax "Esiintymiä alussa/lopussa" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
@@ -209,19 +218,19 @@
 	</tr>
 </#macro>
 
-<#macro iucnInputField fieldName>
+<#macro iucnInputField fieldName customRange=[]>
 	<#assign property = evaluationProperties.getProperty(fieldName)>
 	<#assign values = ['']>
 	<#if evaluation?? && evaluation.hasValue(fieldName)>
 		<#assign values = evaluation.getValues(fieldName)>
 	</#if>
-	<@iucnInputFieldWithValues property values />
+	<@iucnInputFieldWithValues property values customRange />
 	<#if property.hasUnitOfMeasurement()>
 		${property.unitOfMeasurement.label.forLocale("fi")?html}
 	</#if>
 </#macro>
 
-<#macro iucnInputFieldWithValues property values>
+<#macro iucnInputFieldWithValues property values customRange=[]>
 	<#if property.literalProperty && !property.booleanProperty>
 		<#list values as value>
 			<#if property.hasUnitOfMeasurement() && property.unitOfMeasurement.qname == "MZ.unitOfMeasurementPercent">
@@ -251,7 +260,9 @@
 	<#else>
 		<select name="${property.qname}"  data-placeholder="..." <#if property.repeated>multiple="multiple"</#if> >
 			<option value=""></option>
-			<#list property.range.values as enumValue>
+			<#assign ranges = property.range.values>
+			<#if customRange?has_content> <#assign ranges = customRange> </#if> 
+			<#list ranges as enumValue>
 				<#assign hasValue = false>
 				<#list values as evaluationValue>
 					<#if same(enumValue.qname, evaluationValue)><#assign hasValue = true><#break></#if>
@@ -263,13 +274,13 @@
 	</#if>
 </#macro>
 
-<#macro iucnInput fieldName notesFieldName="NONE">
+<#macro iucnInput fieldName notesFieldName="NONE" customRange=[]>
 	<tr>
 		<th><@iucnLabel fieldName /></th>
 		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
 		<td>
 			<#if permissions>
-				<@iucnInputField fieldName /> <@editableNotes notesFieldName />
+				<@iucnInputField fieldName customRange /> <@editableNotes notesFieldName />
 			<#else>
 				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
 			</#if>
@@ -332,7 +343,7 @@
 			<#if permissions>
 				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
 					<option value=""></option>
-					<#list regionalOccurrences as prop>
+					<#list regionalOccurrenceStatuses as prop>
 						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
 							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")?html}</option>
 						<#else>

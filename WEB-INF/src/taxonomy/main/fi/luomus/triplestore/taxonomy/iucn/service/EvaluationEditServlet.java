@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -26,9 +26,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.DateUtils;
-import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
@@ -37,7 +35,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -88,32 +85,65 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
 				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
 				.setData("areas", iucnDAO.getEvaluationAreas())
-				.setData("regionalOccurrences", getRegionalOccurrences())
+				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
+				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("permissions", permissions(req, target));
 	}
 
-	private static Collection<RdfProperty> regionalOccurrences;
+	private static Collection<RdfProperty> occurrenceStatuses;
 
-	private Collection<RdfProperty> getRegionalOccurrences() throws Exception {
-		if (regionalOccurrences == null) {
-			regionalOccurrences = initRegionalOccurrences();
+	private Collection<RdfProperty> getOccurrenceStatuses() throws Exception {
+		if (occurrenceStatuses == null) {
+			occurrenceStatuses = initOccurrenceStatuses();
 		}
-		return regionalOccurrences;
+		return occurrenceStatuses;
 	}
 
-	private Collection<RdfProperty> initRegionalOccurrences() throws Exception {
+	private Collection<RdfProperty> initOccurrenceStatuses() throws Exception {
 		List<RdfProperty> occurrences = new ArrayList<>();
-		Set<Qname> whitelist = Utils.set(
-				new Qname("MX.typeOfOccurrenceOccurs"), 
-				new Qname("MX.typeOfOccurrenceExtirpated"), 
-				new Qname("MX.typeOfOccurrenceAnthropogenic"), 
-				new Qname("MX.doesNotOccur"));
-		TriplestoreDAO dao = getTriplestoreDAO();
-		for (RdfProperty p : dao.getProperty(new Predicate("MO.status")).getRange().getValues()) {
-			if (whitelist.contains(p.getQname())) occurrences.add(p);
+		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceStablePopulation", "Vakiintunut = lisääntyvä, alkuperäinen tai uudempi vakiintunut, luontaisesti levinnyt", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceNotEstablished", "Uusi laji = luontaisesti levinnyt, mutta ei vakiintunut (tai vakiintumisesta ei ole varmuutta)", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt = laji on hävinnyt Suomesta", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceVagrant", "Säännöllinen vierailija = ei lisäänny, esiintyminen +/- ennustettavaa", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceRareVagrant", "Satunnainen vierailija = ei lisäänny, esiintyminen +/- ennustamatonta", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Vieraslaji = laji on tullut alueelle ihmisen avustamana (tahattomasti tai tahallisesti) vuoden 1800 jälkeen", referenceStatuses));
+		return occurrences;
+	}
+
+	private static Collection<RdfProperty> regionalOccurrenceStatuses;
+
+	private Collection<RdfProperty> getRegionalOccurrenceStatuses() throws Exception {
+		if (regionalOccurrenceStatuses == null) {
+			regionalOccurrenceStatuses = initRegionalOccurrenceStatuses();
 		}
+		return regionalOccurrenceStatuses;
+	}
+
+	private Collection<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
+		List<RdfProperty> occurrences = new ArrayList<>();
+		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccurs", "Esiintyy vyöhykkeellä", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt vyöhykkeeltä (RE)", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
 		return occurrences;
 	} 
+
+	private RdfProperty buildOccurrenceStatus(String id, String label, Collection<RdfProperty> referenceStatuses) {
+		Qname qname = new Qname(id);
+		if (!contains(referenceStatuses, qname)) throw new IllegalStateException("Unknown reference status: " + id);
+		RdfProperty p = new RdfProperty(qname);
+		p.setLabels(new LocalizedText().set("fi", label));
+		return p;
+	}
+
+	private boolean contains(Collection<RdfProperty> referenceStatuses, Qname qname) {
+		for (RdfProperty p : referenceStatuses) {
+			if (p.getQname().equals(qname)) return true;
+		}
+		return false;
+	}
 
 	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target) throws Exception {
 		boolean userHasPermissions = false;
@@ -177,9 +207,9 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		if (!validationResult.hasErrors()) {
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, givenData, validationResult);
 		}
-		
+
 		givenData.getModel().removeAll(EDIT_NOTES_PREDICATE);
-		
+
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
 				.setData("errorMessage", validationResult.getErrors())
 				.setData("editNotes", req.getParameter(IUCNEvaluation.EDIT_NOTES));
@@ -195,7 +225,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		Model model = givenData.getModel();
 		storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
 		storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
-		storeTaxonProperties(req, speciesQname, dao, taxonomyDAO);
 
 		String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
 		if (given(newPublicationCitation)) {
@@ -214,28 +243,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private boolean invalidState(String state) {
 		return !IUCNEvaluation.STATE_READY.equals(state) && !IUCNEvaluation.STATE_STARTED.equals(state);
-	}
-
-	private void storeTaxonProperties(HttpServletRequest req, String speciesQname, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		RdfProperties taxonProperties = dao.getProperties("MX.taxon");
-		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
-		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
-			String parameterName = e.getKey();
-			if (!parameterName.startsWith("MX.")) continue;
-			Predicate predicate = new Predicate(parameterName);
-			usedAndGivenStatements.addUsed(predicate, null, null);
-			for (String value : e.getValue()) {
-				if (!given(value)) continue;
-				if (taxonProperties.getProperty(predicate).isLiteralProperty()) {
-					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value)));
-				} else {
-					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value)));
-				}
-			}
-		}
-		dao.store(new Subject(speciesQname), usedAndGivenStatements);
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(speciesQname));
-		taxon.invalidate();
 	}
 
 	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
