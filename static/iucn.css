@@ -280,7 +280,7 @@ div#evaluationMeta {
 	height: auto;
 	width: 600px;
 	background-color: white;
-	z-index: 3;
+	z-index: 99999;
 	min-height: 500px;
 }
 
