@@ -137,7 +137,6 @@ grant select on luonto.rdf_XX_seq to ; -- All used sequences..
 ~~~
 SystemID = triplestore
 SystemQname = 
-LajiAuthURL = 
 
 DevelopmentMode = YES
 StagingMode = NO
@@ -176,7 +175,6 @@ TriplestoreSelf_Password =
 
 taxonomyEditorBaseURL = ...
 lajiETLBaseURL = .../console
-lajiAuthBaseURL  = .../admin/unapproved
 ~~~
 
 
