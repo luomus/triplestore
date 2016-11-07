@@ -137,7 +137,9 @@
 		
 	<@iucnSection "Luokka" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
-	<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+	<#if draftYear != selectedYear>
+		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+	</#if>
 	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	<@iucnMinMax "Vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
