@@ -140,62 +140,58 @@
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 
+	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä jos luokka NT-RE</span>" />
+	<#list areas?keys as areaQname>
+		<@iucnOccurrence areaQname />
+	</#list>
+	<@iucnTextarea "MKV.occurrenceNotes" />
 
-    <#--- tähän asti järjestys oikein -->
+	<@iucnSection "Elinympäristö" />   
+	<@iucnHabitatFields />   
 
+	<@iucnSection "Arvioinnin perusteet" />
+	<@iucnInput "MKV.generationAge" "MKV.generationAgeNotes" />
+	<@iucnInput "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
+	<#-- <@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" /> -->
+	<@iucnMinMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
+	<@iucnMinMax "Populaation pieneminen tarkastelujakson aikana" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
+	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
+	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
+	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
+	<@iucnInput "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
+	<@iucnInput "MKV.threats" "MKV.threatNotes" />
 
-	
-	<@iucnSection "Luokka" />	
-	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
-	<#if draftYear != selectedYear>
-		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
-	</#if>
-	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
-	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
-	<@iucnMinMax "Vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
-			
 	<@iucnSection "Kriteerit" />
 	<@iucnInput "MKV.criteriaA" "MKV.criteriaANotes" />
 	<@iucnInput "MKV.criteriaB" "MKV.criteriaBNotes" />
 	<@iucnInput "MKV.criteriaC" "MKV.criteriaCNotes" />
 	<@iucnInput "MKV.criteriaD" "MKV.criteriaDNotes" />
 	<@iucnInput "MKV.criteriaE" "MKV.criteriaENotes" />
+
+    <#--- tähän asti järjestys oikein -->
+
 	
-	<@iucnSection "Esiintyminen" />
-	<@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" />
-	<@iucnMinMax "Esiintymiä alussa/lopussa" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
-	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
-	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
 	
-	<@iucnSection "Elinympäristö" />   
-	<@iucnHabitatFields />   
-	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
-   
-	<@iucnSection "Kanta" />
-	<@iucnMinMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
-	<@iucnInput "MKV.generationAge" "MKV.generationAgeNotes" />
-	<@iucnInput "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
-	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
-	
-	<@iucnSection "Uhanalaisuus" />
-	<@iucnInput "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
-	<@iucnTextarea "MKV.actionNotes" />   
+	<@iucnSection "Uhanalaisuus" />	
+	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
+ 	<#--- todo: luokkaan johtaneet kriteerit -->
+	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
+	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
+	<#--- todo: luokkaan kasvatus/lasku -->
+	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
 	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
 	<@iucnInput "MKV.possiblyRE" />
 	<@iucnTextarea "MKV.lastSightingNotes" />
-
+	
+	<#if draftYear != selectedYear>
+		<@iucnSection "Indeksikorjaus" />
+		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+	</#if>
+	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
 
-	<@iucnSection "Vakinaisuus alueittain" />
-	<#list areas?keys as areaQname>
-		<@iucnOccurrence areaQname />
-	</#list>
-	<@iucnTextarea "MKV.occurrenceNotes" />
-	
-	<@iucnSection "Vakinaisuus Suomessa tällä hetkellä <span>- Huom: Nämä tiedot ovat julkisia ja alla muokataan lajin varsinaista taksonomiaa (ei vuosikohtaista IUCN-arviointitietoa)!</span>" /> 
-	<@taxonOccurenceInFinland />
-	
 	</tbody>
 </table>
 
@@ -358,45 +354,6 @@
 			</#if>
 		</td>
 	</tr>
-</#macro>
-
-<#macro taxonOccurenceInFinland>
-<#if permissions>
-	<tr>
-		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
-		<td colspan="2">
-			<#list taxon.typesOfOccurrenceInFinland as type>
-				<@select "MX.typeOfOccurrenceInFinland" type />
-			</#list>
-			<#if !taxon.typesOfOccurrenceInFinland?has_content>
-				<@select "MX.typeOfOccurrenceInFinland" type />
-			</#if>
-			<button class="add">+ Lisää</button>
-		</td>
-	</tr>
-	<tr>
-		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
-		<td colspan="2">
-			<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
-		</td>
-	</tr>
-<#else>
-	<tr>
-		<th><@label "MX.typeOfOccurrenceInFinland" "" "fi" /></th>
-		<td colspan="2">
-			<#list taxon.typesOfOccurrenceInFinland as type>
-				${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(type).label.forLocale("fi")?html}
-				<#if type_has_next>, </#if>
-			</#list>
-		</td>
-	</tr>
-	<tr>
-		<th><@label "MX.typeOfOccurrenceInFinlandNotes" "" "fi" /></th>
-		<td colspan="2">
-			${(taxon.typeOfOccurrenceInFinlandNotes?html)!""}
-		</td>
-	</tr>
-</#if>
 </#macro>
 
 <#macro iucnHabitatFields>
