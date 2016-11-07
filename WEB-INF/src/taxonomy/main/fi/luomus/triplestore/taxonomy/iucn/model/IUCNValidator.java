@@ -111,17 +111,34 @@ public class IUCNValidator {
 	}
 
 	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
-		String statusChangeReason = givenData.getValue("MKV.reasonForStatusChange");
-		if (given(statusChangeReason)) return;
+		List<String> statusChangeReasons = givenData.getValues("MKV.reasonForStatusChange");
+		if (!statusChangeReasons.isEmpty()) {
+			if (statusChangeReasons.contains("MKV.reasonForStatusChangeGenuine") || statusChangeReasons.contains("MKV.reasonForStatusChangeGenuineBeforePreviousEvaluation")) {
+				if (statusChangeReasons.size() > 1) {
+					validationResult.setError("Aitoa muutosta ja ei-aitoa muutosta ei saa merkitä yhtä aikaa");
+					return;
+				}
+			}
+		}
+		
 		if (comparisonData == null) return;
+		
 		String thisStatus = givenData.getIucnStatus();
 		String prevStatus = comparisonData.getIucnStatus();
 		if (!given(prevStatus) || !given(thisStatus)) return;
+		
 		Integer thisStatusOrder = IUCN_COMPARATOR_VALUES.get(thisStatus);
 		Integer prevStatusOrder = IUCN_COMPARATOR_VALUES.get(prevStatus);
 		if (thisStatusOrder == null || prevStatusOrder == null) return;
-		if (thisStatusOrder != prevStatusOrder) {
-			validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka");
+		
+		if (!statusChangeReasons.isEmpty()) {
+			if (thisStatusOrder == prevStatusOrder) {
+				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut");
+			}
+		} else {
+			if (thisStatusOrder != prevStatusOrder) {
+				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka");
+			}
 		}
 	}
 
@@ -132,7 +149,7 @@ public class IUCNValidator {
 		Integer statusOrderValue = IUCN_COMPARATOR_VALUES.get(status);
 		if (statusOrderValue == null) return;
 		if (statusOrderValue >= ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST) {
-			validationResult.setError("Uhkatekijät on määriteltävä uhanalaisuusluokalle " + getLabel(status));
+			validationResult.setError("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle " + getLabel(status));
 		}
 	}
 
