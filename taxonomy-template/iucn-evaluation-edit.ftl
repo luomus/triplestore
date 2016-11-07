@@ -183,6 +183,12 @@
 		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
 	</#if>
 	
+	<@iucnSection "Alueellinen uhanalaisuus" />	
+	<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
+	<#list areas?keys as areaQname>
+		<@iucnRegionalStatus areaQname />
+	</#list>
+	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
 
@@ -320,8 +326,24 @@
 	</tr>
 </#macro>
 
-<#macro iucnOccurrence areaQname>
-	<tr>
+
+<#macro iucnRegionalStatus areaQname>
+	<#assign fieldName = "MKV.regionalStatus_"+areaQname>
+	<#assign notesFieldName = "MKV.regionalStatus_"+areaQname+"_Notes">
+	<tr class="regionalStatusRow hidden">
+		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
+		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
+		<td>
+			<#if permissions>
+				<@iucnInputField fieldName /> <@editableNotes notesFieldName />
+			<#else>
+				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
+			</#if>
+		</td>
+	</tr>
+</#macro>
+
+<#macro iucnOccurrence areaQname>	<tr>
 		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
@@ -542,7 +564,7 @@ $(function() {
 		$(this).on('change', criteriaStatusChanged);
 	});
 		
-	$("select").chosen({ allow_single_deselect:true });
+	$("select").not(".regionalStatusRow select").chosen({ allow_single_deselect:true });
 	
 	$("label").tooltip();
 	
@@ -653,6 +675,10 @@ $(function() {
     		
     	});
     });
+    
+    $("#showRegionalButton").on('click', function() {
+    	$(".regionalStatusRow").show('fast');
+    });
 });
 
 function isPositiveInteger(str) {
@@ -687,7 +713,9 @@ function updateNotes(noteInput) {
 	noteViewer.on('click', function() {
 		var notesContainer = $(this).closest('td').find('.notes').first();
 		$(this).fadeOut('fast', function() {
-			notesContainer.fadeIn('fast');
+			notesContainer.fadeIn('fast', function() {
+				$(this).find('textarea').first().focus();
+			});
 		});
 		return false;
 	});
