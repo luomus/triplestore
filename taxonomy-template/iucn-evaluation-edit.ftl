@@ -137,7 +137,8 @@
 	
 	<@iucnSection "Esiintymistä koskevat tiedot" />
 	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" occurrenceStatuses />
-
+	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
+    <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 
 
     <#--- tähän asti järjestys oikein -->
@@ -165,7 +166,6 @@
 	<@iucnMinMax "Esiintymiä alussa/lopussa" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
 	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
-	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
 	
 	<@iucnSection "Elinympäristö" />   
 	<@iucnHabitatFields />   
