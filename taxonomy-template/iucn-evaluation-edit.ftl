@@ -170,10 +170,9 @@
 	
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
- 	<#--- todo: luokkaan johtaneet kriteerit -->
-	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
+ 	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
-	<#--- todo: luokkaan kasvatus/lasku -->
+	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
 	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
 	<@iucnInput "MKV.possiblyRE" />
@@ -239,7 +238,7 @@
 	<#elseif property.booleanProperty>
 		<#assign value = values?first>
 		<select name="${property.qname}" class="shortChosen" data-placeholder="Kyllä/Ei">
-			<option value=""></option>
+			<option value="" label=".."></option>
 			<#list property.range.values as optionValue>
 				<#if value == optionValue.qname>
 					<option value="${optionValue.qname}" selected="selected">${optionValue.label.forLocale("fi")?html}</option>
@@ -250,7 +249,7 @@
 		</select>
 	<#else>
 		<select name="${property.qname}"  data-placeholder="..." <#if property.repeated>multiple="multiple"</#if> >
-			<option value=""></option>
+			<option value="" label=".."></option>
 			<#assign ranges = property.range.values>
 			<#if customRange?has_content> <#assign ranges = customRange> </#if> 
 			<#list ranges as enumValue>
@@ -333,7 +332,7 @@
 		<td>
 			<#if permissions>
 				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
-					<option value=""></option>
+					<option value="" label=".."></option>
 					<#list regionalOccurrenceStatuses as prop>
 						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
 							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")?html}</option>
@@ -412,7 +411,7 @@
 <#macro editableHabitatPair fieldName habitatObject index=0>
 	<div class="habitatPair">
 		<select name ="${fieldName}___${index}___MKV.habitat" data-placeholder="...">
-			<option value=""></option>
+			<option value="" label=".."></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitat").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitat == value.qname>selected="selected"</#if>>
 					${value.label.forLocale("fi")?html}
@@ -420,7 +419,7 @@
 			</#list>
 		</select>
 		<select name ="${fieldName}___${index}___MKV.habitatSpecificType" data-placeholder="Tarkenteet" multiple="multiple">
-			<option value=""></option>
+			<option value="" label=".."></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitatSpecificTypes?seq_contains(value.qname)>selected="selected"</#if>>
 					${value.label.forLocale("fi")?html}
@@ -457,7 +456,7 @@
 						<tr>
 							<td>
 								<select name="${fieldName}">
-									<option value=""></option>
+									<option value="" label=".."></option>
 									<#list publications?keys as publicationQname>
 										<option value="${publicationQname}" <#if same(publication, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation?html}</option>
 									</#list>
@@ -469,7 +468,7 @@
 					<tr>
 						<td>
 							<select name="${fieldName}"  data-placeholder="Valitse julkaisu" >
-								<option value=""></option>
+								<option value="" label=".."></option>
 								<#list publications?keys as publicationQname>
 									<option value="${publicationQname}">${publications[publicationQname].citation?html}</option>
 								</#list>
@@ -536,6 +535,13 @@
 <script>
 $(function() {
 	
+	$("select").each(function() {
+		var name = $(this).attr('name');
+		if (!name.startsWith("MKV.status")) return;
+		$(this).addClass('criteriaStatusSelect');
+		$(this).on('change', criteriaStatusChanged);
+	});
+		
 	$("select").chosen({ allow_single_deselect:true });
 	
 	$("label").tooltip();
@@ -685,6 +691,84 @@ function updateNotes(noteInput) {
 		});
 		return false;
 	});
+}
+
+var statusComparator = {
+	"MX.iucnEX": 8,
+	"MX.iucnEW": 7,
+	"MX.iucnRE": 6,
+	"MX.iucnCR": 5,
+	"MX.iucnEN": 4,
+	"MX.iucnVU": 3,
+	"MX.iucnNT": 2,
+	"MX.iucnLC": 1
+};
+
+function criteriaStatusChanged() {
+	var statuses = new Array();
+	$(".criteriaStatusSelect").each(function() {
+		var status = $(this).val();	
+		if (status) statuses.push(status);
+	});
+	if (statuses.length < 1) return;
+	
+	var highestStatus = getHighestStatus(statuses);
+	var lowestStatus = getLowestStatus(statuses);
+	if (!highestStatus) return;
+	
+	changeIfNotSet($("select[name='MKV.redListStatusMin']"), lowestStatus);
+	changeIfNotSet($("select[name='MKV.redListStatusMax']"), highestStatus);
+	changeIfNotSet($("select[name='MKV.redListStatus']"), highestStatus);
+
+	var criteriaText = "";
+	$(".criteriaStatusSelect").each(function() {
+		var status = $(this).val();	
+		if (status === highestStatus) {
+			var thisStatusCriteriaText = $(this).closest('tr').prev().find('input').val();
+			if (thisStatusCriteriaText) criteriaText += thisStatusCriteriaText + "; "; 
+		}
+	});
+	if (criteriaText.endsWith("; ")) criteriaText = criteriaText.substring(0, criteriaText.length - 2);
+	$("input[name='MKV.criteriaForStatus']").val(criteriaText);
+}
+
+var originalValues = {};
+$(function() {
+	$("select").each(function() {
+		var name = $(this).attr('name');
+		originalValues[name] = $(this).val();
+	});
+});
+
+function changeIfNotSet(e, val) {
+	var originalVal = originalValues[e.attr('name')];
+	if (!originalVal) {
+		e.val(val).trigger("chosen:updated");
+	}
+}
+
+function getHighestStatus(statuses) {
+	var highest = -1;
+	var highestStatus;
+	for (var i in statuses) {
+		var status = statuses[i];
+		var order = statusComparator[status];
+		highest = Math.max(order, highest);
+		if (order == highest) highestStatus = status;
+	}
+	return highestStatus;
+}
+
+function getLowestStatus(statuses) {
+	var lowest = 99;
+	var lowestStatus;
+	for (var i in statuses) {
+		var status = statuses[i];
+		var order = statusComparator[status];
+		lowest = Math.min(order, lowest);
+		if (order == lowest) lowestStatus = status;
+	}
+	return lowestStatus;
 }
 
 </script>
