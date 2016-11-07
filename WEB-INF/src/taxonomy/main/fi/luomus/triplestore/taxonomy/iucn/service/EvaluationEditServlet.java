@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -25,7 +24,7 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -70,14 +69,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IUCNEvaluation comparisonData = getComparisonData(target, year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
 
-		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
-
-		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
-
-		return showView(req, res, dao, iucnDAO, target, comparisonData, thisPeriodData, taxon, evaluationAreas);
+		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
 	}
 
-	private ResponseData showView(HttpServletRequest req, HttpServletResponse res, TriplestoreDAO dao, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation comparisonData, IUCNEvaluation thisPeriodData, Taxon taxon, Map<String, Area> evaluationAreas) throws Exception {
+	private ResponseData showView(HttpServletRequest req, HttpServletResponse res, TriplestoreDAO dao, TaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation comparisonData, IUCNEvaluation thisPeriodData) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
 
 		if (thisPeriodData != null) {
@@ -87,12 +82,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
-				.setData("taxon", taxon)
+				.setData("taxon", taxonomyDAO.getTaxon(new Qname(target.getQname())))
 				.setData("evaluation", thisPeriodData)
 				.setData("comparison", comparisonData)
 				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
 				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
-				.setData("areas", evaluationAreas)
+				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrences", getRegionalOccurrences())
 				.setData("permissions", permissions(req, target));
 	}
@@ -182,11 +177,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		if (!validationResult.hasErrors()) {
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, givenData, validationResult);
 		}
-
-		Taxon taxon = taxonomyDAO.getTaxon(new Qname(target.getQname()));
-		Map<String, Area> evaluationAreas = iucnDAO.getEvaluationAreas();
-
-		return showView(req, res, dao, iucnDAO, target, comparisonData, givenData, taxon, evaluationAreas).setData("errorMessage", validationResult.getErrors());
+		
+		givenData.getModel().removeAll(EDIT_NOTES_PREDICATE);
+		
+		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
+				.setData("errorMessage", validationResult.getErrors())
+				.setData("editNotes", req.getParameter(IUCNEvaluation.EDIT_NOTES));
 	}
 
 	private ResponseData storeAndRedirectToGet(HttpServletRequest req, HttpServletResponse res, String speciesQname, int year, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {

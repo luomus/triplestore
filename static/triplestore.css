@@ -159,6 +159,7 @@ h4.errorMessage, .errorMessage h4 {
 	border-style: none;
 	color: red;
 	font-size: large;
+	margin-bottom: 5px;
 }
 
 select[disabled] {

@@ -195,7 +195,7 @@
 
 <#macro submitButtons>
 	<div class="submitButtonContainer">
-		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes"></textarea>
+		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes">${(editNotes!"")?html}</textarea>
 		<button class="saveButton">Tallenna</button>
 		<button class="ready readyButton">Arviointi valmis</button>
 	</div>
