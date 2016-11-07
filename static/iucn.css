@@ -1,3 +1,7 @@
+#toolbox.iucnToolbox {
+	position: absolute;	
+}
+
 .successMessage {
 	background-color: rgb(200,250,200);
 	font-color: rgb(50,100,50);

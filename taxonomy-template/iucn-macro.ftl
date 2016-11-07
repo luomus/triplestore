@@ -1,5 +1,5 @@
 <#macro toolbox>
-		<div id="toolbox" class="ui-widget ui-corner-all">
+		<div id="toolbox" class="iucnToolbox" class="ui-widget ui-corner-all">
 			<div class="ui-widget-header noselect" id="toolboxToggle">Työkalut <span style="float: right;" class="ui-icon ui-icon-carat-1-s"></span></div>
 			<div id="toolBoxContent" class="ui-widget-content">
 			
