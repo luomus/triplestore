@@ -684,7 +684,8 @@ $(function() {
     });
     
     $("#showRegionalButton").on('click', function() {
-    	$(".regionalStatusRow").show('fast');
+    	$(this).hide();
+    	$(".regionalStatusRow").fadeIn('fast');
     });
 });
 
