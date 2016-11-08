@@ -178,6 +178,17 @@
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
 	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
+	<tr>
+		<th><label>Nykyinen LSA-status</label></th>
+		<td colspan="2">
+			<#list taxon.administrativeStatuses as adminStatus>
+				<#if adminStatus == "MX.finlex160_1997_appendix4_specialInterest" || adminStatus == "MX.finlex160_1997_appendix4">
+					${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}<br />
+				</#if>
+			</#list>
+		</td>
+	</tr>
+
 	<@iucnInput "MKV.possiblyRE" />
 	<@iucnTextarea "MKV.lastSightingNotes" />
 	
