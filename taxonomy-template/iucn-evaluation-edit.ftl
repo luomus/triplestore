@@ -183,10 +183,17 @@
 		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
 	</#if>
 	
-	<@iucnSection "Alueellinen uhanalaisuus" />	
-	<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
+	<@iucnSection "Alueellinen uhanalaisuus" />
+	<#assign hasRegionalData = false>
 	<#list areas?keys as areaQname>
-		<@iucnRegionalStatus areaQname />
+		<#assign fieldName = "MKV.regionalStatus_"+areaQname>
+		<#if evaluation.hasValue(fieldName)><#assign hasRegionalData = true></#if>
+	</#list>
+	<#if !hasRegionalData>
+		<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
+	</#if>
+	<#list areas?keys as areaQname>
+		<@iucnRegionalStatus areaQname hasRegionalData />
 	</#list>
 	
 	<@iucnSection "Lähteet" />
@@ -327,10 +334,10 @@
 </#macro>
 
 
-<#macro iucnRegionalStatus areaQname>
+<#macro iucnRegionalStatus areaQname hasRegionalData>
 	<#assign fieldName = "MKV.regionalStatus_"+areaQname>
 	<#assign notesFieldName = "MKV.regionalStatus_"+areaQname+"_Notes">
-	<tr class="regionalStatusRow hidden">
+	<tr class="regionalStatusRow <#if !hasRegionalData>hidden</#if>">
 		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
 		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
 		<td>
