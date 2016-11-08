@@ -171,7 +171,7 @@
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
 	<#assign ddReasonClass = "ddReasonRow">
-	<#if !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
+	<#if !evalution?? || !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
 	<@iucnInput "MKV.ddReason" "MKV.ddReasonNotes" ddReasonClass />
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
@@ -183,14 +183,14 @@
 	
 	<#if draftYear != selectedYear>
 		<@iucnSection "Uhanalaisuusindeksi" />
-		<@iucnInput "MKV.redListIndexCorrection" "MKV.redListIndexCorrectionNotes" />
+		<@iucnIndexCorrectionInput />
 	</#if>
 	
 	<@iucnSection "Alueellinen uhanalaisuus" />
 	<#assign hasRegionalData = false>
 	<#list areas?keys as areaQname>
 		<#assign fieldName = "MKV.regionalStatus_"+areaQname>
-		<#if evaluation.hasValue(fieldName)><#assign hasRegionalData = true></#if>
+		<#if evaluation?? && evaluation.hasValue(fieldName)><#assign hasRegionalData = true></#if>
 	</#list>
 	<#if !hasRegionalData>
 		<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
@@ -336,6 +336,27 @@
 	</tr>
 </#macro>
 
+<#macro iucnIndexCorrectionInput>
+	 <#assign fieldName = "MKV.redListIndexCorrection">
+	 <#assign notesFieldName = "MKV.redListIndexCorrectionNotes">
+	 <tr>
+		<th><@iucnLabel fieldName /></th>
+		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
+		<td>
+			<#if permissions>
+				<select id="redListIndexCorrectionSelect"  data-placeholder="...">
+					<option value="" label=".."></option>
+					<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
+						<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
+					</#list>
+				</select>
+				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)?html}</#if>">
+			<#else>
+				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
+			</#if>
+		</td>
+	</tr>
+</#macro>
 
 <#macro iucnRegionalStatus areaQname hasRegionalData>
 	<#assign fieldName = "MKV.regionalStatus_"+areaQname>
@@ -569,6 +590,7 @@ $(function() {
 	
 	$("select").each(function() {
 		var name = $(this).attr('name');
+		if (!name) return;
 		if (!name.startsWith("MKV.status")) return;
 		$(this).addClass('criteriaStatusSelect');
 		$(this).on('change', criteriaStatusChanged);
@@ -699,6 +721,11 @@ $(function() {
     		$(".ddReasonRow").show().find('select').chosen();
     	}
     });
+    
+    $("#redListIndexCorrectionSelect").on('change', function() {
+    	var index = getRedListCorrectionIndex($(this).val());
+    	$("#redListIndexCorrectionInput").val(index);
+    });
 });
 
 function isPositiveInteger(str) {
@@ -739,6 +766,21 @@ function updateNotes(noteInput) {
 		});
 		return false;
 	});
+}
+
+var statusToIndex = { 
+	"MX.iucnEX": 5,
+	"MX.iucnEW": 5,
+	"MX.iucnRE": 5,
+	"MX.iucnCR": 4,
+	"MX.iucnEN": 3,
+	"MX.iucnVU": 2,
+	"MX.iucnNT": 1,
+	"MX.iucnLC": 0
+}
+		
+function getRedListCorrectionIndex(status) {
+	return statusToIndex[status];
 }
 
 var statusComparator = {
