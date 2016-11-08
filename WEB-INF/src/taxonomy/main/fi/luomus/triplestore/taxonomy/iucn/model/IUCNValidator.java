@@ -104,7 +104,7 @@ public class IUCNValidator {
 		Set<String> validCriteria = VALID_CRITERIA.get(criteriaPrefix);
 		for (String value : values) {
 			if (!validCriteria.contains(value)) {
-				validationResult.setError("Kriteeri " + value +" ei ole sallittujen arvojen joukossa: " + validCriteria);
+				//validationResult.setError("Kriteeri " + value +" ei ole sallittujen arvojen joukossa: " + validCriteria);
 			}
 		}
 		
