@@ -515,7 +515,7 @@
 <#macro iucnPublications fieldName>
 	<tr>
 		<th><@iucnLabel fieldName /></th>
-		<td><@showValue fieldName comparison /></td>
+		<td></td>
 		<td>
 			<#if permissions>
 				<table class="publicationSelect">
@@ -857,7 +857,7 @@ $(function() {
 function changeIfNotSet(e, val) {
 	var originalVal = originalValues[e.attr('name')];
 	if (!originalVal) {
-		e.val(val).trigger("chosen:updated");
+		e.val(val).trigger("chosen:updated").change();
 	}
 }
 
