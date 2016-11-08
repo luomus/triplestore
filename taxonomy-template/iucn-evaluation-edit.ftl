@@ -136,7 +136,7 @@
 	<@iucnTextarea "MKV.taxonomicNotes" />
 	
 	<@iucnSection "Esiintymistä koskevat tiedot" />
-	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" occurrenceStatuses />
+	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" "" occurrenceStatuses />
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 
@@ -170,6 +170,9 @@
 	
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
+	<#assign ddReasonClass = "ddReasonRow">
+	<#if !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
+	<@iucnInput "MKV.ddReason" "MKV.ddReasonNotes" ddReasonClass />
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
@@ -277,8 +280,8 @@
 	</#if>
 </#macro>
 
-<#macro iucnInput fieldName notesFieldName="NONE" customRange=[]>
-	<tr>
+<#macro iucnInput fieldName notesFieldName="NONE" additionalClass="" customRange=[]>
+	<tr class="${additionalClass}">
 		<th><@iucnLabel fieldName /></th>
 		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
 		<td>
@@ -571,7 +574,10 @@ $(function() {
 		$(this).on('change', criteriaStatusChanged);
 	});
 		
-	$("select").not(".regionalStatusRow select").chosen({ allow_single_deselect:true });
+	$("select")
+		.not(".regionalStatusRow select")
+		.not(".ddReasonRow select")
+		.chosen({ allow_single_deselect:true });
 	
 	$("label").tooltip();
 	
@@ -686,6 +692,12 @@ $(function() {
     $("#showRegionalButton").on('click', function() {
     	$(this).hide();
     	$(".regionalStatusRow").fadeIn('fast');
+    });
+    
+    $("select[name='MKV.redListStatus']").on('change', function() {
+    	if ($(this).val() == 'MX.iucnDD') {
+    		$(".ddReasonRow").show().find('select').chosen();
+    	}
     });
 });
 
