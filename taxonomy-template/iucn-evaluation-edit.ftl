@@ -170,15 +170,23 @@
 	
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
+
 	<#assign ddReasonClass = "ddReasonRow">
-	<#if !evalution?? || !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
+	<#if !evaluation?? || !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
 	<@iucnInput "MKV.ddReason" "MKV.ddReasonNotes" ddReasonClass />
+
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
-	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" />
-	<tr>
+
+	<#assign vulnerableClass = "vulnerableRow hidden">
+	<#if evaluation?? && evaluation.vulnerable>
+		<#assign vulnerableClass = "">
+	</#if>
+
+	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" vulnerableClass />
+	<tr class="${vulnerableClass}">
 		<th><label>Nykyinen LSA-status</label></th>
 		<td colspan="2">
 			<#list taxon.administrativeStatuses as adminStatus>
@@ -188,9 +196,8 @@
 			</#list>
 		</td>
 	</tr>
-
-	<@iucnInput "MKV.possiblyRE" />
-	<@iucnTextarea "MKV.lastSightingNotes" />
+	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass />
+	<@iucnTextarea "MKV.lastSightingNotes" vulnerableClass />
 	
 	<#if draftYear != selectedYear>
 		<@iucnSection "Uhanalaisuusindeksi" />
@@ -305,8 +312,8 @@
 	</tr>
 </#macro>
 
-<#macro iucnTextarea fieldName>
-	<tr>
+<#macro iucnTextarea fieldName additionalClass="">
+	<tr class="${additionalClass}">
 		<th><@iucnLabel fieldName /></th>
 		<td><@showValue fieldName comparison /></td>
 		<td>
@@ -361,7 +368,7 @@
 						<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
 					</#list>
 				</select>
-				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" value="<#if evaluation??>${evaluation.getValue(fieldName)?html}</#if>">
+				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" value="<#if evaluation??>${(evaluation.getValue(fieldName)!"")?html}</#if>">
 			<#else>
 				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
 			</#if>
@@ -610,6 +617,7 @@ $(function() {
 	$("select")
 		.not(".regionalStatusRow select")
 		.not(".ddReasonRow select")
+		.not(".vulnerableRow select")
 		.chosen({ allow_single_deselect:true });
 	
 	$("label").tooltip();
@@ -728,8 +736,13 @@ $(function() {
     });
     
     $("select[name='MKV.redListStatus']").on('change', function() {
-    	if ($(this).val() == 'MX.iucnDD') {
+    	var status = $(this).val(); 
+    	if (status == 'MX.iucnDD') {
     		$(".ddReasonRow").show().find('select').chosen();
+    	}
+    	var statusOrder = statusComparator[status];
+    	if (statusOrder && statusOrder >= 3) {
+    		$(".vulnerableRow").show().find('select').chosen();
     	}
     });
     

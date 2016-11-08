@@ -199,5 +199,10 @@ public class IUCNEvaluation {
 		return evaluation;
 	}
 
+	public boolean isVulnerable() {
+		Integer index = getCalculatedIucnIndex();
+		if (index == null) return false;
+		return index >= 2;
+	}
 
 }
