@@ -1,5 +1,7 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,38 @@ public class IUCNEvaluationTarget {
 
 	public IUCNEvaluation getEvaluation(int year) {
 		return evaluations.get(year);
+	}
+
+	public boolean hasEvaluation(int year) {
+		return getEvaluation(year) != null;
+	}
+
+	public IUCNEvaluation getPreviousEvaluation(int year) {
+		Integer prevYear = getPreviousYear(year);
+		if (prevYear == null) return null;
+		return getEvaluation(prevYear);
+	}
+
+	private Integer getPreviousYear(int year) {
+		Integer prevYear = null;
+		for (Integer y : getYears()) {
+			if (y.equals(year)) {
+				return prevYear;
+			} else {
+				prevYear = y;
+			}
+		}
+		return null;
+	}
+
+	private List<Integer> getYears() {
+		ArrayList<Integer> years = new ArrayList<>(evaluations.keySet());
+		Collections.sort(years);
+		return years;
+	}
+
+	public boolean hasPreviousEvaluation(int year) {
+		return getPreviousEvaluation(year) != null;
 	}
 
 }

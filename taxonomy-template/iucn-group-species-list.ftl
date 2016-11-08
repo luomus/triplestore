@@ -49,8 +49,9 @@
 		<th>Tila</th>
 		<th>Muokattu</th>
 		<th>Muokkaaja</th>
-		<th>Luokka</th>
-		<th>Indeksi</th>
+		<th>Luokka ${selectedYear}</th>
+		<th>Indeksi ${selectedYear}</th>
+		<th>Edellinen luokka</th>
 	</thead>
 	<#if (pageCount > 1)>
 		<tfoot>
@@ -80,7 +81,7 @@
 	<tbody>
 		<#list targets as target>
 			<tr class="iucnTaxonRow" id="${target.qname}">
-				<@speciesRow target target.getEvaluation(selectedYear) />
+				<@speciesRow target selectedYear />
 			</tr>
 		</#list>
 	</tbody>

@@ -36,18 +36,19 @@
 	</#if>
 </#macro>
 
-<#macro speciesRow target evaluation="NOT STARTED">
+<#macro speciesRow target year>
 	<td>
-		<a href="${baseURL}/iucn/species/${target.qname}/${selectedYear}">
+		<a href="${baseURL}/iucn/species/${target.qname}/${year}">
 			<span class="scientificName speciesName">${target.scientificName!target.qname}</span>
 		</a>
 	</td>
 	<td>
-		<a href="${baseURL}/iucn/species/${target.qname}/${selectedYear}">
+		<a href="${baseURL}/iucn/species/${target.qname}/${year}">
 			${target.vernacularNameFi!""}
 		</a>
 	</td>
-	<#if evaluation != "NOT STARTED">
+	<#if target.hasEvaluation(year)>
+		<#assign evaluation = target.getEvaluation(year)>
 		<td>
 			<#if evaluation.ready>
 				<span class="state ready">Valmis</span>
@@ -88,4 +89,17 @@
 		<td>-</td>
 		<td>-</td>
 	</#if>
+	<td>
+		<#if target.hasPreviousEvaluation(year)>
+			<#assign prevEvaluation = target.getPreviousEvaluation(year)>
+			<#if prevEvaluation.hasIucnStatus()>
+				${prevEvaluation.iucnStatus?replace("MX.iucn", "")}
+				(${prevEvaluation.evaluationYear})
+			<#else>
+				-
+			</#if>
+		<#else>
+			-
+		</#if>
+	</td>
 </#macro>
