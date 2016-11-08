@@ -63,7 +63,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
 		int year = selectedYear(req);
-		IUCNEvaluation comparisonData = getComparisonData(target, year);
+		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
 
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
@@ -155,24 +155,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return userHasPermissions;
 	}
 
-	private IUCNEvaluation getComparisonData(IUCNEvaluationTarget target, int year) throws Exception {
-		Integer comparisonYear = getComparisonYear(year);
-		if (comparisonYear == null) return null;
-		return target.getEvaluation(comparisonYear);
-	}
-
-	private Integer getComparisonYear(int year) throws Exception {
-		Integer comparisonYear = null;
-		for (Integer evaluationYear : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
-			if (evaluationYear.equals(year)) {
-				return comparisonYear;
-			} else {
-				comparisonYear = evaluationYear;
-			}
-		}
-		throw new IllegalStateException("Unable to resolve comparison year for "+year);
-	}
-
 	private String speciesQname(HttpServletRequest req) {
 		try {
 			String speciesQname = req.getRequestURI().split(Pattern.quote("/species/"))[1].split(Pattern.quote("/"))[0];
@@ -199,7 +181,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		if (!permissions(req, target)) throw new IllegalAccessException();
 
-		IUCNEvaluation comparisonData = getComparisonData(target, year);
+		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 
 		IUCNValidationResult validationResult = new IUCNValidator(dao, getErrorReporter()).validate(givenData, comparisonData);
@@ -431,9 +413,5 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		dao.storePublication(publication);
 		model.addStatement(new Statement(PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
 	}
-
-
-
-
-
+	
 }

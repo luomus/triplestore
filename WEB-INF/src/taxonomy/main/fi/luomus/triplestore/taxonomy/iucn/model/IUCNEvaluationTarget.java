@@ -58,13 +58,13 @@ public class IUCNEvaluationTarget {
 	private Integer getPreviousYear(int year) {
 		Integer prevYear = null;
 		for (Integer y : getYears()) {
-			if (y.equals(year)) {
+			if (y.intValue() == year) {
 				return prevYear;
 			} else {
 				prevYear = y;
 			}
 		}
-		return null;
+		return prevYear;
 	}
 
 	private List<Integer> getYears() {
