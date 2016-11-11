@@ -165,7 +165,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			json.setString("taxonRankId", taxonRank.toString());	
 		}
 		json.setBoolean("isSpecies", Taxon.isSpecies(taxonRank));
-		json.setBoolean("isCursiveName", Taxon.shouldCusive(taxonRank));
+		json.setBoolean("isCursiveName", Taxon.shouldCursive(taxonRank));
 		if (match.hasChildNodes("informalGroups")) {
 			for (Node group : match.getNode("informalGroups").getChildNodes()) {
 				json.getArray("informalGroups").appendObject(toJSONV2InformalGroup(group));
