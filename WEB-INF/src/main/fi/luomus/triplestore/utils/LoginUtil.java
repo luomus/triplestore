@@ -1,13 +1,5 @@
 package fi.luomus.triplestore.utils;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.services.ResponseData;
@@ -18,6 +10,14 @@ import fi.luomus.lajiauth.model.AuthenticationSource;
 import fi.luomus.lajiauth.model.UserDetails;
 import fi.luomus.lajiauth.service.LajiAuthClient;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class LoginUtil  {
 
 	private static class AuthenticationResult {
@@ -27,6 +27,7 @@ public class LoginUtil  {
 		private String userId;
 		private String userFullname;
 		private String userQname;
+		private String personToken;
 		private boolean isAdmin = false;
 		private String next;
 
@@ -85,6 +86,14 @@ public class LoginUtil  {
 
 		public void setNext(String next) {
 			this.next = next;
+		}
+
+		public String getPersonToken() {
+			return personToken;
+		}
+
+		public void setPersonToken(String personToken) {
+			this.personToken = personToken;
 		}
 
 	}
@@ -154,6 +163,7 @@ public class LoginUtil  {
 		session.setUserId(authentication.getUserId());
 		session.setUserName(authentication.getUserFullname());
 		session.put("user_qname", authentication.getUserQname());
+		session.put("person_token", authentication.getPersonToken());
 		if (authentication.isForAdminUser()) {
 			session.put("role", "admin");
 		}
@@ -167,7 +177,7 @@ public class LoginUtil  {
 			authorizationInfo = client.getAndValidateAuthenticationInfo(token);
 			// Validation throws exception if something is wrong; Authentication has been successful:
 
-			return authenticationResultFromLajiAuth(authorizationInfo);
+			return authenticationResultFromLajiAuth(authorizationInfo, token);
 		} catch (Exception e) {
 			if (authorizationInfo != null) {
 				errorReporter.report("Erroreous LajiAuth login for " + Utils.debugS(token, objectMapper.writeValueAsString(authorizationInfo)), e);
@@ -180,11 +190,12 @@ public class LoginUtil  {
 		}
 	}
 
-	private AuthenticationResult authenticationResultFromLajiAuth(AuthenticationEvent authenticationEvent) {
+	private AuthenticationResult authenticationResultFromLajiAuth(AuthenticationEvent authenticationEvent, String token) {
 		AuthenticationResult authenticationResponse = new AuthenticationResult(true);
 		UserDetails userDetails = authenticationEvent.getUser();
 		if (!validForSystem( userDetails)) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");
-
+		
+		authenticationResponse.setPersonToken(token);
 		authenticationResponse.setUserId(userDetails.getEmail());
 		authenticationResponse.setUserQname(userDetails.getQname().get());
 		authenticationResponse.setUserFullname(userDetails.getName());

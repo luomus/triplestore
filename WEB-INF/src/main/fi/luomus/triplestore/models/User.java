@@ -6,20 +6,16 @@ public class User {
 
 	public enum Role {ADMIN, NORMAL_USER};
 	
-	private final String adUserID;
+	private final String personToken;
 	private final Qname qname;
 	private final String fullname;
 	private final boolean isAdmin;
 	
-	public User(String adUserID, String qname, String fullname, Role role) {
-		this.adUserID = adUserID;
-		this.qname = new Qname(qname);
+	public User(Qname qname, String personToken, String fullname, Role role) {
+		this.qname = qname;
+		this.personToken = personToken;
 		this.fullname = fullname;
 		this.isAdmin = role == Role.ADMIN;
-	}
-	
-	public String getAdUserID() {
-		return adUserID;
 	}
 
 	public Qname getQname() {
@@ -32,6 +28,10 @@ public class User {
 	
 	public boolean isAdmin() {
 		return isAdmin;
+	}
+
+	public String getPersonToken() {
+		return personToken;
 	}
 	
 }

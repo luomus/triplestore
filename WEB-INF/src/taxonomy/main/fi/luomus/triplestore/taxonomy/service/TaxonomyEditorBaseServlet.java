@@ -109,7 +109,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	protected void checkPermissionsToAlterTaxon(EditableTaxon taxon, HttpServletRequest req) throws Exception {
 		User user = getUser(req);
 		if (!taxon.allowsAlterationsBy(user)) {
-			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter taxon " + taxon.getScientificName() + " (" + taxon.getQname() + ")");
+			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter taxon " + taxon.getScientificName() + " (" + taxon.getQname() + ")");
 		}
 	}
 
@@ -132,7 +132,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	protected void checkIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
 		if (!hasIucnPermissions(groupQname, req)) {
 			User user = getUser(req);
-			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter iucn group " + groupQname);
+			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter iucn group " + groupQname);
 		}
 	}
 

@@ -104,7 +104,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		
 		Checklist checklist = getTaxonomyDAO().getChecklists().get(qname.toString());
 		if (!user.getQname().equals(checklist.getOwner())) {
-			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getAdUserID() +") does not have permissions to alter checklist " + qname);
+			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter checklist " + qname);
 		}
 	}
 

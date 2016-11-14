@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.service;
 
 import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.BaseServlet;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
@@ -119,7 +120,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		if ("admin".equals(session.get("role"))) {
 			role = User.Role.ADMIN;
 		}
-		return new User(session.userId(), session.get("user_qname"), session.userName(), role);
+		return new User(new Qname(session.get("user_qname")), session.get("person_token"), session.userName(), role);
 	}
 
 	@Override
