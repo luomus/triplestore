@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.service;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.BaseServlet;
@@ -14,17 +25,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.models.CreatableResource;
 import fi.luomus.triplestore.models.User;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public abstract class EditorBaseServlet extends BaseServlet {
 
@@ -105,7 +105,6 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		if (config.defines("taxonomyEditorBaseURL")) {
 			responseData.setData("taxonomyEditorBaseURL", config.get("taxonomyEditorBaseURL"));
 			responseData.setData("lajiETLBaseURL", config.get("lajiETLBaseURL"));
-			responseData.setData("lajiAuthBaseURL", config.get("lajiAuthBaseURL"));
 		}
 
 		return responseData;
