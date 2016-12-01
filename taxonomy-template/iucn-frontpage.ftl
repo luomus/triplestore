@@ -48,7 +48,7 @@
 			<td> &nbsp; </td>
 			<td> &nbsp; </td>
 		</#if>
-		<#if user.isAdmin><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
+		<#if user.admin><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
 	</tr>
 	<#if !taxonGroupEditors[taxonGroup.qname.toString()]??>
 		<#list taxonGroups?values as subGroupCandidate>
