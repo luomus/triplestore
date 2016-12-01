@@ -73,6 +73,7 @@ public class IUCNEvaluation {
 	public void addSecondaryHabitat(IUCNHabitatObject habitat) {
 		if (secondaryHabitats == null) secondaryHabitats = new ArrayList<>();
 		secondaryHabitats.add(habitat);
+		Collections.sort(secondaryHabitats);
 	}
 
 	public IUCNHabitatObject getPrimaryHabitat() {

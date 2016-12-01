@@ -1,5 +1,18 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.client.methods.HttpGet;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -32,19 +45,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.methods.HttpGet;
-
 public class IucnDAOImple implements IucnDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
@@ -72,7 +72,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String PAGE = "page";
 	private static final String NEXT_PAGE = "nextPage";
 	private static final String RESULTS = "results";
-	
+
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
@@ -210,7 +210,7 @@ public class IucnDAOImple implements IucnDAO {
 			if (client != null) client.close();
 		}
 	}
-	
+
 	private List<String> getFinnishSpecies(String taxonQname, HttpClientService client) throws Exception {
 		List<String> speciesOfTaxon = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many request going out at once
@@ -232,7 +232,7 @@ public class IucnDAOImple implements IucnDAO {
 					break;
 				}
 			}
-			
+
 		}
 		return speciesOfTaxon;
 	}
@@ -268,29 +268,48 @@ public class IucnDAOImple implements IucnDAO {
 		System.out.println("Loading IUCN evaluations...");
 		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS));
 		for (Model model :  evaluations) {
-			IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
+			IUCNEvaluation evaluation = createEvaluation(model);
 			String speciesQname = evaluation.getSpeciesQname();
 			if (!initialEvaluations.containsKey(speciesQname)) {
 				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
-			}
-			for (Statement hasOccurrence : model.getStatements("MKV.hasOccurrence")) {
-				evaluation.addOccurrence(getOccurrence(hasOccurrence.getObjectResource().getQname()));
-			}
-			if (model.hasStatements("MKV.primaryHabitat")) {
-				evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements("MKV.primaryHabitat").get(0).getObjectResource().getQname()));
-			}
-			for (Statement secondaryHabitat : model.getStatements("MKV.secondaryHabitat")) {
-				evaluation.addSecondaryHabitat(getHabitatObject(secondaryHabitat.getObjectResource().getQname()));
 			}
 			initialEvaluations.get(speciesQname).add(evaluation);
 		}
 		System.out.println("IUCN evaluations loaded!");
 	}
 
+	private IUCNEvaluation createEvaluation(Model model) throws Exception {
+		IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
+		setOccurrences(model, evaluation);
+		setPrimaryHabitat(model, evaluation);
+		setSecondaryHabitats(model, evaluation);
+		return evaluation;
+	}
+
+	private void setSecondaryHabitats(Model model, IUCNEvaluation evaluation) throws Exception {
+		for (Statement secondaryHabitat : model.getStatements("MKV.secondaryHabitat")) {
+			IUCNHabitatObject habitatObject = getHabitatObject(secondaryHabitat.getObjectResource().getQname());
+			evaluation.addSecondaryHabitat(habitatObject);
+		}
+	}
+
+	private void setPrimaryHabitat(Model model, IUCNEvaluation evaluation) throws Exception {
+		if (model.hasStatements("MKV.primaryHabitat")) {
+			evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements("MKV.primaryHabitat").get(0).getObjectResource().getQname()));
+		}
+	}
+
+	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
+		for (Statement hasOccurrence : model.getStatements("MKV.hasOccurrence")) {
+			evaluation.addOccurrence(getOccurrence(hasOccurrence.getObjectResource().getQname()));
+		}
+	}
+
 	private IUCNHabitatObject getHabitatObject(String habitatObjectId) throws Exception {
 		Model model = triplestoreDAO.get(habitatObjectId);
 		String habitat = model.getStatements("MKV.habitat").get(0).getObjectResource().getQname();
-		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, habitat);
+		int order = model.hasStatements("sortOrder") ? Integer.valueOf(model.getStatements("sortOrder").get(0).getObjectLiteral().getContent()) : 0;
+		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, habitat, order);
 		for (Statement type : model.getStatements("MKV.habitatSpecificType")) {
 			habitatObject.addHabitatSpecificType(type.getObjectResource().getQname());
 		}
@@ -373,6 +392,7 @@ public class IucnDAOImple implements IucnDAO {
 		for (String type : habitat.getHabitatSpecificTypes()) {
 			model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE), new ObjectResource(type)));
 		}
+		model.addStatement(new Statement(new Predicate("sortOrder"), new ObjectLiteral(String.valueOf(habitat.getOrder()))));
 		triplestoreDAO.store(model);
 	}
 

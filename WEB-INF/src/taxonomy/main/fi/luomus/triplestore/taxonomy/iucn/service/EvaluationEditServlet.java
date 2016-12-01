@@ -243,7 +243,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 		for (IUCNHabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
 			iucnDAO.store(secondaryHabitat);
-			model.addStatement(new Statement(PRIMARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
+			model.addStatement(new Statement(SECONDARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
 		}
 	}
 
@@ -298,14 +298,20 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void setHabitatsToEvaluation(IUCNEvaluation evaluation, Map<String, Map<String, String[]>> habitatPairParameters) {
+		// Map of
+		// MKV.primaryHabitat___0 : { MKV.habitat: [MKV.habitatMk], MKV.habitatSpecificType : [MKV.habitatSpecificTypePAK] }
+		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... } 
+		// MKV.primaryHabitat___1 : ...
 		for (Map.Entry<String, Map<String, String[]>> e : habitatPairParameters.entrySet()) {
-			String predicateAndIndex = e.getKey();
+			String[] predicateAndIndexParts = e.getKey().split(Pattern.quote("___"));
+			String predicate = predicateAndIndexParts[0];
+			int order = Integer.valueOf(predicateAndIndexParts[1]);
 			String habitat = null;
 			if (e.getValue().containsKey(IUCNEvaluation.HABITAT)) {
 				habitat = e.getValue().get(IUCNEvaluation.HABITAT)[0];
 			}
 			String[] habitatSpecificTypes = e.getValue().get(IUCNEvaluation.HABITAT_SPECIFIC_TYPE);
-			IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitat);
+			IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitat, order);
 			if (habitatSpecificTypes != null) {
 				for (String type : habitatSpecificTypes) {
 					if (given(type)) {
@@ -314,7 +320,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				}
 			}
 			if (habitatObject.hasValues()) {
-				if (predicateAndIndex.startsWith(PRIMARY_HABITAT_PREDICATE.getQname())) {
+				if (predicate.equals(PRIMARY_HABITAT_PREDICATE.getQname())) {
 					evaluation.setPrimaryHabitat(habitatObject);
 				} else {
 					evaluation.addSecondaryHabitat(habitatObject);

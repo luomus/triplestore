@@ -6,15 +6,17 @@ import java.util.List;
 
 import fi.luomus.commons.utils.Utils;
 
-public class IUCNHabitatObject {
+public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 
 	private String id;
 	private final String habitat;
+	private final int order;
 	private List<String> habitatSpecificTypes = null;
 
-	public IUCNHabitatObject(String id, String habitat) {
+	public IUCNHabitatObject(String id, String habitat, int order) {
 		this.id = id;
 		this.habitat = habitat;
+		this.order = order;
 	}
 
 	public void addHabitatSpecificType(String type) {
@@ -54,6 +56,15 @@ public class IUCNHabitatObject {
 
 	private boolean given(String s) {
 		return s != null && s.length() > 0;
+	}
+
+	public int getOrder() {
+		return order;
+	}
+
+	@Override
+	public int compareTo(IUCNHabitatObject o) {
+		return Integer.valueOf(this.order).compareTo(o.order);
 	}
 
 }
