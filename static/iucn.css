@@ -178,12 +178,11 @@ input.validationError {
 .evaluationEdit select.shortChosen {
   width: 200px;
 }
-.evaluationEdit input,
-.evaluationEdit input.integerProperty {
-  width: 120px;
+.evaluationEdit input {
+  width: 270px;
 }
-.evaluationEdit .minMax input,
-.evaluationEdit input.integerProperty {
+.evaluationEdit input.integerProperty,
+.evaluationEdit input.percentProperty {
   width: 90px;
 }
 
