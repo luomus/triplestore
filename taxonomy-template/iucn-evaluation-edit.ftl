@@ -294,7 +294,6 @@
 				<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
 			</#list>
 		</select>
-		<#if property.repeated>(voi valita useita)</#if>
 	</#if>
 </#macro>
 
