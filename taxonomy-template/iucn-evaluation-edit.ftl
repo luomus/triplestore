@@ -603,12 +603,16 @@
 </#macro>
 
 <script>
+function startsWith(needle, haystack) {
+	return haystack.lastIndexOf(needle, 0) === 0;
+}
+
 $(function() {
 	
 	$("select").each(function() {
 		var name = $(this).attr('name');
 		if (!name) return;
-		if (!name.startsWith("MKV.status")) return;
+		if (!startsWith("MKV.status", name)) return;
 		$(this).addClass('criteriaStatusSelect');
 		$(this).on('change', criteriaStatusChanged);
 	});
