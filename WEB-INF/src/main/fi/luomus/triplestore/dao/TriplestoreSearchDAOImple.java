@@ -65,6 +65,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 				p.setString(i++, value);
 			}
 			rs = p.executeQuery(); 
+			rs.setFetchSize(4001);
 			while (rs.next()) {
 				results.add(rs.getString(1));
 			}
@@ -282,6 +283,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			rs = p.executeQuery();
 			String prevSubject = null;
 			Model currentModel = null;
+			rs.setFetchSize(4001);
 			while (rs.next()) {
 				String subject = rs.getString(7);
 				if (!subject.equals(prevSubject)) {
@@ -352,6 +354,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		p.setString(1, searchForQname);
 		try {
 			rs = p.executeQuery();
+			rs.setFetchSize(4001);
 			while (rs.next()) {
 				String result = rs.getString(1);
 				if (resultSet.contains(result)) {
@@ -404,6 +407,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		p.setString(1, searchForQname);
 		try {
 			rs = p.executeQuery();
+			rs.setFetchSize(4001);
 			while (rs.next()) {
 				String result = rs.getString(1);
 				if (resultSet.contains(result)) {
