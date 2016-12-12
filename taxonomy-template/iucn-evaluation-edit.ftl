@@ -838,11 +838,8 @@ function criteriaStatusChanged() {
 	if (statuses.length < 1) return;
 	
 	var highestStatus = getHighestStatus(statuses);
-	var lowestStatus = getLowestStatus(statuses);
 	if (!highestStatus) return;
 	
-	changeIfNotSet($("select[name='MKV.redListStatusMin']"), lowestStatus);
-	changeIfNotSet($("select[name='MKV.redListStatusMax']"), highestStatus);
 	changeIfNotSet($("select[name='MKV.redListStatus']"), highestStatus);
 
 	var criteriaText = "";
@@ -882,18 +879,6 @@ function getHighestStatus(statuses) {
 		if (order == highest) highestStatus = status;
 	}
 	return highestStatus;
-}
-
-function getLowestStatus(statuses) {
-	var lowest = 99;
-	var lowestStatus;
-	for (var i in statuses) {
-		var status = statuses[i];
-		var order = statusComparator[status];
-		lowest = Math.min(order, lowest);
-		if (order == lowest) lowestStatus = status;
-	}
-	return lowestStatus;
 }
 
 </script>
