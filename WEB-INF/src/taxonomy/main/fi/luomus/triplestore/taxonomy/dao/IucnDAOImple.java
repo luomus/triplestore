@@ -44,8 +44,13 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 
 public class IucnDAOImple implements IucnDAO {
+
+	private static final String SORT_ORDER = "sortOrder";
+	private static final String MO_STATUS = "MO.status";
+	private static final String MO_AREA = "MO.area";
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
@@ -281,36 +286,44 @@ public class IucnDAOImple implements IucnDAO {
 	private IUCNEvaluation createEvaluation(Model model) throws Exception {
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
 		setOccurrences(model, evaluation);
+		setRegionalStatuses(model, evaluation);
+		setRegionalStatuses(model, evaluation);
 		setPrimaryHabitat(model, evaluation);
 		setSecondaryHabitats(model, evaluation);
 		return evaluation;
 	}
 
 	private void setSecondaryHabitats(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement secondaryHabitat : model.getStatements("MKV.secondaryHabitat")) {
+		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
 			IUCNHabitatObject habitatObject = getHabitatObject(secondaryHabitat.getObjectResource().getQname());
 			evaluation.addSecondaryHabitat(habitatObject);
 		}
 	}
 
 	private void setPrimaryHabitat(Model model, IUCNEvaluation evaluation) throws Exception {
-		if (model.hasStatements("MKV.primaryHabitat")) {
-			evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements("MKV.primaryHabitat").get(0).getObjectResource().getQname()));
+		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
+			evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements(IUCNEvaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname()));
 		}
 	}
 
 	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement hasOccurrence : model.getStatements("MKV.hasOccurrence")) {
+		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
 			evaluation.addOccurrence(getOccurrence(hasOccurrence.getObjectResource().getQname()));
+		}
+	}
+
+	private void setRegionalStatuses(Model model, IUCNEvaluation evaluation) throws Exception {
+		for (Statement hasRegionalStatus : model.getStatements(IUCNEvaluation.HAS_REGIONAL_STATUS)) {
+			evaluation.addRegionalStatus(getRegionalStatus(hasRegionalStatus.getObjectResource().getQname()));
 		}
 	}
 
 	private IUCNHabitatObject getHabitatObject(String habitatObjectId) throws Exception {
 		Model model = triplestoreDAO.get(habitatObjectId);
-		String habitat = model.getStatements("MKV.habitat").get(0).getObjectResource().getQname();
-		int order = model.hasStatements("sortOrder") ? Integer.valueOf(model.getStatements("sortOrder").get(0).getObjectLiteral().getContent()) : 0;
-		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, habitat, order);
-		for (Statement type : model.getStatements("MKV.habitatSpecificType")) {
+		String habitat = model.getStatements(IUCNEvaluation.HABITAT).get(0).getObjectResource().getQname();
+		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
+		IUCNHabitatObject habitatObject = new IUCNHabitatObject(new Qname(habitatObjectId), habitat, order);
+		for (Statement type : model.getStatements(IUCNEvaluation.HABITAT_SPECIFIC_TYPE)) {
 			habitatObject.addHabitatSpecificType(type.getObjectResource().getQname());
 		}
 		return habitatObject;
@@ -318,11 +331,20 @@ public class IucnDAOImple implements IucnDAO {
 
 	private Occurrence getOccurrence(String occurrenceId) throws Exception {
 		Model model = triplestoreDAO.get(occurrenceId);
-		String areaQname = model.getStatements("MO.area").get(0).getObjectResource().getQname();
-		String statusQname = model.getStatements("MO.status").get(0).getObjectResource().getQname();
-		return new Occurrence(new Qname(model.getSubject().getQname()), new Qname(areaQname), new Qname(statusQname));
+		String areaQname = model.getStatements(MO_AREA).get(0).getObjectResource().getQname();
+		String statusQname = model.getStatements(MO_STATUS).get(0).getObjectResource().getQname();
+		Qname id = new Qname(model.getSubject().getQname());
+		return new Occurrence(id, new Qname(areaQname), new Qname(statusQname));
 	}
 
+	private IUCNRegionalStatus getRegionalStatus(String regionalStatusId) throws Exception {
+		Model model = triplestoreDAO.get(regionalStatusId);
+		String areaQname = model.getStatements(IUCNEvaluation.REGIONAL_STATUS_AREA).get(0).getObjectResource().getQname();
+		String status = model.getStatements(IUCNEvaluation.REGIONAL_STATUS_STATUS).get(0).getObjectLiteral().getContent();
+		Qname id = new Qname(model.getSubject().getQname());
+		return new IUCNRegionalStatus(id, new Qname(areaQname), "true".equals(status));
+	}
+	
 	private RdfProperties getEvaluationProperties() throws Exception {
 		return triplestoreDAO.getProperties(IUCNEvaluation.EVALUATION_CLASS);
 	}
@@ -384,7 +406,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public void store(IUCNHabitatObject habitat) throws Exception {
-		String id = given(habitat.getId()) ? habitat.getId() : getSeqNextValAndAddResource().toString();
+		Qname id = given(habitat.getId()) ? habitat.getId() : getSeqNextValAndAddResource();
 		habitat.setId(id);
 		Model model = new Model(new Subject(id));
 		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
@@ -392,12 +414,23 @@ public class IucnDAOImple implements IucnDAO {
 		for (String type : habitat.getHabitatSpecificTypes()) {
 			model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE), new ObjectResource(type)));
 		}
-		model.addStatement(new Statement(new Predicate("sortOrder"), new ObjectLiteral(String.valueOf(habitat.getOrder()))));
+		model.addStatement(new Statement(new Predicate(SORT_ORDER), new ObjectLiteral(String.valueOf(habitat.getOrder()))));
 		triplestoreDAO.store(model);
 	}
 
-	private boolean given(String id) {
-		return id != null && id.length() > 0;
+	@Override
+	public void store(IUCNRegionalStatus regionalStatus) throws Exception {
+		Qname id = given(regionalStatus.getId()) ? regionalStatus.getId() : getSeqNextValAndAddResource(); 
+		regionalStatus.setId(id);
+		Model model = new Model(id);
+		model.setType(IUCNEvaluation.REGIONAL_STATUS_CLASS);
+		model.addStatementIfObjectGiven(IUCNEvaluation.REGIONAL_STATUS_AREA, regionalStatus.getArea());
+		model.addStatementIfObjectGiven(IUCNEvaluation.REGIONAL_STATUS_STATUS, regionalStatus.getStatus());
+		triplestoreDAO.store(model);
+	}
+	
+	private boolean given(Qname id) {
+		return id != null && id.isSet();
 	}
 
 	@Override

@@ -204,12 +204,8 @@
 		<@iucnIndexCorrectionInput />
 	</#if>
 	
-	<@iucnSection "Alueellinen uhanalaisuus" />
-	<#assign hasRegionalData = false>
-	<#list areas?keys as areaQname>
-		<#assign fieldName = "MKV.regionalStatus_"+areaQname>
-		<#if evaluation?? && evaluation.hasValue(fieldName)><#assign hasRegionalData = true></#if>
-	</#list>
+	<@iucnSection "Alueellinen uhanalaisuus <span> &mdash; Saa täyttää vain jos luokka on LC tai NT</span>" />
+	<#assign hasRegionalData = evaluation?? && evaluation.regionalStatuses?has_content>
 	<#if !hasRegionalData>
 		<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
 	</#if>
@@ -376,22 +372,34 @@
 </#macro>
 
 <#macro iucnRegionalStatus areaQname hasRegionalData>
-	<#assign fieldName = "MKV.regionalStatus_"+areaQname>
-	<#assign notesFieldName = "MKV.regionalStatus_"+areaQname+"_Notes">
-	<tr class="regionalStatusRow <#if !hasRegionalData>hidden</#if>">
+	<tr class="regionalStatusRow <#if !hasRegionalData>hidden</#if>">	
 		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
-		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
+		<td>
+			<#if comparison?? && comparison.hasRegionalStatus(areaQname)>
+				${comparison.getRegionalStatus(areaQname).status?string("RT - Uhanalainen", "Ei")}
+			</#if>
+		</td>
 		<td>
 			<#if permissions>
-				<@iucnInputField fieldName /> <@editableNotes notesFieldName />
+				<select name="MKV.hasRegionalStatus___${areaQname}" data-placeholder="...">
+					<option value="" label=".."></option>
+					<#if evaluation?? && evaluation.hasRegionalStatus(areaQname) && evaluation.getRegionalStatus(areaQname).status>
+						<option value="true" selected="selected">RT - Uhanalainen</option>
+					<#else>
+						<option value="true">RT - Uhanalainen</option>
+					</#if>
+				</select>
 			<#else>
-				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
+				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
+					${evaluation.getRegionalStatus(areaQname).status?string("RT - Uhanalainen", "Ei")}
+				</#if>
 			</#if>
 		</td>
 	</tr>
 </#macro>
 
-<#macro iucnOccurrence areaQname>	<tr>
+<#macro iucnOccurrence areaQname>	
+	<tr>
 		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>

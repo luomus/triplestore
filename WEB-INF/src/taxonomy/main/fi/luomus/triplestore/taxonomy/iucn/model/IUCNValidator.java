@@ -41,6 +41,7 @@ public class IUCNValidator {
 			validateRequiredFields(givenData, validationResult);
 			validateEndangermentReason(givenData, validationResult);
 			validateStatusChange(givenData, comparisonData, validationResult);
+			validateRegionalEndangerment(givenData, validationResult);
 		}
 		validateMinMaxPair("MKV.countOfOccurrencesMin", "MKV.countOfOccurrencesMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.distributionAreaMin", "MKV.distributionAreaMax", INTEGER_COMPARATOR, givenData, validationResult);
@@ -48,6 +49,14 @@ public class IUCNValidator {
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
+	}
+
+	private void validateRegionalEndangerment(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (givenData.getRegionalStatuses().isEmpty()) return;
+		String status = givenData.getIucnStatus();
+		if (!given(status)) return;
+		if ("MX.iucnLC".equals(status) || "MX.iucnNT".equals(status)) return;
+		validationResult.setError("Alueellisen uhanalaisuus on järkevää ilmoittaa vain luokille LC ja NT. Tätä uhanalaisemmat ovat automaattisesti alueellisesti uhanalaisia.");
 	}
 
 	private void validateDataTypes(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {

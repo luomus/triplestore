@@ -33,6 +33,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 
@@ -46,6 +47,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.SECONDARY_HABITAT);
 	private static final Predicate PRIMARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.PRIMARY_HABITAT);
 	private static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
+	private static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
 	private static final Predicate PUBLICATION_PREDICATE = new Predicate(IUCNEvaluation.PUBLICATION);
 	private static final Predicate EVALUATION_YEAR_PREDICATE = new Predicate(IUCNEvaluation.EVALUATION_YEAR);
 	private static final Predicate EDIT_NOTES_PREDICATE = new Predicate(IUCNEvaluation.EDIT_NOTES);
@@ -202,11 +204,13 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		if (existingEvaluation != null) {
 			deleteOccurrences(dao, existingEvaluation);
 			deleteHabitatObjects(dao, existingEvaluation);
+			deleteRegionalStatuses(dao, existingEvaluation);
 		}
 
 		Model model = givenData.getModel();
 		storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
 		storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
+		storeRegionalStatusesAndSetIdToModel(iucnDAO, givenData, model);
 
 		String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
 		if (given(newPublicationCitation)) {
@@ -254,6 +258,13 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 	}
 
+	private void storeRegionalStatusesAndSetIdToModel(IucnDAO dao, IUCNEvaluation givenData, Model model) throws Exception {
+		for (IUCNRegionalStatus status : givenData.getRegionalStatuses()) {
+			dao.store(status);
+			model.addStatement(new Statement(HAS_REGIONAL_STATUS_PREDICATE, new ObjectResource(status.getId())));
+		}
+	}
+	
 	private void deleteHabitatObjects(TriplestoreDAO dao, IUCNEvaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
 			dao.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
@@ -266,6 +277,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void deleteOccurrences(TriplestoreDAO dao, IUCNEvaluation existingEvaluation) throws Exception {
 		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
 			dao.delete(new Subject(occurrence.getId()));
+		}
+	}
+	
+	private void deleteRegionalStatuses(TriplestoreDAO dao, IUCNEvaluation existingEvaluation) throws Exception {
+		for (IUCNRegionalStatus status : existingEvaluation.getRegionalStatuses()) {
+			dao.delete(new Subject(status.getId()));
 		}
 	}
 
@@ -397,11 +414,21 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void setValue(IUCNEvaluation evaluation, RdfProperties iucnProperties, String parameterName, String value) {
 		if (parameterName.startsWith(HAS_OCCURRENCE_PREDICATE.getQname())) {
 			// MKV.hasOccurrence___ML.xxx
-			String areaQname = parameterName.split(Pattern.quote("___"))[1];
-			evaluation.addOccurrence(new Occurrence(null, new Qname(areaQname), new Qname(value)));
+			Qname areaQname = splitAreaQname(parameterName);
+			evaluation.addOccurrence(new Occurrence(null, areaQname, new Qname(value)));
+			return;
+		}
+		if (parameterName.startsWith(HAS_REGIONAL_STATUS_PREDICATE.getQname())) {
+			// MKV.hasRegionalStatus___ML.xxx
+			Qname areaQname = splitAreaQname(parameterName);
+			evaluation.addRegionalStatus(new IUCNRegionalStatus(null, areaQname, "true".equals(value)));
 			return;
 		}
 		setToModel(evaluation.getModel(), iucnProperties, parameterName, value);
+	}
+
+	private Qname splitAreaQname(String parameterName) {
+		return new Qname(parameterName.split(Pattern.quote("___"))[1]);
 	}
 
 	private void setToModel(Model model, RdfProperties iucnProperties, String parameterName, String value) {

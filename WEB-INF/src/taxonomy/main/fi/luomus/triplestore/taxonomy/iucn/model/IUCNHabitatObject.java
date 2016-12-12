@@ -4,16 +4,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.utils.Utils;
 
 public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 
-	private String id;
+	private Qname id;
 	private final String habitat;
 	private final int order;
 	private List<String> habitatSpecificTypes = null;
 
-	public IUCNHabitatObject(String id, String habitat, int order) {
+	public IUCNHabitatObject(Qname id, String habitat, int order) {
 		this.id = id;
 		this.habitat = habitat;
 		this.order = order;
@@ -29,7 +30,7 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 		return Collections.unmodifiableList(habitatSpecificTypes);
 	}
 
-	public String getId() {
+	public Qname getId() {
 		return id;
 	}
 
@@ -42,7 +43,7 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 		return Utils.debugS(id, habitat, habitatSpecificTypes);
 	}
 
-	public void setId(String id) {
+	public void setId(Qname id) {
 		this.id = id;
 	}
 
