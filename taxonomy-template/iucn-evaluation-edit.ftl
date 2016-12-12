@@ -152,10 +152,12 @@
 	<@iucnSection "Arvioinnin perusteet" />
 	<@iucnInput "MKV.generationAge" "MKV.generationAgeNotes" />
 	<@iucnInput "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
-	<#-- <@iucnMinMax "Esiintyminen lkm" "MKV.countOfOccurrencesMin" "MKV.countOfOccurrencesMax" "MKV.countOfOccurrencesNotes" /> -->
 	<@iucnMinMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
-	<@iucnMinMax "Populaation pieneminen tarkastelujakson aikana" "MKV.countOfOccurrencesPeriodBegining" "MKV.countOfOccurrencesPeriodEnd" "MKV.countOfOccurrencesPeriodNotes" />
+
+	<@iucnInput "MKV.populationSizePeriodBeginning" "MKV.populationSizePeriodNotes" />
+	<@iucnInput "MKV.populationSizePeriodEnd" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+
 	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
 	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
 	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
@@ -760,6 +762,21 @@ $(function() {
     $("#redListIndexCorrectionSelect").on('change', function() {
     	var index = getRedListCorrectionIndex($(this).val());
     	$("#redListIndexCorrectionInput").val(index);
+    });
+    
+    $("input[name='MKV.populationSizePeriodEnd'], input[name='MKV.populationSizePeriodBeginning']").on('change', function() {
+    	var end = $("input[name='MKV.populationSizePeriodEnd']").val();
+    	var beginning = $("input[name='MKV.populationSizePeriodBeginning']").val();
+    	if (isPositiveInteger(end) && isPositiveInteger(beginning)) {
+    		if (~~Number(end) < ~~Number(beginning)) {
+    			var change = beginning - end;
+    			var changePercentage = change / beginning * 100;
+    			changePercentage = Math.floor(changePercentage);
+    			$("input[name='MKV.decreaseDuringPeriod']").val(changePercentage); 
+    		} else {
+    			$("input[name='MKV.decreaseDuringPeriod']").val('');
+    		}
+    	}
     });
 });
 
