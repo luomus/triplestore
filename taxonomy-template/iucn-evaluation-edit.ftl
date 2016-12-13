@@ -494,7 +494,7 @@
 			<option value="" label=".."></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitat").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitat == value.qname>selected="selected"</#if>>
-					${value.label.forLocale("fi")?html}
+					${habitatLabelIndentator.indent(value.qname)}
 				</option>
 			</#list>
 		</select>

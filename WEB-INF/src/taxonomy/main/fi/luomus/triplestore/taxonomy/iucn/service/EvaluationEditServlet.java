@@ -30,6 +30,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
@@ -46,6 +47,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private static final String NEW_IUCN_PUBLICATION_CITATION = "newIucnPublicationCitation";
 	private static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.SECONDARY_HABITAT);
 	private static final Predicate PRIMARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.PRIMARY_HABITAT);
+	private static final Predicate HABITAT_PREDICATE = new Predicate(IUCNEvaluation.HABITAT);
 	private static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
 	private static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
 	private static final Predicate PUBLICATION_PREDICATE = new Predicate(IUCNEvaluation.PUBLICATION);
@@ -89,7 +91,17 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("permissions", permissions(req, target));
+				.setData("permissions", permissions(req, target))
+				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
+	}
+
+	HabitatLabelIndendator habitatLabelIndendator = null;
+	
+	private HabitatLabelIndendator getHabitatLabelIndentaror(TriplestoreDAO dao) throws Exception {
+		if (habitatLabelIndendator == null) {
+			habitatLabelIndendator = new HabitatLabelIndendator(dao.getProperty(HABITAT_PREDICATE).getRange().getValues());
+		}
+		return habitatLabelIndendator;
 	}
 
 	private static Collection<RdfProperty> occurrenceStatuses;
