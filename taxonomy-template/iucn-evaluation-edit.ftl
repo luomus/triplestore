@@ -553,6 +553,7 @@
 									<option value="${publicationQname}">${publications[publicationQname].citation?html}</option>
 								</#list>
 							</select>
+							<button class="add">+ Lisää</button>
 						</td>
 					</tr>
 					<tr>
@@ -656,6 +657,7 @@ $(function() {
  		$(this).before('<br />').before(clone);
  		clone.hide();
  		clone.fadeIn('fast');
+ 		clone.chosen();
  	});
  	
  	$("button.addHabitatPair").on('click', function() {
