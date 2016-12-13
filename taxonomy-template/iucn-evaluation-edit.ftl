@@ -559,7 +559,7 @@
 						<th>Tai luo uusi julkaisu</th> 
 					</tr>
 					<tr>
-						<td><input class="createPublication" type="text" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Stubbs & Drake 2001, Stuke 2003' tai 'Kasviatlas 2008'"/></td>
+						<td><textarea class="createPublication" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Stubbs & Drake 2001' tai 'Kasviatlas 2008'"></textarea></td>
 					</tr>	
 				</table>
 			<#else>
