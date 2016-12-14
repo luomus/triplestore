@@ -393,7 +393,7 @@
 					</#if>
 				</select>
 			<#else>
-				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
+				<#if evaluation?? && evaluation.hasRegionalStatus(areaQname)>
 					${evaluation.getRegionalStatus(areaQname).status?string("RT - Uhanalainen", "Ei")}
 				</#if>
 			</#if>
@@ -442,7 +442,7 @@
 					<#assign comparisonValues = comparison.threats>
 				</#if>
 				<#list comparisonValues as reason>
-						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason).label.forLocale("fi")?html}
+						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason.endangerment).label.forLocale("fi")?html}
 						<span class="hidden copyValue copyValue_${fieldName}">${reason?html}</span>
 					<#if reason_has_next><br /></#if>
 				</#list>
@@ -492,7 +492,7 @@
 						<#assign givenReasons = evaluation.threats>
 					</#if>
 					<#list givenReasons as reason>
-						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason).label.forLocale("fi")?html}
+						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason.endangerment).label.forLocale("fi")?html}
 						<#if reason_has_next><br /></#if>
 					</#list>
 					<@showNotes notesFieldName evaluation />
