@@ -726,7 +726,7 @@ $(function() {
  		var countOfExisting = $(this).parent().find(':input').size();
  		var input = $(this).prevAll(":input").first();
  		var clone = input.clone().val('');
- 		var newNameAttribute = clone.attr('name').replace('___0', '___'+(countOfExistingPairs+1));
+ 		var newNameAttribute = clone.attr('name').replace('___0', '___'+(countOfExisting+1));
 		clone.attr('name', newNameAttribute);  
  		$(this).before('<br />').before(clone);
  		clone.chosen({ allow_single_deselect:true });

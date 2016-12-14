@@ -34,5 +34,18 @@ public class IUCNEndangermentObject implements Comparable<IUCNEndangermentObject
 	public void setId(Qname id) {
 		this.id = id;
 	}
+
+	@Override
+	public int hashCode() {
+		return endangerment.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (getClass() != obj.getClass())
+			return false;
+		IUCNEndangermentObject other = (IUCNEndangermentObject) obj;
+		return this.endangerment.equals(other.endangerment);
+	}
 	
 }

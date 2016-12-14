@@ -68,4 +68,16 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 		return Integer.valueOf(this.order).compareTo(o.order);
 	}
 
+	@Override
+	public int hashCode() {
+		return habitat.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (getClass() != obj.getClass())
+			return false;
+		IUCNHabitatObject other = (IUCNHabitatObject) obj;
+		return this.habitat.equals(other.habitat);
+	}
 }

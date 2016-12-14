@@ -83,6 +83,7 @@ public class IUCNEvaluation {
 
 	public void addSecondaryHabitat(IUCNHabitatObject habitat) {
 		if (secondaryHabitats == null) secondaryHabitats = new ArrayList<>();
+		if (secondaryHabitats.contains(habitat)) return;
 		secondaryHabitats.add(habitat);
 		Collections.sort(secondaryHabitats);
 	}
@@ -244,6 +245,7 @@ public class IUCNEvaluation {
 
 	public void addEndangermentReason(IUCNEndangermentObject endangermentReason) {
 		if (endangermentReasons == null) endangermentReasons = new ArrayList<>();
+		if (endangermentReasons.contains(endangermentReason)) return;
 		endangermentReasons.add(endangermentReason);
 		Collections.sort(endangermentReasons);
 	}
@@ -255,6 +257,7 @@ public class IUCNEvaluation {
 
 	public void addThreat(IUCNEndangermentObject threat) {
 		if (threats == null) threats = new ArrayList<>();
+		if (threats.contains(threat)) return;
 		threats.add(threat);
 		Collections.sort(threats);
 	}
