@@ -31,6 +31,7 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
@@ -50,6 +51,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private static final Predicate HABITAT_PREDICATE = new Predicate(IUCNEvaluation.HABITAT);
 	private static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
 	private static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
+	private static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = new Predicate(IUCNEvaluation.HAS_ENDANGERMENT_REASON);
+	private static final Predicate HAS_THREATH_PREDICATE = new Predicate(IUCNEvaluation.HAS_THREAT);
 	private static final Predicate PUBLICATION_PREDICATE = new Predicate(IUCNEvaluation.PUBLICATION);
 	private static final Predicate EVALUATION_YEAR_PREDICATE = new Predicate(IUCNEvaluation.EVALUATION_YEAR);
 	private static final Predicate EDIT_NOTES_PREDICATE = new Predicate(IUCNEvaluation.EDIT_NOTES);
@@ -88,6 +91,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("comparison", comparisonData)
 				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
 				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
+				.setData("endangermentObjectProperties", dao.getProperties(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS))
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
@@ -215,12 +219,14 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IUCNEvaluation existingEvaluation = target.getEvaluation(year);
 		if (existingEvaluation != null) {
 			deleteOccurrences(dao, existingEvaluation);
+			deleteEndangermentObjects(dao, existingEvaluation);
 			deleteHabitatObjects(dao, existingEvaluation);
 			deleteRegionalStatuses(dao, existingEvaluation);
 		}
 
 		Model model = givenData.getModel();
 		storeOccurrencesAndSetIdToModel(speciesQname, dao, givenData, model);
+		storeEndangermentObjectsAdnSetIdToModel(iucnDAO, givenData, model);
 		storeHabitatObjectsAndSetIdsToModel(iucnDAO, givenData, model);
 		storeRegionalStatusesAndSetIdToModel(iucnDAO, givenData, model);
 
@@ -251,6 +257,17 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 	}
 
+	private void storeEndangermentObjectsAdnSetIdToModel(IucnDAO iucnDAO, IUCNEvaluation givenData, Model model) throws Exception {
+		for (IUCNEndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
+			iucnDAO.store(endangermentObject);
+			model.addStatement(new Statement(HAS_ENDANGERMENT_REASON_PREDICATE, new ObjectResource(endangermentObject.getId())));
+		}
+		for (IUCNEndangermentObject endangermentObject : givenData.getThreats()) {
+			iucnDAO.store(endangermentObject);
+			model.addStatement(new Statement(HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
+		}
+	}
+	
 	private void storeHabitatObjectsAndSetIdsToModel(IucnDAO iucnDAO, IUCNEvaluation givenData, Model model) throws Exception {
 		IUCNHabitatObject primaryHabitat = givenData.getPrimaryHabitat();
 		if (primaryHabitat != null) {
@@ -289,6 +306,15 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void deleteOccurrences(TriplestoreDAO dao, IUCNEvaluation existingEvaluation) throws Exception {
 		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
 			dao.delete(new Subject(occurrence.getId()));
+		}
+	}
+	
+	private void deleteEndangermentObjects(TriplestoreDAO dao, IUCNEvaluation existingEvaluation) throws Exception {
+		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
+			dao.delete(new Subject(endangermentObject.getId()));
+		}
+		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getThreats()) {
+			dao.delete(new Subject(endangermentObject.getId()));
 		}
 	}
 	
@@ -335,16 +361,16 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			String[] predicateAndIndexParts = e.getKey().split(Pattern.quote("___"));
 			String predicate = predicateAndIndexParts[0];
 			int order = Integer.valueOf(predicateAndIndexParts[1]);
-			String habitat = null;
+			Qname habitat = null;
 			if (e.getValue().containsKey(IUCNEvaluation.HABITAT)) {
-				habitat = e.getValue().get(IUCNEvaluation.HABITAT)[0];
+				habitat = new Qname(e.getValue().get(IUCNEvaluation.HABITAT)[0]);
 			}
 			String[] habitatSpecificTypes = e.getValue().get(IUCNEvaluation.HABITAT_SPECIFIC_TYPE);
 			IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitat, order);
 			if (habitatSpecificTypes != null) {
 				for (String type : habitatSpecificTypes) {
 					if (given(type)) {
-						habitatObject.addHabitatSpecificType(type);
+						habitatObject.addHabitatSpecificType(new Qname(type));
 					}
 				}
 			}
@@ -436,7 +462,24 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			evaluation.addRegionalStatus(new IUCNRegionalStatus(null, areaQname, "true".equals(value)));
 			return;
 		}
+		if (parameterName.startsWith(HAS_ENDANGERMENT_REASON_PREDICATE.getQname())) {
+			// MKV.hasEndangermentReason___1   <2,3...>
+			int order = splitOrder(parameterName);
+			evaluation.addEndangermentReason(new IUCNEndangermentObject(null, new Qname(value), order));
+			return;
+		}
+		if (parameterName.startsWith(HAS_THREATH_PREDICATE.getQname())) {
+			// MKV.hasThreat___1   <2,3...>
+			int order = splitOrder(parameterName);
+			evaluation.addThreat(new IUCNEndangermentObject(null, new Qname(value), order));
+			return;
+		}
 		setToModel(evaluation.getModel(), iucnProperties, parameterName, value);
+	}
+
+	private int splitOrder(String parameterName) {
+		int order = Integer.valueOf(parameterName.split(Pattern.quote("___"))[1]);
+		return order;
 	}
 
 	private Qname splitAreaQname(String parameterName) {

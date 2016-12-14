@@ -8,6 +8,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
@@ -36,6 +37,8 @@ public interface IucnDAO {
 	
 	public void store(IUCNRegionalStatus regionalStatus) throws Exception;
 
+	public void store(IUCNEndangermentObject endangermentObject) throws Exception;
+	
 	public EditHistory getEditHistory(IUCNEvaluation thisPeriodData) throws Exception;
 
 }

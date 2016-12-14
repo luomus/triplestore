@@ -152,8 +152,7 @@ public class IUCNValidator {
 	}
 
 	private void validateEndangermentReason(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
-		String reason = givenData.getValue("MKV.endangermentReason");
-		if (given(reason)) return;
+		if (!givenData.getEndangermentReasons().isEmpty()) return;
 		String status = givenData.getIucnStatus();
 		Integer statusOrderValue = IUCN_COMPARATOR_VALUES.get(status);
 		if (statusOrderValue == null) return;

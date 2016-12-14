@@ -27,6 +27,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
@@ -41,6 +42,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
@@ -82,12 +84,14 @@ public class IucnDAOImple implements IucnDAO {
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
 	private final IUCNContainer container;
+	private final ErrorReporter errorReporter;
 
-	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO) {
+	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		this.config = config;
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
 		this.container = new IUCNContainer(this);
+		this.errorReporter = errorReporter;
 	}
 
 	private final SingleObjectCache<Map<String, IUCNEditors>> 
@@ -273,12 +277,16 @@ public class IucnDAOImple implements IucnDAO {
 		System.out.println("Loading IUCN evaluations...");
 		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS));
 		for (Model model :  evaluations) {
-			IUCNEvaluation evaluation = createEvaluation(model);
-			String speciesQname = evaluation.getSpeciesQname();
-			if (!initialEvaluations.containsKey(speciesQname)) {
-				initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
+			try {
+				IUCNEvaluation evaluation = createEvaluation(model);
+				String speciesQname = evaluation.getSpeciesQname();
+				if (!initialEvaluations.containsKey(speciesQname)) {
+					initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
+				}
+				initialEvaluations.get(speciesQname).add(evaluation);
+			} catch (Exception e) {
+				errorReporter.report("Error when loading evaluation " + model.getSubject().getQname(), e);
 			}
-			initialEvaluations.get(speciesQname).add(evaluation);
 		}
 		System.out.println("IUCN evaluations loaded!");
 	}
@@ -287,22 +295,41 @@ public class IucnDAOImple implements IucnDAO {
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
 		setOccurrences(model, evaluation);
 		setRegionalStatuses(model, evaluation);
-		setRegionalStatuses(model, evaluation);
+		setEndagermentReasons(model, evaluation);
 		setPrimaryHabitat(model, evaluation);
 		setSecondaryHabitats(model, evaluation);
 		return evaluation;
 	}
 
+	private void setEndagermentReasons(Model model, IUCNEvaluation evaluation) throws Exception {
+		for (Statement endagermentReasonObject : model.getStatements(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
+			IUCNEndangermentObject endangermentObject = getEndagermentObject(new Qname(endagermentReasonObject.getObjectResource().getQname()));
+			evaluation.addEndangermentReason(endangermentObject);
+		}
+		for (Statement endagermentReasonObject : model.getStatements(IUCNEvaluation.HAS_THREAT)) {
+			IUCNEndangermentObject endangermentObject = getEndagermentObject(new Qname(endagermentReasonObject.getObjectResource().getQname()));
+			evaluation.addThreat(endangermentObject);
+		}
+	}
+
+	private IUCNEndangermentObject getEndagermentObject(Qname endagermentObjectId) throws Exception {
+		Model model = triplestoreDAO.get(endagermentObjectId);
+		String endangerment = model.getStatements(IUCNEvaluation.ENDANGERMENT).get(0).getObjectResource().getQname();
+		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
+		IUCNEndangermentObject endangermentObject = new IUCNEndangermentObject(endagermentObjectId, new Qname(endangerment), order);
+		return endangermentObject;
+	}
+
 	private void setSecondaryHabitats(Model model, IUCNEvaluation evaluation) throws Exception {
 		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
-			IUCNHabitatObject habitatObject = getHabitatObject(secondaryHabitat.getObjectResource().getQname());
+			IUCNHabitatObject habitatObject = getHabitatObject(new Qname(secondaryHabitat.getObjectResource().getQname()));
 			evaluation.addSecondaryHabitat(habitatObject);
 		}
 	}
 
 	private void setPrimaryHabitat(Model model, IUCNEvaluation evaluation) throws Exception {
 		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
-			evaluation.setPrimaryHabitat(getHabitatObject(model.getStatements(IUCNEvaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname()));
+			evaluation.setPrimaryHabitat(getHabitatObject(new Qname(model.getStatements(IUCNEvaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname())));
 		}
 	}
 
@@ -318,13 +345,13 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	}
 
-	private IUCNHabitatObject getHabitatObject(String habitatObjectId) throws Exception {
+	private IUCNHabitatObject getHabitatObject(Qname habitatObjectId) throws Exception {
 		Model model = triplestoreDAO.get(habitatObjectId);
 		String habitat = model.getStatements(IUCNEvaluation.HABITAT).get(0).getObjectResource().getQname();
 		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
-		IUCNHabitatObject habitatObject = new IUCNHabitatObject(new Qname(habitatObjectId), habitat, order);
+		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, new Qname(habitat), order);
 		for (Statement type : model.getStatements(IUCNEvaluation.HABITAT_SPECIFIC_TYPE)) {
-			habitatObject.addHabitatSpecificType(type.getObjectResource().getQname());
+			habitatObject.addHabitatSpecificType(new Qname(type.getObjectResource().getQname()));
 		}
 		return habitatObject;
 	}
@@ -344,7 +371,7 @@ public class IucnDAOImple implements IucnDAO {
 		Qname id = new Qname(model.getSubject().getQname());
 		return new IUCNRegionalStatus(id, new Qname(areaQname), "true".equals(status));
 	}
-	
+
 	private RdfProperties getEvaluationProperties() throws Exception {
 		return triplestoreDAO.getProperties(IUCNEvaluation.EVALUATION_CLASS);
 	}
@@ -411,7 +438,7 @@ public class IucnDAOImple implements IucnDAO {
 		Model model = new Model(new Subject(id));
 		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT), new ObjectResource(habitat.getHabitat())));
-		for (String type : habitat.getHabitatSpecificTypes()) {
+		for (Qname type : habitat.getHabitatSpecificTypes()) {
 			model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE), new ObjectResource(type)));
 		}
 		model.addStatement(new Statement(new Predicate(SORT_ORDER), new ObjectLiteral(String.valueOf(habitat.getOrder()))));
@@ -428,7 +455,18 @@ public class IucnDAOImple implements IucnDAO {
 		model.addStatementIfObjectGiven(IUCNEvaluation.REGIONAL_STATUS_STATUS, regionalStatus.getStatus());
 		triplestoreDAO.store(model);
 	}
-	
+
+	@Override
+	public void store(IUCNEndangermentObject endangermentObject) throws Exception {
+		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource();
+		endangermentObject.setId(id);
+		Model model = new Model(id);
+		model.setType(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS);
+		model.addStatementIfObjectGiven(IUCNEvaluation.ENDANGERMENT, endangermentObject.getEndangerment());
+		model.addStatementIfObjectGiven(SORT_ORDER, String.valueOf(endangermentObject.getOrder()));
+		triplestoreDAO.store(model);
+	}
+
 	private boolean given(Qname id) {
 		return id != null && id.isSet();
 	}

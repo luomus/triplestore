@@ -12,6 +12,7 @@ import org.junit.Test;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
 import fi.luomus.commons.xml.Document.Node;
@@ -33,7 +34,7 @@ public class PublicTaxonSearchApiTests {
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
-		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO);
+		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
 	}
 
 	@AfterClass 

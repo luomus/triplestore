@@ -10,22 +10,22 @@ import fi.luomus.commons.utils.Utils;
 public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 
 	private Qname id;
-	private final String habitat;
+	private final Qname habitat;
 	private final int order;
-	private List<String> habitatSpecificTypes = null;
+	private List<Qname> habitatSpecificTypes = null;
 
-	public IUCNHabitatObject(Qname id, String habitat, int order) {
+	public IUCNHabitatObject(Qname id, Qname habitat, int order) {
 		this.id = id;
 		this.habitat = habitat;
 		this.order = order;
 	}
 
-	public void addHabitatSpecificType(String type) {
+	public void addHabitatSpecificType(Qname type) {
 		if (habitatSpecificTypes == null) habitatSpecificTypes = new ArrayList<>();
 		habitatSpecificTypes.add(type);
 	}
 
-	public List<String> getHabitatSpecificTypes() {
+	public List<Qname> getHabitatSpecificTypes() {
 		if (habitatSpecificTypes == null) return Collections.emptyList();
 		return Collections.unmodifiableList(habitatSpecificTypes);
 	}
@@ -34,7 +34,7 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 		return id;
 	}
 
-	public String getHabitat() {
+	public Qname getHabitat() {
 		return habitat;
 	}
 
@@ -49,14 +49,14 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 
 	public boolean hasValues() {
 		if (given(getHabitat())) return true;
-		for (String habitat : getHabitatSpecificTypes()) {
+		for (Qname habitat : getHabitatSpecificTypes()) {
 			if (given(habitat)) return true;
 		}
 		return false;
 	}
 
-	private boolean given(String s) {
-		return s != null && s.length() > 0;
+	private boolean given(Qname q) {
+		return q != null && q.isSet();
 	}
 
 	public int getOrder() {

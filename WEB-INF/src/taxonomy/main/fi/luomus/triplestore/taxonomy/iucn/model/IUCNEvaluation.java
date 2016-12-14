@@ -31,6 +31,9 @@ public class IUCNEvaluation {
 	public static final String HABITAT = "MKV.habitat";
 	public static final String HABITAT_SPECIFIC_TYPE = "MKV.habitatSpecificType";
 	public static final String HAS_OCCURRENCE = "MKV.hasOccurrence";
+	public static final String HAS_THREAT = "MKV.hasThreat";
+	public static final String HAS_ENDANGERMENT_REASON = "MKV.hasEndangermentReason";
+	public static final String ENDANGERMENT = "MKV.endangerment";
 	public static final String PUBLICATION = "MKV.publication";
 	public static final String EDIT_NOTES = "MKV.editNotes";
 	public static final String LAST_MODIFIED_BY = "MKV.lastModifiedBy";
@@ -42,6 +45,7 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_STATUS = "MKV.regionalStatusStatus";
 	public static final String REGIONAL_STATUS_AREA = "MKV.regionalStatusArea";
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
+	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
@@ -65,6 +69,8 @@ public class IUCNEvaluation {
 	private Map<String, IUCNRegionalStatus> regionalStatuses = null;
 	private IUCNHabitatObject primaryHabitat;
 	private List<IUCNHabitatObject> secondaryHabitats = null;
+	private List<IUCNEndangermentObject> endangermentReasons = null;
+	private List<IUCNEndangermentObject> threats = null;
 
 	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
@@ -229,6 +235,28 @@ public class IUCNEvaluation {
 		Integer index = getCalculatedIucnIndex();
 		if (index == null) return false;
 		return index >= 2;
+	}
+
+	public List<IUCNEndangermentObject> getEndangermentReasons() {
+		if (endangermentReasons == null) return Collections.emptyList();
+		return endangermentReasons;
+	}
+
+	public void addEndangermentReason(IUCNEndangermentObject endangermentReason) {
+		if (endangermentReasons == null) endangermentReasons = new ArrayList<>();
+		endangermentReasons.add(endangermentReason);
+		Collections.sort(endangermentReasons);
+	}
+
+	public List<IUCNEndangermentObject> getThreats() {
+		if (threats == null) return Collections.emptyList();
+		return threats;
+	}
+
+	public void addThreat(IUCNEndangermentObject threat) {
+		if (threats == null) threats = new ArrayList<>();
+		threats.add(threat);
+		Collections.sort(threats);
 	}
 
 }

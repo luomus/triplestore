@@ -229,7 +229,7 @@ input.validationError {
   width: 650px;
 }
 
-button.add {
+button.add, .addHabitatPair {
   color: green;
   font-size: 10px;
 }

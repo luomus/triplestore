@@ -17,6 +17,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
 import fi.luomus.commons.utils.Utils;
@@ -57,10 +58,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final IucnDAO iucnDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 
-	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO) {
+	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		super(config, 60 * 5, 20);
 		this.triplestoreDAO = triplestoreDAO;
-		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this);
+		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this, errorReporter);
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
 	}
 

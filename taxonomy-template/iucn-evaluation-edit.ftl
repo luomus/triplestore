@@ -161,8 +161,9 @@
 	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
 	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
 	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
-	<@iucnInput "MKV.endangermentReason" "MKV.endangermentReasonNotes" />
-	<@iucnInput "MKV.threats" "MKV.threatNotes" />
+	
+	<@iucnEndangermentObject "MKV.hasEndangermentReason" "MKV.endangermentReasonNotes" />
+	<@iucnEndangermentObject "MKV.hasThreat" "MKV.threatNotes" />
 
 	<@iucnSection "Kriteerit" />
 	<#list ["A", "B", "C", "D", "E"] as criteria>
@@ -430,6 +431,77 @@
 	</tr>
 </#macro>
 
+<#macro iucnEndangermentObject fieldName notesFieldName>
+	<tr>
+		<th><@iucnLabel fieldName /></th>
+		<td>
+			<#if comparison??>
+				<#if fieldName = "MKV.hasEndangermentReason">
+					<#assign comparisonValues = comparison.endangermentReasons>
+				<#else>
+					<#assign comparisonValues = comparison.threats>
+				</#if>
+				<#list comparisonValues as reason>
+						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason).label.forLocale("fi")?html}
+						<span class="hidden copyValue copyValue_${fieldName}">${reason?html}</span>
+					<#if reason_has_next><br /></#if>
+				</#list>
+				<@showNotes notesFieldName comparison />
+			</#if>
+		</td>
+		<td>
+			<#if permissions>
+				<#if evaluation??>
+					<#if fieldName = "MKV.hasEndangermentReason">
+						<#assign givenReasons = evaluation.endangermentReasons>
+					<#else>
+						<#assign givenReasons = evaluation.threats>
+					</#if>
+					<#list givenReasons as reason>
+						<select name ="${fieldName}___${reason_index}" data-placeholder="...">
+							<option value="" label=".."></option>
+							<#list endangermentObjectProperties.getProperty("MKV.endangerment").range.values as value>
+								<option value="${value.qname}" <#if reason.endangerment == value.qname>selected="selected"</#if>>
+									${value.label.forLocale("fi")?html}
+								</option>
+							</#list>
+						</select>
+						<#if reason_has_next><br /></#if>
+					</#list>
+					<br />
+					<select name ="${fieldName}___0" data-placeholder="...">
+						<option value="" label=".."></option>
+						<#list endangermentObjectProperties.getProperty("MKV.endangerment").range.values as value>
+							<option value="${value.qname}">${value.label.forLocale("fi")?html}</option>
+						</#list>
+					</select>
+				<#else>
+					<select name ="${fieldName}___0" data-placeholder="...">
+						<option value="" label=".."></option>
+						<#list endangermentObjectProperties.getProperty("MKV.endangerment").range.values as value>
+							<option value="${value.qname}">${value.label.forLocale("fi")?html}</option>
+						</#list>
+					</select>
+				</#if>
+				<button class="add">+ Lisää</button>
+			<#else>
+				<#if evaluation??>
+					<#if fieldName = "MKV.hasEndangermentReason">
+						<#assign givenReasons = evaluation.endangermentReasons>
+					<#else>
+						<#assign givenReasons = evaluation.threats>
+					</#if>
+					<#list givenReasons as reason>
+						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason).label.forLocale("fi")?html}
+						<#if reason_has_next><br /></#if>
+					</#list>
+					<@showNotes notesFieldName evaluation />
+				</#if>	
+			</#if>
+		</td>
+	</tr>
+</#macro>
+
 <#macro iucnHabitatFields>
 	<tr>
 		<th><@iucnLabel "MKV.primaryHabitat" /></th>
@@ -651,13 +723,13 @@ $(function() {
 	});
  	
  	$("button.add").on('click', function() {
+ 		var countOfExisting = $(this).parent().find(':input').size();
  		var input = $(this).prevAll(":input").first();
- 		var clone = input.clone();
- 		clone.val('');
+ 		var clone = input.clone().val('');
+ 		var newNameAttribute = clone.attr('name').replace('___0', '___'+(countOfExistingPairs+1));
+		clone.attr('name', newNameAttribute);  
  		$(this).before('<br />').before(clone);
- 		clone.hide();
- 		clone.fadeIn('fast');
- 		clone.chosen();
+ 		clone.chosen({ allow_single_deselect:true });
  	});
  	
  	$("button.addHabitatPair").on('click', function() {
@@ -671,7 +743,7 @@ $(function() {
  			clone.append(clonedSelect);
  		});
  		$(this).before(clone);
- 		clone.find('select').chosen();
+ 		clone.find('select').chosen({ allow_single_deselect:true });
  	});
  	
  	$(window).on('scroll', function() {
@@ -753,11 +825,11 @@ $(function() {
     $("select[name='MKV.redListStatus']").on('change', function() {
     	var status = $(this).val(); 
     	if (status == 'MX.iucnDD') {
-    		$(".ddReasonRow").show().find('select').chosen();
+    		$(".ddReasonRow").show().find('select').chosen({ allow_single_deselect:true });
     	}
     	var statusOrder = statusComparator[status];
     	if (statusOrder && statusOrder >= 3) {
-    		$(".vulnerableRow").show().find('select').chosen();
+    		$(".vulnerableRow").show().find('select').chosen({ allow_single_deselect:true });
     	}
     });
     

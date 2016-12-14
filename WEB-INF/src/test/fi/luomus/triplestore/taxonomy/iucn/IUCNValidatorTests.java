@@ -20,6 +20,7 @@ import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
@@ -83,7 +84,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnNE", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
-		assertEquals("Arvoa \"NE - Arvioimatta jätetty\" ei voi käyttää arvovälinä", result.listErrors().get(0));
+		assertEquals("Arvoa \"NE - Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
 	}
 	
 	@Test
@@ -110,7 +111,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnLC", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
-		assertEquals("Arvovälin ala-arvo \"VU - Vaarantunut\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimainen\"", result.listErrors().get(0));
+		assertEquals("Arvovälin ala-arvo \"VU - Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimaiset\"", result.listErrors().get(0));
 	}
 	
 	@Test
@@ -127,10 +128,11 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
-		assertEquals("Uhkatekijät on määriteltävä uhanalaisuusluokalle \"VU - Vaarantunut\"", result.listErrors().get(0));
+		assertEquals("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle \"VU - Vaarantuneet\"", result.listErrors().get(0));
 		
-		givenModel.addStatementIfObjectGiven("MKV.endangermentReason", "MKV.endangermentReasonR", null);
+		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
 		result = validator.validate(givenData, null);
+		if (result.hasErrors()) System.out.println(result.getErrors());
 		assertFalse(result.hasErrors());
 	}
 	
