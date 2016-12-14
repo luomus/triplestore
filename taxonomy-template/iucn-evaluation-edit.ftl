@@ -725,7 +725,7 @@ $(function() {
  	$("button.add").on('click', function() {
  		var countOfExisting = $(this).parent().find(':input').size();
  		var input = $(this).prevAll(":input").first();
- 		var clone = input.clone().val('');
+ 		var clone = input.clone().val('').show().removeAttr('display');
  		var newNameAttribute = clone.attr('name').replace('___0', '___'+(countOfExisting+1));
 		clone.attr('name', newNameAttribute);  
  		$(this).before('<br />').before(clone);
