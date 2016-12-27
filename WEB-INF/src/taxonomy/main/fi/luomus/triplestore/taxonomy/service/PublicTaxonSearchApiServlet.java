@@ -164,8 +164,10 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		if (given(taxonRank)) {
 			json.setString("taxonRankId", taxonRank.toString());	
 		}
-		json.setBoolean("isSpecies", Taxon.isSpecies(taxonRank));
-		json.setBoolean("isCursiveName", Taxon.shouldCursive(taxonRank));
+		json.setBoolean("isSpecies", Taxon.isSpecies(taxonRank)); // TODO remove when not used in laji frontend anymore
+		json.setBoolean("isCursiveName", Taxon.shouldCursive(taxonRank)); // TODO remove when not used in laji frontend anymore
+		json.setBoolean("species", Taxon.isSpecies(taxonRank));
+		json.setBoolean("cursiveName", Taxon.shouldCursive(taxonRank));
 		if (match.hasChildNodes("informalGroups")) {
 			for (Node group : match.getNode("informalGroups").getChildNodes()) {
 				json.getArray("informalGroups").appendObject(toJSONV2InformalGroup(group));
