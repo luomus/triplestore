@@ -206,7 +206,9 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 		cachedTaxons.invalidate(taxon.getQname());
 		cachedChildren.invalidate(taxon.getQname());
-		cachedTaxonConcepts.invalidate(taxon.getTaxonConceptQname());
+		if (taxon.getTaxonConceptQname() != null) {
+			cachedTaxonConcepts.invalidate(taxon.getTaxonConceptQname());
+		}
 	}
 
 }
