@@ -210,10 +210,11 @@ input.validationError {
 .notes, .modalInfoContainer {
   display: block;
   display: none;
-  box-shadow: rgba(0,0,0,0.7) 0px 2px 3px, inset rgba(0,0,0,0.7) 0px -1px 2px;
-  border-radius: 3px;
-  padding: 0.5em;
-  margin: 1em;
+  box-shadow: rgba(0,0,0,0.9) 0px 2px 3px, inset rgba(0,0,0,0.9) 0px -1px 2px;
+  background-color: rgb(255, 245, 175);
+  border-radius: 2px;
+  padding: 1em;
+  margin: 2em;
 }
 
 .required {
@@ -274,13 +275,12 @@ div#evaluationMeta {
 
 .modalInfoContainer {
 	position: fixed;
-	top: 100px;
+	top: 0px;
 	left: 250px;
 	height: auto;
 	width: 600px;
-	background-color: white;
 	z-index: 99999;
-	min-height: 500px;
+	min-height: 100px;
 }
 
 #copyButton {
