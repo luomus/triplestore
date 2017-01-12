@@ -1,5 +1,14 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.utils.DateUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,14 +17,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.RdfProperties;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.utils.DateUtils;
-
 public class IUCNEvaluation {
 
+	public static final String LAST_SIGHTING_NOTES = "MKV.lastSightingNotes";
+	public static final String BORDER_GAIN = "MKV.borderGain";
+	public static final String FRAGMENTED_HABITATS = "MKV.fragmentedHabitats";
+	public static final String POPULATION_VARIES = "MKV.populationVaries";
+	public static final String EVALUATION_PERIOD_LENGTH = "MKV.evaluationPeriodLength";
+	public static final String GENERATION_AGE = "MKV.generationAge";
+	public static final String HABITAT_GENERAL_NOTES = "MKV.habitatGeneralNotes";
+	public static final String OCCURRENCE_REGIONS_NOTES = "MKV.occurrenceRegionsNotes";
+	public static final String OCCURRENCE_NOTES = "MKV.occurrenceNotes";
+	public static final String OCCURRENCE_AREA_MAX = "MKV.occurrenceAreaMax";
+	public static final String OCCURRENCE_AREA_MIN = "MKV.occurrenceAreaMin";
+	public static final String DISTRIBUTION_AREA_MAX = "MKV.distributionAreaMax";
+	public static final String DISTRIBUTION_AREA_MIN = "MKV.distributionAreaMin";
+	public static final String TYPE_OF_OCCURRENCE_IN_FINLAND = "MKV.typeOfOccurrenceInFinland";
 	public static final String IUCN_EVALUATION_NAMESPACE = "MKV";
 	public static final String IUCN_RED_LIST_EVALUATION_YEAR_CLASS = "MKV.iucnRedListEvaluationYear";
 	public static final String EVALUATION_CLASS = "MKV.iucnRedListEvaluation";
@@ -46,7 +63,7 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_AREA = "MKV.regionalStatusArea";
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
-	
+
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>();
@@ -136,7 +153,7 @@ public class IUCNEvaluation {
 		if (regionalStatuses == null) return Collections.emptyList();
 		return Collections.unmodifiableCollection(regionalStatuses.values());
 	}
-	
+
 	public String getId() {
 		return evaluation.getSubject().getQname();
 	}
@@ -260,6 +277,85 @@ public class IUCNEvaluation {
 		if (threats.contains(threat)) return;
 		threats.add(threat);
 		Collections.sort(threats);
+	}
+
+	public void copySpecifiedFieldsTo(IUCNEvaluation copyTarget) {
+		copy(TYPE_OF_OCCURRENCE_IN_FINLAND, copyTarget);
+		copy(DISTRIBUTION_AREA_MIN, copyTarget);
+		copy(DISTRIBUTION_AREA_MAX, copyTarget);
+		copy(OCCURRENCE_AREA_MIN, copyTarget);
+		copy(OCCURRENCE_AREA_MAX, copyTarget);
+		copy(OCCURRENCE_NOTES, copyTarget);
+
+		for (Occurrence occurrence : this.getOccurrences()) {
+			copyTarget.addOccurrence(copy(occurrence));
+		}
+		copy(OCCURRENCE_REGIONS_NOTES, copyTarget);
+
+		copyTarget.setPrimaryHabitat(copy(this.getPrimaryHabitat()));
+		for (IUCNHabitatObject habitatObject : this.getSecondaryHabitats()) {
+			copyTarget.addSecondaryHabitat(copy(habitatObject));
+		}
+		copy(HABITAT_GENERAL_NOTES, copyTarget);
+		
+		copy(GENERATION_AGE, copyTarget);
+		copy(EVALUATION_PERIOD_LENGTH, copyTarget);
+		copy(POPULATION_VARIES, copyTarget);
+		copy(FRAGMENTED_HABITATS, copyTarget);
+		copy(BORDER_GAIN, copyTarget);
+		
+		for (IUCNEndangermentObject endangermentObject : this.getEndangermentReasons()) {
+			copyTarget.addEndangermentReason(copy(endangermentObject));
+		}
+		for (IUCNEndangermentObject endangermentObject : this.getThreats()) {
+			copyTarget.addThreat(copy(endangermentObject));
+		}
+		
+		copy(LAST_SIGHTING_NOTES, copyTarget);
+		
+		for (IUCNRegionalStatus regionalStatus : this.getRegionalStatuses()) {
+			copyTarget.addRegionalStatus(copy(regionalStatus));
+		}
+	}
+
+	private IUCNRegionalStatus copy(IUCNRegionalStatus regionalStatus) {
+		return new IUCNRegionalStatus(null, regionalStatus.getArea(), regionalStatus.getStatus());
+	}
+
+	private IUCNEndangermentObject copy(IUCNEndangermentObject endangermentObject) {
+		return new IUCNEndangermentObject(null, endangermentObject.getEndangerment(), endangermentObject.getOrder());
+	}
+
+	private IUCNHabitatObject copy(IUCNHabitatObject habitatObject) {
+		if (habitatObject == null) return null;
+		IUCNHabitatObject copy = new IUCNHabitatObject(null, habitatObject.getHabitat(), habitatObject.getOrder());
+		for (Qname habitatSpecificType : habitatObject.getHabitatSpecificTypes()) {
+			copy.addHabitatSpecificType(habitatSpecificType);
+		}
+		return copy;
+	}
+
+	private Occurrence copy(Occurrence occurrence) {
+		return new Occurrence(null, occurrence.getArea(), occurrence.getStatus());
+	}
+
+	private void copy(String predicateQname, IUCNEvaluation copyTarget) {
+		List<Statement> statements = this.getModel().getStatements(predicateQname);
+		for (Statement statement : statements) {
+			copyTarget.getModel().addStatement(copy(statement));
+		}
+	}
+
+	private Statement copy(Statement statement) {
+		if (statement.isLiteralStatement()) {
+			ObjectLiteral literal = statement.getObjectLiteral();
+			if (literal.hasLangcode()) {
+				return new Statement(statement.getPredicate(), new ObjectLiteral(literal.getContent(), literal.getLangcode()));
+			} else {
+				return new Statement(statement.getPredicate(), new ObjectLiteral(literal.getContent()));
+			}
+		}
+		return new Statement(statement.getPredicate(), new ObjectResource(statement.getObjectResource().getQname()));
 	}
 
 }

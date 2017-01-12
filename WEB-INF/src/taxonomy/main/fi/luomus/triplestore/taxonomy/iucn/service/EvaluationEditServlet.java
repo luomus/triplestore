@@ -31,10 +31,8 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -74,8 +72,25 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		int year = selectedYear(req);
 		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
-
+		if (isCopyRequest(req) && thisPeriodData == null && comparisonData != null) {
+			thisPeriodData = iucnDAO.createNewEvaluation();
+			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
+			
+			Model model = thisPeriodData.getModel();
+			setModifiedInfo(req, model);
+			setTaxon(speciesQname, model);
+			setYear(year, model);
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu " + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+			model.addStatement(new Statement(EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
+			
+			iucnDAO.getIUCNContainer().setEvaluation(thisPeriodData);
+		}
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
+	}
+
+	private boolean isCopyRequest(HttpServletRequest req) {
+		String copyParam = req.getParameter("copy");
+		return copyParam != null && copyParam.equals("true");
 	}
 
 	private ResponseData showView(HttpServletRequest req, HttpServletResponse res, TriplestoreDAO dao, TaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation comparisonData, IUCNEvaluation thisPeriodData) throws Exception {
@@ -98,15 +113,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("permissions", permissions(req, target))
-				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao))
-				.setData("copyFields", getCopyFields());
-	}
-
-	private Collection<String> getCopyFields() {
-		Set<String> copyFields = new HashSet<>();
-		// TODO make static final
-		copyFields.add("MKV.typeOfOccurrenceInFinland");
-		return copyFields;
+				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
 	}
 
 	HabitatLabelIndendator habitatLabelIndendator = null;

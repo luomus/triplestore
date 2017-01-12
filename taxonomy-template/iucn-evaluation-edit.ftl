@@ -105,14 +105,26 @@
 
 </div>
 <div class="clear"></div>
-
 <#if permissions>
+
+<#if comparison?? && !evaluation??>
+	<div id="copyArea" class="ui-widget ui-corner-all">
+		<div class="ui-widget-header">Kopiointi</div>
+		<div class="ui-widget-content">
+			<p>Voit kopioida tiettyjen määriteltyjen kenttien tiedot edellisestä arvioinnista tähän arviointiin:</p>
+			<button id="copyButton">
+				Kopioi vuoden ${comparison.evaluationYear} arvioinnin tiedot
+			</button>
+			<span class="info">Huom: Tämän voi tehdä ainoastaan kerran ennen kuin mitään tietoja on syötetty. Alle tehdyt muutokset menetetään!</span>			
+		</div>
+	</div>
+</#if>
+
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
 <input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
 <input type="hidden" name="MKV.state" id="evaluationState" />
-<@submitButtons/>
 </#if>
 
 <table class="resourceListTable evaluationEdit">
@@ -122,7 +134,6 @@
 			<th>
 				<#if comparison??>
 					${comparison.evaluationYear} tiedot
-					<button id="copyButton">Kopio &raquo;</button>
 				<#else>
 					Ei edellisiä tietoja
 				</#if>
@@ -225,17 +236,14 @@
 </table>
 
 <#if permissions>
-<@submitButtons/>
+	<div class="submitButtonContainer">
+		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes">${(editNotes!"")?html}</textarea>
+		<button id="saveButton">Tallenna</button>
+		<button id="readyButton" class="ready">Tallenna ja merkitse valmiiksi</button>
+	</div>
 </form>
 </#if>
 
-<#macro submitButtons>
-	<div class="submitButtonContainer">
-		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes">${(editNotes!"")?html}</textarea>
-		<button class="saveButton">Tallenna</button>
-		<button class="ready readyButton">Arviointi valmis</button>
-	</div>
-</#macro>
 
 <#macro iucnSection title>
 	<tr class="section">
@@ -410,7 +418,6 @@
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
 				${occurrenceProperties.getProperty("MO.status").range.getValueFor(comparison.getOccurrence(areaQname).status.toString()).label.forLocale("fi")?html}
-				<span class="hidden copyValue copyValue_MKV.hasOccurrence___${areaQname}">${comparison.getOccurrence(areaQname).status}</span>
 			</#if>
 		</td>
 		<td>
@@ -446,7 +453,6 @@
 				</#if>
 				<#list comparisonValues as reason>
 						${endangermentObjectProperties.getProperty("MKV.endangerment").range.getValueFor(reason.endangerment).label.forLocale("fi")?html}
-						<span class="hidden copyValue copyValue_${fieldName}">${reason?html}</span>
 					<#if reason_has_next><br /></#if>
 				</#list>
 				<@showNotes notesFieldName comparison />
@@ -586,11 +592,9 @@
 
 <#macro showHabitatPairValue habitatObject>
 	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")?html}
-	<span class="hidden copyValue copyValue_MKV.habitat">${habitatObject.habitat?html}</span>
 	<br />
 	<#list habitatObject.habitatSpecificTypes as type>
 		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
-		<span class="hidden copyValue copyValue_MKV.habitatSpecificType">${type?html}</span>
 		<#if type_has_next><br /></#if>
 	</#list>
 	<br />
@@ -678,9 +682,6 @@
 				${value?html}
 			<#else>
 				${property.range.getValueFor(value).label.forLocale("fi")?html}
-			</#if>
-			<#if copyFields?seq_contains(fieldName)>
-				<span class="hidden copyValue copyValue_${fieldName}">${value?html}</span>
 			</#if>
 			<#if value_has_next><br /><br /></#if>
 		</#list>
@@ -780,11 +781,13 @@ $(function() {
  		}
  	});
  	
- 	$(".saveButton").on('click', function() {
+ 	$("#saveButton").on('click', function() {
+ 		$("#saveButton, #readyButton").prop("disabled", 'disabled');
  		$("#evaluationState").val("MKV.stateStarted");
  		document.getElementById("evaluationEditForm").submit();
  	});
- 	$(".readyButton").on('click', function() {
+ 	$("#readyButton").on('click', function() {
+ 		$("#saveButton, #readyButton").prop("disabled", 'disabled');
  		$("#evaluationState").val("MKV.stateReady");
  		document.getElementById("evaluationEditForm").submit();
  	});
@@ -825,15 +828,6 @@ $(function() {
         if ( event.keyCode == 13 ){
             event.preventDefault();
         }
-    });
-    
-    $('#copyButton').on('click', function() {
-    	$(".copyValue").each(function() {
-    		// XXX
-    		//var targetFieldName = $(this).
-    		//var targetContainer = $(this).closest('tr').find('td').last();
-    		
-    	});
     });
     
     $("#showRegionalButton").on('click', function() {
@@ -881,6 +875,10 @@ $(function() {
     	});
     }); 
     
+    $("#copyButton").on('click', function() {
+    	$(this).prop('disabled','disabled');
+    	window.location.href = '${baseURL}/iucn/species/${taxon.qname}/${selectedYear}?copy=true';
+    });
 });
 
 function isPositiveInteger(str) {

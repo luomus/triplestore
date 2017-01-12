@@ -226,11 +226,23 @@ input.validationError {
 
 
 .submitButtonContainer {
-  margin: 2em;
-  text-align: right;
-  width: 650px;
+  display: block;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  left: 0;
+  z-index: 99998;
+  vertical-align: middle;
+  background-color: #eee;
+  border-top: 1px solid grey;
 }
-
+.submitButtonContainer > * {
+  vertical-align: middle;
+  margin: 1em;
+}
+.submitButtonContainer > button {
+  padding: 1em;
+}
 button.add, .addHabitatPair {
   color: green;
   font-size: 10px;
@@ -286,4 +298,13 @@ div#evaluationMeta {
 
 #copyButton {
 	margin-left: 20px;
+}
+
+#copyArea {
+  width: 500px;
+  margin: 1em;
+  margin-bottom: 3em;
+}
+#copyArea > div {
+  padding: 5px;
 }
