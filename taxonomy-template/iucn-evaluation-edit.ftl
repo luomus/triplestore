@@ -139,37 +139,38 @@
 	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" "" occurrenceStatuses />
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
-
+	<@iucnTextarea "MKV.occurrenceNotes" />
+	
 	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä jos luokka NT-RE</span>" />
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
-	<@iucnTextarea "MKV.occurrenceNotes" />
+	<@iucnTextarea "MKV.occurrenceRegionsNotes" />
 
 	<@iucnSection "Elinympäristö" />   
 	<@iucnHabitatFields />   
-
+	<@iucnTextarea "MKV.habitatGeneralNotes" />
+	
 	<@iucnSection "Arvioinnin perusteet" />
 	<@iucnInput "MKV.generationAge" "MKV.generationAgeNotes" />
 	<@iucnInput "MKV.evaluationPeriodLength" "MKV.evaluationPeriodLengthNotes" />
 	<@iucnMinMax "Yksilömäärä" "MKV.individualCountMin" "MKV.individualCountMax" "MKV.individualCountNotes" />
-
 	<@iucnInput "MKV.populationSizePeriodBeginning" "MKV.populationSizePeriodNotes" />
 	<@iucnInput "MKV.populationSizePeriodEnd" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
-
 	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
 	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
 	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
-	
 	<@iucnEndangermentObject "MKV.hasEndangermentReason" "MKV.endangermentReasonNotes" />
 	<@iucnEndangermentObject "MKV.hasThreat" "MKV.threatNotes" />
-
+	<@iucnTextarea "MKV.groundsForEvaluationNotes" />
+	
 	<@iucnSection "Kriteerit" />
 	<#list ["A", "B", "C", "D", "E"] as criteria>
 		<@iucnInput "MKV.criteria"+criteria "MKV.criteria"+criteria+"Notes" />
 		<@iucnInput "MKV.status"+criteria "MKV.status"+criteria+"Notes" />
 	</#list>
+	<@iucnTextarea "MKV.criteriaNotes" />
 	
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
@@ -213,8 +214,9 @@
 		<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
 	</#if>
 	<#list areas?keys as areaQname>
-		<@iucnRegionalStatus areaQname hasRegionalData />
+		<@iucnRegionalStatus areaQname hasRegionalData />		
 	</#list>
+	<@iucnTextarea "MKV.regionalStatusNotes" />
 	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
@@ -366,7 +368,8 @@
 						<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
 					</#list>
 				</select>
-				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" value="<#if evaluation??>${(evaluation.getValue(fieldName)!"")?html}</#if>">
+				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue(fieldName)!"")?html}</#if>">
+				<@editableNotes notesFieldName />
 			<#else>
 				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
 			</#if>
@@ -877,7 +880,7 @@ function updateNotes(noteInput) {
 		var shortText = shorten(noteInput.val());
 		noteViewerContent += '<span title="'+noteInput.val()+'"><span class="ui-icon ui-icon-comment"></span>'+shortText+'</span>';
 	} else {
-		noteViewerContent += '<a href="#">kommentoi</a>';
+		noteViewerContent += '<a href="#">muistiinpanot</a>';
 	}
 	noteViewerContent += '</div>'
 	var noteViewer = $(noteViewerContent);
