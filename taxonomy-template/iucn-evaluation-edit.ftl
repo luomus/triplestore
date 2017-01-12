@@ -141,7 +141,7 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
-	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä jos luokka NT-RE</span>" />
+	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä jos luokka NT-RE</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
@@ -415,7 +415,7 @@
 		</td>
 		<td>
 			<#if permissions>
-				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="...">
+				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="..." class="regionalOccurrence">
 					<option value="" label=".."></option>
 					<#list regionalOccurrenceStatuses as prop>
 						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
@@ -855,6 +855,16 @@ $(function() {
     		}
     	}
     });
+    
+    $("#markAllDoesNotOccurButton").on('click', function() {
+    	$("select.regionalOccurrence").each(function() {
+    		if ($(this).val() == '') {
+    			$(this).val('MX.doesNotOccur');
+    			$(this).trigger("chosen:updated").change();
+    		}
+    	});
+    }); 
+    
 });
 
 function isPositiveInteger(str) {
