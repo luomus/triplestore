@@ -1,18 +1,19 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IUCNValidator {
 
@@ -43,12 +44,30 @@ public class IUCNValidator {
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);
 		}
+		
+		validate(givenData.getPrimaryHabitat(), validationResult);
+		for (IUCNHabitatObject habitatObject : givenData.getSecondaryHabitats()) {
+			validate(habitatObject, validationResult);
+		}
+					
 		validateMinMaxPair("MKV.countOfOccurrencesMin", "MKV.countOfOccurrencesMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.distributionAreaMin", "MKV.distributionAreaMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.occurrenceAreaMin", "MKV.occurrenceAreaMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
+	}
+
+	private void validate(IUCNHabitatObject habitatObject, IUCNValidationResult validationResult) {
+		if (habitatObject == null) return;
+		if (habitatObject.getHabitatSpecificTypes().isEmpty()) return;
+		if (!given(habitatObject.getHabitat())) {
+			validationResult.setError("Elinympäristön lisämäärettä ei saa antaa jos varsinaista elinympäristö ei ole annettu.");
+		}
+	}
+
+	private boolean given(Qname q) {
+		return q != null && q.isSet();
 	}
 
 	private void validateRegionalEndangerment(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -165,7 +184,7 @@ public class IUCNValidator {
 		return s != null && s.length() > 0;
 	}
 
-	private Comparator<String> IUCN_RANGE_COMPARATOR = new Comparator<String>() {
+	private final Comparator<String> IUCN_RANGE_COMPARATOR = new Comparator<String>() {
 		@Override
 		public int compare(String o1, String o2) {
 			Integer i1 = IUCN_COMPARATOR_VALUES.get(o1);
