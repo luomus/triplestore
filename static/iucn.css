@@ -47,6 +47,7 @@ input.validationError {
 .evaluationEdit th, 
 .evaluationEdit td {
   background-color: white;
+  vertical-align: top;
 }
 
 .evaluationEdit .section label {

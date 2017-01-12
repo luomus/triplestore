@@ -211,7 +211,7 @@
 	<@iucnSection "Alueellinen uhanalaisuus <span> &mdash; Saa täyttää vain jos luokka on LC tai NT</span>" />
 	<#assign hasRegionalData = evaluation?? && evaluation.regionalStatuses?has_content>
 	<#if !hasRegionalData>
-		<tr><td colspan="3"><button id="showRegionalButton">Haluan määritellä alueellisen uhanalaisuuden</button></td></tr>
+		<tr><td colspan="3"><button id="showRegionalButton">Näytä alueelliset uhanalaisuudet</button></td></tr>
 	</#if>
 	<#list areas?keys as areaQname>
 		<@iucnRegionalStatus areaQname hasRegionalData />		
@@ -599,7 +599,7 @@
 <#macro iucnPublications fieldName>
 	<tr>
 		<th><@iucnLabel fieldName /></th>
-		<td></td>
+		<td><@showPublications fieldName comparison /></td>
 		<td>
 			<#if permissions>
 				<table class="publicationSelect">
@@ -639,10 +639,24 @@
 					</tr>	
 				</table>
 			<#else>
-				<@showValue fieldName evaluation />
+				<@showPublications fieldName evaluation />
 			</#if>
 		</td>
 	</tr>
+</#macro>
+
+<#macro showPublications fieldName data="NONE">
+	<#if data != "NONE">
+		<#assign property = evaluationProperties.getProperty(fieldName)>
+		<#list data.getValues(fieldName) as value>
+			<#if publications[value]??>
+				${publications[value].citation?html}
+			<#else>
+				${value?html}
+			</#if>
+			<#if value_has_next><br /><br /></#if>
+		</#list>
+	</#if>
 </#macro>
 
 <#macro iucnLabel fieldName>
@@ -665,7 +679,9 @@
 			<#else>
 				${property.range.getValueFor(value).label.forLocale("fi")?html}
 			</#if>
-			<span class="hidden copyValue copyValue_${fieldName}">${value?html}</span>
+			<#if copyFields?seq_contains(fieldName)>
+				<span class="hidden copyValue copyValue_${fieldName}">${value?html}</span>
+			</#if>
 			<#if value_has_next><br /><br /></#if>
 		</#list>
 	</#if>

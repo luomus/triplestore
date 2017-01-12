@@ -31,8 +31,10 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -96,7 +98,15 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("permissions", permissions(req, target))
-				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
+				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao))
+				.setData("copyFields", getCopyFields());
+	}
+
+	private Collection<String> getCopyFields() {
+		Set<String> copyFields = new HashSet<>();
+		// TODO make static final
+		copyFields.add("MKV.typeOfOccurrenceInFinland");
+		return copyFields;
 	}
 
 	HabitatLabelIndendator habitatLabelIndendator = null;
