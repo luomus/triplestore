@@ -353,8 +353,36 @@ public class IUCNValidatorTests {
 		assertFalse(result.hasErrors());
 	}
 	
-	// TODO
-	//	tarkastelujakso välillä 10-100
+	@Test
+	public void test_evaluationPeriodLength() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "10");
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+		
+		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "100");
+		result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+		
+		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "50");
+		result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+		
+		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "9");
+		result = validator.validate(givenData, null);
+		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
+		
+		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "101");
+		result = validator.validate(givenData, null);
+		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
+	}
+	
 
 	// TODO testaa DD NA NE käyttö  (min-max, criteria ym) -> ei sallite min-max, criteriaA-E
 

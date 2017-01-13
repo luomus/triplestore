@@ -64,6 +64,20 @@ public class IUCNValidator {
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
+		validateEvaluationPeriodLength(givenData, validationResult);
+	}
+
+	private void validateEvaluationPeriodLength(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String val = givenData.getValue(IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
+		if (!given(val)) return;
+		try {
+			int i = Integer.valueOf(val);
+			if (i > 100 || i < 10) {
+				validationResult.setError("Tarkastelujakson pituus on oltava väliltä 10-100");
+			}
+		} catch (Exception e) {
+			// Invalid number validated elsewhere
+		}
 	}
 
 	private static final Set<String> LSA_CAN_GIVE_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
