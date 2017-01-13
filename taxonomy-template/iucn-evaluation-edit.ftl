@@ -309,7 +309,7 @@
 <#macro iucnInput fieldName notesFieldName="NONE" additionalClass="" customRange=[]>
 	<tr class="${additionalClass}">
 		<th><@iucnLabel fieldName /></th>
-		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
+		<td><@showValue fieldName comparison customRange /> <@showNotes notesFieldName comparison /></td>
 		<td>
 			<#if permissions>
 				<@iucnInputField fieldName customRange /> <@editableNotes notesFieldName />
@@ -417,7 +417,13 @@
 		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
 		<td>
 			<#if comparison?? && comparison.hasOccurrence(areaQname)>
-				${occurrenceProperties.getProperty("MO.status").range.getValueFor(comparison.getOccurrence(areaQname).status.toString()).label.forLocale("fi")?html}
+				<#assign areaStatus = comparison.getOccurrence(areaQname).status>
+				<#list regionalOccurrenceStatuses as status>
+					<#if status.qname == areaStatus>
+						${status.label.forLocale("fi")?html}
+						<#break>
+					</#if>
+				</#list>
 			</#if>
 		</td>
 		<td>
@@ -674,14 +680,23 @@
 	</#if>
 </#macro>
 
-<#macro showValue fieldName data="NONE">
+<#macro showValue fieldName data="NONE" customRanges=[]>
 	<#if data != "NONE">
 		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
 			<#if property.literalProperty && !property.booleanProperty>
 				${value?html}
 			<#else>
-				${property.range.getValueFor(value).label.forLocale("fi")?html}
+				<#if customRanges?has_content>
+					<#list customRanges as customRange>
+						<#if customRange.qname == value>
+							${customRange.label.forLocale("fi")?html}
+							<#break>
+						</#if>
+					</#list>
+				<#else>
+					${property.range.getValueFor(value).label.forLocale("fi")?html} 
+				</#if>
 			</#if>
 			<#if value_has_next><br /><br /></#if>
 		</#list>
