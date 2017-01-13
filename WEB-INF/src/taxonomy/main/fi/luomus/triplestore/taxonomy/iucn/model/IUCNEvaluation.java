@@ -63,6 +63,7 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_AREA = "MKV.regionalStatusArea";
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
+	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
 
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {

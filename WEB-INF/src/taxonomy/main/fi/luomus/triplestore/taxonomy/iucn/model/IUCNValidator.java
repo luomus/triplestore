@@ -41,12 +41,17 @@ public class IUCNValidator {
 		validateDataTypes(givenData, validationResult);
 		if (givenData.isReady()) {
 			validateRequiredFields(givenData, validationResult);
-			validateEndangermentReason(givenData, validationResult);
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);
 			validateInvasive(givenData, validationResult);
 			validateCriteriasAndStatuses(givenData, validationResult);
 			validateSpecificCriterias(givenData, validationResult);
+			validateOccurrences(givenData, validationResult);
+			validateHabitatForStatus(givenData, validationResult);
+			validateEndangermentReasonForStatus(givenData, validationResult);
+			validateThreathsForStatus(givenData, validationResult);
+			validateLsaForStatus(givenData, validationResult);
+			validateCriteriaForStatusForStatus(givenData, validationResult);
 		}
 
 		validateHabitat(givenData.getPrimaryHabitat(), validationResult);
@@ -61,6 +66,69 @@ public class IUCNValidator {
 		validateCriteriaFormat(givenData, validationResult);
 	}
 
+	private static final Set<String> LSA_CAN_GIVE_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
+	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> THREATHS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
+	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
+	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
+	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+
+	private void validateLsaForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String lsaRec = givenData.getValue("MKV.lsaRecommendation");
+		if (!"true".equals(lsaRec)) return;
+		String status = givenData.getIucnStatus();
+		if (!LSA_CAN_GIVE_STATUSES.contains(status)) {
+			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR");
+		}
+	}
+	
+	private void validateCriteriaForStatusForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		if (CRITERIA_FOR_STATUS_REQUIRED_STATUSES.contains(status)) {
+			if (!given(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS))) {
+				validationResult.setError("Luokkaan johtaneet kriteerit on täytettävä luokille NT-CR");
+			}
+		}
+	}
+	
+	private void validateThreathsForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		if (THREATHS_REQUIRED_STATUSES.contains(status)) {
+			if (givenData.getThreats().isEmpty()) {
+				validationResult.setError("Uhkatekijät on täytettävä luokille VU-CR");
+			}
+		}
+	}
+
+	private void validateEndangermentReasonForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		if (ENDANGERMENTREASON_REQUIRED_STATUSES.contains(status)) {
+			if (givenData.getEndangermentReasons().isEmpty()) {
+				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille VU-RE");
+			}
+		}
+	}
+
+
+
+	private void validateHabitatForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		if (PRIMARY_HABITAT_REQUIRED_STATUSES.contains(status)) {
+			if (givenData.getPrimaryHabitat() == null) {
+				validationResult.setError("Ensisijainen elinympäristö on täytettävä luokille LC-CR");
+			}
+		}
+	}
+
+	private void validateOccurrences(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		if (OCCURRENCES_REQUIRED_STATUSES.contains(status)) {
+			if (givenData.getOccurrences().isEmpty()) {
+				validationResult.setError("Esiintymisalueet on täytettävä luokille NT-CR");
+			}
+		}
+	}
+
 	private void validateSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String criterias = givenData.getValue("MKV.criteriaForStatus");
 		if (criterias == null) criterias = "";
@@ -73,6 +141,15 @@ public class IUCNValidator {
 		}
 		if (criterias.contains("B2")) {
 			validateWhenCriteriaB2Given(givenData, validationResult);
+		}
+		if (criterias.contains("A")) {
+			validateWhenCriteriaAGiven(givenData, validationResult);
+		}
+	}
+
+	private void validateWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_PERIOD_LENGTH))) {
+			validationResult.setError("Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A");
 		}
 	}
 
@@ -232,28 +309,14 @@ public class IUCNValidator {
 		String prevStatus = comparisonData.getIucnStatus();
 		if (!given(prevStatus) || !given(thisStatus)) return;
 
-		Integer thisStatusOrder = IUCN_COMPARATOR_VALUES.get(thisStatus);
-		Integer prevStatusOrder = IUCN_COMPARATOR_VALUES.get(prevStatus);
-		if (thisStatusOrder == null || prevStatusOrder == null) return;
-
 		if (!statusChangeReasons.isEmpty()) {
-			if (thisStatusOrder == prevStatusOrder) {
+			if (thisStatus.equals(prevStatus)) {
 				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut");
 			}
 		} else {
-			if (thisStatusOrder != prevStatusOrder) {
+			if (!thisStatus.equals(prevStatus)) {
 				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka");
 			}
-		}
-	}
-
-	private void validateEndangermentReason(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
-		if (!givenData.getEndangermentReasons().isEmpty()) return;
-		String status = givenData.getIucnStatus();
-		Integer statusOrderValue = IUCN_COMPARATOR_VALUES.get(status);
-		if (statusOrderValue == null) return;
-		if (statusOrderValue >= ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST) {
-			validationResult.setError("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle " + getLabel(status));
 		}
 	}
 
@@ -332,7 +395,6 @@ public class IUCNValidator {
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNA", null);
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
 	}
-	private static final int ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST = IUCN_COMPARATOR_VALUES.get("MX.iucnNT");
 
 	private static final Map<String, Set<String>> VALID_CRITERIA = new HashMap<>();
 	static {

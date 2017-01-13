@@ -11,12 +11,14 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 
@@ -80,6 +82,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createEvaluation(givenModel);
 		givenModel.removeAll(new Predicate(IUCNEvaluation.STATE));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_READY));
+		givenData.setPrimaryHabitat(new IUCNHabitatObject(null, new Qname("Something required"), 1));
 		return givenData;
 	}
 
@@ -168,38 +171,6 @@ public class IUCNValidatorTests {
 	}
 
 	@Test
-	public void test_endagerement_reason_1() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
-
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-	}
-
-	@Test
-	public void test_endagerement_reason_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
-
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertTrue(result.hasErrors());
-		assertEquals("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle \"VU - Vaarantuneet\"", result.listErrors().get(0));
-	}
-
-	@Test
-	public void test_endagerement_reason_3() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
-		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
-		IUCNValidationResult result = validator.validate(givenData, null);
-		if (result.hasErrors()) System.out.println(result.getErrors());
-		assertFalse(result.hasErrors());
-	}
-
-	@Test
 	public void test_invasive() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
@@ -282,7 +253,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1b;B1a");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -330,20 +301,61 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1;B1a");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
 	}
 
+	@Test
+	public void test_criteria_various() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1;B1a;B2");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("" +
+				"[Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1, "+
+				"Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2, "+
+				"Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A]", 
+				result.listErrors().toString());
+	}
+
+	@Test
+	public void test_occurrences_primHabitat_threats_endangerment_1() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenData.setPrimaryHabitat(null);
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("" +
+				"[Esiintymisalueet on täytettävä luokille NT-CR, "+
+				"Ensisijainen elinympäristö on täytettävä luokille LC-CR, "+
+				"Uhanalaisuuden syyt on täytettävä luokille VU-RE, "+
+				"Uhkatekijät on täytettävä luokille VU-CR, "+
+				"Luokkaan johtaneet kriteerit on täytettävä luokille NT-CR]",
+				result.listErrors().toString());
+	}
+
+	@Test
+	public void test_occurrences_primHabitat_threats_endangerment_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("occ")));
+		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "E");
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+	
 	// TODO
-	//	esiintymisalueet pak jos NT-CR
-	//	elinympäristö pak jos LC-CR
-	//	tarkastalujakson pituus jos A
-	//	uhanalaisuuden syyt vu-re pak
-	//	uhkatekijät vu-cr pak
-	//	erityissuojeltaviin: vain jos VU-CR
 	//	tarkastelujakso välillä 10-100
-	//	luokkaan johtaneet kriteerit NT-CR pak
+
+	// TODO testaa DD NA NE käyttö  (min-max, criteria ym) -> ei sallite min-max, criteriaA-E
 
 }

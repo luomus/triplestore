@@ -152,13 +152,13 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
-	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä jos luokka NT-RE</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
+	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä luokille NT-CR</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" />
 
-	<@iucnSection "Elinympäristö" />   
+	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span>" />   
 	<@iucnHabitatFields />   
 	<@iucnTextarea "MKV.habitatGeneralNotes" />
 	
