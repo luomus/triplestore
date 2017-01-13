@@ -440,7 +440,13 @@
 				</select>
 			<#else>
 				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
-					${occurrenceProperties.getProperty("MO.status").range.getValueFor(evaluation.getOccurrence(areaQname).status.toString()).label.forLocale("fi")?html}
+					<#assign areaStatus = comparison.getOccurrence(areaQname).status>
+					<#list regionalOccurrenceStatuses as status>
+						<#if status.qname == areaStatus>
+							${status.label.forLocale("fi")?html}
+							<#break>
+						</#if>
+					</#list>
 				</#if>
 			</#if>
 		</td>
