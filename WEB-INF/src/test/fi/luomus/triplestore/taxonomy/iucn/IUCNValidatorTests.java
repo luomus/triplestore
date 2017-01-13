@@ -217,7 +217,6 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnNT"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
-		System.out.println(result.listErrors().toString());
 		assertFalse(result.hasErrors());
 	}
 
@@ -352,7 +351,7 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
-	
+
 	@Test
 	public void test_evaluationPeriodLength() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -361,29 +360,51 @@ public class IUCNValidatorTests {
 		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "10");
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
+
 		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "100");
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
+
 		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "50");
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
+
 		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "9");
 		result = validator.validate(givenData, null);
 		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
-		
+
 		givenData.getModel().removeAll(new Predicate(IUCNEvaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "101");
 		result = validator.validate(givenData, null);
 		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
 	}
-	
 
-	// TODO testaa DD NA NE käyttö  (min-max, criteria ym) -> ei sallite min-max, criteriaA-E
+	@Test
+	public void dd_na_ne() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven("MKV.statusA", new Qname("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnNA"));
+		givenModel.addStatementIfObjectGiven("MKV.statusC", new Qname("MX.iucnNE"));
+
+		// Silence some other validations
+		givenModel.addStatementIfObjectGiven("MKV.criteriaA", "A");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaC", "C");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "20");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals(""+
+				"[Arvoa \"DD - Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
+				"Luokkaa \"DD - Puuttellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
+				"Luokkaa \"NA - Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
+				"Luokkaa \"NE - Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
+	}
 
 }

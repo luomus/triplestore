@@ -65,6 +65,23 @@ public class IUCNValidator {
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
 		validateEvaluationPeriodLength(givenData, validationResult);
+		validateValidCriteriaStatuses(givenData, validationResult);
+	}
+
+	private void validateValidCriteriaStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
+		for (String criteria : CRITERIAS) {
+			validateValidCriteriaStatus(givenData, criteria, validationResult);
+		}
+	}
+
+	private void validateValidCriteriaStatus(IUCNEvaluation givenData, String criteria, IUCNValidationResult validationResult) throws Exception {
+		String status = givenData.getValue("MKV.status"+criteria);
+		if (!given(status)) return;
+		Integer i = IUCN_COMPARATOR_VALUES.get(status);
+		if (i == null) {
+			String statusLabel = getLabel(status);
+			validationResult.setError("Luokkaa " + statusLabel + " ei voi käyttää kriteerin aiheuttamana luokkana");
+		}
 	}
 
 	private void validateEvaluationPeriodLength(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -265,7 +282,6 @@ public class IUCNValidator {
 						try {
 							p.getRange().getValueFor(s.getObjectResource().getQname());
 						} catch (Exception e) {
-							Utils.debug(s.getPredicate().getQname(), s.getObjectResource());
 							validationResult.setError("Ohjelmointivirhe: Virheellinen arvo " + s.getObjectResource().getQname() + " muuttujalle " + s.getPredicate().getQname());
 						}
 					}
