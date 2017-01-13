@@ -319,7 +319,10 @@ public class IUCNValidator {
 	}
 
 	private void validateCriteriaFormat(String value, String criteriaPostfix, IUCNValidationResult validationResult) {
-		// TODO
+		if (!given(value)) return;
+		if (!CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value)) {
+			validationResult.setError("Kriteeri + " + criteriaPostfix + " on epäkelvosti muotoiltu");
+		}
 	}
 
 	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
