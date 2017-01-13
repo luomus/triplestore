@@ -45,27 +45,74 @@ public class IUCNValidatorTests {
 	public static void afterClass() throws Exception {
 		dataSource.close();
 	}
+
+	@Test
+	public void notInitialized() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals(
+				"[Ohjelmointivirhe: rdf:type puuttuu!, Ohjelmointivirhe: MKV.evaluatedTaxon puuttuu!, Ohjelmointivirhe: MKV.evaluationYear puuttuu!, Ohjelmointivirhe: MKV.state puuttuu!]", 
+				result.listErrors().toString());
+	}
+	
+	@Test
+	public void correctlyInitialized() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createEvaluation(givenModel);
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+	
+	private IUCNEvaluation createEvaluation(Model givenModel) throws Exception {
+		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_STARTED, null);
+		return givenData;
+	}
+
+	private IUCNEvaluation createReadyEvaluation(Model givenModel) throws Exception {
+		IUCNEvaluation givenData = createEvaluation(givenModel);
+		givenModel.removeAll(new Predicate(IUCNEvaluation.STATE));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
+		return givenData;
+	}
+	
+	@Test
+	public void requiredForReady() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals(
+				"[Pakollinen tieto: Luokka]", 
+				result.listErrors().toString());
+	}
 	
 	@Test
 	public void test_min_max_integer() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		IUCNEvaluation givenData = createEvaluation(givenModel);
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MIN, "4", null);
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MIN, "4", null);
-		result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
+
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "4", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
+
 		givenModel.removeAll(new Predicate(IUCNEvaluation.OCCURRENCE_AREA_MAX));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "5", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
-		
+
 		givenModel.removeAll(new Predicate(IUCNEvaluation.OCCURRENCE_AREA_MAX));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "3", null);
 		result = validator.validate(givenData, null);
@@ -76,64 +123,102 @@ public class IUCNValidatorTests {
 	@Test
 	public void test_min_max_iucn_range() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
+		IUCNEvaluation givenData = createEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnNE", null);
-		result = validator.validate(givenData, null);
+		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvoa \"NE - Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
 	}
-	
+
 	@Test
 	public void test_min_max_iucn_range_2() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
+		IUCNEvaluation givenData = createEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnVU", null);
-		result = validator.validate(givenData, null);
+		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
-	
+
 	@Test
 	public void test_min_max_iucn_range_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
-		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
+		IUCNEvaluation givenData = createEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnVU", null);
 		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnLC", null);
-		result = validator.validate(givenData, null);
+		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU - Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimaiset\"", result.listErrors().get(0));
 	}
+
+	@Test
+	public void test_endagerement_reason_1() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnLC", null);
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
 	
+	@Test
+	public void test_endagerement_reason_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle \"VU - Vaarantuneet\"", result.listErrors().get(0));
+	}
+
 	@Test
 	public void test_endagerement_reason_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
-		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
-		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-		IUCNValidationResult result = validator.validate(givenData, null);
-		assertFalse(result.hasErrors());
-		
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
-		result = validator.validate(givenData, null);
-		assertTrue(result.hasErrors());
-		assertEquals("Uhanalaisuuden syyt on määriteltävä uhanalaisuusluokalle \"VU - Vaarantuneet\"", result.listErrors().get(0));
-		
 		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
-		result = validator.validate(givenData, null);
+		IUCNValidationResult result = validator.validate(givenData, null);
 		if (result.hasErrors()) System.out.println(result.getErrors());
 		assertFalse(result.hasErrors());
 	}
 	
+	@Test
+	public void test_invasive() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceAnthropogenic"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals("Vieraslajille ainut sallittu luokka on NA", result.listErrors().get(0));
+	}
+
+	@Test
+	public void test_invasive_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceAnthropogenic"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnNA"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
+	@Test
+	public void test_non_invasive() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceOccurs"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
 }

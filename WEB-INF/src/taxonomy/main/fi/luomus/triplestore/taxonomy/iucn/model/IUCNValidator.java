@@ -37,17 +37,19 @@ public class IUCNValidator {
 	}
 
 	private void tryToValidate(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) throws Exception {
+		validateInternals(givenData, validationResult);
 		validateDataTypes(givenData, validationResult);
 		if (givenData.isReady()) {
 			validateRequiredFields(givenData, validationResult);
 			validateEndangermentReason(givenData, validationResult);
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);
+			validateInvasive(givenData, validationResult);
 		}
 		
-		validate(givenData.getPrimaryHabitat(), validationResult);
+		validateHabitat(givenData.getPrimaryHabitat(), validationResult);
 		for (IUCNHabitatObject habitatObject : givenData.getSecondaryHabitats()) {
-			validate(habitatObject, validationResult);
+			validateHabitat(habitatObject, validationResult);
 		}
 					
 		validateMinMaxPair(IUCNEvaluation.OCCURRENCE_AREA_MIN, IUCNEvaluation.OCCURRENCE_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
@@ -57,7 +59,33 @@ public class IUCNValidator {
 		validateCriteriaFormat(givenData, validationResult);
 	}
 
-	private void validate(IUCNHabitatObject habitatObject, IUCNValidationResult validationResult) {
+	private void validateInternals(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (!IUCNEvaluation.EVALUATION_CLASS.equals(givenData.getModel().getType())) {
+			validationResult.setError("Ohjelmointivirhe: rdf:type puuttuu!");
+		}
+		if (!given(givenData.getValue(IUCNEvaluation.EVALUATED_TAXON))) {
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATED_TAXON + " puuttuu!");
+		}
+		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_YEAR))) {
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATION_YEAR + " puuttuu!");
+		}
+		if (!given(givenData.getValue(IUCNEvaluation.STATE))) {
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.STATE + " puuttuu!");
+		}
+	}
+
+	private void validateInvasive(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getValue(IUCNEvaluation.RED_LIST_STATUS);
+		if (!given(status)) return;
+		String statusInFinland = givenData.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
+		if ("MX.typeOfOccurrenceAnthropogenic".equals(statusInFinland)) {
+			if (!"MX.iucnNA".equals(status)) {
+				validationResult.setError("Vieraslajille ainut sallittu luokka on NA");
+			}
+		}
+	}
+
+	private void validateHabitat(IUCNHabitatObject habitatObject, IUCNValidationResult validationResult) {
 		if (habitatObject == null) return;
 		if (habitatObject.getHabitatSpecificTypes().isEmpty()) return;
 		if (!given(habitatObject.getHabitat())) {
