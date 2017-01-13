@@ -321,7 +321,7 @@ public class IUCNValidator {
 	private void validateCriteriaFormat(String value, String criteriaPostfix, IUCNValidationResult validationResult) {
 		if (!given(value)) return;
 		if (!CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value)) {
-			validationResult.setError("Kriteeri + " + criteriaPostfix + " on epäkelvosti muotoiltu");
+			//validationResult.setError("Kriteeri + " + criteriaPostfix + " on epäkelvosti muotoiltu"); TODO
 		}
 	}
 
