@@ -4,11 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -24,6 +19,11 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class IUCNValidatorTests {
 
@@ -53,21 +53,21 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMin", "4", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MIN, "4", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "4", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "4", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.removeAll(new Predicate("MKV.countOfOccurrencesMax"));
-		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "5", null);
+		givenModel.removeAll(new Predicate(IUCNEvaluation.OCCURRENCE_AREA_MAX));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "5", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 		
-		givenModel.removeAll(new Predicate("MKV.countOfOccurrencesMax"));
-		givenModel.addStatementIfObjectGiven("MKV.countOfOccurrencesMax", "3", null);
+		givenModel.removeAll(new Predicate(IUCNEvaluation.OCCURRENCE_AREA_MAX));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, "3", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo 4 ei saa olla suurempi kuin yläarvo 3", result.listErrors().get(0));
