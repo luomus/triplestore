@@ -80,10 +80,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			setModifiedInfo(req, model);
 			setTaxon(speciesQname, model);
 			setYear(year, model);
-			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu " + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu"; 
 			model.addStatement(new Statement(EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 			
-			iucnDAO.getIUCNContainer().setEvaluation(thisPeriodData);
+			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
 		}
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
 	}
@@ -268,7 +268,9 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if (givenData.isReady()) {
+		if (isCopyRequest(req)) {
+			getSession(req).setFlashSuccess("Kopioitu onnistuneesti");
+		} else if (givenData.isReady()) {
 			getSession(req).setFlashSuccess("Tallennettu ja merkitty valmiiksi!");
 		} else {
 			getSession(req).setFlashSuccess("Tallennettu onnistuneesti!");
