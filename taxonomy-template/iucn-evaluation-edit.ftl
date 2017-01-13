@@ -314,7 +314,7 @@
 			<#if permissions>
 				<@iucnInputField fieldName customRange /> <@editableNotes notesFieldName />
 			<#else>
-				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
+				<@showValue fieldName evaluation customRange /> <@showNotes notesFieldName evaluation />
 			</#if>
 		</td>
 	</tr>
