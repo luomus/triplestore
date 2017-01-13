@@ -45,18 +45,62 @@ public class IUCNValidator {
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);
 			validateInvasive(givenData, validationResult);
+			validateCriteriasAndStatuses(givenData, validationResult);
+			validateSpecificCriterias(givenData, validationResult);
 		}
-		
+
 		validateHabitat(givenData.getPrimaryHabitat(), validationResult);
 		for (IUCNHabitatObject habitatObject : givenData.getSecondaryHabitats()) {
 			validateHabitat(habitatObject, validationResult);
 		}
-					
+
 		validateMinMaxPair(IUCNEvaluation.OCCURRENCE_AREA_MIN, IUCNEvaluation.OCCURRENCE_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair(IUCNEvaluation.DISTRIBUTION_AREA_MIN, IUCNEvaluation.DISTRIBUTION_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
+	}
+
+	private void validateSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String criterias = givenData.getValue("MKV.criteriaForStatus");
+		if (criterias == null) criterias = "";
+		for (String criteriaPostfix : CRITERIAS) {
+			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
+			if (given(criteriaStatus)) criterias += criteriaStatus;
+		}
+		if (criterias.contains("B1")) {
+			validateWhenCriteriaB1Given(givenData, validationResult);
+		}
+		if (criterias.contains("B2")) {
+			validateWhenCriteriaB2Given(givenData, validationResult);
+		}
+	}
+
+	private void validateWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (!given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX))) {
+			validationResult.setError("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1");
+		}
+	}
+
+	private void validateWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (!given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX))) {
+			validationResult.setError("Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2");
+		} 
+
+	}
+
+	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
+
+	private void validateCriteriasAndStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		for (String criteriaPostfix : CRITERIAS) {
+			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
+			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
+			if (given(criteria) || given(criteriaStatus)) {
+				if (!given(criteria) || !given(criteriaStatus)) {
+					validationResult.setError("Kriteeri " + criteriaPostfix + " ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan");
+				}
+			}
+		}
 	}
 
 	private void validateInternals(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -122,6 +166,20 @@ public class IUCNValidator {
 						validationResult.setError("Epäkelpo arvo kentässä " + label + ": " + s.getObjectLiteral().getContent());
 					}
 				}
+			} else if (p.hasRangeValues()) {
+				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
+					if (s.getObjectResource() == null) {
+						validationResult.setError("Ohjelmointivirhe: Literaali asetettu muuttujalle " + s.getPredicate().getQname() + " jonka pitäisi olla joukossa " + p.getRange().getQname());
+					} else {
+						try {
+							p.getRange().getValueFor(s.getObjectResource().getQname());
+						} catch (Exception e) {
+							Utils.debug(s.getPredicate().getQname(), s.getObjectResource());
+							validationResult.setError("Ohjelmointivirhe: Virheellinen arvo " + s.getObjectResource().getQname() + " muuttujalle " + s.getPredicate().getQname());
+						}
+					}
+				}
+
 			}
 		}
 	}
@@ -148,21 +206,13 @@ public class IUCNValidator {
 	}
 
 	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		validateCriteriaFormat(givenData.getValues("MKV.criteriaA"), "A", validationResult);
-		validateCriteriaFormat(givenData.getValues("MKV.criteriaB"), "B", validationResult);
-		validateCriteriaFormat(givenData.getValues("MKV.criteriaC"), "C", validationResult);
-		validateCriteriaFormat(givenData.getValues("MKV.criteriaD"), "D", validationResult);
-		validateCriteriaFormat(givenData.getValues("MKV.criteriaE"), "E", validationResult);
+		for (String criteria : CRITERIAS) {
+			validateCriteriaFormat(givenData.getValue("MKV.criteria"+criteria), criteria, validationResult);
+		}
 	}
 
-	private void validateCriteriaFormat(List<String> values, String criteriaPrefix, IUCNValidationResult validationResult) {
-		Set<String> validCriteria = VALID_CRITERIA.get(criteriaPrefix);
-		for (String value : values) {
-			if (!validCriteria.contains(value)) {
-				//validationResult.setError("Kriteeri " + value +" ei ole sallittujen arvojen joukossa: " + validCriteria);
-			}
-		}
-		
+	private void validateCriteriaFormat(String value, String criteriaPostfix, IUCNValidationResult validationResult) {
+		// TODO
 	}
 
 	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
@@ -175,17 +225,17 @@ public class IUCNValidator {
 				}
 			}
 		}
-		
+
 		if (comparisonData == null) return;
-		
+
 		String thisStatus = givenData.getIucnStatus();
 		String prevStatus = comparisonData.getIucnStatus();
 		if (!given(prevStatus) || !given(thisStatus)) return;
-		
+
 		Integer thisStatusOrder = IUCN_COMPARATOR_VALUES.get(thisStatus);
 		Integer prevStatusOrder = IUCN_COMPARATOR_VALUES.get(prevStatus);
 		if (thisStatusOrder == null || prevStatusOrder == null) return;
-		
+
 		if (!statusChangeReasons.isEmpty()) {
 			if (thisStatusOrder == prevStatusOrder) {
 				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut");
@@ -283,7 +333,7 @@ public class IUCNValidator {
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
 	}
 	private static final int ENDAGEREMENT_REASON_NEEDED_IF_STATUS_AT_LEAST = IUCN_COMPARATOR_VALUES.get("MX.iucnNT");
-	
+
 	private static final Map<String, Set<String>> VALID_CRITERIA = new HashMap<>();
 	static {
 		Set<String> a = Utils.set(

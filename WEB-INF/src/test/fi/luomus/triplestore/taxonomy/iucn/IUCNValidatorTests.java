@@ -57,7 +57,7 @@ public class IUCNValidatorTests {
 				"[Ohjelmointivirhe: rdf:type puuttuu!, Ohjelmointivirhe: MKV.evaluatedTaxon puuttuu!, Ohjelmointivirhe: MKV.evaluationYear puuttuu!, Ohjelmointivirhe: MKV.state puuttuu!]", 
 				result.listErrors().toString());
 	}
-	
+
 	@Test
 	public void correctlyInitialized() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -66,23 +66,38 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
-	
+
 	private IUCNEvaluation createEvaluation(Model givenModel) throws Exception {
 		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_STARTED, null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_STARTED));
 		return givenData;
 	}
 
 	private IUCNEvaluation createReadyEvaluation(Model givenModel) throws Exception {
 		IUCNEvaluation givenData = createEvaluation(givenModel);
 		givenModel.removeAll(new Predicate(IUCNEvaluation.STATE));
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, IUCNEvaluation.STATE_READY, null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_READY));
 		return givenData;
 	}
-	
+
+	@Test
+	public void invalidDataTypes() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, "literal");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MAX, "alpha");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.invalidEnum"));
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals(""+
+				"[Epäkelpo luku kentässä Levinneisyysalueen koko, max.: alpha, "+
+				"Ohjelmointivirhe: Virheellinen arvo MX.invalidEnum muuttujalle MKV.redListStatus, "+
+				"Ohjelmointivirhe: Literaali asetettu muuttujalle MKV.state jonka pitäisi olla joukossa MKV.stateEnum]", 
+				result.listErrors().toString());
+	}
+
 	@Test
 	public void requiredForReady() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -94,7 +109,7 @@ public class IUCNValidatorTests {
 				"[Pakollinen tieto: Luokka]", 
 				result.listErrors().toString());
 	}
-	
+
 	@Test
 	public void test_min_max_integer() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -124,8 +139,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnNE", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnNE"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvoa \"NE - Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
@@ -135,8 +150,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range_2() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnLC", null);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnVU"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
@@ -145,8 +160,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", "MX.iucnVU", null);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", "MX.iucnLC", null);
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnLC"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU - Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimaiset\"", result.listErrors().get(0));
@@ -156,17 +171,17 @@ public class IUCNValidatorTests {
 	public void test_endagerement_reason_1() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnLC", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
-	
+
 	@Test
 	public void test_endagerement_reason_2() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
@@ -177,13 +192,13 @@ public class IUCNValidatorTests {
 	public void test_endagerement_reason_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, "MX.iucnVU", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
 		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		if (result.hasErrors()) System.out.println(result.getErrors());
 		assertFalse(result.hasErrors());
 	}
-	
+
 	@Test
 	public void test_invasive() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -220,5 +235,115 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
+
+	@Test
+	public void test_criteria_and_status_1() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B2b(ii,iii,v)c(iv)");
+		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnNT"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		System.out.println(result.listErrors().toString());
+		assertFalse(result.hasErrors());
+	}
+
+	@Test
+	public void test_criteria_and_status_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B2b(ii,iii,v)c(iv)");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("[Kriteeri B ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan]", result.listErrors().toString());
+	}
+
+	@Test
+	public void test_criteria_and_status_3() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.statusC", new Qname("MX.iucnNT"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("[Kriteeri C ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan]", result.listErrors().toString());
+	}
+
+
+	@Test
+	public void test_criteria_B1() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1b;B1a");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
+	@Test
+	public void test_criteria_B1_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
+		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnVU"));
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
+	@Test
+	public void test_criteria_B1_3() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
+	public void test_criteria_B1_4() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
+	}
+
+	public void test_criteria_B1_5() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1;B1a");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
+	}
+
+	// TODO
+	//	esiintymisalueet pak jos NT-CR
+	//	elinympäristö pak jos LC-CR
+	//	tarkastalujakson pituus jos A
+	//	uhanalaisuuden syyt vu-re pak
+	//	uhkatekijät vu-cr pak
+	//	erityissuojeltaviin: vain jos VU-CR
+	//	tarkastelujakso välillä 10-100
+	//	luokkaan johtaneet kriteerit NT-CR pak
 
 }
