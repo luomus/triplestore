@@ -665,7 +665,7 @@
 
 <#macro iucnLabel fieldName>
 	<#assign property = evaluationProperties.getProperty(fieldName)> 
-	<label>${(property.label.forLocale("fi")?html)!fieldName} <#if property.required><span class="required" title="Pakollinen tieto">*</span></#if></label>
+	<label>${(property.label.forLocale("fi")?html)!fieldName}</label>
 	<#if property.integerProperty>
 		<span class="unitOfMeasurement">(kokonaisluku)</span>
 	</#if>
