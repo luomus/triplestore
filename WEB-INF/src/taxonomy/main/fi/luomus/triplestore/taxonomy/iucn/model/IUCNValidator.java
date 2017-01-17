@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -8,12 +14,7 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
 
 public class IUCNValidator {
 
@@ -320,8 +321,9 @@ public class IUCNValidator {
 
 	private void validateCriteriaFormat(String value, String criteriaPostfix, IUCNValidationResult validationResult) {
 		if (!given(value)) return;
-		if (!CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value)) {
-			//validationResult.setError("Kriteeri + " + criteriaPostfix + " on epäkelvosti muotoiltu"); TODO
+		CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value); 
+		if (!result.isValid()) {
+			validationResult.setError(result.getErrorMessage());
 		}
 	}
 
