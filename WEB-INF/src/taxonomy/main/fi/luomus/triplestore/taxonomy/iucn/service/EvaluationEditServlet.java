@@ -64,7 +64,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return redirectTo404(res);
 
-		TriplestoreDAO dao = getTriplestoreDAO();
+		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 
@@ -114,6 +114,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("permissions", permissions(req, target, thisPeriodData))
+				.setData("redListIndexPermissions", permissions(req, target, null))
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
 	}
 
@@ -182,7 +183,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return false;
 	}
 
-	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target, IUCNEvaluation thisPeriodData) throws Exception {
+	protected boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target, IUCNEvaluation thisPeriodData) throws Exception {
 		boolean userHasPermissions = false;
 		for (String groupQname : target.getGroups()) {
 			if (hasIucnPermissions(groupQname, req)) {

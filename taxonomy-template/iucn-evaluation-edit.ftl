@@ -111,6 +111,53 @@
 
 </div>
 <div class="clear"></div>
+
+<hr />
+
+<#if evaluation?? && evaluation.locked>
+
+	<div class="warningMessage">Tämä arviointi vuodelle ${selectedYear} on <b>lukittu</b>.</div>
+	
+	<hr />
+	
+</#if>
+
+<#if evaluation?? && draftYear != selectedYear && redListIndexPermissions>
+<form id="evaluationEditForm" action="${baseURL}/iucn/redListIndexCorrection" method="post">
+<input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
+	<div class="widgetTools ui-widget ui-corner-all">
+		<div class="ui-widget-header">Punaisen kirjan indeksin korjaaminen</div>
+		<div class="ui-widget-content">
+			<p>
+				<label>Varsinainen luokka</label>
+				${evaluationProperties.getProperty("MKV.redListStatus").range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
+			</p>
+			<p>
+				<label>Valitse korjattu luokka</label>
+				<select id="redListIndexCorrectionSelect"  data-placeholder="...">
+					<option value="" label=".."></option>
+					<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
+						<option value="${enumValue.qname}">${enumValue.label.forLocale("fi")?html}</option>	
+					</#list>
+				</select>
+			</p>
+			<p><label>Korjattu indeksi</label>
+				<input id="redListIndexCorrectionInput" name="MKV.redListIndexCorrection" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue("MKV.redListIndexCorrection")!"")?html}</#if>">
+			</p>
+			<p>
+				<label>Muistiinpanot</label>
+				<textarea name="MKV.redListIndexCorrectionNotes">${(evaluation.getValue("MKV.redListIndexCorrectionNotes")!"")?html}</textarea>
+			</p>
+			<p>
+				<label>&nbsp;</label>
+				<input type="submit" value="Päivitä" />
+			</p>
+		</div>
+	</div>
+	<hr />
+</form>
+</#if>
+
 <#if permissions>
 
 <#if comparison?? && !evaluation??>
@@ -133,47 +180,6 @@
 <input type="hidden" name="MKV.state" id="evaluationState" />
 
 </#if>
-
-<#if evaluation?? && evaluation.locked>
-
-	<hr />
-	
-	<div class="warningMessage">Tämä arviointi vuodelle ${selectedYear} on <b>lukittu</b>.</div>
-	
-	<hr />
-	
-</#if>
-
-<#if evaluation?? && draftYear != selectedYear>
-	<div class="widgetTools ui-widget ui-corner-all">
-		<div class="ui-widget-header">Punaisen kirjan indeksin korjaaminen</div>
-		<div class="ui-widget-content">
-
-						<p><label>Varsinainen luokka</label>
-							${evaluationProperties.getProperty("MKV.redListStatus").range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
-						</p>
-						<p>
-						<label>Valitse korjattu luokka</label>
-							<select id="redListIndexCorrectionSelect"  data-placeholder="...">
-								<option value="" label=".."></option>
-								<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
-									<option value="${enumValue.qname}">${enumValue.label.forLocale("fi")?html}</option>	
-								</#list>
-							</select>
-						</p>
-						<p><label>Korjattu indeksi</label>
-							<input id="redListIndexCorrectionInput" name="MKV.redListIndexCorrection" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue("MKV.redListIndexCorrection")!"")?html}</#if>">
-						</p>
-						<p>
-							<label>Muistiinpanot</label>
-						<textarea name="MKV.redListIndexCorrectionNotes">${(evaluation.getValue("MKV.redListIndexCorrectionNotes")!"")?html}</textarea>
-						</p>
-		</div>
-	</div>
-	
-	<hr />
-</#if>
-
 
 <table class="evaluationEdit">
 	<thead>
