@@ -4,12 +4,14 @@
 
 .successMessage {
 	background-color: rgb(200,250,200);
-	font-color: rgb(50,100,50);
+	color: rgb(50,100,50);
 }
 .errorMessage {
-	display: block;
 	background-color: rgb(250,200,200);
-	font-color: rgb(50,100,50);
+}
+.warningMessage {
+	background-color: rgb(224, 171, 85);
+	color: black;
 }
 
 .floatingErrorMessage {
@@ -310,12 +312,12 @@ div#evaluationMeta {
 	margin-left: 20px;
 }
 
-#copyArea {
+.widgetTools {
   width: 500px;
   margin: 1em;
   margin-bottom: 3em;
 }
-#copyArea > div {
+.widgetTools > div {
   padding: 5px;
 }
 tr.criteriaRow > * {

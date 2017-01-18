@@ -114,7 +114,7 @@
 <#if permissions>
 
 <#if comparison?? && !evaluation??>
-	<div id="copyArea" class="ui-widget ui-corner-all">
+	<div class="widgetTools ui-widget ui-corner-all">
 		<div class="ui-widget-header">Kopiointi</div>
 		<div class="ui-widget-content">
 			<p>Voit kopioida tiettyjen määriteltyjen kenttien tiedot edellisestä arvioinnista tähän arviointiin:</p>
@@ -131,7 +131,49 @@
 <input type="hidden" name="MKV.evaluatedTaxon" value="${taxon.qname}" />
 <input type="hidden" name="MKV.evaluationYear" value="${selectedYear}" />
 <input type="hidden" name="MKV.state" id="evaluationState" />
+
 </#if>
+
+<#if evaluation?? && evaluation.locked>
+
+	<hr />
+	
+	<div class="warningMessage">Tämä arviointi vuodelle ${selectedYear} on <b>lukittu</b>.</div>
+	
+	<hr />
+	
+</#if>
+
+<#if evaluation?? && draftYear != selectedYear>
+	<div class="widgetTools ui-widget ui-corner-all">
+		<div class="ui-widget-header">Punaisen kirjan indeksin korjaaminen</div>
+		<div class="ui-widget-content">
+
+						<p><label>Varsinainen luokka</label>
+							${evaluationProperties.getProperty("MKV.redListStatus").range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
+						</p>
+						<p>
+						<label>Valitse korjattu luokka</label>
+							<select id="redListIndexCorrectionSelect"  data-placeholder="...">
+								<option value="" label=".."></option>
+								<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
+									<option value="${enumValue.qname}">${enumValue.label.forLocale("fi")?html}</option>	
+								</#list>
+							</select>
+						</p>
+						<p><label>Korjattu indeksi</label>
+							<input id="redListIndexCorrectionInput" name="MKV.redListIndexCorrection" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue("MKV.redListIndexCorrection")!"")?html}</#if>">
+						</p>
+						<p>
+							<label>Muistiinpanot</label>
+						<textarea name="MKV.redListIndexCorrectionNotes">${(evaluation.getValue("MKV.redListIndexCorrectionNotes")!"")?html}</textarea>
+						</p>
+		</div>
+	</div>
+	
+	<hr />
+</#if>
+
 
 <table class="evaluationEdit">
 	<thead>
@@ -219,11 +261,6 @@
 	</tr>
 	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass />
 	<@iucnTextarea "MKV.lastSightingNotes" vulnerableClass />
-	
-	<#if draftYear != selectedYear>
-		<@iucnSection "Uhanalaisuusindeksi" />
-		<@iucnIndexCorrectionInput />
-	</#if>
 	
 	<@iucnSection "Alueellinen uhanalaisuus <span> &mdash; Saa täyttää vain jos luokka on LC tai NT</span>" />
 	<#assign hasRegionalData = evaluation?? && evaluation.regionalStatuses?has_content>
@@ -363,29 +400,6 @@
 				<#if evaluation?? && (evaluation.hasValue(minFieldName) || evaluation.hasValue(maxFieldName))>
 					<@showValue minFieldName evaluation /> - <@showValue maxFieldName evaluation /> <@showNotes notesFieldName evaluation />
 				</#if>
-			</#if>
-		</td>
-	</tr>
-</#macro>
-
-<#macro iucnIndexCorrectionInput>
-	 <#assign fieldName = "MKV.redListIndexCorrection">
-	 <#assign notesFieldName = "MKV.redListIndexCorrectionNotes">
-	 <tr>
-		<th><@iucnLabel fieldName /></th>
-		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
-		<td>
-			<#if permissions>
-				<select id="redListIndexCorrectionSelect"  data-placeholder="...">
-					<option value="" label=".."></option>
-					<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
-						<option value="${enumValue.qname}"  <#if hasValue>selected="selected"</#if> >${enumValue.label.forLocale("fi")?html}</option>	
-					</#list>
-				</select>
-				<input id="redListIndexCorrectionInput" name="${fieldName}" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue(fieldName)!"")?html}</#if>">
-				<@editableNotes notesFieldName />
-			<#else>
-				<@showValue fieldName evaluation /> <@showNotes notesFieldName evaluation />
 			</#if>
 		</td>
 	</tr>

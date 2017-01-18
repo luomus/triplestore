@@ -127,7 +127,7 @@ label.error {
 	width: 180px;
 }
 
-.flashMessage, .successMessage, .errorMessage {
+.flashMessage, .successMessage, .errorMessage, .warningMessage {
 	padding: 10px;
 	display: block;
 	margin: 10px;
@@ -145,8 +145,8 @@ label.error {
 	font-size: 1.2em;
 }
 .warningMessage {
-	border: 1px dotted yellow;
-	color: rgb(229, 198, 0);
+	border: 1px dotted rgb(252, 182, 70);
+	color: rgb(114, 70, 0);
 }
 .validationResults {
 	font-size: 130%;

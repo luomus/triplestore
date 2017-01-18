@@ -113,7 +113,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("permissions", permissions(req, target))
+				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
 	}
 
@@ -182,14 +182,16 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return false;
 	}
 
-	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target) throws Exception {
+	private boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target, IUCNEvaluation thisPeriodData) throws Exception {
 		boolean userHasPermissions = false;
 		for (String groupQname : target.getGroups()) {
 			if (hasIucnPermissions(groupQname, req)) {
 				userHasPermissions = true;
 			}
 		}
-		return userHasPermissions;
+		if (!userHasPermissions) return false;
+		if (thisPeriodData == null) return true;
+		return !thisPeriodData.isLocked();
 	}
 
 	private String speciesQname(HttpServletRequest req) {
@@ -216,7 +218,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
-		if (!permissions(req, target)) throw new IllegalAccessException();
+		if (!permissions(req, target, target.getEvaluation(year))) throw new IllegalAccessException();
 
 		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));

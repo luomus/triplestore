@@ -66,6 +66,7 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
+	public static final String IS_LOCKED = "MKV.locked";
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 	
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
@@ -118,6 +119,10 @@ public class IUCNEvaluation {
 		return Collections.unmodifiableList(secondaryHabitats);
 	}
 
+	public boolean isLocked() {
+		return "true".equals(getValue(IS_LOCKED));
+	}
+	
 	public void addOccurrence(Occurrence occurrence) {
 		if (occurrences == null) occurrences = new HashMap<>();
 		occurrences.put(occurrence.getArea().toString(), occurrence);
