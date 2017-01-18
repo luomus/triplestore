@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -21,11 +26,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class IUCNValidatorTests {
 
@@ -312,7 +312,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1;B1a;B2");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1a; B1a+2a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("" +
@@ -394,9 +394,9 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven("MKV.statusC", new Qname("MX.iucnNE"));
 
 		// Silence some other validations
-		givenModel.addStatementIfObjectGiven("MKV.criteriaA", "A");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaC", "C");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaA", "A1a");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
+		givenModel.addStatementIfObjectGiven("MKV.criteriaC", "C1");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "20");
 
 		IUCNValidationResult result = validator.validate(givenData, null);

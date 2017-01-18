@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -8,14 +16,7 @@ import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import fi.luomus.commons.utils.Utils;
 
 public class IUCNEvaluation {
 
@@ -64,7 +65,8 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
-
+	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
+	
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>();

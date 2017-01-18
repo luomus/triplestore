@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -15,6 +26,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
@@ -27,17 +39,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -219,7 +220,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-
+		cleanCriteriaFormats(givenData);
+		
 		IUCNValidationResult validationResult = new IUCNValidator(dao, getErrorReporter()).validate(givenData, comparisonData);
 
 		if (!validationResult.hasErrors()) {
@@ -231,6 +233,29 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
 				.setData("errorMessage", validationResult.getErrors())
 				.setData("editNotes", req.getParameter(IUCNEvaluation.EDIT_NOTES));
+	}
+
+	private void cleanCriteriaFormats(IUCNEvaluation givenData) {
+		String criteriaForStatus = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
+		cleanAndReplaceCriteria(criteriaForStatus, IUCNEvaluation.CRITERIA_FOR_STATUS, givenData);
+		for (String criteriaPrefix : IUCNEvaluation.CRITERIAS) {
+			String criteria = givenData.getValue("MKV.criteria"+criteriaPrefix);
+			cleanAndReplaceCriteria(criteria, "MKV.criteria"+criteriaPrefix, givenData);
+		}
+	}
+
+	private void cleanAndReplaceCriteria(String criteria, String predicateQname, IUCNEvaluation givenData) {
+		if (!given(criteria)) return;
+		String clanedCriteria = cleanCriteria(criteria);
+		Predicate p = new Predicate(predicateQname);
+		givenData.getModel().removeAll(p);
+		givenData.getModel().addStatementIfObjectGiven(p, clanedCriteria);
+	}
+
+	private String cleanCriteria(String criteria) {
+		criteria = Utils.removeWhitespace(criteria);
+		criteria = criteria.replace(";", "; ");
+		return criteria;
 	}
 
 	private ResponseData storeAndRedirectToGet(HttpServletRequest req, HttpServletResponse res, String speciesQname, int year, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {

@@ -177,7 +177,11 @@ public class CriteriaFormatValidator {
 
 	private static CriteriaFormatValidator forCriteria(MainCriteria mainCriteria) {
 		String c = String.valueOf(mainCriteria.getMainCriteria().charAt(0));
-		return forCriteria(c);
+		try {
+			return forCriteria(c);
+		} catch (IllegalArgumentException e) {
+			return null;
+		}
 	}
 
 	private final Map<String, MainCriteria> mainCriterias = new LinkedHashMap<>();
@@ -410,13 +414,15 @@ public class CriteriaFormatValidator {
 		String formattedCriteria = toCriteriaString(criterias);
 		if (!formattedCriteria.equals(criteria)) return new CriteriaValidationResult("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: "+criteria+", pitäisi olla "+formattedCriteria);
 		if (criterias.isEmpty()) return VALID;
-		
+
 		MainCriteria prev = null; 
 		for (MainCriteria mainCriteria : criterias) {
 			if (prev != null && mainCriteria.getOrder() < prev.getOrder()) {
 				return new CriteriaValidationResult("Kriteeri " + mainCriteria.getMainCriteria() + " tulisi ilmoittaa ennen kriteeriä " + prev.getMainCriteria());
 			}
-			CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(mainCriteria).validate(mainCriteria);
+			CriteriaFormatValidator validator = CriteriaFormatValidator.forCriteria(mainCriteria);
+			if (validator == null) return new CriteriaValidationResult("Tuntematon kriteeri " + mainCriteria.getMainCriteria());
+			CriteriaValidationResult result = validator.validate(mainCriteria);
 			if (!result.isValid()) {
 				return result;
 			}

@@ -15,6 +15,7 @@ import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
+import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCriteria;
 
 public class IUCNValidator {
 
@@ -70,7 +71,7 @@ public class IUCNValidator {
 	}
 
 	private void validateValidCriteriaStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
-		for (String criteria : CRITERIAS) {
+		for (String criteria : IUCNEvaluation.CRITERIAS) {
 			validateValidCriteriaStatus(givenData, criteria, validationResult);
 		}
 	}
@@ -162,12 +163,8 @@ public class IUCNValidator {
 	}
 
 	private void validateSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		String criterias = givenData.getValue("MKV.criteriaForStatus");
-		if (criterias == null) criterias = "";
-		for (String criteriaPostfix : CRITERIAS) {
-			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
-			if (given(criteriaStatus)) criterias += criteriaStatus;
-		}
+		String criterias = parseCriterias(givenData);
+		
 		if (criterias.contains("B1")) {
 			validateWhenCriteriaB1Given(givenData, validationResult);
 		}
@@ -177,6 +174,30 @@ public class IUCNValidator {
 		if (criterias.contains("A")) {
 			validateWhenCriteriaAGiven(givenData, validationResult);
 		}
+	}
+
+	private String parseCriterias(IUCNEvaluation givenData) {
+		String criterias = givenData.getValue("MKV.criteriaForStatus");
+		if (criterias == null) {
+			criterias = "";
+		} else {
+			criterias = parseCriterias(criterias);
+		}
+		for (String criteriaPostfix : IUCNEvaluation.CRITERIAS) {
+			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
+			if (given(criteria)) {
+				criterias = parseCriterias(criterias);
+			}
+		}
+		return criterias;
+	}
+
+	private String parseCriterias(String criterias) {
+		List<MainCriteria> parsed = CriteriaFormatValidator.parseCriteria(criterias);
+		for (MainCriteria c : parsed) {
+			criterias += c.getMainCriteria();
+		}
+		return criterias;
 	}
 
 	private void validateWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -198,10 +219,8 @@ public class IUCNValidator {
 
 	}
 
-	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
-
 	private void validateCriteriasAndStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		for (String criteriaPostfix : CRITERIAS) {
+		for (String criteriaPostfix : IUCNEvaluation.CRITERIAS) {
 			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
 			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
 			if (given(criteria) || given(criteriaStatus)) {
@@ -314,7 +333,7 @@ public class IUCNValidator {
 	}
 
 	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		for (String criteria : CRITERIAS) {
+		for (String criteria : IUCNEvaluation.CRITERIAS) {
 			validateCriteriaFormat(givenData.getValue("MKV.criteria"+criteria), criteria, validationResult);
 		}
 		
