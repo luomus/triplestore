@@ -153,6 +153,18 @@ public class CriteriaFormatValidatorTests {
 	}
 
 	@Test
+	public void parsing_criterias_12() {
+		List<MainCriteria> mainCriterias = CriteriaFormatValidator.parseCriteria("B1ab(i))");
+		assertEquals(1, mainCriterias.size());
+		assertEquals("B1", mainCriterias.get(0).getMainCriteria());
+		assertEquals(2, mainCriterias.get(0).getSubCriterias().size());
+		
+		assertEquals(0, mainCriterias.get(0).getSubCriterias().get(0).getSpecifications().size());
+		assertEquals(1, mainCriterias.get(0).getSubCriterias().get(1).getSpecifications().size());
+		assertEquals("i", mainCriterias.get(0).getSubCriterias().get(1).getSpecifications().get(0));
+	}
+	
+	@Test
 	public void to_criteria_string() {
 		MainCriteria mc1 = new MainCriteria("A1").addSubCriterias('a', 'b');
 		mc1.getSubCriteria('b').addSpecifications("i", "iv");
@@ -197,7 +209,6 @@ public class CriteriaFormatValidatorTests {
 		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A2ab3").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("E").isValid());
 		assertEquals(true, CriteriaFormatValidator.forCriteria("A").validate("A2abc+3de").isValid());
-		assertEquals(true, CriteriaFormatValidator.forCriteria("A").validate("A3b+2d").isValid());
 
 		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A2abc+A3de").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A2abc+de").isValid());
@@ -224,18 +235,70 @@ public class CriteriaFormatValidatorTests {
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1ab(i))").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1a(i+ii))").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1a+b)").isValid());
+		
+		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B2a+1a").isValid());
 	}
+	
+	@Test
+	public void test_joined() {
+		assertEquals(true, CriteriaFormatValidator.validateJoined("A1abc+2e; E").isValid());
+		assertEquals(true, CriteriaFormatValidator.validateJoined("A1a; E").isValid());
+		assertEquals(false, CriteriaFormatValidator.validateJoined("E; A1a").isValid());
+		assertEquals(true, CriteriaFormatValidator.validateJoined("A1a; B1a").isValid());
+		assertEquals(false, CriteriaFormatValidator.validateJoined("B1a; A1a").isValid());
 
-	public void test_errormessages() {
-		assertEquals(null, CriteriaFormatValidator.forCriteria("E").validate("E").getErrorMessage());
-		// TODO tets messages for false
+		assertEquals(false, CriteriaFormatValidator.validateJoined("A1a;B1a").isValid());
+		assertEquals(false, CriteriaFormatValidator.validateJoined("A1a;B1a + 2a").isValid());
 	}
 
 	@Test
-	public void test_joined() {
-		// TODO assertEquals(true, CriteriaFormatValidator.validateJoined("A1abc+2e; E").isValid());
-		// TODO order 
+	public void test_errormessages() {
+		assertEquals(null, CriteriaFormatValidator.forCriteria("E").validate("E").getErrorMessage());
+		
+		assertEquals("Kriteeri A1 tulisi ilmoittaa ennen kriteeriä E", 
+				CriteriaFormatValidator.validateJoined("E; A1a").getErrorMessage());
+		
+		assertEquals("Kriteeri A1 tulisi ilmoittaa ennen kriteeriä B1", 
+				CriteriaFormatValidator.validateJoined("B1a; A1a").getErrorMessage());
+		
+		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: A1a;B1a, pitäisi olla A1a; B1a", 
+				CriteriaFormatValidator.validateJoined("A1a;B1a").getErrorMessage());
+		
+		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: A1a;B1a + 2a, pitäisi olla A1a; B1a+2a", 
+				CriteriaFormatValidator.validateJoined("A1a;B1a + 2a").getErrorMessage());
+		
+		assertEquals("Ohjelmointivirhe: null criteria", CriteriaFormatValidator.forCriteria("E").validate(null).getErrorMessage());
+		assertEquals("Ohjelmointivirhe: ei ole poistettu whitespacea", CriteriaFormatValidator.forCriteria("E").validate(" E ").getErrorMessage());
+		assertEquals("Ohjelmointivirhe: ei ole poistettu whitespacea", CriteriaFormatValidator.forCriteria("A").validate("A3b + 2d").getErrorMessage());
+
+		assertEquals("Tuntematon kriteeri E1", CriteriaFormatValidator.forCriteria("E").validate("E1a").getErrorMessage());
+
+		assertEquals("Kriteerille A2 on annettu alakriteeri a useammin kuin kerran", CriteriaFormatValidator.forCriteria("A").validate("A2aa").getErrorMessage());
+		assertEquals("Kriteerin A2 alakriteerin a täytyy olla ennen alakriteeriä b", CriteriaFormatValidator.forCriteria("A").validate("A2aba").getErrorMessage());
+
+		assertEquals("Kriteerille A2 ei ole määritelty alakriteeriä 3", CriteriaFormatValidator.forCriteria("A").validate("A2ab3").getErrorMessage());
+		assertEquals("Tuntematon kriteeri E", CriteriaFormatValidator.forCriteria("A").validate("E").getErrorMessage());
+
+		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: A2abc+A3de, pitäisi olla A2abc+3de", 
+				CriteriaFormatValidator.forCriteria("A").validate("A2abc+A3de").getErrorMessage());
+
+		assertEquals("Kriteerille A2a ei ole määritelty lisämäärettä i", CriteriaFormatValidator.forCriteria("A").validate("A2a(i)").getErrorMessage());
+		assertEquals("Kriteerille B1 täytyy määritellyä yksi alakriteereistä [a, b, c]", CriteriaFormatValidator.forCriteria("B").validate("B1").getErrorMessage());
+		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1b").getErrorMessage());
+		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1bi").getErrorMessage());
+		assertEquals("Kriteerille B1b ei ole määritelty lisämäärettä xi", CriteriaFormatValidator.forCriteria("B").validate("B1b(xi)").getErrorMessage());
+		assertEquals("Kriteerille B1b on annettu lisämääre i useammin kuin kerran", CriteriaFormatValidator.forCriteria("B").validate("B1b(i,i)").getErrorMessage());
+		assertEquals("Kriteerin B1b lisämääreen i tulis olla ennen lisämäärettä ii", CriteriaFormatValidator.forCriteria("B").validate("B1b(ii,i)").getErrorMessage());
+		assertEquals("Kriteerille B1b ei ole määritelty lisämäärettä i-iii", CriteriaFormatValidator.forCriteria("B").validate("B1b(i-iii)").getErrorMessage());
+		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: B1ab(iii)c(iv)+B2ab(iii)c(iv), pitäisi olla B1ab(iii)c(iv)+2ab(iii)c(iv)", 
+				CriteriaFormatValidator.forCriteria("B").validate("B1ab(iii)c(iv)+B2ab(iii)c(iv)").getErrorMessage());
+
+		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: B1ab(i, pitäisi olla B1ab", 
+				CriteriaFormatValidator.forCriteria("B").validate("B1ab(i").getErrorMessage());
+		
+		assertEquals("Kriteeri B1 tulisi ilmoittaa ennen kriteeriä B2", CriteriaFormatValidator.forCriteria("B").validate("B2a+1a").getErrorMessage());
 	}
 
 }
+
 

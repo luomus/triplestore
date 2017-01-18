@@ -25,7 +25,6 @@ public class CriteriaFormatValidator {
 			this.error = error;
 		}
 		public boolean isValid() {
-			if (error != null) System.out.println(error);
 			return error == null;
 		}
 		public String getErrorMessage() {
@@ -116,7 +115,11 @@ public class CriteriaFormatValidator {
 		}
 
 		public int getOrder() {
-			return mainCriteria.charAt(0);
+			int order = mainCriteria.charAt(0) * 10000;
+			if (mainCriteria.length() > 1) {
+				order += mainCriteria.charAt(1);
+			}
+			return order;
 		}
 	}
 
@@ -170,6 +173,11 @@ public class CriteriaFormatValidator {
 	public static CriteriaFormatValidator forCriteria(String criteria) {
 		if (!VALIDATORS.containsKey(criteria)) throw new IllegalArgumentException("Unknown criteria " + criteria);
 		return VALIDATORS.get(criteria);
+	}
+
+	private static CriteriaFormatValidator forCriteria(MainCriteria mainCriteria) {
+		String c = String.valueOf(mainCriteria.getMainCriteria().charAt(0));
+		return forCriteria(c);
 	}
 
 	private final Map<String, MainCriteria> mainCriterias = new LinkedHashMap<>();
@@ -277,6 +285,7 @@ public class CriteriaFormatValidator {
 			}
 			if (c == ')') {
 				specificationsOpen = false;
+				if (subCriteria == null) continue; // stray end tag
 				if (specification.length() > 0) {
 					subCriteria.addSpecification(specification);
 				}
@@ -323,7 +332,7 @@ public class CriteriaFormatValidator {
 		if (!Utils.removeWhitespace(criteria).equals(criteria)) return new CriteriaValidationResult("Ohjelmointivirhe: ei ole poistettu whitespacea");
 		List<MainCriteria> criterias = parseCriteria(criteria);
 		String formattedCriteria = toCriteriaString(criterias);
-		if (!formattedCriteria.equals(criteria)) return new CriteriaValidationResult("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö: ("+formattedCriteria+" vs "+criteria+")");
+		if (!formattedCriteria.equals(criteria)) return new CriteriaValidationResult("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: "+criteria+", pitäisi olla "+formattedCriteria);
 		if (criterias.isEmpty()) return VALID;
 
 		MainCriteria prev = null; 
@@ -349,22 +358,22 @@ public class CriteriaFormatValidator {
 		SubCriteria prevSubCriteria = null;
 		for (SubCriteria givenSubCriteria : given.getSubCriterias()) {
 			if (prevSubCriteria != null && givenSubCriteria.getSubCriteria() == prevSubCriteria.getSubCriteria()) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " on annettu alakriteeri " + givenSubCriteria.getSubCriteria() + " kahdesti");
+				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " on annettu alakriteeri " + givenSubCriteria.getSubCriteria() + " useammin kuin kerran");
 			}
 			SubCriteria specifiedSubCriteria = specifiecMainCriteria.getSubCriteria(givenSubCriteria.getSubCriteria());
 			if (specifiedSubCriteria == null) {
-				return new CriteriaValidationResult("Kriteerille + " + specifiecMainCriteria.getMainCriteria() + " ei ole määritelty alakriteeriä " + givenSubCriteria.getSubCriteria());
+				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " ei ole määritelty alakriteeriä " + givenSubCriteria.getSubCriteria());
 			}
 			if (prevSubCriteria != null && specifiedSubCriteria.getOrder() < prevSubCriteria.getOrder() ) {
-				return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + " alakriteerin " + givenSubCriteria.getSubCriteria() + " täytyy olla ennen alakriteeriä " + prevSubCriteria.getOrder());
+				return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + " alakriteerin " + givenSubCriteria.getSubCriteria() + " täytyy olla ennen alakriteeriä " + prevSubCriteria.getSubCriteria());
 			}
 			if (specifiedSubCriteria.hasSpecifications() && !givenSubCriteria.hasSpecifications()) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähiintään yksi lisämääreistä " + specifiedSubCriteria.getSpecifications());
+				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähintään yksi lisämääreistä " + specifiedSubCriteria.getSpecifications());
 			}
 			String prevSpecification = null;
 			for (String givenSpecification : givenSubCriteria.getSpecifications()) {
 				if (givenSpecification.equals(prevSpecification)) {
-					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on määritelty sama lisämääre " + prevSpecification + " kahdesti");
+					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on annettu lisämääre " + prevSpecification + " useammin kuin kerran");
 				}
 				if (!specifiedSubCriteria.hasSpecification(givenSpecification)) {
 					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " ei ole määritelty lisämäärettä " + givenSpecification);
@@ -392,6 +401,28 @@ public class CriteriaFormatValidator {
 
 	private int specificationOrder(String specification) {
 		return SPECIFICATION_ORDERS.get(specification);
+	}
+
+	public static CriteriaValidationResult validateJoined(String criteria) {
+		if (criteria == null) return new CriteriaValidationResult("Ohjelmointivirhe: null criteria");
+		if (!criteria.trim().equals(criteria)) return new CriteriaValidationResult("Ohjelmointivirhe: ei ole trimmattu");
+		List<MainCriteria> criterias = parseCriteria(criteria);
+		String formattedCriteria = toCriteriaString(criterias);
+		if (!formattedCriteria.equals(criteria)) return new CriteriaValidationResult("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: "+criteria+", pitäisi olla "+formattedCriteria);
+		if (criterias.isEmpty()) return VALID;
+		
+		MainCriteria prev = null; 
+		for (MainCriteria mainCriteria : criterias) {
+			if (prev != null && mainCriteria.getOrder() < prev.getOrder()) {
+				return new CriteriaValidationResult("Kriteeri " + mainCriteria.getMainCriteria() + " tulisi ilmoittaa ennen kriteeriä " + prev.getMainCriteria());
+			}
+			CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(mainCriteria).validate(mainCriteria);
+			if (!result.isValid()) {
+				return result;
+			}
+			prev = mainCriteria;
+		}
+		return VALID;
 	}
 
 }
