@@ -32,7 +32,7 @@ public class IUCNValidator {
 		try {
 			tryToValidate(givenData, comparisonData, validationResult);
 		} catch (Exception e) {
-			validationResult.setError("Tarkistuksissa tapahtui odottamaton virhe. Ylläpitoa on tiedotettu asiasta. ");
+			validationResult.setError("Tarkistuksissa tapahtui odottamaton virhe. Ylläpitoa on tiedotettu asiasta. ", null);
 			errorReporter.report(e);
 		}
 		return validationResult;
@@ -72,17 +72,17 @@ public class IUCNValidator {
 
 	private void validateValidCriteriaStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
 		for (String criteria : IUCNEvaluation.CRITERIAS) {
-			validateValidCriteriaStatus(givenData, criteria, validationResult);
+			String status = givenData.getValue("MKV.status"+criteria);
+			if (!given(status)) continue;
+			validateValidCriteriaStatus(status, "MKV.status"+criteria, validationResult);
 		}
 	}
 
-	private void validateValidCriteriaStatus(IUCNEvaluation givenData, String criteria, IUCNValidationResult validationResult) throws Exception {
-		String status = givenData.getValue("MKV.status"+criteria);
-		if (!given(status)) return;
-		Integer i = IUCN_COMPARATOR_VALUES.get(status);
+	private void validateValidCriteriaStatus(String statusQname, String fieldQname, IUCNValidationResult validationResult) throws Exception {
+		Integer i = IUCN_COMPARATOR_VALUES.get(statusQname);
 		if (i == null) {
-			String statusLabel = getLabel(status);
-			validationResult.setError("Luokkaa " + statusLabel + " ei voi käyttää kriteerin aiheuttamana luokkana");
+			String statusLabel = getLabel(statusQname);
+			validationResult.setError("Luokkaa " + statusLabel + " ei voi käyttää kriteerin aiheuttamana luokkana", fieldQname);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class IUCNValidator {
 		try {
 			int i = Integer.valueOf(val);
 			if (i > 100 || i < 10) {
-				validationResult.setError("Tarkastelujakson pituus on oltava väliltä 10-100");
+				validationResult.setError("Tarkastelujakson pituus on oltava väliltä 10-100", IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
 			}
 		} catch (Exception e) {
 			// Invalid number validated elsewhere
@@ -111,7 +111,7 @@ public class IUCNValidator {
 		if (!"true".equals(lsaRec)) return;
 		String status = givenData.getIucnStatus();
 		if (!LSA_CAN_GIVE_STATUSES.contains(status)) {
-			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR");
+			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR", "MKV.lsaRecommendation");
 		}
 	}
 	
@@ -119,7 +119,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (CRITERIA_FOR_STATUS_REQUIRED_STATUSES.contains(status)) {
 			if (!given(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS))) {
-				validationResult.setError("Luokkaan johtaneet kriteerit on täytettävä luokille NT-CR");
+				validationResult.setError("Luokkaan johtaneet kriteerit on täytettävä luokille NT-CR", IUCNEvaluation.CRITERIA_FOR_STATUS);
 			}
 		}
 	}
@@ -128,7 +128,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (THREATHS_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getThreats().isEmpty()) {
-				validationResult.setError("Uhkatekijät on täytettävä luokille VU-CR");
+				validationResult.setError("Uhkatekijät on täytettävä luokille VU-CR", IUCNEvaluation.HAS_THREAT);
 			}
 		}
 	}
@@ -137,7 +137,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (ENDANGERMENTREASON_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getEndangermentReasons().isEmpty()) {
-				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille VU-RE");
+				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille VU-RE", IUCNEvaluation.HAS_ENDANGERMENT_REASON);
 			}
 		}
 	}
@@ -148,7 +148,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (PRIMARY_HABITAT_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getPrimaryHabitat() == null) {
-				validationResult.setError("Ensisijainen elinympäristö on täytettävä luokille LC-CR");
+				validationResult.setError("Ensisijainen elinympäristö on täytettävä luokille LC-CR", IUCNEvaluation.PRIMARY_HABITAT);
 			}
 		}
 	}
@@ -157,7 +157,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (OCCURRENCES_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getOccurrences().isEmpty()) {
-				validationResult.setError("Esiintymisalueet on täytettävä luokille NT-CR");
+				validationResult.setError("Esiintymisalueet on täytettävä luokille NT-CR", IUCNEvaluation.HAS_OCCURRENCE);
 			}
 		}
 	}
@@ -202,19 +202,21 @@ public class IUCNValidator {
 
 	private void validateWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_PERIOD_LENGTH))) {
-			validationResult.setError("Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A");
+			validationResult.setError("Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A", IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
 		}
 	}
 
 	private void validateWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX))) {
-			validationResult.setError("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1");
+			validationResult.setError("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", IUCNEvaluation.DISTRIBUTION_AREA_MIN);
+			validationResult.addErrorField(IUCNEvaluation.DISTRIBUTION_AREA_MAX);
 		}
 	}
 
 	private void validateWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX))) {
-			validationResult.setError("Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2");
+			validationResult.setError("Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2", IUCNEvaluation.OCCURRENCE_AREA_MIN);
+			validationResult.addErrorField(IUCNEvaluation.OCCURRENCE_AREA_MAX);
 		} 
 
 	}
@@ -225,7 +227,8 @@ public class IUCNValidator {
 			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
 			if (given(criteria) || given(criteriaStatus)) {
 				if (!given(criteria) || !given(criteriaStatus)) {
-					validationResult.setError("Kriteeri " + criteriaPostfix + " ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan");
+					validationResult.setError("Kriteeri " + criteriaPostfix + " ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan", "MKV.status"+criteriaPostfix);
+					validationResult.addErrorField("MKV.criteria"+criteriaPostfix);
 				}
 			}
 		}
@@ -233,16 +236,16 @@ public class IUCNValidator {
 
 	private void validateInternals(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!IUCNEvaluation.EVALUATION_CLASS.equals(givenData.getModel().getType())) {
-			validationResult.setError("Ohjelmointivirhe: rdf:type puuttuu!");
+			validationResult.setError("Ohjelmointivirhe: rdf:type puuttuu!", null);
 		}
 		if (!given(givenData.getValue(IUCNEvaluation.EVALUATED_TAXON))) {
-			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATED_TAXON + " puuttuu!");
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATED_TAXON + " puuttuu!", null);
 		}
 		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_YEAR))) {
-			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATION_YEAR + " puuttuu!");
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.EVALUATION_YEAR + " puuttuu!", null);
 		}
 		if (!given(givenData.getValue(IUCNEvaluation.STATE))) {
-			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.STATE + " puuttuu!");
+			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.STATE + " puuttuu!", null);
 		}
 	}
 
@@ -252,7 +255,8 @@ public class IUCNValidator {
 		String statusInFinland = givenData.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 		if ("MX.typeOfOccurrenceAnthropogenic".equals(statusInFinland)) {
 			if (!"MX.iucnNA".equals(status)) {
-				validationResult.setError("Vieraslajille ainut sallittu luokka on NA");
+				validationResult.setError("Vieraslajille ainut sallittu luokka on NA", IUCNEvaluation.RED_LIST_STATUS);
+				validationResult.addErrorField(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 			}
 		}
 	}
@@ -261,7 +265,7 @@ public class IUCNValidator {
 		if (habitatObject == null) return;
 		if (habitatObject.getHabitatSpecificTypes().isEmpty()) return;
 		if (!given(habitatObject.getHabitat())) {
-			validationResult.setError("Elinympäristön lisämäärettä ei saa antaa jos varsinaista elinympäristö ei ole annettu.");
+			validationResult.setError("Elinympäristön lisämäärettä ei saa antaa jos varsinaista elinympäristö ei ole annettu.", null);
 		}
 	}
 
@@ -274,7 +278,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (!given(status)) return;
 		if ("MX.iucnLC".equals(status) || "MX.iucnNT".equals(status)) return;
-		validationResult.setError("Alueellisen uhanalaisuus on järkevää ilmoittaa vain luokille LC ja NT. Tätä uhanalaisemmat ovat automaattisesti alueellisesti uhanalaisia.");
+		validationResult.setError("Alueellisen uhanalaisuus on järkevää ilmoittaa vain luokille LC ja NT. Tätä uhanalaisemmat ovat automaattisesti alueellisesti uhanalaisia.", IUCNEvaluation.HAS_REGIONAL_STATUS);
 	}
 
 	private void validateDataTypes(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
@@ -284,25 +288,25 @@ public class IUCNValidator {
 				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
 					if (notValidInteger(s.getObjectLiteral().getContent())) {
 						String label = getLabel(p);
-						validationResult.setError("Epäkelpo luku kentässä " + label + ": " + s.getObjectLiteral().getContent());
+						validationResult.setError("Epäkelpo luku kentässä " + label + ": " + s.getObjectLiteral().getContent(), p.getQname().toString());
 					}
 				}
 			} else if (p.isBooleanProperty()) {
 				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
 					if (notValidBoolean(s.getObjectLiteral().getContent())) {
 						String label = getLabel(p);
-						validationResult.setError("Epäkelpo arvo kentässä " + label + ": " + s.getObjectLiteral().getContent());
+						validationResult.setError("Epäkelpo arvo kentässä " + label + ": " + s.getObjectLiteral().getContent(), p.getQname().toString());
 					}
 				}
 			} else if (p.hasRangeValues()) {
 				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
 					if (s.getObjectResource() == null) {
-						validationResult.setError("Ohjelmointivirhe: Literaali asetettu muuttujalle " + s.getPredicate().getQname() + " jonka pitäisi olla joukossa " + p.getRange().getQname());
+						validationResult.setError("Ohjelmointivirhe: Literaali asetettu muuttujalle " + s.getPredicate().getQname() + " jonka pitäisi olla joukossa " + p.getRange().getQname(), s.getPredicate().getQname());
 					} else {
 						try {
 							p.getRange().getValueFor(s.getObjectResource().getQname());
 						} catch (Exception e) {
-							validationResult.setError("Ohjelmointivirhe: Virheellinen arvo " + s.getObjectResource().getQname() + " muuttujalle " + s.getPredicate().getQname());
+							validationResult.setError("Ohjelmointivirhe: Virheellinen arvo " + s.getObjectResource().getQname() + " muuttujalle " + s.getPredicate().getQname(), s.getPredicate().getQname());
 						}
 					}
 				}
@@ -341,7 +345,7 @@ public class IUCNValidator {
 		if (given(criteriaForStatus)) {
 			CriteriaValidationResult result = CriteriaFormatValidator.validateJoined(criteriaForStatus);
 			if (!result.isValid()) {
-				validationResult.setError(result.getErrorMessage());
+				validationResult.setError(result.getErrorMessage(), IUCNEvaluation.CRITERIA_FOR_STATUS);
 			}
 		}
 	}
@@ -350,16 +354,16 @@ public class IUCNValidator {
 		if (!given(value)) return;
 		CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value); 
 		if (!result.isValid()) {
-			validationResult.setError(result.getErrorMessage());
+			validationResult.setError(result.getErrorMessage(), "MKV.criteria"+criteriaPostfix);
 		}
 	}
 
 	private void validateStatusChange(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) {
-		List<String> statusChangeReasons = givenData.getValues("MKV.reasonForStatusChange");
+		List<String> statusChangeReasons = givenData.getValues(IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 		if (!statusChangeReasons.isEmpty()) {
 			if (statusChangeReasons.contains("MKV.reasonForStatusChangeGenuine") || statusChangeReasons.contains("MKV.reasonForStatusChangeGenuineBeforePreviousEvaluation")) {
 				if (statusChangeReasons.size() > 1) {
-					validationResult.setError("Aitoa muutosta ja ei-aitoa muutosta ei saa merkitä yhtä aikaa");
+					validationResult.setError("Aitoa muutosta ja ei-aitoa muutosta ei saa merkitä yhtä aikaa", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 					return;
 				}
 			}
@@ -373,11 +377,11 @@ public class IUCNValidator {
 
 		if (!statusChangeReasons.isEmpty()) {
 			if (thisStatus.equals(prevStatus)) {
-				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut");
+				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 			}
 		} else {
 			if (!thisStatus.equals(prevStatus)) {
-				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka");
+				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 			}
 		}
 	}
@@ -407,12 +411,13 @@ public class IUCNValidator {
 			if (c > 0) {
 				String labelMin = getLabel(minVal);
 				String labelMax = getLabel(maxVal);
-				validationResult.setError("Arvovälin ala-arvo " + labelMin + " ei saa olla suurempi kuin yläarvo " + labelMax);
+				validationResult.setError("Arvovälin ala-arvo " + labelMin + " ei saa olla suurempi kuin yläarvo " + labelMax, minField);
+				validationResult.addErrorField(maxField);
 			}
 		} catch (IllegalArgumentException e) {
-			String invalidValue = e.getMessage();
-			String valueLabel = getLabel(invalidValue);
-			validationResult.setError("Arvoa " + valueLabel + " ei voi käyttää arvovälinä");
+			String invalidField = e.getMessage();
+			String valueLabel = getLabel(invalidField);
+			validationResult.setError("Arvoa " + valueLabel + " ei voi käyttää arvovälinä", invalidField);
 		}
 	}
 
@@ -436,7 +441,7 @@ public class IUCNValidator {
 			if (p.isRequired()) {
 				if (!givenData.getModel().hasStatements(p.getQname())) {
 					String label = getLabel(p);
-					validationResult.setError("Pakollinen tieto: " + label);
+					validationResult.setError("Pakollinen tieto: " + label, p.getQname().toString());
 				}
 			}
 		}

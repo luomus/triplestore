@@ -22,8 +22,8 @@
 	padding-top: 30px;
 }
 
-input.validationError {
-	background-color: rgb(250,200,200);
+.validationError {
+	background-color: rgb(250,200,200) !important;
 }
 .info {
   max-width: none;

@@ -20,6 +20,7 @@ import fi.luomus.commons.utils.Utils;
 
 public class IUCNEvaluation {
 
+	public static final String REASON_FOR_STATUS_CHANGE = "MKV.reasonForStatusChange";
 	public static final String LAST_SIGHTING_NOTES = "MKV.lastSightingNotes";
 	public static final String BORDER_GAIN = "MKV.borderGain";
 	public static final String FRAGMENTED_HABITATS = "MKV.fragmentedHabitats";

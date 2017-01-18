@@ -232,6 +232,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
 				.setData("errorMessage", validationResult.getErrors())
+				.setData("erroreousFields", validationResult.getErroreousFields())
 				.setData("editNotes", req.getParameter(IUCNEvaluation.EDIT_NOTES));
 	}
 

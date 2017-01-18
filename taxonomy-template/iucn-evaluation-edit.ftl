@@ -21,6 +21,12 @@
 		<h4>Tietoja ei tallennettu</h4>
 		${errorMessage}
 	</div>
+	<script>
+		var erroreousFields = [];
+		<#list erroreousFields as erroreousField>
+			erroreousFields.push('${erroreousField}');
+		</#list>
+	</script>
 </#if>
 
 <#macro tree taxon>
@@ -1024,4 +1030,16 @@ function getHighestStatus(statuses) {
 
 </script>
 
+<script>
+$(function() {
+    if (erroreousFields) {
+    	for (i in erroreousFields) {
+    		var erroreousField = erroreousFields[i];
+    		$('input[name*="'+erroreousField+'"], select[name*="'+erroreousField+'"]').addClass('validationError').each(function() {
+    			$(this).parent().find('div').find('span').addClass('validationError');
+    		});
+    	}
+    }
+});
+</script>
 <#include "luomus-footer.ftl">
