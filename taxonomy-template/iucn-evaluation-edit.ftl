@@ -789,14 +789,16 @@ $(function() {
  	
  	$(window).on('scroll', function() {
  		var scrollTop = $(window).scrollTop();
- 		if (scrollTop > 350) {
+ 		if (scrollTop > 300) {
  			if (!headerAbsolute) {
  				$('h2').addClass('floatingHeader');
+ 				$('.errorMessage').addClass('floatingErrorMessage');
  				headerAbsolute = true;
  			}
  		} else {
  			if (headerAbsolute) {
  				$('h2').removeClass('floatingHeader');
+ 				$('.errorMessage').removeClass('floatingErrorMessage');
  				headerAbsolute = false;
  			}
  		}

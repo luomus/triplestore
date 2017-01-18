@@ -12,6 +12,16 @@
 	font-color: rgb(50,100,50);
 }
 
+.floatingErrorMessage {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	z-index: 9996;
+	width: 100%;
+	margin: 0;
+	padding-top: 30px;
+}
+
 input.validationError {
 	background-color: rgb(250,200,200);
 }
@@ -257,7 +267,7 @@ button.add, .addHabitatPair {
   background-color: white;
   box-shadow: rgba(0,0,0,0.7) 0px 2px 3px, inset rgba(0,0,0,0.7) 0px -1px 2px;
   border-radius: 3px;
-  z-index: 5;
+  z-index: 9997;
   font-size: 1em;
 }
 h2 a, h2 a:visited, h2 a:hover { color: inherit; }
