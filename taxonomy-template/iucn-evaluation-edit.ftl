@@ -133,7 +133,7 @@
 <input type="hidden" name="MKV.state" id="evaluationState" />
 </#if>
 
-<table class="resourceListTable evaluationEdit">
+<table class="evaluationEdit">
 	<thead>
 		<tr>
 			<th>Muuttuja</th>
@@ -446,7 +446,7 @@
 				</select>
 			<#else>
 				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
-					<#assign areaStatus = comparison.getOccurrence(areaQname).status>
+					<#assign areaStatus = evaluation.getOccurrence(areaQname).status>
 					<#list regionalOccurrenceStatuses as status>
 						<#if status.qname == areaStatus>
 							${status.label.forLocale("fi")?html}
@@ -1032,7 +1032,7 @@ function getHighestStatus(statuses) {
 
 <script>
 $(function() {
-    if (erroreousFields) {
+    if (typeof erroreousFields !== 'undefined') {
     	for (i in erroreousFields) {
     		var erroreousField = erroreousFields[i];
     		$('input[name*="'+erroreousField+'"], select[name*="'+erroreousField+'"]').addClass('validationError').each(function() {

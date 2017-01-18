@@ -43,7 +43,7 @@
   color: blue;
 }
 
-.resourceListTable, .iucnSpeciesTable, .evaluationEdit {
+.resourceListTable, .iucnSpeciesTable {
   border-collapse: collapse;
 }
 .resourceListTable td, .evaluationEdit td {
@@ -71,7 +71,7 @@
   font-size: 80%;
 }
 .evaluationEdit .section th {
-	background-color: white;
+	background-color: white !important;
 	border-bottom: 3px solid #AED0EA;
 }
 .evaluationEdit th {
@@ -80,13 +80,16 @@
 .evaluationEdit th, .evaluationEdit td {
 	border-bottom: 1px solid #ccc;
 }
+.evaluationEdit th {
+	background-color: rgb(174, 208, 234);
+}
 
 .evaluationEdit tbody th:nth-child(1) {
   max-width: 250px;
   font-weight: normal;
   text-align: left;
+  background-color: rgb(222, 233, 242);
 }
-
 
 .iucnSpeciesTable td:nth-child(4),
 .iucnSpeciesTable td:nth-child(5),
@@ -171,6 +174,10 @@
 
 .evaluationEdit tbody tr td:nth-child(2) {
 	max-width: 200px;
+	background-color: rgb(237, 237, 237);
+	color: #aaa;
+}
+	
 }
 
 .evaluationEdit select,
@@ -202,13 +209,6 @@
 }
 .evaluationEdit label {
   width: auto;
-}
-
-.evaluationEdit td table td,
-.evaluationEdit td table th,
-.evaluationEdit td table tr {
-  border-style: none !important;
-  background-color: inherit !important;
 }
 
 .notes label {
