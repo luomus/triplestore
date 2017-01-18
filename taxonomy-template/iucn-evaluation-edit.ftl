@@ -178,8 +178,8 @@
 	
 	<@iucnSection "Kriteerit" />
 	<#list ["A", "B", "C", "D", "E"] as criteria>
-		<@iucnInput "MKV.criteria"+criteria "MKV.criteria"+criteria+"Notes" />
-		<@iucnInput "MKV.status"+criteria "MKV.status"+criteria+"Notes" />
+		<@iucnInput "MKV.criteria"+criteria "MKV.criteria"+criteria+"Notes" "criteriaRow" />
+		<@iucnInput "MKV.status"+criteria "MKV.status"+criteria+"Notes" "criteriaStatusRow" /> 
 	</#list>
 	<@iucnTextarea "MKV.criteriaNotes" />
 	

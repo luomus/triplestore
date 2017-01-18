@@ -82,7 +82,7 @@ input.validationError {
 }
 
 .evaluationEdit tbody th:nth-child(1) {
-  max-width: 200px;
+  max-width: 250px;
   font-weight: normal;
   text-align: left;
 }
@@ -317,4 +317,10 @@ div#evaluationMeta {
 }
 #copyArea > div {
   padding: 5px;
+}
+tr.criteriaRow > * {
+	border-bottom-style: none;
+}
+tr.criteriaStatusRow > td {
+	padding-bottom: 40px;
 }
