@@ -283,7 +283,7 @@ public class CriteriaFormatValidatorTests {
 				CriteriaFormatValidator.forCriteria("A").validate("A2abc+A3de").getErrorMessage());
 
 		assertEquals("Kriteerille A2a ei ole määritelty lisämäärettä i", CriteriaFormatValidator.forCriteria("A").validate("A2a(i)").getErrorMessage());
-		assertEquals("Kriteerille B1 täytyy määritellyä yksi alakriteereistä [a, b, c]", CriteriaFormatValidator.forCriteria("B").validate("B1").getErrorMessage());
+		assertEquals("Kriteerille B1 täytyy antaa yksi alakriteereistä [a, b, c]", CriteriaFormatValidator.forCriteria("B").validate("B1").getErrorMessage());
 		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1b").getErrorMessage());
 		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1bi").getErrorMessage());
 		assertEquals("Kriteerille B1b ei ole määritelty lisämäärettä xi", CriteriaFormatValidator.forCriteria("B").validate("B1b(xi)").getErrorMessage());

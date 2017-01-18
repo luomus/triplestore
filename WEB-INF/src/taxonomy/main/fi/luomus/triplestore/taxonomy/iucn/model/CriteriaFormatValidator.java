@@ -353,7 +353,7 @@ public class CriteriaFormatValidator {
 		}
 		MainCriteria specifiecMainCriteria = this.getMainCriteria(given.getMainCriteria());
 		if (specifiecMainCriteria.hasSubCriterias() && !given.hasSubCriterias()) {
-			return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " täytyy määritellyä yksi alakriteereistä " + specifiecMainCriteria.subCriteriasToString());
+			return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " täytyy antaa yksi alakriteereistä " + specifiecMainCriteria.subCriteriasToString());
 		}
 		SubCriteria prevSubCriteria = null;
 		for (SubCriteria givenSubCriteria : given.getSubCriterias()) {
