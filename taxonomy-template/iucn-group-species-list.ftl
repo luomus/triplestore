@@ -50,7 +50,7 @@
 		<th>Muokattu</th>
 		<th>Muokkaaja</th>
 		<th>Luokka ${selectedYear}</th>
-		<th>Indeksi ${selectedYear}</th>
+		<th class="redListIndexTableField">Indeksi ${selectedYear}</th>
 		<th>Edellinen luokka</th>
 	</thead>
 	<#if (pageCount > 1)>
@@ -140,8 +140,15 @@ $(function() {
     	});
     	return false;
 	});
-
 });
+function hideRedListIndexTableFields() {
+	<#if selectedYear == draftYear>
+		$(".redListIndexTableField").hide();
+	<#else>
+		// nop
+	</#if>
+}
+
 </script>
 
 <#include "luomus-footer.ftl">

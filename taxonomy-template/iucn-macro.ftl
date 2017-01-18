@@ -71,7 +71,7 @@
 		    	-
 		    </#if>
 		</td>
-		<td>
+		<td class="redListIndexTableField">
 			<#if evaluation.hasIucnStatus()>
 				<#if evaluation.hasCorrectedIndex()>
 					${evaluation.correctedIucnIndex} <span class="correctedIndex">[KORJATTU]</span>
@@ -87,7 +87,7 @@
 		<td>-</td>
 		<td>-</td>
 		<td>-</td>
-		<td>-</td>
+		<td class="redListIndexTableField">-</td>
 	</#if>
 	<td>
 		<#if target.hasPreviousEvaluation(year)>
