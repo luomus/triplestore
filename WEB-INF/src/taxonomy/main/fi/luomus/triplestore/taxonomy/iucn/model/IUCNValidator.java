@@ -317,6 +317,14 @@ public class IUCNValidator {
 		for (String criteria : CRITERIAS) {
 			validateCriteriaFormat(givenData.getValue("MKV.criteria"+criteria), criteria, validationResult);
 		}
+		
+		String criteriaForStatus = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
+		if (given(criteriaForStatus)) {
+			CriteriaValidationResult result = CriteriaFormatValidator.validateJoined(criteriaForStatus);
+			if (!result.isValid()) {
+				validationResult.setError(result.getErrorMessage());
+			}
+		}
 	}
 
 	private void validateCriteriaFormat(String value, String criteriaPostfix, IUCNValidationResult validationResult) {
