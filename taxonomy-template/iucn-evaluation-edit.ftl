@@ -901,6 +901,11 @@ $(function() {
     	$(".regionalStatusRow").fadeIn('fast');
     });
     
+    $("h2 a").on('click', function() {
+    	$(window).scrollTop(0);
+    	return false;
+    });
+    
     $("select[name='MKV.redListStatus']").on('change', function() {
     	var status = $(this).val(); 
     	if (status == 'MX.iucnDD') {
