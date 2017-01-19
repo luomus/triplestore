@@ -133,12 +133,7 @@ $(function() {
 	});
 	
 	$("#clearButton").on('click', function() {
-    	$("#filters").find('input, select').each(function() {
-    		$(this).val('');
-    	});
-	    $("#filters").find('select').each(function() {
-    	    $(this).trigger('chosen:updated');
-    	});
+    	window.location.href = '${baseURL}/iucn/group/${group.qname}/${selectedYear}?clearFilters=true';
     	return false;
 	});
 	
