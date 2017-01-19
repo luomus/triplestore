@@ -1,13 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -17,6 +9,14 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IUCNEvaluation {
 
@@ -67,6 +67,7 @@ public class IUCNEvaluation {
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
 	public static final String IS_LOCKED = "MKV.locked";
+	public static final String REMARKS = "MKV.remarks";
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 	
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
@@ -367,4 +368,7 @@ public class IUCNEvaluation {
 		return new Statement(statement.getPredicate(), new ObjectResource(statement.getObjectResource().getQname()));
 	}
 
+	public String getRemarks() {
+		return getValue(REMARKS);
+	}
 }

@@ -52,6 +52,7 @@
 		<th>Luokka ${selectedYear}</th>
 		<th class="redListIndexTableField">Indeksi ${selectedYear}</th>
 		<th>Edellinen luokka</th>
+		<th>Komm.</th>
 	</thead>
 	<#if (pageCount > 1)>
 		<tfoot>
@@ -140,6 +141,8 @@ $(function() {
     	});
     	return false;
 	});
+	
+	$(".remarks").tooltip();
 });
 function hideRedListIndexTableFields() {
 	<#if selectedYear == draftYear>

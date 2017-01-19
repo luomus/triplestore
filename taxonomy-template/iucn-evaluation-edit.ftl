@@ -122,8 +122,8 @@
 	
 </#if>
 
-<#if evaluation?? && draftYear != selectedYear && redListIndexPermissions>
-<form id="evaluationEditForm" action="${baseURL}/iucn/redListIndexCorrection" method="post">
+<#if evaluation?? && draftYear != selectedYear && redListIndexPermissions && evaluation.iucnStatus??>
+<form id="redListIndexEditForm" action="${baseURL}/iucn/redListIndexCorrection" method="post">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
 	<div class="widgetTools ui-widget ui-corner-all">
 		<div class="ui-widget-header">Punaisen kirjan indeksin korjaaminen</div>
@@ -158,6 +158,22 @@
 </form>
 </#if>
 
+<#if draftYear == selectedYear && evaluation?? && evaluation.id??>
+<form id="remarksEditForm" action="${baseURL}/iucn/remarks" method="post">
+<input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
+	<div class="widgetTools ui-widget ui-corner-all">
+		<div class="ui-widget-header">Kommentit</div>
+		<div class="ui-widget-content">
+			<p class="info">Tässä voivat myös ne henkilöt joilla ei ole arviointioikeutta tähän lajiin lisätä kommentteja arvioinnista arvioijien luettavaksi.</p>
+			<p class="info">Jos lisäät uusia kommentteja, liitä ne jo mahdollisesti annettujen kommenttien perään. Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
+			<p><textarea id="remarksField" name="MKV.remarks">${(evaluation.getValue("MKV.remarks")!"")?html}</textarea></p>
+			<p><input type="submit" value="Päivitä" /></p>
+		</div>
+	</div>
+	<hr />
+</form>
+</#if>
+
 <#if permissions>
 
 <#if comparison?? && !evaluation??>
@@ -172,6 +188,7 @@
 		</div>
 	</div>
 </#if>
+
 
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />
