@@ -177,7 +177,7 @@
 .evaluationEdit tbody tr td:nth-child(2) {
 	max-width: 200px;
 	background-color: rgb(237, 237, 237);
-	color: #aaa;
+	color: rgb(130,130,160);
 }
 	
 }
@@ -207,7 +207,7 @@
 }
 
 .evaluationEdit textarea {
-  height: 50px;
+  height: 100px;
 }
 .evaluationEdit label {
   width: auto;

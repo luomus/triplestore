@@ -677,7 +677,7 @@
 						<th>Tai luo uusi julkaisu</th> 
 					</tr>
 					<tr>
-						<td><textarea class="createPublication" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Stubbs & Drake 2001' tai 'Kasviatlas 2008'"></textarea></td>
+						<td><textarea class="createPublication" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Boyko, C.B & Wilson, World Marine, Freshwater and Terrestrial Isopod Crustaceans database. Accessed at http://www.marinespecies.org/isopoda on 2016-02-12'"></textarea></td>
 					</tr>	
 				</table>
 			<#else>
