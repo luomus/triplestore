@@ -149,6 +149,7 @@ function hideRedListIndexTableFields() {
 	</#if>
 }
 
+hideRedListIndexTableFields();
 </script>
 
 <#include "luomus-footer.ftl">
