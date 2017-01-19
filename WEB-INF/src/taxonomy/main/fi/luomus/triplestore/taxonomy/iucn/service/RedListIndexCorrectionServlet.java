@@ -1,9 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -13,6 +9,10 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/redListIndexCorrection/*"})
 public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
@@ -50,6 +50,8 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		model.addStatement(indexStatement);
 		model.addStatement(notesStatement);
 		target.setEvaluation(evaluation);
+		
+		getSession(req).setFlashSuccess("Indeksi tallennettu!");
 		
 		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
 	}
