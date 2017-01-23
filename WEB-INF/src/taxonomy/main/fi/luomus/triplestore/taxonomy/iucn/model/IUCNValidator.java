@@ -1,11 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -16,6 +10,12 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCriteria;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IUCNValidator {
 
@@ -291,6 +291,13 @@ public class IUCNValidator {
 						validationResult.setError("Epäkelpo luku kentässä " + label + ": " + s.getObjectLiteral().getContent(), p.getQname().toString());
 					}
 				}
+			} else if (p.isDecimalProperty()) {
+				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
+					if (notValidDecimal(s.getObjectLiteral().getContent())) {
+						String label = getLabel(p);
+						validationResult.setError("Epäkelpo luku kentässä " + label + ": " + s.getObjectLiteral().getContent(), p.getQname().toString());
+					}
+				}
 			} else if (p.isBooleanProperty()) {
 				for (Statement s : givenData.getModel().getStatements(p.getQname())) {
 					if (notValidBoolean(s.getObjectLiteral().getContent())) {
@@ -336,6 +343,15 @@ public class IUCNValidator {
 		}
 	}
 
+	private boolean notValidDecimal(String content) {
+		try {
+			Double.valueOf(content);
+			return false;
+		} catch (Exception e) {
+			return true;
+		}
+	}
+	
 	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		for (String criteria : IUCNEvaluation.CRITERIAS) {
 			validateCriteriaFormat(givenData.getValue("MKV.criteria"+criteria), criteria, validationResult);

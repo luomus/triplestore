@@ -538,6 +538,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void setToModel(Model model, RdfProperties iucnProperties, String parameterName, String value) {
 		RdfProperty property = iucnProperties.getProperty(parameterName);
 		if (property.isLiteralProperty()) {
+			if (property.isDecimalProperty()) {
+				value = value.replace(",", ".");
+				if (value.startsWith(".")) value = "0" + value;
+			}
 			model.addStatement(new Statement(new Predicate(parameterName), new ObjectLiteral(value)));
 		} else {
 			model.addStatement(new Statement(new Predicate(parameterName), new ObjectResource(value)));

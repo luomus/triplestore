@@ -4,11 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -26,6 +21,11 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class IUCNValidatorTests {
 
@@ -93,9 +93,11 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, "literal");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MAX, "alpha");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.invalidEnum"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.GENERATION_AGE, "6,5");
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals(""+
 				"[Epäkelpo luku kentässä Levinneisyysalueen koko, max.: alpha, "+
+				"Epäkelpo luku kentässä Sukupolvi: 6,5, "+
 				"Ohjelmointivirhe: Virheellinen arvo MX.invalidEnum muuttujalle MKV.redListStatus, "+
 				"Ohjelmointivirhe: Literaali asetettu muuttujalle MKV.state jonka pitäisi olla joukossa MKV.stateEnum]", 
 				result.listErrors().toString());

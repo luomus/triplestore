@@ -336,6 +336,8 @@
 				<input class="percentProperty" name="${property.qname}" type="text" value="${value?html}">
 			<#elseif property.integerProperty>
 				<input class="integerProperty" name="${property.qname}" type="text" value="${value?html}">
+			<#elseif property.decimalProperty>
+				<input class="decimalProperty" name="${property.qname}" type="text" value="${value?html}">
 			<#else>
 				<input name="${property.qname}" type="text" value="${value?html}">
 			</#if>
@@ -406,6 +408,7 @@
 		<th>
 			<label>${title?html}</label> 
 			<#if property.integerProperty><span class="unitOfMeasurement">(kokonaisluku)</span></#if>
+			<#if property.decimalProperty><span class="unitOfMeasurement">(desimaaliluku)</span></#if>
 			<#if (property.comments.forLocale("fi"))??>
 				<div class="propertyComments">${property.comments.forLocale("fi")}</div>
 			</#if>
@@ -724,6 +727,9 @@
 	<#if property.integerProperty>
 		<span class="unitOfMeasurement">(kokonaisluku)</span>
 	</#if>
+	<#if property.decimalProperty>
+		<span class="unitOfMeasurement">(desimaaliluku)</span>
+	</#if>
 	<#if (property.comments.forLocale("fi"))??>
 		<div class="propertyComments">${property.comments.forLocale("fi")}</div>
 	</#if>
@@ -881,6 +887,15 @@ $(function() {
  		}
  	});
  	
+ 	$(".decimalProperty").on('change', function() {
+ 		var val = $(this).val();
+ 		if (val == '' || isPositiveDecimal(val)) {
+ 			$(this).removeClass('validationError');
+ 		} else {
+ 			$(this).addClass('validationError');
+ 		}
+ 	});
+ 	
  	$(".percentProperty").on('change', function() {
  		var val = $(this).val();
  		if (val == '' || isInteger(val)) {
@@ -955,6 +970,14 @@ $(function() {
 function isPositiveInteger(str) {
     var n = ~~Number(str);
     return String(n) === str && n >= 0;
+}
+
+function isPositiveDecimal(str) {
+	str = str.replace(/,/g , ".");
+    if (!isNaN(parseFloat(str)) && isFinite(str)) {
+    	return parseFloat(str) > 0; 
+    }
+    return false;
 }
 
 function isInteger(str) {
