@@ -1,8 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 public class IUCNLineData {
 
@@ -27,43 +27,43 @@ public class IUCNLineData {
 	private static final Qname ANTHROPOGENIC = OCC_ANTROPOGENIC;
 	private static final Qname EXTIRPATED = OCC_EX;
 	private static final Qname STABLE = new Qname("MX.typeOfOccurrenceStablePopulation");
-	public String scientificName;
-	public String finnishName;
-	public String alternativeFinnishNames;
-	public String taxonomicNotes;
-	public String typeOfOccurrenceInFinland;
-	public String distributionArea;
-	public String occurrenceArea;
-	public Map<Qname, String> occurences = new LinkedHashMap<>();
-	public String primaryHabitat;
-	public String secondaryHabitats;
-	public String habitatNotes;
-	public String occurrenceNotes;
-	public String generationAge;
-	public String evaluationPeriodLength;
-	public String individualCount;
-	public String populationSizePeriodBeginning;
-	public String populationSizePeriodEnd;
-	public String decreaseDuringPeriod;
-	public String populationVaries;
-	public String fragmentedHabitats;
-	public String borderGain;
-	public String endangermentReasons;
-	public String threats;
-	public String criteriaA;
-	public String criteriaB;
-	public String criteriaC;
-	public String criteriaD;
-	public String criteriaE;
-	public String groundsForEvaluationNotes;
-	public String redListStatus;
-	public String criteriaForStatus;
-	public String reasonForStatusChange;
-	public String redListStatusRange;
-	public String possiblyRE;
-	public String lastSightingNotes;
-	public String lsaRecommendation;
-	public String legacyPublications;
+	private String scientificName;
+	private String finnishName;
+	private String alternativeFinnishNames;
+	private String taxonomicNotes;
+	private String typeOfOccurrenceInFinland;
+	private String distributionArea;
+	private String occurrenceArea;
+	private Map<Qname, String> occurences = new LinkedHashMap<>();
+	private String primaryHabitat;
+	private String secondaryHabitats;
+	private String habitatNotes;
+	private String occurrenceNotes;
+	private String generationAge;
+	private String evaluationPeriodLength;
+	private String individualCount;
+	private String populationSizePeriodBeginning;
+	private String populationSizePeriodEnd;
+	private String decreaseDuringPeriod;
+	private String populationVaries;
+	private String fragmentedHabitats;
+	private String borderGain;
+	private String endangermentReasons;
+	private String threats;
+	private String criteriaA;
+	private String criteriaB;
+	private String criteriaC;
+	private String criteriaD;
+	private String criteriaE;
+	private String groundsForEvaluationNotes;
+	private String redListStatus;
+	private String criteriaForStatus;
+	private String reasonForStatusChange;
+	private String redListStatusRange;
+	private String possiblyRE;
+	private String lastSightingNotes;
+	private String lsaRecommendation;
+	private String legacyprivateations;
 	private final String[] parts;
 
 	public IUCNLineData(String[] parts) {
@@ -177,6 +177,7 @@ public class IUCNLineData {
 		return typeOfOccurrenceInFinland;
 	}
 
+	// TODO test min-max
 	public Integer getDistributionAreaMin() {
 		return getMin(distributionArea);
 	}
@@ -257,7 +258,7 @@ public class IUCNLineData {
 	}
 
 	// TODO test primary, secondary habitats
-	
+
 	public IUCNHabitatObject getPrimaryHabitat() {
 		if (!given(primaryHabitat)) return null;
 		List<IUCNHabitatObject> list = getHabitats(primaryHabitat);
@@ -333,37 +334,211 @@ public class IUCNLineData {
 		if (given(secondaryHabitats)) b.append(" Toissijaiset: ").append(secondaryHabitats);
 		return b.toString();
 	}
+
 	public String getHabitatGeneralNotes() {
 		return habitatNotes;
 	}
 
-	public String getOccurrenceNotes {
+	public String getOccurrenceNotes() {
 		return occurrenceNotes;
 	}
-	
+
+	// TODO test generation age
 	public Double getGenerationAge() {
-		
+		if (!given(generationAge)) return null;
+		List<String> parts = new ArrayList<>();
+		for (String s : generationAge.split(Pattern.quote("("))[0].split(Pattern.quote("-"))) {
+			s = removeNonDigits(s.replace(",", "."));
+			if (given(s)) {
+				parts.add(s);				
+			}
+		}
+		if (parts.isEmpty()) return null;
+		if (parts.size() == 1) {
+			try {
+				return Double.valueOf(parts.get(0));
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
+		try {
+			Double v1 = Double.valueOf(parts.get(0));
+			Double v2 = Double.valueOf(parts.get(1));
+			return Utils.avg(v1, v2);
+		} catch (Exception e) {
+			return null;
+		}
 	}
-	public String evaluationPeriodLength;
-	public String individualCount;
-	public String populationSizePeriodBeginning;
-	public String populationSizePeriodEnd;
-	public String decreaseDuringPeriod;
-	public String populationVaries;
-	public String fragmentedHabitats;
-	public String borderGain;
-	public String endangermentReasons;
-	public String threats;
-	public String criteriaA;
-	public String criteriaB;
-	public String criteriaC;
-	public String criteriaD;
-	public String criteriaE;
-	public String groundsForEvaluationNotes;
-	public String redListStatus;
-	public String criteriaForStatus;
-	public String reasonForStatusChange;
-	public String redListStatusRange;
+
+	private String removeNonDigits(String s) {
+		StringBuilder b = new StringBuilder();
+		for (char c : s.toCharArray()) {
+			if (c == '.' || Character.isDigit(c)) {
+				b.append(c);
+			}
+		}
+		return b.toString();
+	}
+
+	public String getGenerationAgeNotes() {
+		if (!given(generationAge)) return "";
+		if (generationAge.equals(getGenerationAge().toString())) return "";
+		return generationAge;
+	}
+
+	// TODO test evaluation period
+	public Integer getEvaluationPeriod() {
+		if (!given(evaluationPeriodLength)) return null;
+		try {
+			String s = evaluationPeriodLength.split(Pattern.quote("("))[0].split(Pattern.quote("-"))[0].trim();
+			s = removeNonDigits(s);
+			if (!given(s)) return null;
+			return Integer.valueOf(s);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public String getEvaluationPeriodLengthNotes() {
+		return evaluationPeriodLength;
+	}
+
+	public Integer getIndividualCountMin() {
+		return getMin(individualCount);
+	}
+
+	public Integer getIndividualCountMax() {
+		return getMax(individualCount);
+	}
+
+	public String getIndividualCountNotes() {
+		return individualCount;
+	}
+
+	public String getPopulationSizePeriodNotes() {
+		StringBuilder b = new StringBuilder();
+		if (given(populationSizePeriodBeginning)) {
+			b.append("Alussa: ").append(populationSizePeriodBeginning);
+		}
+		if (given(populationSizePeriodEnd)) {
+			b.append(" Lopussa: ").append(populationSizePeriodEnd);
+		}
+		return b.toString().trim();
+	}
+
+	public Integer getPopulationSizePeriodBeginning() {
+		String s = cleanMinmax(populationSizePeriodBeginning);
+		if (given(s)) return iVal(s);
+		return null;
+	}
+
+	public Integer getPopulationSizePeriodEnd() {
+		String s = cleanMinmax(populationSizePeriodEnd);
+		if (given(s)) return iVal(s);
+		return null;
+	}
+
+	public String getDecreaseDuringPeriodNotes() {
+		return decreaseDuringPeriod;
+	}
+
+	public Boolean getPopulationVaries() {
+		return bVal(populationVaries);
+	}
+
+	private Boolean bVal(String s) {
+		s = s.replace("?", "").toLowerCase();
+		if (!given(s)) return null;
+		if (s.equals("kyllä") || s.equals("x") || s.equals("on") || s.equals("+") || s.equals("(x)")) return true;
+		if (s.equals("ei")) return false;
+		if (s.contains("voimakas")) return true;
+		if (s.equals("selvä")) return true;
+		return null;
+	}
+
+	public String getPopulationVariesNotes() {
+		return populationVaries;
+	}
+
+	public Boolean getFragmentedHabitats() {
+		return bVal(fragmentedHabitats);
+	}
+
+	public String getFragmentedHabitatsNotes() {
+		return fragmentedHabitats;
+	}
+
+	public Boolean getBorderGain() {
+		return bVal(borderGain);
+	}
+
+	public String getBorderGainNotes() {
+		return borderGain;
+	}
+
+	public List<Qname> getEndangermentReasons() {
+		return reasons(endangermentReasons);
+	}
+
+	private List<Qname> reasons(String s) {
+		if (!given(s)) return Collections.emptyList();
+		s = Utils.removeWhitespace(s);
+		List<Qname> list = new ArrayList<>();
+		for (String part : s.split(Pattern.quote(","))) {
+			Qname r = ENDANGERMENT_REASONS.get(part);
+			if (r != null) list.add(r);
+		}
+		return list;
+	}
+
+	public List<Qname> getThreats() {
+		return reasons(threats);
+	}
+
+	public String getCriteriaA() { return criteriaA; }
+	public String getCriteriaB() { return criteriaB; }
+	public String getCriteriaC() { return criteriaC; }
+	public String getCriteriaD() { return criteriaD; }
+	public String getCriteriaE() { return criteriaE; }
+	public String getGroundsForEvaluationNotes() { return groundsForEvaluationNotes; }
+	public String getCriteriaForStatus() {return criteriaForStatus; }
+
+	public List<Qname> getReasonForStatusChange() {
+		if (!given(reasonForStatusChange)) return Collections.emptyList();
+		String s = Utils.removeWhitespace(reasonForStatusChange);
+		List<Qname> list = new ArrayList<>();
+		for (String part : s.split(Pattern.quote(","))) {
+			Qname r = STATUS_CHANGE_REASONS.get(part);
+			if (r != null) list.add(r);
+		}
+		return list;
+	}
+
+	public String getReasonForStatusChangeNotes() {
+		return reasonForStatusChange;
+	}
+
+	public Qname getRedListStatus() {
+		String s = redListStatus.replace(".", "").replace("*", "").trim();
+		return RED_LIST_STATUSES.get(s);
+	}
+	
+	public String getRedListStatusNotes() {
+		if (getRedListStatus() == null) return redListStatus;
+		return "";
+	}
+	
+	public Qname getRedListStatusMin() {
+		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[0]);
+	}
+	
+	public Qname getRedListStatusMax() {
+		if (!redListStatusRange.contains("-")) return null;
+		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[1]);
+	}
+	
+	
 	public String possiblyRE;
 	public String lastSightingNotes;
 	public String lsaRecommendation;
@@ -412,7 +587,51 @@ public class IUCNLineData {
 		HABITAT_SPECIFIC_TYPES.put("va", new Qname("MKV.habitatSpecificTypeVAK"));
 	}
 
+	private static final Map<String, Qname> ENDANGERMENT_REASONS;
+	static {
+		ENDANGERMENT_REASONS = new HashMap<>();
+		ENDANGERMENT_REASONS.put("P", new Qname("MKV.endangermentReasonP"));
+		ENDANGERMENT_REASONS.put("Ke", new Qname("MKV.endangermentReasonKe"));
+		ENDANGERMENT_REASONS.put("H", new Qname("MKV.endangermentReasonH"));
+		ENDANGERMENT_REASONS.put("Ku", new Qname("MKV.endangermentReasonKu"));
+		ENDANGERMENT_REASONS.put("R", new Qname("MKV.endangermentReasonR"));
+		ENDANGERMENT_REASONS.put("Ks", new Qname("MKV.endangermentReasonKs"));
+		ENDANGERMENT_REASONS.put("Pm", new Qname("MKV.endangermentReasonPm"));
+		ENDANGERMENT_REASONS.put("Pr", new Qname("MKV.endangermentReasonPr"));
+		ENDANGERMENT_REASONS.put("N", new Qname("MKV.endangermentReasonN"));
+		ENDANGERMENT_REASONS.put("M", new Qname("MKV.endangermentReasonM"));
+		ENDANGERMENT_REASONS.put("Mp", new Qname("MKV.endangermentReasonMp"));
+		ENDANGERMENT_REASONS.put("Mv", new Qname("MKV.endangermentReasonMv"));
+		ENDANGERMENT_REASONS.put("Mk", new Qname("MKV.endangermentReasonMk"));
+		ENDANGERMENT_REASONS.put("Ml", new Qname("MKV.endangermentReasonMl"));
+		ENDANGERMENT_REASONS.put("O", new Qname("MKV.endangermentReasonO"));
+		ENDANGERMENT_REASONS.put("Vr", new Qname("MKV.endangermentReasonVr"));
+		ENDANGERMENT_REASONS.put("Kh", new Qname("MKV.endangermentReasonKh"));
+		ENDANGERMENT_REASONS.put("I", new Qname("MKV.endangermentReasonI"));
+		ENDANGERMENT_REASONS.put("S", new Qname("MKV.endangermentReasonS"));
+		ENDANGERMENT_REASONS.put("Kil", new Qname("MKV.endangermentReasonKil"));
+		ENDANGERMENT_REASONS.put("Ris", new Qname("MKV.endangermentReasonRis"));
+		ENDANGERMENT_REASONS.put("Kv", new Qname("MKV.endangermentReasonKv"));
+		ENDANGERMENT_REASONS.put("U", new Qname("MKV.endangermentReasonU"));
+		ENDANGERMENT_REASONS.put("Vie", new Qname("MKV.endangermentReasonVie"));
+		ENDANGERMENT_REASONS.put("Muu", new Qname("MKV.endangermentReasonMuu"));
+		ENDANGERMENT_REASONS.put("?", new Qname("MKV.endangermentReasonT"));
+	}
 
+	private static final Map<String, Qname> STATUS_CHANGE_REASONS;
+	static {
+		STATUS_CHANGE_REASONS = new HashMap<>();
+		STATUS_CHANGE_REASONS.put("1", new Qname("MKV.reasonForStatusChangeGenuine"));
+		STATUS_CHANGE_REASONS.put("2", new Qname("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("3", new Qname("MKV.reasonForStatusChangeChangesInCriteria"));
+		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
+	}
 
-
+	private static final Map<String, Qname> RED_LIST_STATUSES;
+	static {
+		RED_LIST_STATUSES = new HashMap<>();
+		for (String s : "EX,EW,RE,CR,EN,VU,NT,LC,DD,NA,NE".split(",")) {
+			RED_LIST_STATUSES.put(s, new Qname("MX.iucn"+s));
+		}
+	}
 }
