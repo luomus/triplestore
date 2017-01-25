@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -40,6 +29,17 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -602,7 +602,25 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
+	@Override
+	public void insert(Subject subject, Statement statement) throws SQLException {
+		TransactionConnection con = null;
+		CallableStatement addStatement= null;
+		try {
+			con = openConnection();
+			con.startTransaction();
 
+			addStatement = statement.isLiteralStatement() ? con.prepareCall(CALL_LTKM_LUONTO_ADD_STATEMENT_L) : con.prepareCall(CALL_LTKM_LUONTO_ADD_STATEMENT);
+
+			addStatement.setString(1, subject.getQname());
+			addStatement(statement, addStatement, subject);
+			con.commitTransaction();
+		} finally {
+			Utils.close(addStatement);
+			Utils.close(con);
+		}
+	}
+	
 	private void removeStatements(Predicate predicate, Context context, String langCode, PreparedStatement removePredicatesStatement) throws SQLException {
 		removePredicatesStatement.setString(2, predicate.getQname());
 		if (context == null || !given(context.getQname())) {

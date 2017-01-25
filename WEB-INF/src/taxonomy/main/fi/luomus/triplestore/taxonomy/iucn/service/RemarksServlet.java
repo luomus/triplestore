@@ -6,6 +6,7 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
@@ -25,23 +26,30 @@ public class RemarksServlet extends EvaluationEditServlet {
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());
-		
+
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
-		
+
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		String speciesQname = evaluation.getSpeciesQname();
 		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
-		
-		Subject subject = new Subject(evaluationId);
-		Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
-		dao.store(subject, statement);
-		
-		model.removeAll(REMARKS_PREDICATE);
-		model.addStatement(statement);
-		target.setEvaluation(evaluation);
-		
-		getSession(req).setFlashSuccess("Kommentit tallennettu!");
+
+		if (given(remarks)) {
+			String userFullname = getUser(req).getFullname();
+			String date = DateUtils.getCurrentDateTime("dd.MM.yyyy");
+			remarks = userFullname + " " + date + ":\n" + remarks;
+			
+			Subject subject = new Subject(evaluationId);
+			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
+			dao.insert(subject, statement);
+
+			model.addStatement(statement);
+			target.setEvaluation(evaluation);
+
+			getSession(req).setFlashSuccess("Kommentit tallennettu!");
+		} else {
+			getSession(req).setFlashSuccess("Ei mitään tallennettavaa");
+		}
 		
 		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
 	}

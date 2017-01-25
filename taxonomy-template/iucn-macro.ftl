@@ -104,7 +104,7 @@
 	</td>
 	<td>
 		<#if target.hasEvaluation(year)>
-			<#if target.getEvaluation(year).remarks?has_content>
+			<#if target.getEvaluation(year).hasRemarks()>
 				<span class="ui-icon ui-icon-comment remarks" title="${target.getEvaluation(year).remarks?html}"></span>
 			</#if> 
 		</#if>

@@ -368,7 +368,19 @@ public class IUCNEvaluation {
 		return new Statement(statement.getPredicate(), new ObjectResource(statement.getObjectResource().getQname()));
 	}
 
-	public String getRemarks() {
-		return getValue(REMARKS);
+	public boolean hasRemarks() {
+		return getValue(REMARKS) != null;
 	}
+	public String getRemarks() {
+		StringBuilder b = new StringBuilder();
+		for (String s : getValues(REMARKS)) {
+			b.append(s).append("\n");
+		}
+		return b.toString();
+	}
+	
+	public List<String> getSingleRemarks() {
+		return getValues(REMARKS);
+	}
+	
 }

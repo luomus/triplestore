@@ -158,16 +158,25 @@
 </form>
 </#if>
 
-<#if draftYear == selectedYear && evaluation?? && evaluation.id??>
+<#if evaluation?? && evaluation.hasRemarks()>
+	<h5>Kommentit</h5>
+	<ul>
+		<#list evaluation.singleRemarks as remark>
+			<li class="remark"><pre>${remark?html}</pre></li>
+		</#list>
+	</ul>
+</#if>
+
+<#if !permissions && draftYear == selectedYear && evaluation?? && evaluation.id??>
 <form id="remarksEditForm" action="${baseURL}/iucn/remarks" method="post">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
 	<div class="widgetTools ui-widget ui-corner-all">
 		<div class="ui-widget-header">Kommentit</div>
 		<div class="ui-widget-content">
-			<p class="info">Tässä voivat myös ne henkilöt joilla ei ole arviointioikeutta tähän lajiin lisätä kommentteja arvioinnista arvioijien luettavaksi.</p>
-			<p class="info">Jos lisäät uusia kommentteja, liitä ne jo mahdollisesti annettujen kommenttien perään. Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
-			<p><textarea id="remarksField" name="MKV.remarks">${(evaluation.getValue("MKV.remarks")!"")?html}</textarea></p>
-			<p><input type="submit" value="Päivitä" /></p>
+			<p class="info">Tässä voivat ne henkilöt joilla ei ole arviointioikeutta tähän lajiin lisätä kommentteja arvioinnista arvioijien luettavaksi.</p>
+			<p class="info">Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
+			<p><textarea id="remarksField" name="MKV.remarks"></textarea></p>
+			<p><input type="submit" value="Lisää" /></p>
 		</div>
 	</div>
 	<hr />

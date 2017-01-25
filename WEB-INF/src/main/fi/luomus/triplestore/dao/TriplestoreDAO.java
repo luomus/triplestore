@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import java.sql.SQLException;
-import java.util.List;
-
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
@@ -21,6 +18,9 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public interface TriplestoreDAO {
 
@@ -70,6 +70,14 @@ public interface TriplestoreDAO {
 	 */
 	public void store(Subject subject, Statement statement) throws Exception;
 
+	/**
+	 * Will insert this new statement without deleting existing [subject, predicate, context]-objects
+	 * @param subject
+	 * @param statement
+	 * @throws Exception
+	 */
+	public void insert(Subject subject, Statement statement) throws Exception;
+	
 	/**
 	 * Reads information of all properties that are used in contect of the given class (rdf:type == className)
 	 * @param className
@@ -229,6 +237,5 @@ public interface TriplestoreDAO {
 	 * @throws SQLException 
 	 */
 	public boolean resourceExists(Qname resourceQname) throws Exception;
-
 
 }
