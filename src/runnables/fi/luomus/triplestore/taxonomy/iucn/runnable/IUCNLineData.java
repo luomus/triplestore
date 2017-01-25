@@ -256,8 +256,6 @@ public class IUCNLineData {
 		return AREAS.get(id);
 	}
 
-	// TODO test primary, secondary habitats
-
 	public IUCNHabitatObject getPrimaryHabitat() {
 		if (!given(primaryHabitat)) return null;
 		List<IUCNHabitatObject> list = getHabitats(primaryHabitat);
@@ -272,11 +270,14 @@ public class IUCNLineData {
 			Iterator<IUCNHabitatObject> i = primary.iterator();
 			i.next();
 			while (i.hasNext()) {
-				list.add(i.next());
+				IUCNHabitatObject o = i.next();
+				if (o != null) list.add(o);
 			}
 		}
 		if (given(secondaryHabitats)) {
-			list.addAll(getHabitats(secondaryHabitats));
+			for (IUCNHabitatObject o : getHabitats(secondaryHabitats)) {
+				if (o != null) list.add(o);
+			}
 		}
 		return list;
 	}
@@ -285,7 +286,7 @@ public class IUCNLineData {
 		List<IUCNHabitatObject> list = new ArrayList<>();
 		habitats = Utils.removeWhitespace(habitats).replace("(", "").replace(")", "").replace("?", "").replace("*", "");
 		Set<String> unique = new LinkedHashSet<>();
-		for (String s : habitats.split(",")) {
+		for (String s : habitats.split(Pattern.quote(","))) {
 			unique.add(s);
 		}
 		int i = 1;
@@ -306,13 +307,16 @@ public class IUCNLineData {
 					habitatObject.addHabitatSpecificType(specificType);
 				}
 				list.add(habitatObject);
+				continue;
 			}
+			list.add(null);
 		}
 		return list;
 	}
 
 	private Object[] getSpecificTypesFromEnd(String s) {
 		Set<Qname> types = new HashSet<>();
+		int prevSize = 0;
 		while (true) {
 			if (HABITAS.containsKey(s)) break; // shortened string is now a valid habitat
 			for (String type : HABITAT_SPECIFIC_TYPES.keySet()) {
@@ -322,15 +326,17 @@ public class IUCNLineData {
 					break;
 				}
 			}
-			break; // nothing new found
+			if (prevSize == types.size()) {
+				break; // nothing new found
+			}
 		}
 		return new Object[] { s, types};
 	}
 
 	public String getHabitatNotes() {
 		StringBuilder b = new StringBuilder();
-		if (given(primaryHabitat)) b.append("Ensisijaiset: " + primaryHabitat);
-		if (given(secondaryHabitats)) b.append(" Toissijaiset: ").append(secondaryHabitats);
+		if (given(primaryHabitat)) b.append("Ensisijainen: " + primaryHabitat);
+		if (given(secondaryHabitats)) b.append("; Muut: ").append(secondaryHabitats);
 		return b.toString();
 	}
 
@@ -342,9 +348,9 @@ public class IUCNLineData {
 		return occurrenceNotes;
 	}
 
-	// TODO test generation age
 	public Double getGenerationAge() {
 		if (!given(generationAge)) return null;
+		if (generationAge.contains("tai")) return null;
 		List<String> parts = new ArrayList<>();
 		for (String s : generationAge.split(Pattern.quote("("))[0].split(Pattern.quote("-"))) {
 			s = removeNonDigits(s.replace(",", "."));
@@ -382,18 +388,24 @@ public class IUCNLineData {
 
 	public String getGenerationAgeNotes() {
 		if (!given(generationAge)) return "";
-		if (generationAge.equals(getGenerationAge().toString())) return "";
+		Double interpeted = getGenerationAge();
+		if (interpeted == null) return generationAge;
+		if (interpeted.toString().equals(generationAge)) return "";
+		if (interpeted.toString().equals(generationAge.replace(",", "."))) return "";
+		if (String.valueOf(interpeted.intValue()).equals(generationAge)) return "";
 		return generationAge;
 	}
 
-	// TODO test evaluation period
 	public Integer getEvaluationPeriod() {
 		if (!given(evaluationPeriodLength)) return null;
 		try {
-			String s = evaluationPeriodLength.split(Pattern.quote("("))[0].split(Pattern.quote("-"))[0].trim();
+			
+			String s = evaluationPeriodLength.split(Pattern.quote("("))[0].replace("/", "-").split(Pattern.quote("-"))[0].trim();
+			s = s.replace(",", ".");
 			s = removeNonDigits(s);
+			if (s.startsWith(".")) s = s.substring(1, s.length());
 			if (!given(s)) return null;
-			return Integer.valueOf(s);
+			return (int) Math.floor(Double.valueOf(s));
 		} catch (Exception e) {
 			return null;
 		}
@@ -533,7 +545,7 @@ public class IUCNLineData {
 	}
 	
 	public Qname getRedListStatusMax() {
-		if (!redListStatusRange.contains("-")) return null;
+		if (!redListStatusRange.contains("-")) return getRedListStatusMin();
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[1]);
 	}
 	
