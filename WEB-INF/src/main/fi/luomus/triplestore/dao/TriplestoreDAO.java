@@ -133,6 +133,13 @@ public interface TriplestoreDAO {
 	public void delete(Subject subject) throws Exception;
 
 	/**
+	 * Delete one statement by id - will not fail if statement does not exist
+	 * @param id
+	 * @throws Exception
+	 */
+	public void deleteStatement(int id) throws Exception;
+	
+	/**
 	 * Deletes single predicates of the given resource from default context with no language
 	 * @param subject
 	 * @param predicate
@@ -237,5 +244,7 @@ public interface TriplestoreDAO {
 	 * @throws SQLException 
 	 */
 	public boolean resourceExists(Qname resourceQname) throws Exception;
+
+	
 
 }

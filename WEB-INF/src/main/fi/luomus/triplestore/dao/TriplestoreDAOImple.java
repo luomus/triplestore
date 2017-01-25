@@ -171,6 +171,22 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		if (i != 1) throw new IllegalStateException("Delete removed " + i + " rows instead of 1.");
 	}
 
+	@Override
+	public void deleteStatement(int statementId) throws SQLException {
+		TransactionConnection con = null;
+		PreparedStatement deleteStatement = null;
+		try {
+			con = openConnection();
+			con.startTransaction();
+			deleteStatement = con.prepareStatement(DELETE_FROM_RDF_STATEMENT_BY_ID_SQL);
+			deleteStatement.setInt(1, statementId);
+			con.commitTransaction();
+		} finally {
+			Utils.close(deleteStatement);
+			Utils.close(con);
+		}
+	}
+
 	private void addStatement(Statement statement, CallableStatement addStatement, Subject subject) throws SQLException {
 		int i = 2;
 		addStatement.setString(i++, statement.getPredicate().getQname());
@@ -620,7 +636,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			Utils.close(con);
 		}
 	}
-	
+
 	private void removeStatements(Predicate predicate, Context context, String langCode, PreparedStatement removePredicatesStatement) throws SQLException {
 		removePredicatesStatement.setString(2, predicate.getQname());
 		if (context == null || !given(context.getQname())) {

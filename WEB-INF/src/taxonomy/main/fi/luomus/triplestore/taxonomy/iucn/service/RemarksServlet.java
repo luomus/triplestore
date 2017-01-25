@@ -26,7 +26,8 @@ public class RemarksServlet extends EvaluationEditServlet {
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());
-
+		String deleteStatementId = req.getParameter("delete");
+		
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
 
@@ -34,6 +35,8 @@ public class RemarksServlet extends EvaluationEditServlet {
 		String speciesQname = evaluation.getSpeciesQname();
 		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
 
+		if (!permissions(req, target, evaluation)) throw new IllegalAccessException();
+		
 		if (given(remarks)) {
 			String userFullname = getUser(req).getFullname();
 			String date = DateUtils.getCurrentDateTime("dd.MM.yyyy");
@@ -47,8 +50,19 @@ public class RemarksServlet extends EvaluationEditServlet {
 			target.setEvaluation(evaluation);
 
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
+		} else if (given(deleteStatementId)) {
+			int id = Integer.valueOf(deleteStatementId);
+			boolean found = model.removeStatement(id);
+			if (found) {
+				// important not to delete statements that are not found from the model.. they could be any statements
+				dao.deleteStatement(id);
+				target.setEvaluation(evaluation);
+				getSession(req).setFlashSuccess("Kommentti poistettu!");
+			} else {
+				getSession(req).setFlashSuccess("Ei mitään poistettavaa!");
+			}
 		} else {
-			getSession(req).setFlashSuccess("Ei mitään tallennettavaa");
+			getSession(req).setFlashSuccess("Ei mitään tallennettavaa!");
 		}
 		
 		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);

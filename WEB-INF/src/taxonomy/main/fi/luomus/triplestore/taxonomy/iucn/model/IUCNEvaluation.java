@@ -379,8 +379,8 @@ public class IUCNEvaluation {
 		return b.toString();
 	}
 	
-	public List<String> getSingleRemarks() {
-		return getValues(REMARKS);
+	public List<Statement> getRemarkSatements() {
+		return evaluation.getStatements(REMARKS);
 	}
 	
 }

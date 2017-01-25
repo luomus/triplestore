@@ -161,8 +161,8 @@
 <#if evaluation?? && evaluation.hasRemarks()>
 	<h5>Kommentit</h5>
 	<ul>
-		<#list evaluation.singleRemarks as remark>
-			<li class="remark"><pre>${remark?html}</pre></li>
+		<#list evaluation.remarkSatements as remark>
+			<li class="remark"><pre>${remark.objectLiteral.content?html}</pre> <#if permissions><button class="delete ui-state-error" onclick="deleteRemark(${remark.id});">X</button></#if></li>
 		</#list>
 	</ul>
 </#if>
@@ -1102,6 +1102,14 @@ function getHighestStatus(statuses) {
 	return highestStatus;
 }
 
+function deleteRemark(statementId) {
+	if (!confirm("Poistetaanko kommentti?")) return false;
+	var delform = $('<form>', {
+        action: '${baseURL}/iucn/remarks?delete='+statementId+'&evaluationId=${evaluation.id}',
+        method: 'post'
+    });
+   	delform.appendTo($(document.body)).submit();
+}
 </script>
 
 <script>
