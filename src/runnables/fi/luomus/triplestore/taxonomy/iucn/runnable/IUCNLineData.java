@@ -1,4 +1,8 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 public class IUCNLineData {
 
@@ -27,43 +27,43 @@ public class IUCNLineData {
 	private static final Qname ANTHROPOGENIC = OCC_ANTROPOGENIC;
 	private static final Qname EXTIRPATED = OCC_EX;
 	private static final Qname STABLE = new Qname("MX.typeOfOccurrenceStablePopulation");
-	private String scientificName;
-	private String finnishName;
-	private String alternativeFinnishNames;
-	private String taxonomicNotes;
-	private String typeOfOccurrenceInFinland;
-	private String distributionArea;
-	private String occurrenceArea;
-	private Map<Qname, String> occurences = new LinkedHashMap<>();
-	private String primaryHabitat;
-	private String secondaryHabitats;
-	private String habitatNotes;
-	private String occurrenceNotes;
-	private String generationAge;
-	private String evaluationPeriodLength;
-	private String individualCount;
-	private String populationSizePeriodBeginning;
-	private String populationSizePeriodEnd;
-	private String decreaseDuringPeriod;
-	private String populationVaries;
-	private String fragmentedHabitats;
-	private String borderGain;
-	private String endangermentReasons;
-	private String threats;
-	private String criteriaA;
-	private String criteriaB;
-	private String criteriaC;
-	private String criteriaD;
-	private String criteriaE;
-	private String groundsForEvaluationNotes;
-	private String redListStatus;
-	private String criteriaForStatus;
-	private String reasonForStatusChange;
-	private String redListStatusRange;
-	private String possiblyRE;
-	private String lastSightingNotes;
-	private String lsaRecommendation;
-	private String legacyprivateations;
+	public String scientificName;
+	public String finnishName;
+	public String alternativeFinnishNames;
+	public String taxonomicNotes;
+	public String typeOfOccurrenceInFinland;
+	public String distributionArea;
+	public String occurrenceArea;
+	public Map<Qname, String> occurences = new LinkedHashMap<>();
+	public String primaryHabitat;
+	public String secondaryHabitats;
+	public String habitatNotes;
+	public String occurrenceNotes;
+	public String generationAge;
+	public String evaluationPeriodLength;
+	public String individualCount;
+	public String populationSizePeriodBeginning;
+	public String populationSizePeriodEnd;
+	public String decreaseDuringPeriod;
+	public String populationVaries;
+	public String fragmentedHabitats;
+	public String borderGain;
+	public String endangermentReasons;
+	public String threats;
+	public String criteriaA;
+	public String criteriaB;
+	public String criteriaC;
+	public String criteriaD;
+	public String criteriaE;
+	public String groundsForEvaluationNotes;
+	public String redListStatus;
+	public String criteriaForStatus;
+	public String reasonForStatusChange;
+	public String redListStatusRange;
+	public String possiblyRE;
+	public String lastSightingNotes;
+	public String lsaRecommendation;
+	public String legacyPublications;
 	private final String[] parts;
 
 	public IUCNLineData(String[] parts) {
@@ -177,7 +177,6 @@ public class IUCNLineData {
 		return typeOfOccurrenceInFinland;
 	}
 
-	// TODO test min-max
 	public Integer getDistributionAreaMin() {
 		return getMin(distributionArea);
 	}
@@ -539,13 +538,39 @@ public class IUCNLineData {
 	}
 	
 	
-	public String possiblyRE;
-	public String lastSightingNotes;
-	public String lsaRecommendation;
-	public String legacyPublications;
+	public Boolean getPossiblyRE() {
+		String s = possiblyRE.toLowerCase();
+		if (s.equals("re") || s.equals("kyllä")) return true;
+		return null;
+	}
+	
+	public String getPossiblyRENotes() {
+		return possiblyRE;
+	}
+	
+	public String getLastSightingNotes() {
+		return lastSightingNotes;
+	}
+	
+	public Boolean getLsaRecommendation() {
+		String s = lsaRecommendation.toLowerCase();
+		if (s.equals("e") || s.equals("e*")) return true;
+		return null;
+	};
+	
+	public String getLsaRecommendationNotes() {
+		return lsaRecommendation;
+	};
+	
+	public String getLegacyPublications() {
+		return legacyPublications;
+	}
 
 	private Integer getMin(String s) {
 		s = cleanMinmax(s);
+		if (s.contains("-")) {
+			return iVal(s.split(Pattern.quote("-"))[0]);
+		}
 		if (s.startsWith(">")) return iVal(s.replace(">", ""));
 		if (s.startsWith("<")) return null;
 		return iVal(s);
@@ -553,6 +578,9 @@ public class IUCNLineData {
 
 	private Integer getMax(String s) {
 		s = cleanMinmax(s);
+		if (s.contains("-")) {
+			return iVal(s.split(Pattern.quote("-"))[1]);
+		}
 		if (s.startsWith("<")) return iVal(s.replace("<", ""));
 		return null;
 	}
