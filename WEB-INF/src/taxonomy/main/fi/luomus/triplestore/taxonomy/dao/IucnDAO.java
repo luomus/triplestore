@@ -39,6 +39,6 @@ public interface IucnDAO {
 
 	public void store(IUCNEndangermentObject endangermentObject) throws Exception;
 	
-	public EditHistory getEditHistory(IUCNEvaluation thisPeriodData) throws Exception;
+	public EditHistory getEditHistory(IUCNEvaluation evaluation) throws Exception;
 
 }
