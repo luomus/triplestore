@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -10,12 +16,6 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCriteria;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class IUCNValidator {
 
@@ -63,8 +63,8 @@ public class IUCNValidator {
 
 		validateMinMaxPair(IUCNEvaluation.OCCURRENCE_AREA_MIN, IUCNEvaluation.OCCURRENCE_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair(IUCNEvaluation.DISTRIBUTION_AREA_MIN, IUCNEvaluation.DISTRIBUTION_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
-		validateMinMaxPair("MKV.individualCountMin", "MKV.individualCountMax", INTEGER_COMPARATOR, givenData, validationResult);
-		validateMinMaxPair("MKV.redListStatusMin", "MKV.redListStatusMax", IUCN_RANGE_COMPARATOR, givenData, validationResult);	
+		validateMinMaxPair(IUCNEvaluation.INDIVIDUAL_COUNT_MIN, IUCNEvaluation.INDIVIDUAL_COUNT_MAX, INTEGER_COMPARATOR, givenData, validationResult);
+		validateMinMaxPair(IUCNEvaluation.RED_LIST_STATUS_MIN, IUCNEvaluation.RED_LIST_STATUS_MAX, IUCN_RANGE_COMPARATOR, givenData, validationResult);	
 		validateCriteriaFormat(givenData, validationResult);
 		validateEvaluationPeriodLength(givenData, validationResult);
 		validateValidCriteriaStatuses(givenData, validationResult);
@@ -107,11 +107,11 @@ public class IUCNValidator {
 	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 
 	private void validateLsaForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		String lsaRec = givenData.getValue("MKV.lsaRecommendation");
+		String lsaRec = givenData.getValue(IUCNEvaluation.LSA_RECOMMENDATION);
 		if (!"true".equals(lsaRec)) return;
 		String status = givenData.getIucnStatus();
 		if (!LSA_CAN_GIVE_STATUSES.contains(status)) {
-			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR", "MKV.lsaRecommendation");
+			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR", IUCNEvaluation.LSA_RECOMMENDATION);
 		}
 	}
 	
@@ -177,7 +177,7 @@ public class IUCNValidator {
 	}
 
 	private String parseCriterias(IUCNEvaluation givenData) {
-		String criterias = givenData.getValue("MKV.criteriaForStatus");
+		String criterias = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
 		if (criterias == null) {
 			criterias = "";
 		} else {

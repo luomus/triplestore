@@ -1,8 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 public class IUCNLineData {
 
@@ -302,6 +302,7 @@ public class IUCNLineData {
 			Set<Qname> specificTypes = (Set<Qname>) o[1];
 			if (!specificTypes.isEmpty()) {
 				habitatId = HABITAS.get(remainingHabitat);
+				if (habitatId == null) continue; // There was a valid habitat specific type but no mapping for habitat
 				IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitatId, i++);
 				for (Qname specificType : specificTypes) {
 					habitatObject.addHabitatSpecificType(specificType);
@@ -329,6 +330,7 @@ public class IUCNLineData {
 			if (prevSize == types.size()) {
 				break; // nothing new found
 			}
+			prevSize = types.size();
 		}
 		return new Object[] { s, types};
 	}
@@ -396,7 +398,7 @@ public class IUCNLineData {
 		return generationAge;
 	}
 
-	public Integer getEvaluationPeriod() {
+	public Integer getEvaluationPeriodLength() {
 		if (!given(evaluationPeriodLength)) return null;
 		try {
 			

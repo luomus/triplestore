@@ -75,7 +75,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate("MKV.redListStatus")))
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("persons", getTaxonomyDAO().getPersons())
 				.setData("targets", pageTargets)
 				.setData("currentPage", currentPage)

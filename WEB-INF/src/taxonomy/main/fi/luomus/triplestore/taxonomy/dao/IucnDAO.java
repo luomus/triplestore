@@ -16,6 +16,7 @@ public interface IucnDAO {
 	public static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.SECONDARY_HABITAT);
 	public static final Predicate PRIMARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.PRIMARY_HABITAT);
 	public static final Predicate HABITAT_PREDICATE = new Predicate(IUCNEvaluation.HABITAT);
+	public static final Predicate HABITAT_SPESIFIC_TYPE_PREDICATE = new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE);
 	public static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
 	public static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
 	public static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = new Predicate(IUCNEvaluation.HAS_ENDANGERMENT_REASON);

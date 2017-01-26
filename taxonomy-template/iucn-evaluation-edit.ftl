@@ -1102,6 +1102,7 @@ function getHighestStatus(statuses) {
 	return highestStatus;
 }
 
+<#if evaluation??>
 function deleteRemark(statementId) {
 	if (!confirm("Poistetaanko kommentti?")) return false;
 	var delform = $('<form>', {
@@ -1110,6 +1111,7 @@ function deleteRemark(statementId) {
     });
    	delform.appendTo($(document.body)).submit();
 }
+</#if>
 </script>
 
 <script>

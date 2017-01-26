@@ -18,8 +18,10 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.LogUtils;
@@ -31,13 +33,16 @@ import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 public class IUCN2010Sisaan {
 
+	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010;
 	private static final String BLABLABLA = "blablabla blablabla blablabla blablabla blablabla";
 	private static final String OCCURRENCES = "occurrences";
@@ -137,11 +142,11 @@ public class IUCN2010Sisaan {
 			System.out.println(i + " / " + total + "\t" + data.getScientificName());
 			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()).onlyExact());
 			if (response.getExactMatches().isEmpty()) {
-				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()));
+				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()).onlyExact());
 			}
 			if (response.getExactMatches().isEmpty()) {
 				for (String altname : data.getAlternativeFinnishNames()) {
-					response = taxonomyDAO.searchInternal(new TaxonSearch(altname));
+					response = taxonomyDAO.searchInternal(new TaxonSearch(altname).onlyExact());
 					if (!response.getExactMatches().isEmpty()) break;
 				}
 			}
@@ -159,7 +164,6 @@ public class IUCN2010Sisaan {
 				reportTaxonNotFound("Löytyi " + matchingQnames.size() + " osumaa lajiryhmistä " + allowedInformalGroups + ": " + matchingQnames, data, f);
 				return;
 			}
-
 			StringBuilder message = new StringBuilder();
 			message.append("Löytyi " + response.getExactMatches().size() + " osumaa, mutta väärästä lajiryhmästä: ");
 			for (Match match : response.getExactMatches()) {
@@ -182,14 +186,101 @@ public class IUCN2010Sisaan {
 	private static void process(IUCNLineData data, Qname taxonId) throws Exception {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(taxonId.toString());
-		if (target.hasEvaluation(EVALUATION_YEAR)) return; // Already loaded
+		if (target.hasEvaluation(EVALUATION_YEAR)) {
+			System.out.println("\t\t\t\t\t\t\t\t\tSkipping ... already has evaluation for " + EVALUATION_YEAR);
+			return; // Already loaded
+		}
 		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
 		iucnDAO.store(evaluation, null);
+		iucnDAO.getIUCNContainer().setEvaluation(evaluation);
 	}
 
-	private static IUCNEvaluation toEvaluation(Qname taxonId, IUCNLineData data, int evaluationYear) {
-		// TODO Auto-generated method stub
-		return null;
+	private static IUCNEvaluation toEvaluation(Qname taxonId, IUCNLineData data, int evaluationYear) throws Exception {
+		IUCNEvaluation evaluation = taxonomyDAO.getIucnDAO().createNewEvaluation();
+		Model model = evaluation.getModel();
+		model.addStatementIfObjectGiven(IUCNEvaluation.IS_LOCKED, true);
+		model.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_READY));
+		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, taxonId);
+		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, String.valueOf(evaluationYear));
+		model.addStatementIfObjectGiven(IUCNEvaluation.BORDER_GAIN, data.getBorderGain());
+		model.addStatementIfObjectGiven(IUCNEvaluation.BORDER_GAIN+NOTES, data.getBorderGainNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A, data.getCriteriaA());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, data.getCriteriaB());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_C, data.getCriteriaC());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_D, data.getCriteriaD());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_E, data.getCriteriaE());
+		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, data.getCriteriaForStatus());
+		model.addStatementIfObjectGiven(IUCNEvaluation.DECREASE_DURING_PERIOD+NOTES, data.getDecreaseDuringPeriodNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MAX, s(data.getDistributionAreaMax()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, s(data.getDistributionAreaMin()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUATION_AREA_NOTES, data.getDistributionAreaNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, s(data.getEvaluationPeriodLength()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH+NOTES, data.getEvaluationPeriodLengthNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.FRAGMENTED_HABITATS, data.getFragmentedHabitats());
+		model.addStatementIfObjectGiven(IUCNEvaluation.FRAGMENTED_HABITATS+NOTES, data.getFragmentedHabitatsNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.GENERATION_AGE, s(data.getGenerationAge()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.GENERATION_AGE+NOTES, data.getGenerationAgeNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.GROUNDS_FOR_EVALUATION_NOTES, data.getGroundsForEvaluationNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.HABITAT_GENERAL_NOTES, data.getHabitatGeneralNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.HABITAT+NOTES, data.getHabitatNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_MAX, s(data.getIndividualCountMax()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_MIN, s(data.getIndividualCountMin()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_NOTES, data.getIndividualCountNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.LAST_SIGHTING_NOTES, data.getLastSightingNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.LEGACY_PUBLICATIONS, data.getLegacyPublications());
+		model.addStatementIfObjectGiven(IUCNEvaluation.LSA_RECOMMENDATION, data.getLsaRecommendation());
+		model.addStatementIfObjectGiven(IUCNEvaluation.LSA_RECOMMENDATION+NOTES, data.getLsaRecommendationNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, s(data.getOccurrenceAreaMax()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MIN, s(data.getOccurrenceAreaMin()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_NOTES, data.getOccurrenceAreaNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_NOTES, data.getOccurrenceNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_REGIONS_NOTES, data.getOccurrenceRegionsNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_BEGINNING, s(data.getPopulationSizePeriodBeginning()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_END, s(data.getPopulationSizePeriodEnd()));
+		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_NOTES, data.getPopulationSizePeriodNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_VARIES, data.getPopulationVaries());
+		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_VARIES+NOTES, data.getPopulationVariesNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.POSSIBLY_RE, data.getPossiblyRE());
+		model.addStatementIfObjectGiven(IUCNEvaluation.POSSIBLY_RE+NOTES, data.getPossiblyRENotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.REASON_FOR_STATUS_CHANGE+NOTES, data.getReasonForStatusChangeNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, data.getRedListStatus());
+		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, data.getRedListStatusMax());
+		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, data.getRedListStatusMin());
+		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_NOTES, data.getRedListStatusNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.TAXONOMIC_NOTES, data.getTaxonomicNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
+		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
+		int i = 0;
+		for (Qname q : data.getEndangermentReasons()) {
+			evaluation.addEndangermentReason(new IUCNEndangermentObject(null, q, i++));
+		}
+		i = 0;
+		for (Qname q : data.getThreats()) {
+			evaluation.addThreat(new IUCNEndangermentObject(null, q, i++));
+		}
+		for (Map.Entry<Qname, Qname> e : data.getOccurrences().entrySet()) {
+			Qname area = e.getKey();
+			Qname status = e.getValue();
+			evaluation.addOccurrence(new Occurrence(null, area, status));
+		}
+		evaluation.setPrimaryHabitat(data.getPrimaryHabitat());
+		for (IUCNHabitatObject habitat : data.getSecondaryHabitats()) {
+			evaluation.addSecondaryHabitat(habitat);
+		}
+		for (Qname q : data.getReasonForStatusChange()) {
+			model.addStatementIfObjectGiven(IUCNEvaluation.REASON_FOR_STATUS_CHANGE, q);
+		}
+		return evaluation;
+	}
+
+	private static String s(Double d) {
+		if (d == null) return null;
+		return d.toString();
+	}
+
+	private static String s(Integer i) {
+		if (i == null) return null;
+		return i.toString();
 	}
 
 	private static Set<Qname> qnames(List<Match> exactMatches, Set<Qname> allowedInformalGroups) {
@@ -223,6 +314,7 @@ public class IUCN2010Sisaan {
 		File errorFile = new File("c:/temp/iucn/error_" + f.getName().replace(".csv", ".txt"));
 		try {
 			FileUtils.writeToFile(errorFile, data.getScientificName() + ":\n" + LogUtils.buildStackTrace(e, 5)+"\n", true);
+			e.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

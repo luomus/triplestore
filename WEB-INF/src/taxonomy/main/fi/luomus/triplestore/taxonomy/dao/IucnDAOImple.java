@@ -51,6 +51,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 public class IucnDAOImple implements IucnDAO {
 
 	private static final String SORT_ORDER = "sortOrder";
+	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
 
@@ -436,11 +437,11 @@ public class IucnDAOImple implements IucnDAO {
 		habitat.setId(id);
 		Model model = new Model(new Subject(id));
 		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
-		model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT), new ObjectResource(habitat.getHabitat())));
+		model.addStatement(new Statement(HABITAT_PREDICATE, new ObjectResource(habitat.getHabitat())));
 		for (Qname type : habitat.getHabitatSpecificTypes()) {
-			model.addStatement(new Statement(new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE), new ObjectResource(type)));
+			model.addStatement(new Statement(HABITAT_SPESIFIC_TYPE_PREDICATE, new ObjectResource(type)));
 		}
-		model.addStatement(new Statement(new Predicate(SORT_ORDER), new ObjectLiteral(String.valueOf(habitat.getOrder()))));
+		model.addStatement(new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(String.valueOf(habitat.getOrder()))));
 		triplestoreDAO.store(model);
 	}
 
@@ -507,12 +508,10 @@ public class IucnDAOImple implements IucnDAO {
 			deleteHabitatObjects(existingEvaluation);
 			deleteRegionalStatuses(existingEvaluation);
 		}
-		
 		storeOccurrencesAndSetIdToModel(givenData);
 		storeEndangermentObjectsAdnSetIdToModel(givenData);
 		storeHabitatObjectsAndSetIdsToModel(givenData);
 		storeRegionalStatusesAndSetIdToModel(givenData);
-		
 		triplestoreDAO.store(givenData.getModel());
 	}
 

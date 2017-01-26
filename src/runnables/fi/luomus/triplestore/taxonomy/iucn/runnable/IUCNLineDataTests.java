@@ -2,9 +2,9 @@ package fi.luomus.triplestore.taxonomy.iucn.runnable;
 
 import static org.junit.Assert.assertEquals;
 
-import fi.luomus.commons.containers.rdf.Qname;
-
 import org.junit.Test;
+
+import fi.luomus.commons.containers.rdf.Qname;
 
 public class IUCNLineDataTests {
 
@@ -78,6 +78,26 @@ public class IUCNLineDataTests {
 	}
 	
 	@Test
+	public void test_habitats_3() {
+		IUCNLineData data = new IUCNLineData(new String[] {});
+		data.primaryHabitat = "Kpa"; // K is not mapped
+		data.secondaryHabitats = "";
+		
+		assertEquals(null, data.getPrimaryHabitat());
+		assertEquals("[]", data.getSecondaryHabitats().toString());
+	}
+	
+	@Test
+	public void test_habitats_4() {
+		IUCNLineData data = new IUCNLineData(new String[] {});
+		data.primaryHabitat = "Klpa";
+		data.secondaryHabitats = "";
+		
+		assertEquals("null : MKV.habitatKl : [MKV.habitatSpecificTypePAK]", data.getPrimaryHabitat().toString());
+		assertEquals("[]", data.getSecondaryHabitats().toString());
+	}
+	
+	@Test
 	public void test_generatioNAge() {
 		IUCNLineData data = new IUCNLineData(new String[] {});
 		data.generationAge = "1";
@@ -146,67 +166,67 @@ public class IUCNLineDataTests {
 	public void test_evaluationPeriodLength() {
 		IUCNLineData data = new IUCNLineData(new String[] {});
 		data.evaluationPeriodLength = "0";
-		assertEquals(0, data.getEvaluationPeriod().intValue());
+		assertEquals(0, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10(-30)";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "75";
-		assertEquals(75, data.getEvaluationPeriod().intValue());
+		assertEquals(75, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10 (-30)";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10-45";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "ruots 3,3-15 v";
-		assertEquals(3, data.getEvaluationPeriod().intValue());
+		assertEquals(3, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "75 (MK)";
-		assertEquals(75, data.getEvaluationPeriod().intValue());
+		assertEquals(75, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10-45 v";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10? (MK)";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "30 (MK) (2000: 10)";
-		assertEquals(30, data.getEvaluationPeriod().intValue());
+		assertEquals(30, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "20? (MK)";
-		assertEquals(20, data.getEvaluationPeriod().intValue());
+		assertEquals(20, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "30  (EK, KM & MK)";
-		assertEquals(30, data.getEvaluationPeriod().intValue());
+		assertEquals(30, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "30 (MK; Ruotsissa käytetty 30)";
-		assertEquals(30, data.getEvaluationPeriod().intValue());
+		assertEquals(30, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "50-100?";
-		assertEquals(50, data.getEvaluationPeriod().intValue());
+		assertEquals(50, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "ruots 10 v.";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "60-75?";
-		assertEquals(60, data.getEvaluationPeriod().intValue());
+		assertEquals(60, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10 (-> ?)";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "n. 20-25";
-		assertEquals(20, data.getEvaluationPeriod().intValue());
+		assertEquals(20, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "20-30?";
-		assertEquals(20, data.getEvaluationPeriod().intValue());
+		assertEquals(20, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "10/30 v";
-		assertEquals(10, data.getEvaluationPeriod().intValue());
+		assertEquals(10, data.getEvaluationPeriodLength().intValue());
 		
 		data.evaluationPeriodLength = "60 vuotta";
-		assertEquals(60, data.getEvaluationPeriod().intValue());	
+		assertEquals(60, data.getEvaluationPeriodLength().intValue());	
 	}
 	
 	@Test

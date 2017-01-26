@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -21,11 +26,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class IUCNValidatorTests {
 
@@ -72,8 +72,8 @@ public class IUCNValidatorTests {
 	private IUCNEvaluation createEvaluation(Model givenModel) throws Exception {
 		IUCNEvaluation givenData = new IUCNEvaluation(givenModel, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		givenModel.setType(IUCNEvaluation.EVALUATION_CLASS);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, "MX.1", null);
-		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000", null);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, new Qname("MX.1"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, "2000");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_STARTED));
 		return givenData;
 	}
@@ -144,8 +144,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnLC"));
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnNE"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvoa \"NE - Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
@@ -155,8 +155,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range_2() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnLC"));
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnVU"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
@@ -165,8 +165,8 @@ public class IUCNValidatorTests {
 	public void test_min_max_iucn_range_3() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnVU"));
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnLC"));
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU - Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimaiset\"", result.listErrors().get(0));
@@ -215,8 +215,8 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B2b(ii,iii,v)c(iv)");
-		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnNT"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B2b(ii,iii,v)c(iv)");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, new Qname("MX.iucnNT"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -228,7 +228,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B2b(ii,iii,v)c(iv)");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B2b(ii,iii,v)c(iv)");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("[Kriteeri B ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan]", result.listErrors().toString());
@@ -240,7 +240,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.statusC", new Qname("MX.iucnNT"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_C, new Qname("MX.iucnNT"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("[Kriteeri C ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan]", result.listErrors().toString());
@@ -254,7 +254,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "B1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -267,8 +267,8 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, "4");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
-		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, new Qname("MX.iucnVU"));
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -291,7 +291,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
@@ -302,7 +302,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "B1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
@@ -314,7 +314,7 @@ public class IUCNValidatorTests {
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven("MKV.criteriaForStatus", "A1a; B1a+2a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "A1a; B1a+2a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("" +
@@ -389,16 +389,16 @@ public class IUCNValidatorTests {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMin", new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven("MKV.redListStatusMax", new Qname("MX.iucnNE"));
-		givenModel.addStatementIfObjectGiven("MKV.statusA", new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven("MKV.statusB", new Qname("MX.iucnNA"));
-		givenModel.addStatementIfObjectGiven("MKV.statusC", new Qname("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_A, new Qname("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, new Qname("MX.iucnNA"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_C, new Qname("MX.iucnNE"));
 
 		// Silence some other validations
-		givenModel.addStatementIfObjectGiven("MKV.criteriaA", "A1a");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaB", "B1a");
-		givenModel.addStatementIfObjectGiven("MKV.criteriaC", "C1");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A, "A1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_C, "C1");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, "20");
 
 		IUCNValidationResult result = validator.validate(givenData, null);

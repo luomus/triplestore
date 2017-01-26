@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -10,16 +18,19 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class IUCNEvaluation {
 
+	public static final String TAXONOMIC_NOTES = "MKV.taxonomicNotes";
+	public static final String POSSIBLY_RE = "MKV.possiblyRE";
+	public static final String POPULATION_SIZE_PERIOD_BEGINNING = "MKV.populationSizePeriodBeginning"; 
+	public static final String POPULATION_SIZE_PERIOD_END = "MKV.populationSizePeriodEnd";
+	public static final String POPULATION_SIZE_PERIOD_NOTES = "MKV.populationSizePeriodNotes";
+	public static final String OCCURRENCE_AREA_NOTES = "MKV.occurrenceAreaNotes";
+	public static final String LEGACY_PUBLICATIONS = "MKV.legacyPublications";
+	public static final String INDIVIDUAL_COUNT_NOTES = "MKV.individualCountNotes";
+	public static final String GROUNDS_FOR_EVALUATION_NOTES = "MKV.groundsForEvaluationNotes";
+	public static final String DISTRIBUATION_AREA_NOTES = "MKV.distributionAreaNotes";
+	public static final String DECREASE_DURING_PERIOD = "MKV.decreaseDuringPeriod";
 	public static final String REASON_FOR_STATUS_CHANGE = "MKV.reasonForStatusChange";
 	public static final String LAST_SIGHTING_NOTES = "MKV.lastSightingNotes";
 	public static final String BORDER_GAIN = "MKV.borderGain";
@@ -66,10 +77,26 @@ public class IUCNEvaluation {
 	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
+	public static final String CRITERIA_A = "MKV.criteriaA";
+	public static final String CRITERIA_B = "MKV.criteriaB";
+	public static final String CRITERIA_C = "MKV.criteriaC";
+	public static final String CRITERIA_D = "MKV.criteriaD";
+	public static final String CRITERIA_E = "MKV.criteriaE";
+	public static final String STATUS_A = "MKV.statusA";
+	public static final String STATUS_B = "MKV.statusB";
+	public static final String STATUS_C = "MKV.statusC";
+	public static final String STATUS_D = "MKV.statusD";
+	public static final String STATUS_E = "MKV.statusE";
 	public static final String IS_LOCKED = "MKV.locked";
 	public static final String REMARKS = "MKV.remarks";
+	public static final String LSA_RECOMMENDATION = "MKV.lsaRecommendation";
+	public static final String RED_LIST_STATUS_MAX = "MKV.redListStatusMax";
+	public static final String RED_LIST_STATUS_MIN = "MKV.redListStatusMin";
+	public static final String INDIVIDUAL_COUNT_MAX = "MKV.individualCountMax";
+	public static final String INDIVIDUAL_COUNT_MIN = "MKV.individualCountMin";
+
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
-	
+
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>();
@@ -123,7 +150,7 @@ public class IUCNEvaluation {
 	public boolean isLocked() {
 		return "true".equals(getValue(IS_LOCKED));
 	}
-	
+
 	public void addOccurrence(Occurrence occurrence) {
 		if (occurrences == null) occurrences = new HashMap<>();
 		occurrences.put(occurrence.getArea().toString(), occurrence);
@@ -300,29 +327,28 @@ public class IUCNEvaluation {
 		for (Occurrence occurrence : this.getOccurrences()) {
 			copyTarget.addOccurrence(copy(occurrence));
 		}
-		copy(OCCURRENCE_REGIONS_NOTES, copyTarget);
 
 		copyTarget.setPrimaryHabitat(copy(this.getPrimaryHabitat()));
 		for (IUCNHabitatObject habitatObject : this.getSecondaryHabitats()) {
 			copyTarget.addSecondaryHabitat(copy(habitatObject));
 		}
 		copy(HABITAT_GENERAL_NOTES, copyTarget);
-		
+
 		copy(GENERATION_AGE, copyTarget);
 		copy(EVALUATION_PERIOD_LENGTH, copyTarget);
 		copy(POPULATION_VARIES, copyTarget);
 		copy(FRAGMENTED_HABITATS, copyTarget);
 		copy(BORDER_GAIN, copyTarget);
-		
+
 		for (IUCNEndangermentObject endangermentObject : this.getEndangermentReasons()) {
 			copyTarget.addEndangermentReason(copy(endangermentObject));
 		}
 		for (IUCNEndangermentObject endangermentObject : this.getThreats()) {
 			copyTarget.addThreat(copy(endangermentObject));
 		}
-		
+
 		copy(LAST_SIGHTING_NOTES, copyTarget);
-		
+
 		for (IUCNRegionalStatus regionalStatus : this.getRegionalStatuses()) {
 			copyTarget.addRegionalStatus(copy(regionalStatus));
 		}
@@ -378,9 +404,9 @@ public class IUCNEvaluation {
 		}
 		return b.toString();
 	}
-	
+
 	public List<Statement> getRemarkSatements() {
 		return evaluation.getStatements(REMARKS);
 	}
-	
+
 }
