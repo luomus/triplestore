@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -16,6 +17,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
@@ -29,6 +31,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 public class IUCN2010Sisaan {
 
@@ -51,7 +54,7 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(new Qname("MVL.224")));
 		FILE_TO_INFORMAL_GROUP.put("Kääväkkäät_siirto.csv", Utils.set(new Qname("MVL.121")));
 		FILE_TO_INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(new Qname("MVL.22")));
-		FILE_TO_INFORMAL_GROUP.put("Limasienet_siirto.csv", null); // TODO
+		FILE_TO_INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(new Qname("MVL.321")));
 		FILE_TO_INFORMAL_GROUP.put("Linnut_siirto.csv", Utils.set(new Qname("MVL.1")));
 		FILE_TO_INFORMAL_GROUP.put("Maasiirat_lukit_valeskorpionit_siirto.csv", Utils.set(new Qname("MVL.215"), new Qname("MVL.235"), new Qname("MVL.236")));
 		FILE_TO_INFORMAL_GROUP.put("Matelijat_sammakot_siirto.csv", Utils.set(new Qname("MVL.26")));
@@ -72,22 +75,24 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
 		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
 	}
-	
+
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAO taxonomyDAO;
 
 	public static void main(String[] args) {
 		DataSource dataSource = null;
 		try {
-			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
+			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
 			process();
 		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			if (dataSource != null) dataSource.close();
-		} 
+		}
 		System.out.println("done");
 	}
 
@@ -104,6 +109,8 @@ public class IUCN2010Sisaan {
 	}
 
 	private static void process(File f) throws Exception {
+		Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
+		if (allowedInformalGroups == null) throw new IllegalStateException("No informal groups for " + f.getName());
 		for (String line : FileUtils.readLines(f)) {
 			line = line.trim();
 			if (line.isEmpty()) continue;
@@ -120,18 +127,87 @@ public class IUCN2010Sisaan {
 
 	private static void process(IUCNLineData data, File f) {
 		try {
-			data.getScientificName();
+			System.out.println(data.getScientificName());
 			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()));
-			
+			if (response.getExactMatches().isEmpty()) {
+				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()));
+			}
+			if (response.getExactMatches().isEmpty()) {
+				for (String altname : data.getAlternativeFinnishNames()) {
+					response = taxonomyDAO.searchInternal(new TaxonSearch(altname));
+					if (!response.getExactMatches().isEmpty()) break;
+				}
+			}
+			if (response.getExactMatches().isEmpty()) {
+				reportTaxonNotFound("Tuntematon nimi", data, f);
+				return;
+			}
+			Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
+			Set<Qname> matchingQnames = qnames(response.getExactMatches(), allowedInformalGroups);
+			if (matchingQnames.size() == 1) {
+				process(data, matchingQnames.iterator().next());
+				return;
+			}
+			if (matchingQnames.size() > 1) {
+				reportTaxonNotFound("Löytyi " + matchingQnames.size() + " osumaa lajiryhmistä " + allowedInformalGroups + ": " + matchingQnames, data, f);
+				return;
+			}
+
+			StringBuilder message = new StringBuilder();
+			message.append("Löytyi " + response.getExactMatches().size() + " osumaa, mutta väärästä lajiryhmästä: ");
+			for (Match match : response.getExactMatches()) {
+				message.append(match.getTaxonId()).append(" ").append(debug(match.getInformalGroups())).append(" ");
+			}
+			reportTaxonNotFound(message.toString().trim(), data, f);
 		} catch (Exception e) {
 			reportError(e, data, f);
 		}	
 	}
 
-	private static void reportError(Exception e, IUCNLineData data, File f) {
-		File errorFile = new File("c:/temp/error_" + f.getName().replace(".csv", ".txt"));
+	private static String debug(List<InformalTaxonGroup> informalGroups) {
+		StringBuilder b = new StringBuilder();
+		for (InformalTaxonGroup i : informalGroups) {
+			b.append(i.getName().forLocale("fi")).append(" ");
+		}
+		return b.toString().trim();
+	}
+
+	private static void process(IUCNLineData data, Qname taxonId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private static Set<Qname> qnames(List<Match> exactMatches, Set<Qname> allowedInformalGroups) {
+		Set<Qname> set = new HashSet<>();
+		for (Match m : exactMatches) {
+			for (InformalTaxonGroup i : m.getInformalGroups()) {
+				if (allowedInformalGroups.contains(i.getQname())) {
+					set.add(m.getTaxonId());
+				}
+			}
+		}
+		return set;
+	}
+
+	private static void reportTaxonNotFound(String message, IUCNLineData data, File f) {
+		File file = new File("c:/temp/iucn/missing_" + f.getName().replace(".csv", ".txt"));
 		try {
-			FileUtils.writeToFile(errorFile, data.getScientificName() + ":\n" + LogUtils.buildStackTrace(e, 5), true);
+			StringBuilder b = new StringBuilder();
+			b.append(data.getScientificName()).append("|");
+			b.append(data.getFinnishName()).append("|");
+			if (!data.getAlternativeFinnishNames().isEmpty()) b.append(data.getAlternativeFinnishNames().toString());
+			b.append("|");
+			b.append(message);
+			FileUtils.writeToFile(file, b.toString()+"\n", true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	private static void reportError(Exception e, IUCNLineData data, File f) {
+		File errorFile = new File("c:/temp/iucn/error_" + f.getName().replace(".csv", ".txt"));
+		try {
+			FileUtils.writeToFile(errorFile, data.getScientificName() + ":\n" + LogUtils.buildStackTrace(e, 5)+"\n", true);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -139,7 +215,7 @@ public class IUCN2010Sisaan {
 
 	private static final Map<String, Map<String, Integer>> dumps = new HashMap<>();
 	private static final Set<String>IGNORE = Utils.set("taxonomicNotes", "scientificName", "lastSightingNotes", "finnishName", "legacyPublications", "occurrenceNotes", "habitatNotes", "groundsForEvaluationNotes");
-	
+
 	private static void dump(IUCNLineData data) throws Exception {
 		for (Field field : data.getClass().getFields()) {
 			String fieldname = field.getName();
