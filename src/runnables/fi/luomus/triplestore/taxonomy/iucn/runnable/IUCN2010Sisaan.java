@@ -30,11 +30,15 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 public class IUCN2010Sisaan {
 
+	private static final int EVALUATION_YEAR = 2010;
 	private static final String BLABLABLA = "blablabla blablabla blablabla blablabla blablabla";
 	private static final String OCCURRENCES = "occurrences";
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
@@ -175,9 +179,17 @@ public class IUCN2010Sisaan {
 		return b.toString().trim();
 	}
 
-	private static void process(IUCNLineData data, Qname taxonId) {
-		// TODO Auto-generated method stub
+	private static void process(IUCNLineData data, Qname taxonId) throws Exception {
+		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
+		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(taxonId.toString());
+		if (target.hasEvaluation(EVALUATION_YEAR)) return; // Already loaded
+		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
+		iucnDAO.store(evaluation, null);
+	}
 
+	private static IUCNEvaluation toEvaluation(Qname taxonId, IUCNLineData data, int evaluationYear) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private static Set<Qname> qnames(List<Match> exactMatches, Set<Qname> allowedInformalGroups) {

@@ -4,17 +4,27 @@ import java.util.List;
 import java.util.Map;
 
 import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 
 public interface IucnDAO {
 
+	public static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.SECONDARY_HABITAT);
+	public static final Predicate PRIMARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.PRIMARY_HABITAT);
+	public static final Predicate HABITAT_PREDICATE = new Predicate(IUCNEvaluation.HABITAT);
+	public static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
+	public static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
+	public static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = new Predicate(IUCNEvaluation.HAS_ENDANGERMENT_REASON);
+	public static final Predicate HAS_THREATH_PREDICATE = new Predicate(IUCNEvaluation.HAS_THREAT);
+	public static final Predicate PUBLICATION_PREDICATE = new Predicate(IUCNEvaluation.PUBLICATION);
+	public static final Predicate EVALUATION_YEAR_PREDICATE = new Predicate(IUCNEvaluation.EVALUATION_YEAR);
+	public static final Predicate EDIT_NOTES_PREDICATE = new Predicate(IUCNEvaluation.EDIT_NOTES);
+	public static final Predicate EVALUATED_TAXON_PREDICATE = new Predicate(IUCNEvaluation.EVALUATED_TAXON);
+	
 	public List<Integer> getEvaluationYears() throws Exception;
 
 	public Map<String, IUCNEditors> getGroupEditors() throws Exception;
@@ -33,12 +43,8 @@ public interface IucnDAO {
 
 	public Qname getSeqNextValAndAddResource() throws Exception;
 
-	public void store(IUCNHabitatObject primaryHabitat) throws Exception;
-	
-	public void store(IUCNRegionalStatus regionalStatus) throws Exception;
-
-	public void store(IUCNEndangermentObject endangermentObject) throws Exception;
-	
 	public EditHistory getEditHistory(IUCNEvaluation evaluation) throws Exception;
+
+	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
 
 }

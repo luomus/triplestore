@@ -431,8 +431,7 @@ public class IucnDAOImple implements IucnDAO {
 		return triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
 	}
 
-	@Override
-	public void store(IUCNHabitatObject habitat) throws Exception {
+	private void store(IUCNHabitatObject habitat) throws Exception {
 		Qname id = given(habitat.getId()) ? habitat.getId() : getSeqNextValAndAddResource();
 		habitat.setId(id);
 		Model model = new Model(new Subject(id));
@@ -445,8 +444,7 @@ public class IucnDAOImple implements IucnDAO {
 		triplestoreDAO.store(model);
 	}
 
-	@Override
-	public void store(IUCNRegionalStatus regionalStatus) throws Exception {
+	private void store(IUCNRegionalStatus regionalStatus) throws Exception {
 		Qname id = given(regionalStatus.getId()) ? regionalStatus.getId() : getSeqNextValAndAddResource(); 
 		regionalStatus.setId(id);
 		Model model = new Model(id);
@@ -456,8 +454,7 @@ public class IucnDAOImple implements IucnDAO {
 		triplestoreDAO.store(model);
 	}
 
-	@Override
-	public void store(IUCNEndangermentObject endangermentObject) throws Exception {
+	private void store(IUCNEndangermentObject endangermentObject) throws Exception {
 		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource();
 		endangermentObject.setId(id);
 		Model model = new Model(id);
@@ -502,4 +499,90 @@ public class IucnDAOImple implements IucnDAO {
 		return new EditHistoryEntry(thisPeriodData.getValue(IUCNEvaluation.EDIT_NOTES), thisPeriodData.getValue(IUCNEvaluation.LAST_MODIFIED_BY));
 	}
 
+	@Override
+	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+		if (existingEvaluation != null) {
+			deleteOccurrences(existingEvaluation);
+			deleteEndangermentObjects(existingEvaluation);
+			deleteHabitatObjects(existingEvaluation);
+			deleteRegionalStatuses(existingEvaluation);
+		}
+		
+		storeOccurrencesAndSetIdToModel(givenData);
+		storeEndangermentObjectsAdnSetIdToModel(givenData);
+		storeHabitatObjectsAndSetIdsToModel(givenData);
+		storeRegionalStatusesAndSetIdToModel(givenData);
+		
+		triplestoreDAO.store(givenData.getModel());
+	}
+
+	private void storeEndangermentObjectsAdnSetIdToModel(IUCNEvaluation givenData) throws Exception {
+		Model model = givenData.getModel();
+		for (IUCNEndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
+			this.store(endangermentObject);
+			model.addStatement(new Statement(HAS_ENDANGERMENT_REASON_PREDICATE, new ObjectResource(endangermentObject.getId())));
+		}
+		for (IUCNEndangermentObject endangermentObject : givenData.getThreats()) {
+			this.store(endangermentObject);
+			model.addStatement(new Statement(HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
+		}
+	}
+	
+	private void storeHabitatObjectsAndSetIdsToModel(IUCNEvaluation givenData) throws Exception {
+		Model model = givenData.getModel();
+		IUCNHabitatObject primaryHabitat = givenData.getPrimaryHabitat();
+		if (primaryHabitat != null) {
+			this.store(primaryHabitat);
+			model.addStatement(new Statement(PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
+		}
+		for (IUCNHabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
+			this.store(secondaryHabitat);
+			model.addStatement(new Statement(SECONDARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
+		}
+	}
+
+	private void storeOccurrencesAndSetIdToModel(IUCNEvaluation givenData) throws Exception {
+		for (Occurrence occurrence : givenData.getOccurrences()) {
+			triplestoreDAO.store(new Qname(givenData.getSpeciesQname()), occurrence);
+			givenData.getModel().addStatement(new Statement(HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
+		}
+	}
+
+	private void storeRegionalStatusesAndSetIdToModel(IUCNEvaluation givenData) throws Exception {
+		for (IUCNRegionalStatus status : givenData.getRegionalStatuses()) {
+			this.store(status);
+			givenData.getModel().addStatement(new Statement(HAS_REGIONAL_STATUS_PREDICATE, new ObjectResource(status.getId())));
+		}
+	}
+	
+	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
+		if (existingEvaluation.getPrimaryHabitat() != null) {
+			triplestoreDAO.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
+		}
+		for (IUCNHabitatObject habitat : existingEvaluation.getSecondaryHabitats()) {
+			triplestoreDAO.delete(new Subject(habitat.getId()));
+		}
+	}
+
+	private void deleteOccurrences(IUCNEvaluation existingEvaluation) throws Exception {
+		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
+			triplestoreDAO.delete(new Subject(occurrence.getId()));
+		}
+	}
+	
+	private void deleteEndangermentObjects(IUCNEvaluation existingEvaluation) throws Exception {
+		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
+			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
+		}
+		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getThreats()) {
+			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
+		}
+	}
+	
+	private void deleteRegionalStatuses(IUCNEvaluation existingEvaluation) throws Exception {
+		for (IUCNRegionalStatus status : existingEvaluation.getRegionalStatuses()) {
+			triplestoreDAO.delete(new Subject(status.getId()));
+		}
+	}
+	
 }
