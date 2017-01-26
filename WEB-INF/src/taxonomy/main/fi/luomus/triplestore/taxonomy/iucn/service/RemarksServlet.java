@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -10,10 +14,6 @@ import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
 public class RemarksServlet extends EvaluationEditServlet {
@@ -35,8 +35,6 @@ public class RemarksServlet extends EvaluationEditServlet {
 		String speciesQname = evaluation.getSpeciesQname();
 		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
 
-		if (!permissions(req, target, evaluation)) throw new IllegalAccessException();
-		
 		if (given(remarks)) {
 			String userFullname = getUser(req).getFullname();
 			String date = DateUtils.getCurrentDateTime("dd.MM.yyyy");
@@ -51,6 +49,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
 		} else if (given(deleteStatementId)) {
+			if (!permissions(req, target, evaluation)) throw new IllegalAccessException();
 			int id = Integer.valueOf(deleteStatementId);
 			boolean found = model.removeStatement(id);
 			if (found) {
