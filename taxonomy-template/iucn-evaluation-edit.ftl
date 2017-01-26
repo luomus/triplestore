@@ -232,7 +232,11 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
+	<#if permissions>
 	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä luokille NT-CR</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
+	<#else>
+	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä luokille NT-CR</span> " />
+	</#if>
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
