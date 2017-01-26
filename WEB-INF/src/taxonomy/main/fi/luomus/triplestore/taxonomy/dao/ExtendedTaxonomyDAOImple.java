@@ -1,5 +1,15 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
@@ -12,20 +22,11 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
@@ -105,15 +106,20 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public Document search(TaxonSearch taxonSearch) throws Exception {
-		Document results = initResults();
+		return searchInternal(taxonSearch).getResultsAsDocument();
+	}
+
+	@Override
+	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception {
+		TaxonSearchResponse response = new TaxonSearchResponse();
 		if (!given(taxonSearch.getSearchword())) {
-			results.getRootNode().addAttribute("error", "Search word must be given.");
-			return results;
+			response.setError("Search word must be given.");
+			return response;
 		}
 		String searchword = taxonSearch.getSearchword().trim().toUpperCase();
 		if (searchword.trim().length() <= 1) {
-			results.getRootNode().addAttribute("error", "Search word was too short.");
-			return results;
+			response.setError("Search word was too short.");
+			return response;
 		}
 		String checklist = ".";
 		if (taxonSearch.hasChecklist()) {
@@ -126,35 +132,36 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		try {
 			con = triplestoreDAO.openConnection();
 
-			Node exactMatch = exactMatch(searchword, checklist, limit, requiredInformalTaxonGroups, con);
-			addedCount = addIfHasMatches(exactMatch, results);
-			if (addedCount >= limit) return results;
+			List<Match> exactMatches = exactMatches(searchword, checklist, limit, requiredInformalTaxonGroups, con);
+			response.getExactMatches().addAll(exactMatches);
+			addedCount = exactMatches.size();
+			if (addedCount >= limit) return response;
 
-			//if (!exactMatch.hasChildNodes() && searchword.length() > 3) {
 			if (searchword.length() > 3) {
-				Node likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
-				addedCount += addIfHasMatches(likelyMatches, results);
-				if (addedCount >= limit) return results;
+				List<Match> likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
+				response.getLikelyMatches().addAll(likelyMatches);
+				addedCount += likelyMatches.size();
+				if (addedCount >= limit) return response;
 
-				Node partialMatches = partialMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
-				addIfHasMatches(partialMatches, results);
+				List<Match> partialMatches = partialMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
+				response.getPartialMatches().addAll(partialMatches);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage() == null ? "" : ": " + e.getMessage();
-			results.getRootNode().addAttribute("error", e.getClass().getSimpleName() + message);
+			response.setError(e.getClass().getSimpleName() + message);
 		} finally {
 			Utils.close(con);
 		}
-		return results;
+		return response;
 	}
 
 	private boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
 
-	private Node exactMatch(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
-		Node exactMatch = new Node("exactMatch");
+	private List<Match> exactMatches(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
+		List<Match> matches = new ArrayList<>();
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try {
@@ -164,19 +171,19 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(3, searchword);
 			rs = p.executeQuery();
 			while (rs.next()) {
-				Node match = toMatch(rs, requiredInformalTaxonGroups);
+				Match match = toMatch(rs, requiredInformalTaxonGroups);
 				if (match == null) continue; 
 				if (limit-- < 1) break;
-				exactMatch.addChildNode(match);
+				matches.add(match);
 			}
 		} finally {
 			Utils.close(p, rs);
 		}
-		return exactMatch;
+		return matches;
 	}
 
-	private Node likelyMatches(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
-		Node likelyMatches = new Node("likelyMatches");
+	private List<Match> likelyMatches(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
+		List<Match> matches = new ArrayList<>();
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try {
@@ -187,20 +194,20 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(4, checklist);
 			rs = p.executeQuery();
 			while (rs.next()) {
-				Node match = toMatch(rs, requiredInformalTaxonGroups);
+				Match match = toMatch(rs, requiredInformalTaxonGroups);
 				if (match == null) continue;
 				if (limit-- < 1) break;
-				Double similarity = Utils.round(rs.getDouble(6), 3);
-				likelyMatches.addChildNode(match).addAttribute("similarity", similarity.toString());
+				match.setSimilarity(rs.getDouble(6));
+				matches.add(match);
 			}
 		} finally {
 			Utils.close(p, rs);
 		}
-		return likelyMatches;
+		return matches;
 	}
 
-	private Node partialMatches(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
-		Node partialMatches = new Node("partialMatches");
+	private List<Match> partialMatches(String searchword, String checklist, int limit, Set<Qname> requiredInformalTaxonGroups, TransactionConnection con) throws SQLException {
+		List<Match> matches = new ArrayList<>();
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try {
@@ -210,35 +217,27 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(3, checklist);
 			rs = p.executeQuery();
 			while (rs.next()) {
-				Node match = toMatch(rs, requiredInformalTaxonGroups);
+				Match match = toMatch(rs, requiredInformalTaxonGroups);
 				if (match == null) continue;
 				if (limit-- < 1) break;
-				partialMatches.addChildNode(match);
+				matches.add(match);
 			}
 		} finally {
 			Utils.close(p, rs);
 		}
-		return partialMatches;
+		return matches;
 	}
 
-	private Node toMatch(ResultSet rs, Set<Qname> requiredInformalTaxonGroups) throws SQLException {
-		String qname = rs.getString(1);
+	private Match toMatch(ResultSet rs, Set<Qname> requiredInformalTaxonGroups) throws SQLException {
+		Qname taxonId = new Qname(rs.getString(1));
 		String name = rs.getString(2);
 		String scientificName = rs.getString(3);
 		String author = rs.getString(4);
 		String taxonrank = rs.getString(5);
-		Node match = new Node(qname);
-		match.addAttribute("matchingName", name.toLowerCase());
-		if (given(scientificName)) {
-			match.addAttribute("scientificName", scientificName);
-		}
-		if (given(author)) {
-			match.addAttribute("scientificNameAuthorship", author);
-		}
-		if (given(taxonrank)) {
-			match.addAttribute("taxonRank", taxonrank);
-		}
-		Qname taxonId = new Qname(qname);
+		Match match = new Match(taxonId, name);
+		match.setScientificName(scientificName);
+		match.setScientificNameAuthorship(author);
+		match.setTaxonRank(taxonrank == null ? null : new Qname(taxonrank));
 		if (taxonContainer.hasTaxon(taxonId)) {
 			return handleTaxonMatch(requiredInformalTaxonGroups, match, taxonId);
 		}
@@ -246,31 +245,23 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return match;
 	}
 
-	private Node handleTaxonMatch(Set<Qname> requiredInformalTaxonGroups, Node match, Qname taxonId) {
+	private Match handleTaxonMatch(Set<Qname> requiredInformalTaxonGroups, Match match, Qname taxonId) {
 		Taxon taxon = getTaxon(taxonId);
 		Set<Qname> taxonsInformalGroups = taxon.getInformalTaxonGroups();
 		if (required(requiredInformalTaxonGroups)) {
 			boolean matches = taxonMatchesOneRequiredGroup(requiredInformalTaxonGroups, taxonsInformalGroups);
 			if (!matches) return null;
 		}
-		addInformalGroupsToMatch(match, taxonsInformalGroups);
+		for (Qname informalGroupQname : taxonsInformalGroups) {
+			InformalTaxonGroup informalGroup = getInformalTaxonGroups().get(informalGroupQname.toString());
+			if (informalGroup == null) continue;
+			match.getInformalGroups().add(informalGroup);
+		}
 		return match;
 	}
 
 	private boolean required(Set<Qname> requiredInformalTaxonGroups) {
 		return !requiredInformalTaxonGroups.isEmpty();
-	}
-
-	private void addInformalGroupsToMatch(Node match, Set<Qname> taxonsInformalGroups) {
-		Node informalGroupsNode = match.addChildNode("informalGroups");
-		for (Qname informalGroupQname : taxonsInformalGroups) {
-			InformalTaxonGroup informalGroup = getInformalTaxonGroups().get(informalGroupQname.toString());
-			if (informalGroup == null) continue;
-			Node informalGroupNode = informalGroupsNode.addChildNode(informalGroup.getQname().toString());
-			for (Map.Entry<String, String> e : informalGroup.getName().getAllTexts().entrySet()) {
-				informalGroupNode.addAttribute(e.getKey(), e.getValue());
-			}
-		}
 	}
 
 	private boolean taxonMatchesOneRequiredGroup(Set<Qname> requiredInformalTaxonGroups, Set<Qname> taxonsInformalGroups) {
@@ -281,19 +272,6 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			}
 		}
 		return found;
-	}
-
-	private int addIfHasMatches(Node matches, Document results) {
-		if (matches.hasChildNodes()) {
-			results.getRootNode().addChildNode(matches);
-			return matches.getChildNodes().size();
-		}
-		return 0;
-	}
-
-	private static Document initResults() {
-		Document results = new Document("results");
-		return results;
 	}
 
 	@Override

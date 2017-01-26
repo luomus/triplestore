@@ -97,7 +97,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String searchword = req.getParameter("q");
 		if (!given(searchword)) {
-			searchword = Utils.urlDecode(getQname(req)); // Yes, the path needs to encoded and decoded.. but it fails for some cases. It is not reccomended to use parameter
+			searchword = Utils.urlDecode(getQname(req)); // the path needs to encoded and decoded.. but it fails for some cases. It is better to use the "q"-parameter.
 		}
 		int limit = getLimit(req);
 		Qname checklist = parseChecklist(req);
@@ -164,8 +164,6 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		if (given(taxonRank)) {
 			json.setString("taxonRankId", taxonRank.toString());	
 		}
-		json.setBoolean("isSpecies", Taxon.isSpecies(taxonRank)); // TODO remove when not used in laji frontend anymore
-		json.setBoolean("isCursiveName", Taxon.shouldCursive(taxonRank)); // TODO remove when not used in laji frontend anymore
 		json.setBoolean("species", Taxon.isSpecies(taxonRank));
 		json.setBoolean("cursiveName", Taxon.shouldCursive(taxonRank));
 		if (match.hasChildNodes("informalGroups")) {

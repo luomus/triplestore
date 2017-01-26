@@ -1,8 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.FileUtils;
-import fi.luomus.commons.utils.Utils;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -15,6 +11,24 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.FileUtils;
+import fi.luomus.commons.utils.LogUtils;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 
 public class IUCN2010Sisaan {
 
@@ -58,17 +72,27 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
 		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
 	}
+	
+	private static TriplestoreDAO triplestoreDAO;
+	private static ExtendedTaxonomyDAO taxonomyDAO;
+
 	public static void main(String[] args) {
+		DataSource dataSource = null;
 		try {
+			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
+			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
+			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
 			process();
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			if (dataSource != null) dataSource.close();
+		} 
 		System.out.println("done");
 	}
 
 	private static void process() throws Exception {
-		File folder = new File("C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
+		File folder = new File("C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
@@ -83,14 +107,34 @@ public class IUCN2010Sisaan {
 		for (String line : FileUtils.readLines(f)) {
 			line = line.trim();
 			if (line.isEmpty()) continue;
-			process(line);
+			process(line, f);
 		}
 	}
 
-	private static void process(String line) throws Exception {
+	private static void process(String line, File f) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		IUCNLineData data = new IUCNLineData(parts);
-		dump(data);		
+		dump(data);
+		process(data, f);
+	}
+
+	private static void process(IUCNLineData data, File f) {
+		try {
+			data.getScientificName();
+			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()));
+			
+		} catch (Exception e) {
+			reportError(e, data, f);
+		}	
+	}
+
+	private static void reportError(Exception e, IUCNLineData data, File f) {
+		File errorFile = new File("c:/temp/error_" + f.getName().replace(".csv", ".txt"));
+		try {
+			FileUtils.writeToFile(errorFile, data.getScientificName() + ":\n" + LogUtils.buildStackTrace(e, 5), true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	private static final Map<String, Map<String, Integer>> dumps = new HashMap<>();

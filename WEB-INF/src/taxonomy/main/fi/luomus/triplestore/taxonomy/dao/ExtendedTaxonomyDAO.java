@@ -1,12 +1,13 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.List;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.util.List;
-import java.util.Set;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 
 public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
@@ -33,4 +34,6 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
 	public Set<String> getInformalTaxonGroupRoots();
 
+	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception;
+	
 }
