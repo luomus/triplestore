@@ -153,6 +153,7 @@ public class IUCNEvaluation {
 
 	public void addOccurrence(Occurrence occurrence) {
 		if (occurrences == null) occurrences = new HashMap<>();
+		if (occurrence.getYear() == null) occurrence.setYear(getEvaluationYear());
 		occurrences.put(occurrence.getArea().toString(), occurrence);
 	}
 

@@ -54,7 +54,8 @@ public class IucnDAOImple implements IucnDAO {
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
-
+	private static final String MO_YEAR = "MO.year";
+	
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
 	private static final String EDIT_HISTORY_SQL = "" + 
@@ -362,7 +363,12 @@ public class IucnDAOImple implements IucnDAO {
 		String areaQname = model.getStatements(MO_AREA).get(0).getObjectResource().getQname();
 		String statusQname = model.getStatements(MO_STATUS).get(0).getObjectResource().getQname();
 		Qname id = new Qname(model.getSubject().getQname());
-		return new Occurrence(id, new Qname(areaQname), new Qname(statusQname));
+		Occurrence occurrence = new Occurrence(id, new Qname(areaQname), new Qname(statusQname));
+		if (model.hasStatements(MO_YEAR)) {
+			int year = Integer.valueOf(model.getStatements(MO_YEAR).get(0).getObjectLiteral().getContent());
+			occurrence.setYear(year);
+		}
+		return occurrence;
 	}
 
 	private IUCNRegionalStatus getRegionalStatus(String regionalStatusId) throws Exception {

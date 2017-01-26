@@ -49,7 +49,7 @@ public class IUCN2010Sisaan {
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
 		FILE_TO_INFORMAL_GROUP = new HashMap<String, Set<Qname>>();
-		FILE_TO_INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.61")));
+		FILE_TO_INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(new Qname("MVL.38")));
 		FILE_TO_INFORMAL_GROUP.put("Jäkälät_siirto.csv", Utils.set(new Qname("MVL.25")));
 		FILE_TO_INFORMAL_GROUP.put("Jäytiäiset_siirto.csv", Utils.set(new Qname("MVL.227")));
@@ -57,11 +57,11 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(new Qname("MVL.229")));
 		FILE_TO_INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(new Qname("MVL.301")));
 		FILE_TO_INFORMAL_GROUP.put("Korennot_siirto.csv", Utils.set(new Qname("MVL.36")));
-		FILE_TO_INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(new Qname("MVL.101")));
+		FILE_TO_INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Kovakuoriaiset_siirto.csv", Utils.set(new Qname("MVL.33")));
-		FILE_TO_INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(new Qname("MVL.81")));
+		FILE_TO_INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(new Qname("MVL.224")));
-		FILE_TO_INFORMAL_GROUP.put("Kääväkkäät_siirto.csv", Utils.set(new Qname("MVL.121")));
+		FILE_TO_INFORMAL_GROUP.put("Kääväkkäät_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(new Qname("MVL.22")));
 		FILE_TO_INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(new Qname("MVL.321")));
 		FILE_TO_INFORMAL_GROUP.put("Linnut_siirto.csv", Utils.set(new Qname("MVL.1")));
@@ -72,9 +72,9 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Nivelkärsäiset_siirto.csv", Utils.set(new Qname("MVL.34")));
 		FILE_TO_INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(new Qname("MVL.241")));
 		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto.csv", Utils.set(new Qname("MVL.31")));
-		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233"))); // TODO tällaista ryhmää ei ole, liitetty sienien yläryhmään
-		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.")));
-		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.")));
+		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
+		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
 		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(new Qname("MVL.281"), new Qname("MVL.282")));
 		FILE_TO_INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(new Qname("MVL.228")));
 		FILE_TO_INFORMAL_GROUP.put("Sammalet_siirto.csv", Utils.set(new Qname("MVL.23")));
@@ -111,8 +111,9 @@ public class IUCN2010Sisaan {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
 			System.out.println(f.getName());
-			if (!"Hämähäkit_siirto.csv".equals(f.getName())) continue; // XXX
-			process(f);
+			if (f.getName().equals("Nivelmadot_siirto.csv")) { 
+				process(f);
+			}
 		}
 		//writeDumps();
 	}
@@ -261,7 +262,9 @@ public class IUCN2010Sisaan {
 		for (Map.Entry<Qname, Qname> e : data.getOccurrences().entrySet()) {
 			Qname area = e.getKey();
 			Qname status = e.getValue();
-			evaluation.addOccurrence(new Occurrence(null, area, status));
+			Occurrence occurrence = new Occurrence(null, area, status);
+			occurrence.setYear(EVALUATION_YEAR);
+			evaluation.addOccurrence(occurrence);
 		}
 		evaluation.setPrimaryHabitat(data.getPrimaryHabitat());
 		for (IUCNHabitatObject habitat : data.getSecondaryHabitats()) {

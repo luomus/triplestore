@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -29,17 +40,6 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -701,8 +701,15 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven("MO.taxon", taxonQname);
 		model.addStatementIfObjectGiven("MO.status", occurrence.getStatus());
 		model.addStatementIfObjectGiven("MO.area", occurrence.getArea());
+		model.addStatementIfObjectGiven("MO.year", s(occurrence.getYear()));
+		model.addStatementIfObjectGiven("MO.notes", occurrence.getNotes());
 		this.store(model);
 		occurrence.setId(id);
+	}
+
+	private String s(Integer i) {
+		if (i == null) return null;
+		return i.toString();
 	}
 
 	private boolean given(Qname qname) {

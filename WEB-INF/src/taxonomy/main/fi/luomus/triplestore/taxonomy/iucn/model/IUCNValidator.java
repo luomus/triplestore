@@ -12,6 +12,7 @@ import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
@@ -154,6 +155,11 @@ public class IUCNValidator {
 	}
 
 	private void validateOccurrences(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		for (Occurrence o : givenData.getOccurrences()) {
+			if (o.getYear() == null || o.getYear().intValue() != givenData.getEvaluationYear()) {
+				validationResult.setError("Ohjelmointivirhe: Occurrences vuosi ei ole kunnossa", IUCNEvaluation.HAS_OCCURRENCE);
+			}
+		}
 		String status = givenData.getIucnStatus();
 		if (OCCURRENCES_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getOccurrences().isEmpty()) {
