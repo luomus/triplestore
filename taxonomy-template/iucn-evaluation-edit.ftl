@@ -670,7 +670,10 @@
 <#macro iucnPublications fieldName>
 	<tr>
 		<th><@iucnLabel fieldName /></th>
-		<td><@showPublications fieldName comparison /></td>
+		<td>
+			<@showPublications fieldName comparison />
+			<#if comparison??>${(comparison.getValue("MKV.legacyPublications")!"")?html}</#if>
+		</td>
 		<td>
 			<#if permissions>
 				<table class="publicationSelect">
