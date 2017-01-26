@@ -137,15 +137,15 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			addedCount = exactMatches.size();
 			if (addedCount >= limit) return response;
 
-			if (searchword.length() > 3) {
-				List<Match> likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
-				response.getLikelyMatches().addAll(likelyMatches);
-				addedCount += likelyMatches.size();
-				if (addedCount >= limit) return response;
+			if (taxonSearch.isOnlyExact() || searchword.length() <= 3) return response;
+			
+			List<Match> likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
+			response.getLikelyMatches().addAll(likelyMatches);
+			addedCount += likelyMatches.size();
+			if (addedCount >= limit) return response;
 
-				List<Match> partialMatches = partialMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
-				response.getPartialMatches().addAll(partialMatches);
-			}
+			List<Match> partialMatches = partialMatches(searchword, checklist, limit - addedCount, requiredInformalTaxonGroups, con);
+			response.getPartialMatches().addAll(partialMatches);
 		} catch (Exception e) {
 			e.printStackTrace();
 			String message = e.getMessage() == null ? "" : ": " + e.getMessage();

@@ -152,7 +152,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	}
 
 	private Set<String> getTaxons(String taxon) throws Exception {
-		TaxonSearchResponse result = getTaxonomyDAO().searchInternal(new TaxonSearch(taxon, 1000));
+		TaxonSearchResponse result = getTaxonomyDAO().searchInternal(new TaxonSearch(taxon, 1000).onlyExact());
 		Set<String> qnames = new HashSet<>();
 		for (Match exactmatch : result.getExactMatches()) {
 			qnames.add(exactmatch.getTaxonId().toString());

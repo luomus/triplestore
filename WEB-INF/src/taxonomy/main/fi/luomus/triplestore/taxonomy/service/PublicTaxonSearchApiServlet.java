@@ -50,13 +50,20 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		private final int limit;
 		private final Set<Qname> requiredInformalGroups;
 		private final String toString;
-		public SearchWrapper(TaxonomyDAO dao, String searchword, Qname checklist, int limit, Set<Qname> requiredInformalGroups) {
+		private final boolean onlyExact;
+		public SearchWrapper(TaxonomyDAO dao, String searchword, Qname checklist, int limit, Set<Qname> requiredInformalGroups, boolean onlyExact) {
 			this.dao = dao;
 			this.searchword = searchword;
 			this.checklist = checklist;
 			this.limit = limit;
 			this.requiredInformalGroups = requiredInformalGroups;
-			this.toString = this.searchword + " (" + checklist + ") + limit:" + limit + " required groups: " + requiredInformalGroups;
+			this.onlyExact = onlyExact;
+			this.toString = generateToString();
+		}
+		private String generateToString() {
+			String s = this.searchword + " (" + this.checklist + ") + limit:" + this.limit + " required groups: " + this.requiredInformalGroups;
+			if (onlyExact) s += " onleExact: true";
+			return s;
 		}
 		@Override
 		public int hashCode() {
@@ -75,6 +82,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			for (Qname group : requiredInformalGroups) {
 				taxonSearch.addInformalTaxonGroup(group);
 			}
+			if (onlyExact) taxonSearch.onlyExact();
 			return taxonSearch;
 		}
 	}
@@ -102,11 +110,12 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		int limit = getLimit(req);
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
+		boolean onlyExact = "true".equals(req.getParameter("onlyExact"));
 		int version = getVersion(req);
 
 		Format format = getFormat(req);
 
-		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist, limit, requiredInformalGroups));
+		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist, limit, requiredInformalGroups, onlyExact));
 		if (response.getRootNode().hasAttribute("error")) {
 			if (response.getRootNode().getAttribute("error").startsWith("Search word")) {
 				res.setStatus(400);

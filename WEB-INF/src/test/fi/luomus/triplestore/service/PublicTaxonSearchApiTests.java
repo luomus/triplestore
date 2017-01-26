@@ -99,6 +99,12 @@ public class PublicTaxonSearchApiTests {
 	}
 
 	@Test
+	public void test_only_exact_match() throws Exception {
+		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10).onlyExact()).getRootNode();
+		assertEquals(0, n.getChildNodes().size());
+	}
+	
+	@Test
 	public void test_partial_match_unlimited() throws Exception {
 		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getRootNode();
 		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 3);

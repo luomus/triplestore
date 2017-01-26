@@ -111,24 +111,27 @@ public class IUCN2010Sisaan {
 	private static void process(File f) throws Exception {
 		Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
 		if (allowedInformalGroups == null) throw new IllegalStateException("No informal groups for " + f.getName());
-		for (String line : FileUtils.readLines(f)) {
+		List<String> lines = FileUtils.readLines(f);
+		int i = 0;
+		for (String line : lines) {
+			i++;
 			line = line.trim();
 			if (line.isEmpty()) continue;
-			process(line, f);
+			process(line, f, i, lines.size());
 		}
 	}
 
-	private static void process(String line, File f) throws Exception {
+	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		IUCNLineData data = new IUCNLineData(parts);
 		dump(data);
-		process(data, f);
+		process(data, f, i, total);
 	}
 
-	private static void process(IUCNLineData data, File f) {
+	private static void process(IUCNLineData data, File f, int i, int total) {
 		try {
-			System.out.println(data.getScientificName());
-			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()));
+			System.out.println(i + " / " + total + "\t" + data.getScientificName());
+			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()).onlyExact());
 			if (response.getExactMatches().isEmpty()) {
 				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()));
 			}
