@@ -608,7 +608,7 @@ public class IUCNLineData {
 	}
 
 	private String cleanMinmax(String s) {
-		return s.replace("±2", "").replace("n.", "").replace("km²", "").replace("km2", "").replace(".", "").replace(" ", "").replace("Noin", "").replace("arv.", "").replace("Selvästi", "").replace("yli", ">").replace("?", "").replace("tunnettu", "").replace("alle","<").replace("Ehkä", "").trim();
+		return s.toLowerCase().replace("±2", "").replace("n.", "").replace("km²", "").replace("km2", "").replace(".", "").replace(" ", "").replace("noin", "").replace("arv.", "").replace("selvästi", "").replace("yli", ">").replace("?", "").replace("tunnettu", "").replace("alle","<").replace("ehkä", "").trim();
 	}
 
 	private static final Map<String, Qname> HABITAS;
