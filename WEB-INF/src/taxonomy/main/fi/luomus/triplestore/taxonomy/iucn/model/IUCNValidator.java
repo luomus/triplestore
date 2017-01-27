@@ -112,7 +112,7 @@ public class IUCNValidator {
 		if (!"true".equals(lsaRec)) return;
 		String status = givenData.getIucnStatus();
 		if (!LSA_CAN_GIVE_STATUSES.contains(status)) {
-			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR", IUCNEvaluation.LSA_RECOMMENDATION);
+			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR arvioituja", IUCNEvaluation.LSA_RECOMMENDATION);
 		}
 	}
 	
