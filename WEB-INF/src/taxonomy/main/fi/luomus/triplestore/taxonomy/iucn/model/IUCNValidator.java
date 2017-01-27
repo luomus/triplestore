@@ -208,20 +208,20 @@ public class IUCNValidator {
 
 	private void validateWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_PERIOD_LENGTH))) {
-			validationResult.setError("Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A", IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
+			validationResult.setError("Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A", IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
 		}
 	}
 
 	private void validateWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX))) {
-			validationResult.setError("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", IUCNEvaluation.DISTRIBUTION_AREA_MIN);
+			validationResult.setError("Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1", IUCNEvaluation.DISTRIBUTION_AREA_MIN);
 			validationResult.addErrorField(IUCNEvaluation.DISTRIBUTION_AREA_MAX);
 		}
 	}
 
 	private void validateWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX))) {
-			validationResult.setError("Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2", IUCNEvaluation.OCCURRENCE_AREA_MIN);
+			validationResult.setError("Esiintymisalueen koko on ilmoitettava käytettäessä kriteeriä B2", IUCNEvaluation.OCCURRENCE_AREA_MIN);
 			validationResult.addErrorField(IUCNEvaluation.OCCURRENCE_AREA_MAX);
 		} 
 

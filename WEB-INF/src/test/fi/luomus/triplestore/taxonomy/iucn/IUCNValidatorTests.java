@@ -294,7 +294,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
-		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
+		assertEquals("Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1", result.listErrors().toString());
 	}
 
 	public void test_criteria_B1_5() throws Exception {
@@ -305,7 +305,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "B1a");
 
 		IUCNValidationResult result = validator.validate(givenData, null);
-		assertEquals("Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1", result.listErrors().toString());
+		assertEquals("Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1", result.listErrors().toString());
 	}
 
 	@Test
@@ -318,9 +318,9 @@ public class IUCNValidatorTests {
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("" +
-				"[Levinneisyysalueen koko on ilmoitteva käytettäessä kriteeriä B1, "+
-				"Esiintymisalueen koko on ilmoitteva käytettäessä kriteeriä B2, "+
-				"Tarkastelujakson pituus on ilmoitteva käytettäessä kriteeriä A]", 
+				"[Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1, "+
+				"Esiintymisalueen koko on ilmoitettava käytettäessä kriteeriä B2, "+
+				"Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A]", 
 				result.listErrors().toString());
 	}
 
