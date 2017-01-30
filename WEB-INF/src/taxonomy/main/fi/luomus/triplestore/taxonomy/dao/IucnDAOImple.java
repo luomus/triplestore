@@ -301,7 +301,6 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public void completeLoading(IUCNEvaluation evaluation) throws Exception {
-		System.out.println("Completing evaluation loading for " + evaluation.getSpeciesQname());
 		Model model = evaluation.getModel();
 		setOccurrences(model, evaluation);
 		setRegionalStatuses(model, evaluation);
