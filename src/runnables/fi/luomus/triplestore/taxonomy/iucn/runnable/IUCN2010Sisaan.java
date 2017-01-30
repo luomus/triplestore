@@ -56,7 +56,7 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Kalat_siirto.csv", Utils.set(new Qname("MVL.27")));
 		FILE_TO_INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(new Qname("MVL.229")));
 		FILE_TO_INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(new Qname("MVL.301")));
-		FILE_TO_INFORMAL_GROUP.put("Korennot_siirto.csv", Utils.set(new Qname("MVL.36")));
+		FILE_TO_INFORMAL_GROUP.put("Korennot_siirto.csv", Utils.set(new Qname("MVL.36"), new Qname("MVL.222")));
 		FILE_TO_INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Kovakuoriaiset_siirto.csv", Utils.set(new Qname("MVL.33")));
 		FILE_TO_INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(new Qname("MVL.233")));
@@ -75,7 +75,7 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
 		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
-		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(new Qname("MVL.281"), new Qname("MVL.282")));
+		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(new Qname("MVL.343")));
 		FILE_TO_INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(new Qname("MVL.228")));
 		FILE_TO_INFORMAL_GROUP.put("Sammalet_siirto.csv", Utils.set(new Qname("MVL.23")));
 		FILE_TO_INFORMAL_GROUP.put("Suorasiipiset_siirto.csv", Utils.set(new Qname("MVL.223")));
@@ -111,9 +111,7 @@ public class IUCN2010Sisaan {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
 			System.out.println(f.getName());
-			if (f.getName().equals("Nivelmadot_siirto.csv")) { 
-				process(f);
-			}
+			process(f);
 		}
 		//writeDumps();
 	}
@@ -143,6 +141,12 @@ public class IUCN2010Sisaan {
 			System.out.println(i + " / " + total + "\t" + data.getScientificName());
 			TaxonSearchResponse response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()).onlyExact());
 			if (response.getExactMatches().isEmpty()) {
+				String cleanedSciName = cleanScientificName(data.getScientificName());
+				if (cleanedSciName !=  null) {
+					response = taxonomyDAO.searchInternal(new TaxonSearch(cleanedSciName).onlyExact());
+				}
+			}
+			if (response.getExactMatches().isEmpty()) {
 				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()).onlyExact());
 			}
 			if (response.getExactMatches().isEmpty()) {
@@ -162,7 +166,7 @@ public class IUCN2010Sisaan {
 				return;
 			}
 			if (matchingQnames.size() > 1) {
-				reportTaxonNotFound("Löytyi " + matchingQnames.size() + " osumaa lajiryhmistä " + allowedInformalGroups + ": " + matchingQnames, data, f);
+				reportTaxonNotFound("Löytyi " + matchingQnames.size() + " osumaa: " + matchingQnames, data, f);
 				return;
 			}
 			StringBuilder message = new StringBuilder();
@@ -174,6 +178,30 @@ public class IUCN2010Sisaan {
 		} catch (Exception e) {
 			reportError(e, data, f);
 		}	
+	}
+
+	public static String cleanScientificName(String scientificName) {
+		if (!scientificName.contains("(")) return null;
+		StringBuilder b = new StringBuilder();
+		boolean inparenthesis = false;
+		for (char c : scientificName.toCharArray()) {
+			if (c == '(') {
+				inparenthesis = true;
+				continue;
+			}
+			if (c == ')') {
+				inparenthesis = false;
+				continue;
+			}
+			if (!inparenthesis) {
+				b.append(c);
+			}
+		}
+		String s = b.toString();
+		while (s.contains("  ")) {
+			s = s.replace("  ", " ");
+		}
+		return s.trim();
 	}
 
 	private static String debug(List<InformalTaxonGroup> informalGroups) {
@@ -307,7 +335,7 @@ public class IUCN2010Sisaan {
 			if (!data.getAlternativeFinnishNames().isEmpty()) b.append(data.getAlternativeFinnishNames().toString());
 			b.append("|");
 			b.append(message);
-			FileUtils.writeToFile(file, b.toString()+"\n", true);
+			FileUtils.writeToFile(file, b.toString()+"\n", "ISO-8859-1", true);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

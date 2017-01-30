@@ -119,7 +119,11 @@ public class IUCNLineData {
 
 	private String s(int i) {
 		try {
-			return parts[i].trim();
+			String s = parts[i].trim();
+			while (s.contains("  ")) {
+				s = s.replace("  ", " ");
+			}
+			return s.trim();
 		} catch (ArrayIndexOutOfBoundsException e) {
 			return "";
 		}
@@ -132,7 +136,6 @@ public class IUCNLineData {
 	public String getFinnishName() {
 		return finnishName;
 	}
-
 
 	public List<String> getAlternativeFinnishNames() {
 		if (!given(alternativeFinnishNames)) return Collections.emptyList();
@@ -153,7 +156,7 @@ public class IUCNLineData {
 
 	public Qname getTypeOfOccurrenceInFinland() {
 		if (!given(typeOfOccurrenceInFinland)) return null;
-		String s = typeOfOccurrenceInFinland.toLowerCase().replace("?", "").replace("<", "").replace(">", "").trim();
+		String s = typeOfOccurrenceInFinland.toLowerCase().replace("?", "").replace("<", "").replace(">", "").replace("n.", "").trim();
 		if (validInteger(s)) return STABLE; 
 		if (s.contains("hävinnyt")) return EXTIRPATED;
 		if (s.contains("vieraslaji")) return ANTHROPOGENIC;
@@ -401,7 +404,7 @@ public class IUCNLineData {
 	public Integer getEvaluationPeriodLength() {
 		if (!given(evaluationPeriodLength)) return null;
 		try {
-			
+
 			String s = evaluationPeriodLength.split(Pattern.quote("("))[0].replace("/", "-").split(Pattern.quote("-"))[0].trim();
 			s = s.replace(",", ".");
 			s = removeNonDigits(s);
@@ -536,46 +539,46 @@ public class IUCNLineData {
 		String s = redListStatus.replace(".", "").replace("*", "").trim();
 		return RED_LIST_STATUSES.get(s);
 	}
-	
+
 	public String getRedListStatusNotes() {
 		if (getRedListStatus() == null) return redListStatus;
 		return "";
 	}
-	
+
 	public Qname getRedListStatusMin() {
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[0]);
 	}
-	
+
 	public Qname getRedListStatusMax() {
 		if (!redListStatusRange.contains("-")) return getRedListStatusMin();
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[1]);
 	}
-	
-	
+
+
 	public Boolean getPossiblyRE() {
 		String s = possiblyRE.toLowerCase();
 		if (s.equals("re") || s.equals("kyllä")) return true;
 		return null;
 	}
-	
+
 	public String getPossiblyRENotes() {
 		return possiblyRE;
 	}
-	
+
 	public String getLastSightingNotes() {
 		return lastSightingNotes;
 	}
-	
+
 	public Boolean getLsaRecommendation() {
 		String s = lsaRecommendation.toLowerCase();
 		if (s.equals("e") || s.equals("e*")) return true;
 		return null;
 	};
-	
+
 	public String getLsaRecommendationNotes() {
 		return lsaRecommendation;
 	};
-	
+
 	public String getLegacyPublications() {
 		return legacyPublications;
 	}
@@ -592,6 +595,7 @@ public class IUCNLineData {
 
 	private Integer getMax(String s) {
 		s = cleanMinmax(s);
+		if (s.endsWith("-")) return null;
 		if (s.contains("-")) {
 			return iVal(s.split(Pattern.quote("-"))[1]);
 		}

@@ -2,12 +2,20 @@ package fi.luomus.triplestore.taxonomy.iucn.runnable;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.regex.Pattern;
+
 import org.junit.Test;
 
 import fi.luomus.commons.containers.rdf.Qname;
 
 public class IUCNLineDataTests {
 
+	@Test
+	public void cleanSciname() {
+		assertEquals(null, IUCN2010Sisaan.cleanScientificName("Cricotopus slossonae"));
+		assertEquals("Cricotopus slossonae", IUCN2010Sisaan.cleanScientificName("Cricotopus (Cricotopus) slossonae"));
+	}
+	
 	@Test
 	public void test_minmax() {
 		IUCNLineData data = new IUCNLineData(new String[] {});
@@ -389,6 +397,15 @@ public class IUCNLineDataTests {
 		data.redListStatusRange = "LC";
 		assertEquals("MX.iucnLC", data.getRedListStatusMin().toString());
 		assertEquals("MX.iucnLC", data.getRedListStatusMax().toString());
+	}
+	
+	@Test
+	public void bugfix() {
+		String line = "OR12|Tetrix fuliginosa |(Zetterstedt, 1828)||Tetrigidae|Orthoptera|Insecta|Arthropoda|||suorasiipiset||lapinokasirkka||norlig torngräshoppa|||lisääntyvä|130 000|4-?|||||x|x|x|x|x|x|x|It|Rjn|Kosteat avoimet paikat, niityt, pientareet. Ei soilla.|esiintyminen huonosti tunnettu, ainoa uusi havainto 2008 Rovaniemi, edellinen vuodelta 1956||10|||||tiedot puutteellisia, mahd. taantuva||kyllä|ei|||-|? B2ab(ii,iii,iv)|-|-|-|Laaja levinneisyys,   harvinainen ja mahdollisesti taantunut (vain 1 uusi havainto). Vaikea löytää ja tunnistaa. Todennäköisen taantumisen ja pirstoutumisen perusteella täyttäisi kriteerin B. Puutteellisesti etsitty, paikkoja voi olla aika paljonkin.|LC||DD| |4|LC-EN|epävarma, ?kannanmuutos|||||||||";
+		IUCNLineData data = new IUCNLineData(line.split(Pattern.quote("|")));
+		assertEquals("4-?", data.getOccurrenceAreaNotes());
+		assertEquals(4, data.getOccurrenceAreaMin().intValue());
+		assertEquals(null, data.getOccurrenceAreaMax());
 	}
 
 }
