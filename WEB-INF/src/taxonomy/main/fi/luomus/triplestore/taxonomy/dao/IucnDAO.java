@@ -48,4 +48,6 @@ public interface IucnDAO {
 
 	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
 
+	void completeLoading(IUCNEvaluation evaluation) throws Exception;
+
 }

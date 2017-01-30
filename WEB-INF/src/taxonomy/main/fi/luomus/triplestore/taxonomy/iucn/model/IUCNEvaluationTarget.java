@@ -41,15 +41,15 @@ public class IUCNEvaluationTarget {
 		evaluations.put(evaluation.getEvaluationYear(), evaluation);
 	}
 
-	public IUCNEvaluation getEvaluation(int year) {
+	public IUCNEvaluation getEvaluation(int year) throws Exception {
 		return evaluations.get(year);
 	}
 
-	public boolean hasEvaluation(int year) {
+	public boolean hasEvaluation(int year) throws Exception {
 		return getEvaluation(year) != null;
 	}
 
-	public IUCNEvaluation getPreviousEvaluation(int year) {
+	public IUCNEvaluation getPreviousEvaluation(int year) throws Exception {
 		Integer prevYear = getPreviousYear(year);
 		if (prevYear == null) return null;
 		return getEvaluation(prevYear);
@@ -74,7 +74,7 @@ public class IUCNEvaluationTarget {
 		return years;
 	}
 
-	public boolean hasPreviousEvaluation(int year) {
+	public boolean hasPreviousEvaluation(int year) throws Exception {
 		return getPreviousEvaluation(year) != null;
 	}
 

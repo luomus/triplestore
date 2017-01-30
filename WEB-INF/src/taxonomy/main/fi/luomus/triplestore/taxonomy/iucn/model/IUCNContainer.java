@@ -1,12 +1,12 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
 public class IUCNContainer {
 
@@ -77,6 +77,16 @@ public class IUCNContainer {
 			target.setEvaluation(evaluation);
 			for (String groupQname : target.getGroups()) {
 				getStat(evaluation.getEvaluationYear(), groupQname).invalidate();
+			}
+		}
+	}
+
+	public void complateLoading(IUCNEvaluation evaluation) throws Exception {
+		if (evaluation.isIncompletelyLoaded()) {
+			synchronized (LOCK) {
+				if (evaluation.isIncompletelyLoaded()) {
+					iucnDAO.completeLoading(evaluation);
+				}
 			}
 		}
 	}

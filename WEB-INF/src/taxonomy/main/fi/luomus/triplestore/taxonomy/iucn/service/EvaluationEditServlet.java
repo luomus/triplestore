@@ -61,6 +61,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		int year = selectedYear(req);
 		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
 		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
+		complete(comparisonData);
+		complete(thisPeriodData);
 		if (isCopyRequest(req) && thisPeriodData == null && comparisonData != null) {
 			thisPeriodData = iucnDAO.createNewEvaluation();
 			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
@@ -75,6 +77,13 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
 		}
 		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
+	}
+
+	private void complete(IUCNEvaluation evaluation) throws Exception {
+		if (evaluation == null) return;
+		if (evaluation.isIncompletelyLoaded()) {
+			getTaxonomyDAO().getIucnDAO().getIUCNContainer().complateLoading(evaluation);
+		}
 	}
 
 	private boolean isCopyRequest(HttpServletRequest req) {
@@ -210,6 +219,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		if (!permissions(req, target, target.getEvaluation(year))) throw new IllegalAccessException();
 
 		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
+		complete(comparisonData);
 		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		cleanCriteriaFormats(givenData);
 		

@@ -121,7 +121,8 @@ public class IUCNEvaluation {
 	private List<IUCNHabitatObject> secondaryHabitats = null;
 	private List<IUCNEndangermentObject> endangermentReasons = null;
 	private List<IUCNEndangermentObject> threats = null;
-
+	private boolean incompletelyLoaded = false;
+	
 	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
 		this.evaluationProperties = evaluationProperties;
@@ -408,6 +409,14 @@ public class IUCNEvaluation {
 
 	public List<Statement> getRemarkSatements() {
 		return evaluation.getStatements(REMARKS);
+	}
+
+	public boolean isIncompletelyLoaded() {
+		return incompletelyLoaded;
+	}
+
+	public void setIncompletelyLoaded(boolean incompletelyLoaded) {
+		this.incompletelyLoaded = incompletelyLoaded;
 	}
 
 }

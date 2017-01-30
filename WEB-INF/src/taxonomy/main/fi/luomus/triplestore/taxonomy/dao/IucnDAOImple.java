@@ -55,7 +55,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
 	private static final String MO_YEAR = "MO.year";
-	
+
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
 	private static final String EDIT_HISTORY_SQL = "" + 
@@ -295,12 +295,20 @@ public class IucnDAOImple implements IucnDAO {
 
 	private IUCNEvaluation createEvaluation(Model model) throws Exception {
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, getEvaluationProperties());
+		evaluation.setIncompletelyLoaded(true);
+		return evaluation;
+	}
+
+	@Override
+	public void completeLoading(IUCNEvaluation evaluation) throws Exception {
+		System.out.println("Completing evaluation loading for " + evaluation.getSpeciesQname());
+		Model model = evaluation.getModel();
 		setOccurrences(model, evaluation);
 		setRegionalStatuses(model, evaluation);
 		setEndagermentReasons(model, evaluation);
 		setPrimaryHabitat(model, evaluation);
 		setSecondaryHabitats(model, evaluation);
-		return evaluation;
+		evaluation.setIncompletelyLoaded(false);
 	}
 
 	private void setEndagermentReasons(Model model, IUCNEvaluation evaluation) throws Exception {
@@ -532,7 +540,7 @@ public class IucnDAOImple implements IucnDAO {
 			model.addStatement(new Statement(HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
 		}
 	}
-	
+
 	private void storeHabitatObjectsAndSetIdsToModel(IUCNEvaluation givenData) throws Exception {
 		Model model = givenData.getModel();
 		IUCNHabitatObject primaryHabitat = givenData.getPrimaryHabitat();
@@ -559,7 +567,7 @@ public class IucnDAOImple implements IucnDAO {
 			givenData.getModel().addStatement(new Statement(HAS_REGIONAL_STATUS_PREDICATE, new ObjectResource(status.getId())));
 		}
 	}
-	
+
 	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
 			triplestoreDAO.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
@@ -574,7 +582,7 @@ public class IucnDAOImple implements IucnDAO {
 			triplestoreDAO.delete(new Subject(occurrence.getId()));
 		}
 	}
-	
+
 	private void deleteEndangermentObjects(IUCNEvaluation existingEvaluation) throws Exception {
 		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
 			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
@@ -583,11 +591,11 @@ public class IucnDAOImple implements IucnDAO {
 			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
 		}
 	}
-	
+
 	private void deleteRegionalStatuses(IUCNEvaluation existingEvaluation) throws Exception {
 		for (IUCNRegionalStatus status : existingEvaluation.getRegionalStatuses()) {
 			triplestoreDAO.delete(new Subject(status.getId()));
 		}
 	}
-	
+
 }
