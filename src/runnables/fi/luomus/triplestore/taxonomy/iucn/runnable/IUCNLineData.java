@@ -156,13 +156,18 @@ public class IUCNLineData {
 
 	public Qname getTypeOfOccurrenceInFinland() {
 		if (!given(typeOfOccurrenceInFinland)) return null;
-		String s = typeOfOccurrenceInFinland.toLowerCase().replace("?", "").replace("<", "").replace(">", "").replace("n.", "").trim();
-		if (validInteger(s)) return STABLE; 
-		if (s.contains("hävinnyt")) return EXTIRPATED;
-		if (s.contains("vieraslaji")) return ANTHROPOGENIC;
-		if (s.contains("vakituinen") || s.equals("muinaistulokas") || s.contains("lisääntyvä") || s.equals("alkuperäinen") || s.contains("vakinainen") || s.contains("vakiintunut")) return STABLE;
-		if (s.contains("uusi laji") || s.equals("uustulokas, satunnainen") || s.contains("tulokas")) return NOT_ESTAMBLISHED;
-		if (s.contains("tilapäisviipyjä")) return RARE;
+		String s = typeOfOccurrenceInFinland.toLowerCase().replace("<", "").replace(">", "").replace("n.", "").trim();
+		if (s.equals("todennäköisesti vakinainen")) return null;
+		if (s.contains("mahdollisesti") || s.contains("osin")) return null;
+		if (s.contains(" x ")) return null;
+		if (validInteger(s)) return STABLE;
+		if (!s.contains("?") && (s.contains("tilapäisviipyjä") || s.contains("tilapäinen") || s.contains("levähtävä"))) return RARE;
+		if (s.contains("satunnainen")) return RARE;
+		if (!s.contains("?") && s.contains("hävinnyt")) return EXTIRPATED;
+		if (s.contains("vieraslaji") || s.contains("import") || s.contains("koriste") || s.contains("sisätil") || s.contains("indoor") || s.contains("vilja") || s.contains("viljely") || s.contains("vihannes") || s.contains("marjapens")) return ANTHROPOGENIC;
+		if (!s.contains("?") && (s.contains("vakituinen") ||  s.contains("vakinainen") || s.contains("vakiintunut"))) return STABLE;
+		if (s.contains("lisääntyvä") || s.contains("alkuperäinen") || s.equals("muinaistulokas")) return STABLE;
+		if (s.contains("uusi laji") || s.contains("uutena") || s.contains("uustulo")) return NOT_ESTAMBLISHED;
 		return null;
 	}
 
