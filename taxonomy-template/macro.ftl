@@ -75,6 +75,11 @@
 					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 				</div>
 			</#if>
+			<#if taxon.hidden>
+				<div class="checklistChangesMidTree">
+					[Hidden]
+				</div>
+			</#if>
 		</div>
 		<#if showChildrenTools>
 			<div class="showChildrenTools">
