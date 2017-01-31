@@ -2,11 +2,6 @@
 	<#return qname1 == qname2>
 </#function>
 
-<#function booleanValue value="">
-	<#if value?string == ""><#return ""></#if>
-	<#return value?string("true","false")>
-</#function>
-
 <#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
 <#macro printEditorExpert taxon><@printEditorExpertSpecific taxon.editors taxon.experts /></#macro>
@@ -156,18 +151,15 @@
 	<#else>
 		<#assign value = defaultValue>
 	</#if>
+	<#if property.isBooleanProperty()>
+		NO SUPPORT FOR BOOLEANS
+	</#if>
 	<select id="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
 		<option value=""></option>
-		<#if property.isBooleanProperty()>
-			<#list property.range.values as optionValue>
-				<option value="${optionValue.qname}" <#if booleanValue(value) == optionValue.qname>selected="selected"</#if>>${optionValue.label.forLocale("en")}</option>
-			</#list>
-		<#else>
-			<#list property.range.values as optionValue>
-				<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
-			</#list>
-		</#if>
-	</select>			
+		<#list property.range.values as optionValue>
+			<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+		</#list>
+	</select>
 	</#if>
 </#macro>
 

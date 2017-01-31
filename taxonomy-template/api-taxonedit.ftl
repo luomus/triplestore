@@ -41,7 +41,13 @@
 		<@labeledInput "MX.nameDecidedDate" "on" />
 		<@labeledTextarea "MX.notes" />
 		<@labeledTextarea "MX.privateNotes" />
-		<@labeledSelect "MX.hiddenTaxon" />
+		<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
+		<label>Hidden?</label>	
+		<select name="MX.hiddenTaxon" <@checkPermissions/> >
+			<option value=""></option>
+			<option value="true" <#if taxon.hidden>selected="selected"</#if>>Yes</option>
+			<option value="false">No</option>
+		</select>
 	<@portletFooter />
 	
 	<@portletHeader "Source of taxonomy" "" "reloadAfterSaveSection" />
