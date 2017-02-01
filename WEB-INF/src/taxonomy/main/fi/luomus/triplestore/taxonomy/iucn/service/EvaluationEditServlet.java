@@ -24,7 +24,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
 
@@ -147,23 +146,24 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private static Collection<RdfProperty> regionalOccurrenceStatuses;
-
+	
 	private Collection<RdfProperty> getRegionalOccurrenceStatuses() throws Exception {
 		if (regionalOccurrenceStatuses == null) {
 			regionalOccurrenceStatuses = initRegionalOccurrenceStatuses();
 		}
 		return regionalOccurrenceStatuses;
 	}
-
-	private Collection<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
-		List<RdfProperty> occurrences = new ArrayList<>();
+	
+	private List<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
+		List<RdfProperty> statuses = new ArrayList<>();
 		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccurs", "Esiintyy vyöhykkeellä", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt vyöhykkeeltä (RE)", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceUncertain", "Esiintyy mahdollisesti vyöhykkeellä (epävarma)", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
-		return occurrences;
+		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccurs", "Esiintyy vyöhykkeellä", referenceStatuses));
+		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt vyöhykkeeltä (RE)", referenceStatuses));
+		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
+		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceUncertain", "Esiintyy mahdollisesti vyöhykkeellä (epävarma)", referenceStatuses));
+		statuses.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
+		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccursButThreatened", "RT - Esiintyy, alueellisesti uhanalainen", referenceStatuses));
+		return statuses;
 	} 
 
 	private RdfProperty buildOccurrenceStatus(String id, String label, Collection<RdfProperty> referenceStatuses) {
@@ -424,12 +424,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			// MKV.hasOccurrence___ML.xxx
 			Qname areaQname = splitAreaQname(parameterName);
 			evaluation.addOccurrence(new Occurrence(null, areaQname, new Qname(value)));
-			return;
-		}
-		if (parameterName.startsWith(IUCNEvaluation.HAS_REGIONAL_STATUS)) {
-			// MKV.hasRegionalStatus___ML.xxx
-			Qname areaQname = splitAreaQname(parameterName);
-			evaluation.addRegionalStatus(new IUCNRegionalStatus(null, areaQname, "true".equals(value)));
 			return;
 		}
 		if (parameterName.startsWith(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {

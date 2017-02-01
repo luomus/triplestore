@@ -295,14 +295,15 @@
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
 	<#if permissions>
-	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä luokille NT-CR</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; RT-arvoa voi käyttää vain luokille LC ja NT</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
 	<#else>
-	<@iucnSection "Esiintymisalueet Suomessa <span> &mdash; Täytettävä luokille NT-CR</span> " />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus" />
 	</#if>
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
+	<@iucnTextarea "MKV.regionalStatusNotes" />
 
 	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span>" />   
 	<@iucnHabitatFields />   
@@ -363,17 +364,6 @@
 			</#list>
 		</td>
 	</tr>
-		
-	
-	<@iucnSection "Alueellinen uhanalaisuus <span> &mdash; Saa täyttää vain jos luokka on LC tai NT</span>" />
-	<#assign hasRegionalData = evaluation?? && evaluation.regionalStatuses?has_content>
-	<#if !hasRegionalData>
-		<tr><td colspan="3"><button id="showRegionalButton">Näytä alueelliset uhanalaisuudet</button></td></tr>
-	</#if>
-	<#list areas?keys as areaQname>
-		<@iucnRegionalStatus areaQname hasRegionalData />		
-	</#list>
-	<@iucnTextarea "MKV.regionalStatusNotes" />
 	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
@@ -505,33 +495,6 @@
 			<#else>
 				<#if evaluation?? && (evaluation.hasValue(minFieldName) || evaluation.hasValue(maxFieldName))>
 					<@showValue minFieldName evaluation /> - <@showValue maxFieldName evaluation /> <@showNotes notesFieldName evaluation />
-				</#if>
-			</#if>
-		</td>
-	</tr>
-</#macro>
-
-<#macro iucnRegionalStatus areaQname hasRegionalData>
-	<tr class="regionalStatusRow <#if !hasRegionalData>hidden</#if>">	
-		<th><label>${areas[areaQname].name.forLocale("fi")?html}</label></th>
-		<td>
-			<#if comparison?? && comparison.hasRegionalStatus(areaQname)>
-				${comparison.getRegionalStatus(areaQname).status?string("RT - Uhanalainen", "Ei")}
-			</#if>
-		</td>
-		<td>
-			<#if permissions>
-				<select name="MKV.hasRegionalStatus___${areaQname}" data-placeholder="...">
-					<option value="" label=".."></option>
-					<#if evaluation?? && evaluation.hasRegionalStatus(areaQname) && evaluation.getRegionalStatus(areaQname).status>
-						<option value="true" selected="selected">RT - Uhanalainen</option>
-					<#else>
-						<option value="true">RT - Uhanalainen</option>
-					</#if>
-				</select>
-			<#else>
-				<#if evaluation?? && evaluation.hasRegionalStatus(areaQname)>
-					${evaluation.getRegionalStatus(areaQname).status?string("RT - Uhanalainen", "Ei")}
 				</#if>
 			</#if>
 		</td>
@@ -992,11 +955,6 @@ $(function() {
         if ( event.keyCode == 13 ){
             event.preventDefault();
         }
-    });
-    
-    $("#showRegionalButton").on('click', function() {
-    	$(this).hide();
-    	$(".regionalStatusRow").fadeIn('fast');
     });
     
     $("h2 a").on('click', function() {

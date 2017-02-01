@@ -72,10 +72,6 @@ public class IUCNEvaluation {
 	public static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
 	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
 	public static final String INDEX_CHANGE_NOTES = "Punaisen kirjan indeksiä (RLI) muutettu.";
-	public static final String HAS_REGIONAL_STATUS = "MKV.hasRegionalStatus";
-	public static final String REGIONAL_STATUS_STATUS = "MKV.regionalStatusStatus";
-	public static final String REGIONAL_STATUS_AREA = "MKV.regionalStatusArea";
-	public static final String REGIONAL_STATUS_CLASS = "MKV.regionalStatus";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
 	public static final String CRITERIA_A = "MKV.criteriaA";
@@ -118,7 +114,6 @@ public class IUCNEvaluation {
 	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
 	private Map<String, Occurrence> occurrences = null;
-	private Map<String, IUCNRegionalStatus> regionalStatuses = null;
 	private IUCNHabitatObject primaryHabitat;
 	private List<IUCNHabitatObject> secondaryHabitats = null;
 	private List<IUCNEndangermentObject> endangermentReasons = null;
@@ -173,26 +168,6 @@ public class IUCNEvaluation {
 	public Collection<Occurrence> getOccurrences() {
 		if (occurrences == null) return Collections.emptyList();
 		return Collections.unmodifiableCollection(occurrences.values());
-	}
-
-	public void addRegionalStatus(IUCNRegionalStatus regionalStatus) {
-		if (regionalStatuses == null) regionalStatuses = new HashMap<>();
-		regionalStatuses.put(regionalStatus.getArea().toString(), regionalStatus);
-	}
-
-	public boolean hasRegionalStatus(String areaQname) {
-		if (regionalStatuses == null) return false;
-		return regionalStatuses.containsKey(areaQname);
-	}
-
-	public IUCNRegionalStatus getRegionalStatus(String areaQname) {
-		if (regionalStatuses == null) return null;
-		return regionalStatuses.get(areaQname);
-	}
-
-	public Collection<IUCNRegionalStatus> getRegionalStatuses() {
-		if (regionalStatuses == null) return Collections.emptyList();
-		return Collections.unmodifiableCollection(regionalStatuses.values());
 	}
 
 	public String getId() {
@@ -352,14 +327,6 @@ public class IUCNEvaluation {
 		}
 
 		copy(LAST_SIGHTING_NOTES, copyTarget);
-
-		for (IUCNRegionalStatus regionalStatus : this.getRegionalStatuses()) {
-			copyTarget.addRegionalStatus(copy(regionalStatus));
-		}
-	}
-
-	private IUCNRegionalStatus copy(IUCNRegionalStatus regionalStatus) {
-		return new IUCNRegionalStatus(null, regionalStatus.getArea(), regionalStatus.getStatus());
 	}
 
 	private IUCNEndangermentObject copy(IUCNEndangermentObject endangermentObject) {

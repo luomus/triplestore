@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.util.List;
-import java.util.Map;
-
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -11,6 +8,9 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IucnDAO {
 
 	public static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(IUCNEvaluation.SECONDARY_HABITAT);
@@ -18,7 +18,6 @@ public interface IucnDAO {
 	public static final Predicate HABITAT_PREDICATE = new Predicate(IUCNEvaluation.HABITAT);
 	public static final Predicate HABITAT_SPESIFIC_TYPE_PREDICATE = new Predicate(IUCNEvaluation.HABITAT_SPECIFIC_TYPE);
 	public static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(IUCNEvaluation.HAS_OCCURRENCE);
-	public static final Predicate HAS_REGIONAL_STATUS_PREDICATE = new Predicate(IUCNEvaluation.HAS_REGIONAL_STATUS);
 	public static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = new Predicate(IUCNEvaluation.HAS_ENDANGERMENT_REASON);
 	public static final Predicate HAS_THREATH_PREDICATE = new Predicate(IUCNEvaluation.HAS_THREAT);
 	public static final Predicate PUBLICATION_PREDICATE = new Predicate(IUCNEvaluation.PUBLICATION);

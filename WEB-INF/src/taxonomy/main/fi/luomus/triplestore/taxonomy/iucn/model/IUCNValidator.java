@@ -280,11 +280,16 @@ public class IUCNValidator {
 	}
 
 	private void validateRegionalEndangerment(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if (givenData.getRegionalStatuses().isEmpty()) return;
 		String status = givenData.getIucnStatus();
 		if (!given(status)) return;
 		if ("MX.iucnLC".equals(status) || "MX.iucnNT".equals(status)) return;
-		validationResult.setError("Alueellisen uhanalaisuus on järkevää ilmoittaa vain luokille LC ja NT. Tätä uhanalaisemmat ovat automaattisesti alueellisesti uhanalaisia.", IUCNEvaluation.HAS_REGIONAL_STATUS);
+		if (givenData.getOccurrences().isEmpty()) return;
+		for (Occurrence o : givenData.getOccurrences()) {
+			if ("MX.typeOfOccurrenceOccursButThreatened".equals(o.getStatus().toString())) {
+				validationResult.setError("Alueelliseesti uhanalaiseksi voi merkitä vain luokkiin LC ja NT määriteltyjä lajeja. Tätä uhanalaisemmat lajit ovat automaattisesti alueellisesti uhanalaisia.", null);
+				return;
+			}
+		}
 	}
 
 	private void validateDataTypes(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {

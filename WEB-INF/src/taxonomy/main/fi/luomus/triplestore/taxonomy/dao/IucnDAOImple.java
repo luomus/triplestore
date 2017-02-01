@@ -33,7 +33,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -322,7 +321,6 @@ public class IucnDAOImple implements IucnDAO {
 	public void completeLoading(IUCNEvaluation evaluation) throws Exception {
 		Model model = evaluation.getModel();
 		setOccurrences(model, evaluation);
-		setRegionalStatuses(model, evaluation);
 		setEndagermentReasons(model, evaluation);
 		setPrimaryHabitat(model, evaluation);
 		setSecondaryHabitats(model, evaluation);
@@ -367,12 +365,6 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	}
 
-	private void setRegionalStatuses(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement hasRegionalStatus : model.getStatements(IUCNEvaluation.HAS_REGIONAL_STATUS)) {
-			evaluation.addRegionalStatus(getRegionalStatus(hasRegionalStatus.getObjectResource().getQname()));
-		}
-	}
-
 	private IUCNHabitatObject getHabitatObject(Qname habitatObjectId) throws Exception {
 		Model model = triplestoreDAO.get(habitatObjectId);
 		String habitat = model.getStatements(IUCNEvaluation.HABITAT).get(0).getObjectResource().getQname();
@@ -395,14 +387,6 @@ public class IucnDAOImple implements IucnDAO {
 			occurrence.setYear(year);
 		}
 		return occurrence;
-	}
-
-	private IUCNRegionalStatus getRegionalStatus(String regionalStatusId) throws Exception {
-		Model model = triplestoreDAO.get(regionalStatusId);
-		String areaQname = model.getStatements(IUCNEvaluation.REGIONAL_STATUS_AREA).get(0).getObjectResource().getQname();
-		String status = model.getStatements(IUCNEvaluation.REGIONAL_STATUS_STATUS).get(0).getObjectLiteral().getContent();
-		Qname id = new Qname(model.getSubject().getQname());
-		return new IUCNRegionalStatus(id, new Qname(areaQname), "true".equals(status));
 	}
 
 	private RdfProperties getEvaluationProperties() throws Exception {
@@ -477,16 +461,6 @@ public class IucnDAOImple implements IucnDAO {
 		triplestoreDAO.store(model);
 	}
 
-	private void store(IUCNRegionalStatus regionalStatus) throws Exception {
-		Qname id = given(regionalStatus.getId()) ? regionalStatus.getId() : getSeqNextValAndAddResource(); 
-		regionalStatus.setId(id);
-		Model model = new Model(id);
-		model.setType(IUCNEvaluation.REGIONAL_STATUS_CLASS);
-		model.addStatementIfObjectGiven(IUCNEvaluation.REGIONAL_STATUS_AREA, regionalStatus.getArea());
-		model.addStatementIfObjectGiven(IUCNEvaluation.REGIONAL_STATUS_STATUS, regionalStatus.getStatus());
-		triplestoreDAO.store(model);
-	}
-
 	private void store(IUCNEndangermentObject endangermentObject) throws Exception {
 		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource();
 		endangermentObject.setId(id);
@@ -538,12 +512,10 @@ public class IucnDAOImple implements IucnDAO {
 			deleteOccurrences(existingEvaluation);
 			deleteEndangermentObjects(existingEvaluation);
 			deleteHabitatObjects(existingEvaluation);
-			deleteRegionalStatuses(existingEvaluation);
 		}
 		storeOccurrencesAndSetIdToModel(givenData);
 		storeEndangermentObjectsAdnSetIdToModel(givenData);
 		storeHabitatObjectsAndSetIdsToModel(givenData);
-		storeRegionalStatusesAndSetIdToModel(givenData);
 		triplestoreDAO.store(givenData.getModel());
 	}
 
@@ -579,13 +551,6 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	}
 
-	private void storeRegionalStatusesAndSetIdToModel(IUCNEvaluation givenData) throws Exception {
-		for (IUCNRegionalStatus status : givenData.getRegionalStatuses()) {
-			this.store(status);
-			givenData.getModel().addStatement(new Statement(HAS_REGIONAL_STATUS_PREDICATE, new ObjectResource(status.getId())));
-		}
-	}
-
 	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
 			triplestoreDAO.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
@@ -607,12 +572,6 @@ public class IucnDAOImple implements IucnDAO {
 		}
 		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getThreats()) {
 			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
-		}
-	}
-
-	private void deleteRegionalStatuses(IUCNEvaluation existingEvaluation) throws Exception {
-		for (IUCNRegionalStatus status : existingEvaluation.getRegionalStatuses()) {
-			triplestoreDAO.delete(new Subject(status.getId()));
 		}
 	}
 

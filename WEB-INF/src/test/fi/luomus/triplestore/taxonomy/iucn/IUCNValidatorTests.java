@@ -355,6 +355,46 @@ public class IUCNValidatorTests {
 	}
 
 	@Test
+	public void test_regional_endangerment() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnNT"));
+		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccursButThreatened")));
+		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "E");
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+
+	@Test
+	public void test_regional_endangerment_2() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccursButThreatened")));
+		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "E");
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertTrue(result.hasErrors());
+		assertEquals("[Alueelliseesti uhanalaiseksi voi merkitä vain luokkiin LC ja NT määriteltyjä lajeja. Tätä uhanalaisemmat lajit ovat automaattisesti alueellisesti uhanalaisia.]", result.listErrors().toString());
+	}
+
+	@Test
+	public void test_regional_endangerment_3() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccurs")));
+		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "E");
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertFalse(result.hasErrors());
+	}
+	
+	@Test
 	public void test_evaluationPeriodLength() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createEvaluation(givenModel);
