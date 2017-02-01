@@ -347,3 +347,8 @@ li.remark button.delete {
 .ui-tooltip {
     white-space: pre-line;
 }
+
+span.synonyms {
+  display: block;
+  font-size: 80%;
+}

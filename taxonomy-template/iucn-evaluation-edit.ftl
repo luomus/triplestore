@@ -45,28 +45,33 @@
 	</ul>
 </div>
 
-<#if taxon.synonyms?has_content>
-	<div class="taxonInfo">
-		<h6>Synonyymit</h6>
-		<ul>
-			<#list taxon.synonyms as synonym>
-				<li><@printScientificNameAndAuthor synonym /></li>
-			</#list>
-		</ul>
-	</div>	
-</#if>
+<div class="taxonInfo">
+	<h6>Synonyymit</h6>
+	<#if taxon.synonyms?has_content>
+	<ul>
+		<#list taxon.synonyms as synonym>
+			<li><@printScientificNameAndAuthor synonym /></li>
+		</#list>
+	</ul>
+	<#else>
+		<span class="info">Ei synonyymejä</span>
+	</#if>
+</div>	
 
-<#if taxon.notes?has_content || taxon.privateNotes?has_content>
-	<div class="taxonInfo">
-		<h6>Huomioita taksonomiasta</h6>
+
+<div class="taxonInfo">
+	<h6>Huomioita taksonomiasta</h6>
+	<#if taxon.notes?has_content || taxon.privateNotes?has_content>
 		<#if taxon.notes?has_content>
 			<p class="info">${taxon.notes?html}</p>
 		</#if>
 		<#if taxon.privateNotes?has_content>
 			<p class="info">${taxon.privateNotes?html}</p>
 		</#if>
-	</div>
-</#if>
+	<#else>
+		<span class="info">Ei huomioita</span>
+	</#if>
+</div>
 
 <div class="taxonInfo">
 	<h6>Eliöryhmä</h6>
@@ -82,16 +87,19 @@
 	</ul>
 </div>
 
-<#if taxon.administrativeStatuses?has_content>
-	<div class="taxonInfo">
-		<h6>Hallinnolliset ominaisuudet</h6>
+<div class="taxonInfo">
+	<h6>Hallinnolliset ominaisuudet</h6>
+	<#if taxon.administrativeStatuses?has_content>
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
 				<li>${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
 			</#list>
 		</ul>
-	</div>
-</#if>
+	<#else>
+		<span class="info">Ei hallinnollisia ominaisuuksia</span>
+	</#if>
+</div>
+
 
 <#if editHistory?has_content>
 	<div class="taxonInfo">

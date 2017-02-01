@@ -38,9 +38,13 @@
 
 <#macro speciesRow target year>
 	<td>
+		${target.orderAndFamily}
+	</td>
+	<td>
 		<a href="${baseURL}/iucn/species/${target.qname}/${year}">
 			<span class="scientificName speciesName">${target.scientificName!target.qname}</span>
 		</a>
+		<span class="synonyms scientificName speciesName">${target.synonymNames}</span>
 	</td>
 	<td>
 		<a href="${baseURL}/iucn/species/${target.qname}/${year}">

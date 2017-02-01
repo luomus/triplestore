@@ -44,7 +44,8 @@
 <#if targets?has_content>
 <table class="iucnSpeciesTable">
 	<thead>
-		<th>Tieteellinen nimi</th>
+		<th>Luokka, Heimo</th>
+		<th>Tieteellinen nimi (syn)</th>
 		<th>Suomenkielinen nimi</th>
 		<th>Tila</th>
 		<th>Muokattu</th>
