@@ -248,7 +248,7 @@
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
-	<@iucnTextarea "MKV.occurrenceRegionsNotes" />
+	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
 
 	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span>" />   
 	<@iucnHabitatFields />   
@@ -284,6 +284,9 @@
 
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
+	
+	<@iucnInput "MKV.exteralPopulationImpactOnRedListStatus" "MKV.exteralPopulationImpactOnRedListStatusNotes" />
+	
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	
 	<#assign vulnerableClass = "vulnerableRow hidden">
@@ -411,15 +414,15 @@
 	</tr>
 </#macro>
 
-<#macro iucnTextarea fieldName additionalClass="">
+<#macro iucnTextarea fieldName additionalClass="" notesFieldName="NONE">
 	<tr class="${additionalClass}">
 		<th><@iucnLabel fieldName /></th>
-		<td><@showValue fieldName comparison /></td>
+		<td><@showValue fieldName comparison /> <@showNotes notesFieldName comparison /></td>
 		<td>
 			<#if permissions>
-				<textarea name="${fieldName}"><#if evaluation??>${(evaluation.getValue(fieldName)?html)!""}</#if></textarea>
+				<textarea name="${fieldName}"><#if evaluation??>${(evaluation.getValue(fieldName)?html)!""}</#if></textarea> <@editableNotes notesFieldName />
 			<#else>
-				<@showValue fieldName evaluation />
+				<@showValue fieldName evaluation />  <@showNotes notesFieldName evaluation />
 			</#if>
 		</td>
 	</tr>
@@ -796,7 +799,7 @@
 			<@iucnLabel notesFieldName />
 			<textarea name="${notesFieldName}"><#if evaluation??>${(evaluation.getValue(notesFieldName)?html)!""}</#if></textarea>
 			<br />
-			<button class="closeNoteEditButton">Tallenna ja sulje</button>
+			<button class="closeNoteEditButton">Sulje</button>
 		</div>
 	</#if>
 </#macro>
