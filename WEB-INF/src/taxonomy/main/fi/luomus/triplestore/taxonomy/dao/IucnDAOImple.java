@@ -1,18 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.methods.HttpGet;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -48,8 +35,22 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.client.methods.HttpGet;
+
 public class IucnDAOImple implements IucnDAO {
 
+	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
 	private static final String SORT_ORDER = "sortOrder";
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
@@ -174,6 +175,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
+		if (config.developmentMode() && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
@@ -182,8 +184,8 @@ public class IucnDAOImple implements IucnDAO {
 					.addParameter("informalGroupFilters", groupQname)
 					.addParameter(PAGE, "1")
 					.addParameter(PAGE_SIZE, "1000");
-			System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
 			while (true) {
+				System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
 				if (!response.hasKey(RESULTS)) throw new RuntimeException("Failed to get species: " + uri.toString());
 				for (JSONObject species : response.getArray(RESULTS).iterateAsObject()) {
@@ -277,7 +279,15 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS));
+		
+		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
+		if (config.developmentMode()) {
+			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
+				searchParams.objectresource(qname);
+			}
+		}
+		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(searchParams);
+		
 		for (Model model :  evaluations) {
 			try {
 				IUCNEvaluation evaluation = createEvaluation(model);
