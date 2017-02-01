@@ -1,11 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -17,6 +11,12 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCriteria;
+
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IUCNValidator {
 
@@ -102,8 +102,8 @@ public class IUCNValidator {
 
 	private static final Set<String> LSA_CAN_GIVE_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
 	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
-	private static final Set<String> THREATHS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
-	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
+	private static final Set<String> THREATHS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
 	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 
@@ -129,7 +129,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (THREATHS_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getThreats().isEmpty()) {
-				validationResult.setError("Uhkatekijät on täytettävä luokille VU-CR", IUCNEvaluation.HAS_THREAT);
+				validationResult.setError("Uhkatekijät on täytettävä luokille NT-CR", IUCNEvaluation.HAS_THREAT);
 			}
 		}
 	}
@@ -138,7 +138,7 @@ public class IUCNValidator {
 		String status = givenData.getIucnStatus();
 		if (ENDANGERMENTREASON_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getEndangermentReasons().isEmpty()) {
-				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille VU-RE", IUCNEvaluation.HAS_ENDANGERMENT_REASON);
+				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille NT-RE", IUCNEvaluation.HAS_ENDANGERMENT_REASON);
 			}
 		}
 	}
