@@ -53,8 +53,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
 	private static final String SCIENTIFIC_NAME = "scientific_name";
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
-	//private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
-	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.40"; // XXX
+	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
 	private static final String SORT_ORDER = "sortOrder";
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
@@ -260,6 +259,9 @@ public class IucnDAOImple implements IucnDAO {
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
+		if (!taxon.isSpecies()) {
+			throw new IllegalStateException("Taxon " +taxon.getScientificName() + " (" + speciesQname + ") is not species it is " + taxon.getTaxonRank());
+		}
 		IUCNEvaluationTarget target = new IUCNEvaluationTarget(taxon, container);
 		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
 			target.setEvaluation(evaluation);
