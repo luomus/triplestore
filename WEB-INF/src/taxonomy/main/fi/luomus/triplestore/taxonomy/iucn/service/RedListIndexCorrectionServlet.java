@@ -2,11 +2,15 @@ package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
@@ -17,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/redListIndexCorrection/*"})
 public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 
+	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(IUCNEvaluation.LAST_MODIFIED_BY);
+	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(IUCNEvaluation.LAST_MODIFIED);
 	private static final Predicate NOTES_PREDICATE = new Predicate(IUCNEvaluation.RED_LIST_INDEX_CORRECTION+"Notes");
 	private static final Predicate INDEX_PREDICATE = new Predicate(IUCNEvaluation.RED_LIST_INDEX_CORRECTION);
 	private static final long serialVersionUID = 2285910485664606619L;
@@ -39,16 +45,34 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 			throw new IllegalAccessException();
 		}
 				
+		String editNotes = IUCNEvaluation.INDEX_CHANGE_NOTES + " " + DateUtils.getCurrentDateTime("dd.MM.yyyy");
+		Qname editor = getUser(req).getQname();
+		
 		Subject subject = new Subject(evaluationId);
 		Statement indexStatement = new Statement(INDEX_PREDICATE, new ObjectLiteral(redListIndexCorrection));
 		Statement notesStatement = new Statement(NOTES_PREDICATE, new ObjectLiteral(redListIndexCorrectionNotes)); 
+		Statement editNotesStatement = new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(editNotes));
+		Statement lastModifiedStatement = new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate()));
+		Statement lastModifiedByStatement = new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(editor));
+		
 		dao.store(subject, indexStatement);
 		dao.store(subject, notesStatement);
+		dao.store(subject, editNotesStatement);
+		dao.store(subject, lastModifiedStatement);
+		dao.store(subject, lastModifiedByStatement);
 		
 		model.removeAll(INDEX_PREDICATE);
 		model.removeAll(NOTES_PREDICATE);
+		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
+		model.removeAll(LAST_MODIFIED_PREDICATE);
+		model.removeAll(LAST_MODIFIED_BY_PREDICATE);
+		
 		model.addStatement(indexStatement);
 		model.addStatement(notesStatement);
+		model.addStatement(editNotesStatement);
+		model.addStatement(lastModifiedStatement);
+		model.addStatement(lastModifiedByStatement);
+		
 		target.setEvaluation(evaluation);
 		
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");
