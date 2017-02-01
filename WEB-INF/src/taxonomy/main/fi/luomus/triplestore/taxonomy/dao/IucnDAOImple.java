@@ -50,6 +50,9 @@ import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
+	private static final int PAGE_SIZE_TAXON_LIST = 3000;
+	private static final String SCIENTIFIC_NAME = "scientific_name";
+	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	//private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
 	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.40"; // XXX
 	private static final String SORT_ORDER = "sortOrder";
@@ -180,11 +183,11 @@ public class IucnDAOImple implements IucnDAO {
 		synchronized (LOCK) { // To prevent too many requests at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
 					.addParameter(ONLY_FINNISH, true)
-					.addParameter(SELECTED_FIELDS, "qname")
-					.addParameter("informalGroupFilters", groupQname)
-					.addParameter("sortOrder", "scientific_name")
+					.addParameter(SELECTED_FIELDS, QNAME)
+					.addParameter(INFORMAL_GROUP_FILTERS, groupQname)
+					.addParameter(SORT_ORDER, SCIENTIFIC_NAME)
 					.addParameter(PAGE, "1")
-					.addParameter(PAGE_SIZE, "3000");
+					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
 			while (true) {
 				System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
@@ -230,9 +233,9 @@ public class IucnDAOImple implements IucnDAO {
 		synchronized (LOCK) { // To prevent too many request going out at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + taxonQname + "/species")
 					.addParameter(ONLY_FINNISH, true)
-					.addParameter(SELECTED_FIELDS, "qname")
-					.addParameter(PAGE, "1")
-					.addParameter(PAGE_SIZE, "1000");
+					.addParameter(SELECTED_FIELDS, QNAME)
+					.addParameter(PAGE, 1)
+					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
 			System.out.println("Loading finnish species for " + taxonQname + " -> " + uri);
 			while (true) {
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
