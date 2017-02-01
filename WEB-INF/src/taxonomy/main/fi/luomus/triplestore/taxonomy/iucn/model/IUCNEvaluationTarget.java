@@ -1,40 +1,75 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.Taxon;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class IUCNEvaluationTarget {
 
-	private final String qname;
-	private final String scientificName;
-	private final String vernacularNameFi;
+	private static final Qname FAMILY = new Qname("MX.family");
+	private static final Qname ORDER = new Qname("MX.order");
+	private final Taxon taxon;
 	private final Map<Integer, IUCNEvaluation> evaluations = new HashMap<>();
 	private final IUCNContainer container;
 
-	public IUCNEvaluationTarget(String qname, String scientificName, String vernacularNameFi, IUCNContainer container) {
-		this.qname = qname;
-		this.scientificName = scientificName;
-		this.vernacularNameFi = vernacularNameFi;
+	public IUCNEvaluationTarget(Taxon taxon, IUCNContainer container) {
+		this.taxon = taxon;
 		this.container = container;
 	}
 
 	public List<String> getGroups() {
-		return container.getGroupsOfTarget(qname);
+		return container.getGroupsOfTarget(getQname());
 	}
 
 	public String getQname() {
-		return qname;
+		return taxon.getQname().toString();
 	}
 
 	public String getScientificName() {
-		return scientificName;
+		return taxon.getScientificName();
 	}
 
 	public String getVernacularNameFi() {
-		return vernacularNameFi;
+		return taxon.getVernacularName() == null ? "" : taxon.getVernacularName().forLocale("fi"); 
+	}
+
+	public String getSynonymNames() {
+		StringBuilder b = new StringBuilder();
+		Iterator<Taxon> i = taxon.getSynonyms().iterator();
+		while (i.hasNext()) {
+			Taxon synonym = i.next();
+			if (given(synonym.getScientificName())) {
+				b.append(synonym.getScientificName());
+				if (i.hasNext()) b.append(", ");
+			}
+		}
+		if (b.length() == 0) return "";
+		return "(" + b.toString() + ")";
+	}
+	public String getOrderAndFamily() {
+		StringBuilder b = new StringBuilder();
+		String className = taxon.getScientificNameOfRank(ORDER);
+		String familyName = taxon.getScientificNameOfRank(FAMILY);
+		if (given(className)) {
+			b.append(className);
+			if (given(familyName)) {
+				b.append(", ");
+			}
+		}
+		if (given(familyName)) {
+			b.append(familyName);
+		}
+		return b.toString();
+	}
+	
+	private boolean given(String s) {
+		return s != null && s.length() > 0;
 	}
 
 	public void setEvaluation(IUCNEvaluation evaluation) {
