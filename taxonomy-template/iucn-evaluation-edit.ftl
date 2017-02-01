@@ -277,13 +277,16 @@
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
-	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
-
+	
 	<#assign vulnerableClass = "vulnerableRow hidden">
 	<#if evaluation?? && evaluation.vulnerable>
 		<#assign vulnerableClass = "">
 	</#if>
 
+	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass />
+	<@iucnTextarea "MKV.lastSightingNotes" vulnerableClass />
+	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
+	
 	<@iucnInput "MKV.lsaRecommendation" "MKV.lsaRecommendationNotes" vulnerableClass />
 	<tr class="${vulnerableClass}">
 		<th><label>Nykyinen LSA-status</label></th>
@@ -295,8 +298,7 @@
 			</#list>
 		</td>
 	</tr>
-	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass />
-	<@iucnTextarea "MKV.lastSightingNotes" vulnerableClass />
+		
 	
 	<@iucnSection "Alueellinen uhanalaisuus <span> &mdash; Saa täyttää vain jos luokka on LC tai NT</span>" />
 	<#assign hasRegionalData = evaluation?? && evaluation.regionalStatuses?has_content>
