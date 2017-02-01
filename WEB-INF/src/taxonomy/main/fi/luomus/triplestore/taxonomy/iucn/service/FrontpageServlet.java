@@ -35,12 +35,14 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	protected int selectedYear(HttpServletRequest req) throws Exception {
+		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears(); 
 		String selectedYearParam = getId(req);
 		if (!given(selectedYearParam)) {
-			return getDraftYear(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
+			return getDraftYear(evaluationYears);
 		}
 		try {
 			int selectedYear = Integer.valueOf(selectedYearParam);
+			if (!evaluationYears.contains(selectedYear)) throw new IllegalArgumentException();
 			return selectedYear;
 		} catch (Exception e) {
 			return getDraftYear(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
@@ -54,12 +56,14 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 		try {
 			int selectedYear = Integer.valueOf(selectedYearParam);
+			List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
+			if (!evaluationYears.contains(selectedYear)) throw new IllegalArgumentException();
 			return selectedYear;
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid evaluation year: " + selectedYearParam);
 		}
 	}
-	
+
 	private int getDraftYear(List<Integer> allYears) throws Exception {
 		return Iterables.getLast(allYears);
 	}
