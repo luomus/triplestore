@@ -650,7 +650,7 @@
 				</option>
 			</#list>
 		</select>
-		<select name ="${fieldName}___${index}___MKV.habitatSpecificType" data-placeholder="Lisämääreet" multiple="multiple">
+		<select name ="${fieldName}___${index}___MKV.habitatSpecificType" data-placeholder="Lisämerkinnät" multiple="multiple">
 			<option value="" label=".."></option>
 			<#list habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.values as value>
 				<option value="${value.qname}" <#if habitatObject != "NONE" && habitatObject.habitatSpecificTypes?seq_contains(value.qname)>selected="selected"</#if>>

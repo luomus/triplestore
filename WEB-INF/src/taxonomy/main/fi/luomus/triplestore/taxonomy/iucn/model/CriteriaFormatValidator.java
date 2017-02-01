@@ -372,18 +372,18 @@ public class CriteriaFormatValidator {
 				return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + " alakriteerin " + givenSubCriteria.getSubCriteria() + " täytyy olla ennen alakriteeriä " + prevSubCriteria.getSubCriteria());
 			}
 			if (specifiedSubCriteria.hasSpecifications() && !givenSubCriteria.hasSpecifications()) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähintään yksi lisämääreistä " + specifiedSubCriteria.getSpecifications());
+				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähintään yksi lisämerkinnöistä " + specifiedSubCriteria.getSpecifications());
 			}
 			String prevSpecification = null;
 			for (String givenSpecification : givenSubCriteria.getSpecifications()) {
 				if (givenSpecification.equals(prevSpecification)) {
-					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on annettu lisämääre " + prevSpecification + " useammin kuin kerran");
+					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on annettu lisämerkintä " + prevSpecification + " useammin kuin kerran");
 				}
 				if (!specifiedSubCriteria.hasSpecification(givenSpecification)) {
-					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " ei ole määritelty lisämäärettä " + givenSpecification);
+					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " ei ole määritelty lisämerkintää " + givenSpecification);
 				}
 				if (prevSpecification != null && specificationOrder(givenSpecification) < specificationOrder(prevSpecification)) {
-					return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " lisämääreen " + givenSpecification + " tulis olla ennen lisämäärettä " + prevSpecification);
+					return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " lisämerkinnän " + givenSpecification + " tulis olla ennen lisämerkintää " + prevSpecification);
 				}
 				prevSpecification = givenSpecification;
 			}

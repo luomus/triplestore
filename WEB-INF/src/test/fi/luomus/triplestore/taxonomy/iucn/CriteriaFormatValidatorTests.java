@@ -282,14 +282,14 @@ public class CriteriaFormatValidatorTests {
 		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: A2abc+A3de, pitäisi olla A2abc+3de", 
 				CriteriaFormatValidator.forCriteria("A").validate("A2abc+A3de").getErrorMessage());
 
-		assertEquals("Kriteerille A2a ei ole määritelty lisämäärettä i", CriteriaFormatValidator.forCriteria("A").validate("A2a(i)").getErrorMessage());
+		assertEquals("Kriteerille A2a ei ole määritelty lisämerkintää i", CriteriaFormatValidator.forCriteria("A").validate("A2a(i)").getErrorMessage());
 		assertEquals("Kriteerille B1 täytyy antaa yksi alakriteereistä [a, b, c]", CriteriaFormatValidator.forCriteria("B").validate("B1").getErrorMessage());
-		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1b").getErrorMessage());
-		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämääreistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1bi").getErrorMessage());
-		assertEquals("Kriteerille B1b ei ole määritelty lisämäärettä xi", CriteriaFormatValidator.forCriteria("B").validate("B1b(xi)").getErrorMessage());
-		assertEquals("Kriteerille B1b on annettu lisämääre i useammin kuin kerran", CriteriaFormatValidator.forCriteria("B").validate("B1b(i,i)").getErrorMessage());
-		assertEquals("Kriteerin B1b lisämääreen i tulis olla ennen lisämäärettä ii", CriteriaFormatValidator.forCriteria("B").validate("B1b(ii,i)").getErrorMessage());
-		assertEquals("Kriteerille B1b ei ole määritelty lisämäärettä i-iii", CriteriaFormatValidator.forCriteria("B").validate("B1b(i-iii)").getErrorMessage());
+		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämerkinnöistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1b").getErrorMessage());
+		assertEquals("Kriteerille B1b täytyy antaa vähintään yksi lisämerkinnöistä [i, ii, iii, iv, v]", CriteriaFormatValidator.forCriteria("B").validate("B1bi").getErrorMessage());
+		assertEquals("Kriteerille B1b ei ole määritelty lisämerkintää xi", CriteriaFormatValidator.forCriteria("B").validate("B1b(xi)").getErrorMessage());
+		assertEquals("Kriteerille B1b on annettu lisämerkintä i useammin kuin kerran", CriteriaFormatValidator.forCriteria("B").validate("B1b(i,i)").getErrorMessage());
+		assertEquals("Kriteerin B1b lisämerkinnän i tulis olla ennen lisämerkintää ii", CriteriaFormatValidator.forCriteria("B").validate("B1b(ii,i)").getErrorMessage());
+		assertEquals("Kriteerille B1b ei ole määritelty lisämerkintää i-iii", CriteriaFormatValidator.forCriteria("B").validate("B1b(i-iii)").getErrorMessage());
 		assertEquals("Kriteeri on väärin muotoiltu. Tarkista \"+\"-merkin, sulkujen ja pilkun käyttö. Annettu: B1ab(iii)c(iv)+B2ab(iii)c(iv), pitäisi olla B1ab(iii)c(iv)+2ab(iii)c(iv)", 
 				CriteriaFormatValidator.forCriteria("B").validate("B1ab(iii)c(iv)+B2ab(iii)c(iv)").getErrorMessage());
 
