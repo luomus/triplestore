@@ -1,4 +1,8 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,10 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 public class IUCNLineData {
 
@@ -559,10 +559,10 @@ public class IUCNLineData {
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[1]);
 	}
 
-
-	public Boolean getPossiblyRE() {
+	public Qname getPossiblyRE() {
 		String s = possiblyRE.toLowerCase();
-		if (s.equals("re") || s.equals("kyllä")) return true;
+		if (s.equals("re") || s.equals("kyllä") || s.equals("x")) return new Qname("MX.iucnRE");
+		if (validInteger(s)) return new Qname("MX.iucnRE");
 		return null;
 	}
 
