@@ -45,7 +45,7 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 			throw new IllegalAccessException();
 		}
 				
-		String editNotes = IUCNEvaluation.INDEX_CHANGE_NOTES + " " + DateUtils.getCurrentDateTime("dd.MM.yyyy");
+		String editNotes = IUCNEvaluation.INDEX_CHANGE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
 		Qname editor = getUser(req).getQname();
 		
 		Subject subject = new Subject(evaluationId);

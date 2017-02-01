@@ -161,10 +161,23 @@
   display: inline-block;
 }
 
+div#evaluationMeta {
+  max-width: 1100px;
+}
+
 .taxonInfo {
-  display: block;
+  display: inline-block;
+  vertical-align: top;
   float: left;
-  margin: 1em;
+  margin: 0.2em;
+  padding: 1em;
+  
+  border-radius: 3px;
+  max-width: 35em;
+  font-size: 80%;
+}
+.taxonInfo table td {
+  min-width: 90px !important;
 }
 
 .noteViewer {
@@ -290,9 +303,6 @@ label {
 	width: 30em;
 }
 
-div#evaluationMeta {
-  max-width: 900px;
-}
 
 .unitOfMeasurement {
 	font-size: 80%;

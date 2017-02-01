@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -38,6 +27,17 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNRegionalStatus;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -71,7 +71,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			setModifiedInfo(req, model);
 			setTaxon(speciesQname, model);
 			setYear(year, model);
-			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu"; 
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 			
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
@@ -110,6 +110,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("redListIndexPermissions", permissions(req, target, null))
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
@@ -376,11 +377,11 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private void setEditNotes(IUCNEvaluation givenData) {
 		String notes = givenData.isReady() ? "Merkitty valmiiksi" : "Tallennettu";
-		notes += " " + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 		Model model = givenData.getModel();
 		if (model.hasStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname())) {
 			notes += ": " + model.getStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
 		}
+		notes += IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
 		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
 		model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 	}

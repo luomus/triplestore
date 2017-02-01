@@ -1,20 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -39,6 +23,22 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class IUCN2010Sisaan {
 
@@ -106,10 +106,11 @@ public class IUCN2010Sisaan {
 	}
 
 	private static void process() throws Exception {
-		File folder = new File("C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
+		File folder = new File("C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
+			if (!f.getName().equals("Hämähäkit_siirto.csv")) continue; // XXX
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -279,6 +280,7 @@ public class IUCN2010Sisaan {
 		model.addStatementIfObjectGiven(IUCNEvaluation.TAXONOMIC_NOTES, data.getTaxonomicNotes());
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
+		model.addStatementIfObjectGiven(IUCNEvaluation.EDIT_NOTES, "Ladattu tiedostosta");
 		int i = 0;
 		for (Qname q : data.getEndangermentReasons()) {
 			evaluation.addEndangermentReason(new IUCNEndangermentObject(null, q, i++));

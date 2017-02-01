@@ -100,22 +100,76 @@
 	</#if>
 </div>
 
+<div class="clear"></div>
+
 
 <#if editHistory?has_content>
 	<div class="taxonInfo">
 		<h6>Tallennushistoria</h6>
-		<ul>
+		<table class="iucnSpeciesTable">
+			<tr>
+				<th>Kommentti</th>
+				<th>Pvm</th>
+				<th>Muokkaaja</th>
+			</tr>
 			<#list editHistory.entries as entry>
-				<li>
-					${(entry.notes?html)!""}
-					<#if entry.editorQname??>
-						&mdash; ${persons[entry.editorQname].fullname?html}
-					</#if> 
-				</li>				
+				<tr>
+					<td>${(entry.notes?html)!""}</td>
+					<td>${entry.date!""}</td>
+					<td>
+						<#if entry.editorQname??>
+							${persons[entry.editorQname].fullname?html}
+						</#if>
+					</td>
+				</tr>
 			</#list>
-		</ul>
+		</table>
 	</div>
 </#if>
+
+<div class="taxonInfo">
+	<h6>Arviointihistoria</h6>
+	<table class="iucnSpeciesTable">
+		<tr>
+			<th>Vuosi</th>
+			<th>Luokka</th>
+			<th>Indeksi</th>
+		</tr>
+		<#list evaluationYears as year>
+			<#if target.hasEvaluation(year)>
+				<#assign yearEval = target.getEvaluation(year)> 
+				<tr>
+					<td><a href="${baseURL}/iucn/species/${target.qname}/${year}">${year}</a></td>
+					<td>
+						<#if yearEval.hasIucnStatus()>
+							${statusProperty.range.getValueFor(yearEval.iucnStatus).label.forLocale("fi")}
+		    			<#else>
+		    				-
+		    			</#if>
+		    		</td>
+					<td>
+						<#if yearEval.hasIucnStatus()>
+							<#if yearEval.hasCorrectedIndex()>
+								${yearEval.correctedIucnIndex} <span class="correctedIndex">[KORJATTU]</span>
+							<#else>
+								${yearEval.calculatedIucnIndex!"-"}
+							</#if>
+						<#else>
+							-
+						</#if>
+					</td>
+				</tr>
+			<#else>
+				<tr>
+					<td>${year}</td>
+					<td>-</td>
+					<td>-</td>
+				</tr>
+			</#if>
+		</#list>
+	</table>
+</div>
+
 
 </div>
 <div class="clear"></div>
@@ -138,13 +192,13 @@
 		<div class="ui-widget-content">
 			<p>
 				<label>Varsinainen luokka</label>
-				${evaluationProperties.getProperty("MKV.redListStatus").range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
+				${statusProperty.range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
 			</p>
 			<p>
 				<label>Valitse korjattu luokka</label>
 				<select id="redListIndexCorrectionSelect"  data-placeholder="...">
 					<option value="" label=".."></option>
-					<#list evaluationProperties.getProperty("MKV.redListStatus").range.values as enumValue>
+					<#list statusProperty.range.values as enumValue>
 						<option value="${enumValue.qname}">${enumValue.label.forLocale("fi")?html}</option>	
 					</#list>
 				</select>

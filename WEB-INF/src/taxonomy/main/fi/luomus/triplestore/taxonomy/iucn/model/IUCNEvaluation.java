@@ -95,6 +95,7 @@ public class IUCNEvaluation {
 	public static final String RED_LIST_STATUS_MIN = "MKV.redListStatusMin";
 	public static final String INDIVIDUAL_COUNT_MAX = "MKV.individualCountMax";
 	public static final String INDIVIDUAL_COUNT_MIN = "MKV.individualCountMin";
+	public static final String NOTE_DATE_SEPARATOR = "; ";
 
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
