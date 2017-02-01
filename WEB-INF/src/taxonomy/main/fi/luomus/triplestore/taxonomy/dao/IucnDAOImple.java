@@ -50,7 +50,8 @@ import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
-	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
+	//private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
+	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.40"; // XXX
 	private static final String SORT_ORDER = "sortOrder";
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
@@ -73,7 +74,6 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
 	private static final String BIOTA_QNAME = "MX.37600";
-	private static final String FI = "fi";
 	private static final String QNAME = "qname";
 	private static final String RDF_TYPE = "rdf:type";
 	private static final String ONLY_FINNISH = "onlyFinnish";
@@ -182,8 +182,9 @@ public class IucnDAOImple implements IucnDAO {
 					.addParameter(ONLY_FINNISH, true)
 					.addParameter(SELECTED_FIELDS, "qname")
 					.addParameter("informalGroupFilters", groupQname)
+					.addParameter("sortOrder", "scientific_name")
 					.addParameter(PAGE, "1")
-					.addParameter(PAGE_SIZE, "1000");
+					.addParameter(PAGE_SIZE, "3000");
 			while (true) {
 				System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
@@ -256,7 +257,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
-		IUCNEvaluationTarget target = new IUCNEvaluationTarget(speciesQname, taxon.getScientificName(), taxon.getVernacularName().forLocale(FI), container);
+		IUCNEvaluationTarget target = new IUCNEvaluationTarget(taxon, container);
 		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
 			target.setEvaluation(evaluation);
 		}
