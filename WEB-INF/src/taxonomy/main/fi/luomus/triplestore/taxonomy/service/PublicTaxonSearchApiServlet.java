@@ -1,5 +1,18 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.Cached;
+import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.Document.Node;
+import fi.luomus.commons.xml.XMLWriter;
+
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,19 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.XML;
-
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.commons.xml.XMLWriter;
 
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
@@ -45,25 +45,12 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 	private class SearchWrapper {
 		private final TaxonomyDAO dao;
-		private final String searchword;
-		private final Qname checklist;
-		private final int limit;
-		private final Set<Qname> requiredInformalGroups;
+		private final TaxonSearch taxonSearch;
 		private final String toString;
-		private final boolean onlyExact;
-		public SearchWrapper(TaxonomyDAO dao, String searchword, Qname checklist, int limit, Set<Qname> requiredInformalGroups, boolean onlyExact) {
+		public SearchWrapper(TaxonomyDAO dao, TaxonSearch taxonSearch) {
 			this.dao = dao;
-			this.searchword = searchword;
-			this.checklist = checklist;
-			this.limit = limit;
-			this.requiredInformalGroups = requiredInformalGroups;
-			this.onlyExact = onlyExact;
-			this.toString = generateToString();
-		}
-		private String generateToString() {
-			String s = this.searchword + " (" + this.checklist + ") + limit:" + this.limit + " required groups: " + this.requiredInformalGroups;
-			if (onlyExact) s += " onleExact: true";
-			return s;
+			this.taxonSearch = taxonSearch;
+			this.toString = taxonSearch.toString();
 		}
 		@Override
 		public int hashCode() {
@@ -77,12 +64,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		public String toString() {
 			return toString;
 		}
-		public TaxonSearch toSearch() {
-			TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist);
-			for (Qname group : requiredInformalGroups) {
-				taxonSearch.addInformalTaxonGroup(group);
-			}
-			if (onlyExact) taxonSearch.onlyExact();
+		public TaxonSearch getTaxonSearch() {
 			return taxonSearch;
 		}
 	}
@@ -92,7 +74,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		@Override
 		public Document load(SearchWrapper wrapper) {
 			try {
-				return wrapper.dao.search(wrapper.toSearch());
+				return wrapper.dao.search(wrapper.getTaxonSearch());
 			} catch (Exception e) {
 				throw new RuntimeException(wrapper.toString(), e);
 			}
@@ -111,11 +93,19 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
 		boolean onlyExact = "true".equals(req.getParameter("onlyExact"));
+		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
+		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
+		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setOnlySpecies(onlySpecies);
+		for (Qname q : requiredInformalGroups) {
+			taxonSearch.addInformalTaxonGroup(q);
+		}
+		if (onlyExact) taxonSearch.onlyExact();
+		
 		int version = getVersion(req);
 
 		Format format = getFormat(req);
 
-		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), searchword, checklist, limit, requiredInformalGroups, onlyExact));
+		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), taxonSearch));
 		if (response.getRootNode().hasAttribute("error")) {
 			if (response.getRootNode().getAttribute("error").startsWith("Search word")) {
 				res.setStatus(400);

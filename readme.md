@@ -1,3 +1,20 @@
+Taxon Search-API
+================
+## GET /triplestore/taxon-search
+
+For example /triplestore/taxon-search?q=susi&onlyExact=true&format=json&v=2
+
+### Parameters
+
+* q - search word
+* limit
+* format - json, jsonp, xml (default xml)
+* v - version, default 1, for json there is also v=2 available
+* requiredInformalTaxonGroup - one or more informal taxon group Qnames (comma separated or multiple parameters)
+* onlyExact - true|false, only exact matches (default false)
+* onlySpecies - true|false, only species or subspecies etc (default false)
+* onlyFinnish - true|false, only finnish taxons (default false)
+
 Triplestore-API
 ===============
 

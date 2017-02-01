@@ -31,6 +31,10 @@ $(function() {
 });
 
 function searchTaxon(taxonSearchForm) {
+	searchTaxon(taxonSearchForm, false, false);
+}
+
+function searchTaxon(taxonSearchForm, onlySpecies, onlyFinnish) {
 	var taxon = $(taxonSearchForm).find('input:first').val();
 	taxon = taxon.replace("%", "");
 	var taxonpageBaseLinkType = $(taxonSearchForm).attr('taxonpageBaseLinkType');
@@ -46,7 +50,7 @@ function searchTaxon(taxonSearchForm) {
 	resultViewContainer.html('').removeClass('collapse');
 	resultViewContainer.hide();
 	$("body").css("cursor", "progress");
-	$.get('${baseURL}/api/taxonomy-search-content/'+encodeURIComponent(taxon)+'?locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
+	$.get('${baseURL}/api/taxonomy-search-content/?q='+encodeURIComponent(taxon)+'&onlySpecies='+onlySpecies+'&onlyFinnish='+onlyFinnish+'&locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
 		resultViewContainer.html(data);
 		resultViewContainer.fadeIn(1000);
 		setTimeout(function() {

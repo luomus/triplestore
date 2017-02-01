@@ -16,7 +16,7 @@
 			
 			<div id="taxonSearch">
 				Etsi lajilla:
-				<form onsubmit="searchTaxon(this); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="iucnEdit">
+				<form onsubmit="searchTaxon(this, true, true); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="iucnEdit">
 					<input type="text" placeholder="Kirjoita nimi tai nimen osa"/> <input type="submit" value="Hae" />
 					<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 				</form>
