@@ -59,7 +59,7 @@
 	</tr>
 	<#list remarks?reverse as remark>
 		<tr>
-			<td>${remark.target.scientificName!target.qname}</td>
+			<td><a href="${baseURL}/iucn/species/${remark.target.qname}">${remark.target.scientificName!target.qname}</a></td>
 			<td>${remark.date!""}</td>
 			<td>${remark.personName!""}</td>
 			<td>${remark.shortenedRemark?html}</td>
