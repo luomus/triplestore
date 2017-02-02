@@ -272,10 +272,11 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private Map<String, Collection<IUCNEvaluation>> initialEvaluations = null;
-
+	private final static Object EVAL_LOAD_LOCK = new Object();
+	
 	private Collection<IUCNEvaluation> getEvaluations(String speciesQname) throws Exception {
 		if (initialEvaluations == null) {
-			synchronized (initialEvaluations) {
+			synchronized (EVAL_LOAD_LOCK) {
 				if (initialEvaluations == null) {
 					initialEvaluations = loadInitialEvaluations();
 				}
