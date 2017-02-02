@@ -271,13 +271,13 @@ public class IucnDAOImple implements IucnDAO {
 		return target;
 	}
 
-	private final Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
+	private Map<String, Collection<IUCNEvaluation>> initialEvaluations = null;
 
 	private Collection<IUCNEvaluation> getEvaluations(String speciesQname) throws Exception {
-		if (initialEvaluations.isEmpty()) {
+		if (initialEvaluations == null) {
 			synchronized (initialEvaluations) {
-				if (initialEvaluations.isEmpty()) {
-					loadInitialEvaluations();
+				if (initialEvaluations == null) {
+					initialEvaluations = loadInitialEvaluations();
 				}
 			}
 		}
@@ -285,9 +285,11 @@ public class IucnDAOImple implements IucnDAO {
 		return Collections.emptyList();
 	}
 
-	private void loadInitialEvaluations() throws Exception {
+	private Map<String, Collection<IUCNEvaluation>> loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
 		
+		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
+		 
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
 		if (config.developmentMode()) {
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
@@ -309,6 +311,7 @@ public class IucnDAOImple implements IucnDAO {
 			}
 		}
 		System.out.println("IUCN evaluations loaded!");
+		return initialEvaluations;
 	}
 
 	private IUCNEvaluation createEvaluation(Model model) throws Exception {
