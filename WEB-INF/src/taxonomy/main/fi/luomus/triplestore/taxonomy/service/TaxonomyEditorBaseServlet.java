@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
@@ -16,6 +13,9 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
@@ -126,6 +126,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 		if (editors == null) return false;
 		User user = getUser(req);
+		if (user == null) return false;
 		return editors.getEditors().contains(user.getQname());
 	}
 
