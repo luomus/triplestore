@@ -1,9 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -12,8 +8,13 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
 public class RemarksServlet extends EvaluationEditServlet {
@@ -33,7 +34,8 @@ public class RemarksServlet extends EvaluationEditServlet {
 
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		String speciesQname = evaluation.getSpeciesQname();
-		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
+		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		IUCNEvaluationTarget target = container.getTarget(speciesQname);
 
 		if (given(remarks)) {
 			String userFullname = getUser(req).getFullname();
@@ -44,9 +46,10 @@ public class RemarksServlet extends EvaluationEditServlet {
 			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
 			dao.insert(subject, statement);
 
-			model.addStatement(statement);
-			target.setEvaluation(evaluation);
-
+			model = dao.get(evaluationId); // must get model again for added statement to have a statement id
+			evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+			container.setEvaluation(evaluation);
+			container.addRemark(target, evaluation);
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
 		} else if (given(deleteStatementId)) {
 			if (!permissions(req, target, evaluation)) throw new IllegalAccessException();
@@ -55,7 +58,8 @@ public class RemarksServlet extends EvaluationEditServlet {
 			if (found) {
 				// important not to delete statements that are not found from the model.. they could be any statements
 				dao.deleteStatement(id);
-				target.setEvaluation(evaluation);
+				container.setEvaluation(evaluation);
+				container.removeRemark(target, id);
 				getSession(req).setFlashSuccess("Kommentti poistettu!");
 			} else {
 				getSession(req).setFlashSuccess("Ei mitään poistettavaa!");

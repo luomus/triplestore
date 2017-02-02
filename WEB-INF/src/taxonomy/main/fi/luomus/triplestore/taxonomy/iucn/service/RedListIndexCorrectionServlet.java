@@ -11,6 +11,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
@@ -39,7 +40,8 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		String speciesQname = evaluation.getSpeciesQname();
-		IUCNEvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
+		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		IUCNEvaluationTarget target = container.getTarget(speciesQname);
 		
 		if (!permissions(req, target, null)) {
 			throw new IllegalAccessException();
@@ -73,7 +75,7 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		model.addStatement(lastModifiedStatement);
 		model.addStatement(lastModifiedByStatement);
 		
-		target.setEvaluation(evaluation);
+		container.setEvaluation(evaluation);
 		
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");
 		

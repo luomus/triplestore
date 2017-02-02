@@ -347,12 +347,16 @@ li.remark {
   margin: 1em;
   padding: 1em;
   position: relative;
+  max-width: 900px;
 }
 li.remark button.delete {
   position: absolute;
   right: 0;
   top: 0;
   font-size: 80%;
+}
+li.remark pre {
+  white-space: pre-wrap;
 }
 .ui-tooltip {
     white-space: pre-line;

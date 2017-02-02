@@ -4,6 +4,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,4 +114,8 @@ public class IUCNEvaluationTarget {
 		return getPreviousEvaluation(year) != null;
 	}
 
+	public Collection<IUCNEvaluation> getEvaluations() {
+		return evaluations.values();
+	}
+	
 }

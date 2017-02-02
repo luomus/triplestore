@@ -11,11 +11,11 @@
 <h2>${group.name.forLocale("fi")!""}</h2>
 </div>
 
+
+<div style="float: left; margin: 2em;">
 <form action="${baseURL}/iucn/group/${group.qname}/${selectedYear}" method="get" id="filters"">
 <fieldset style="max-width:600px;">
 	<legend>Rajaa</legend>
-	<button id="clearButton" style="float: right;">Tyhjennä</button>
-	<button style="float: right;">Rajaa</button>
 	<label>Tilalla</label> 
 		<select name="state" multiple="multiple" class="chosen" data-placeholder="Valitse">
 			<option value=""></option>
@@ -35,11 +35,42 @@
 	<label>Taksonomisesti</label>
 		<input name="taxon" value="${taxon!""}"></input>
 	<br />
+	<p>
+	<label>&nbsp;</label>
+	<button>Rajaa</button>
+	<button id="clearButton">Tyhjennä</button>
+	</p>
 	<#if filterError??>
 		<p class="errorMessage">${filterError}</p>
 	</#if>
 </fieldset>
 </form>
+</div>
+
+<div style="float: left; margin: 2em;">
+<h6>Uusimmat kommentit</h6>
+<#if remarks?has_content>
+<table class="iucnSpeciesTable" style="font-size: 80%;">
+	<tr>
+		<th>Laji</th>
+		<th>Pvm</th>
+		<th>Kommentoija</th>
+		<th>Kommentti</th>
+	</tr>
+	<#list remarks?reverse as remark>
+		<tr>
+			<td>${remark.target.scientificName!target.qname}</td>
+			<td>${remark.date!""}</td>
+			<td>${remark.personName!""}</td>
+			<td>${remark.shortenedRemark?html}</td>
+		</tr>
+	</#list>
+</table>
+<#else>
+	<span class="info">Ei kommentteja</span>
+</#if>
+</div>
+<div class="clear"></div>
 
 <#if targets?has_content>
 <table class="iucnSpeciesTable">

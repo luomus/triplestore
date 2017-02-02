@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,16 +20,6 @@ import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.session.SessionHandler;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -38,7 +39,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return redirectTo404(res);
 		}
 
-		List<IUCNEvaluationTarget> targets = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTargetsOfGroup(groupQname);
+		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		List<IUCNEvaluationTarget> targets = container.getTargetsOfGroup(groupQname);
 
 		SessionHandler session = getSession(req);
 
@@ -78,6 +80,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("persons", getTaxonomyDAO().getPersons())
 				.setData("targets", pageTargets)
+				.setData("remarks", container.getRemarksForGroup(groupQname))
 				.setData("currentPage", currentPage)
 				.setData("pageCount", pageCount)
 				.setData("pageSize", pageSize)
