@@ -4,7 +4,11 @@
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 <@toolbox/>		
-		
+
+<div style="border: 2px dotted green; background-color: rgb(200,255,200); font-size: 25px; margin: 2em; padding: 1em;">
+	Testidatat poistettu. Tuotantodatat latauksessa. Testailua ei enää saa tehdä keksityillä datoilla.
+</div>
+
 <table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
