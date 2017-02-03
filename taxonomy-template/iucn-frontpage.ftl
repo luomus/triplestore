@@ -3,9 +3,11 @@
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
+<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a></p>
+
 <@toolbox/>		
 
-<div style="border: 2px dotted green; background-color: rgb(200,255,200); font-size: 25px; margin: 2em; padding: 1em;">
+<div style="border: 2px dotted green; background-color: rgb(200,255,200); font-size: 22px; margin: 1em; padding: 0.5em;">
 	Testidatat poistettu. Tuotantodatat latauksessa. Testailua ei enää saa tehdä keksityillä datoilla.
 </div>
 

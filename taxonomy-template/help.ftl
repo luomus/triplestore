@@ -2,7 +2,11 @@
 
 <div class="helpPage">
 
+<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">IUCN user instructions (in Finnish)</a></p>
+
+
 <h1>Help</h1>
+
 
 Here you can find instructions on how to use the Taxon Editor.
 
