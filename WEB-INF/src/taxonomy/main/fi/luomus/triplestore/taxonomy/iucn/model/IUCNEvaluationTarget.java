@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.taxonomy.Taxon;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +7,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.Taxon;
 
 public class IUCNEvaluationTarget {
 
@@ -40,6 +40,10 @@ public class IUCNEvaluationTarget {
 		return taxon.getVernacularName() == null ? "" : taxon.getVernacularName().forLocale("fi"); 
 	}
 
+	public Taxon getTaxon() {
+		return taxon;
+	}
+	
 	public String getSynonymNames() {
 		StringBuilder b = new StringBuilder();
 		Iterator<Taxon> i = taxon.getSynonyms().iterator();

@@ -1,4 +1,20 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -7,6 +23,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.LogUtils;
 import fi.luomus.commons.utils.Utils;
@@ -23,22 +40,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
-
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class IUCN2010Sisaan {
 
@@ -106,11 +107,11 @@ public class IUCN2010Sisaan {
 	}
 
 	private static void process() throws Exception {
-		File folder = new File("C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
+		File folder = new File("C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010");
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Hämähäkit_siirto.csv")) continue; // XXX
+			//if (!f.getName().equals("Hämähäkit_siirto.csv")) continue;
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -163,7 +164,7 @@ public class IUCN2010Sisaan {
 			Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
 			Set<Qname> matchingQnames = qnames(response.getExactMatches(), allowedInformalGroups);
 			if (matchingQnames.size() == 1) {
-				process(data, matchingQnames.iterator().next());
+				process(data, matchingQnames.iterator().next(), f);
 				return;
 			}
 			if (matchingQnames.size() > 1) {
@@ -182,6 +183,9 @@ public class IUCN2010Sisaan {
 	}
 
 	public static String cleanScientificName(String scientificName) {
+		if (scientificName.contains(",")) {
+			return scientificName.split(Pattern.quote(","))[0].trim();
+		}
 		if (!scientificName.contains("(")) return null;
 		StringBuilder b = new StringBuilder();
 		boolean inparenthesis = false;
@@ -213,9 +217,17 @@ public class IUCN2010Sisaan {
 		return b.toString().trim();
 	}
 
-	private static void process(IUCNLineData data, Qname taxonId) throws Exception {
+	private static void process(IUCNLineData data, Qname taxonId, File f) throws Exception {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(taxonId.toString());
+		if (!target.getTaxon().isFinnish()) {
+			reportTaxonNotFound("Ei ole merkitty suomalaiseksi", data, f);
+			return;
+		}
+		if (!target.getTaxon().isSpecies()) {
+			reportTaxonNotFound("Ei ole laji vaan " + target.getTaxon().getTaxonRank(), data, f);
+			return;
+		}
 		if (target.hasEvaluation(EVALUATION_YEAR)) {
 			System.out.println("\t\t\t\t\t\t\t\t\tSkipping ... already has evaluation for " + EVALUATION_YEAR);
 			return; // Already loaded
@@ -329,7 +341,7 @@ public class IUCN2010Sisaan {
 	}
 
 	private static void reportTaxonNotFound(String message, IUCNLineData data, File f) {
-		File file = new File("c:/temp/iucn/missing_" + f.getName().replace(".csv", ".txt"));
+		File file = new File("c:/temp/iucn/missing_" + f.getName().replace(".csv", "_" + DateUtils.getCurrentDate() +".txt"));
 		try {
 			StringBuilder b = new StringBuilder();
 			b.append(data.getScientificName()).append("|");
