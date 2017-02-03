@@ -142,7 +142,7 @@
 					<td><a href="${baseURL}/iucn/species/${target.qname}/${year}">${year}</a></td>
 					<td>
 						<#if yearEval.hasIucnStatus()>
-							${statusProperty.range.getValueFor(yearEval.iucnStatus).label.forLocale("fi")}
+							${statusProperty.range.getValueFor(yearEval.iucnStatus).label.forLocale("fi")} ${yearEval.externalImpact}
 		    			<#else>
 		    				-
 		    			</#if>

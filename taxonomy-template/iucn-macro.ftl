@@ -70,7 +70,7 @@
 		</td>
 		<td>
 			<#if evaluation.hasIucnStatus()>
-				${statusProperty.range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")}
+				${statusProperty.range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")} ${evaluation.externalImpact}
 		    <#else>
 		    	-
 		    </#if>
@@ -97,7 +97,7 @@
 		<#if target.hasPreviousEvaluation(year)>
 			<#assign prevEvaluation = target.getPreviousEvaluation(year)>
 			<#if prevEvaluation.hasIucnStatus()>
-				${prevEvaluation.iucnStatus?replace("MX.iucn", "")}
+				${prevEvaluation.iucnStatus?replace("MX.iucn", "")}  ${prevEvaluation.externalImpact}
 				(${prevEvaluation.evaluationYear})
 			<#else>
 				-

@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -9,14 +17,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IUCNEvaluation {
 
@@ -91,6 +91,7 @@ public class IUCNEvaluation {
 	public static final String RED_LIST_STATUS_MIN = "MKV.redListStatusMin";
 	public static final String INDIVIDUAL_COUNT_MAX = "MKV.individualCountMax";
 	public static final String INDIVIDUAL_COUNT_MIN = "MKV.individualCountMin";
+	public static final String EXTERNAL_IMPACT = "MKV.exteralPopulationImpactOnRedListStatus";
 	public static final String NOTE_DATE_SEPARATOR = "; ";
 
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
@@ -388,4 +389,18 @@ public class IUCNEvaluation {
 		this.incompletelyLoaded = incompletelyLoaded;
 	}
 
+	private static final Map<String, String> EXTERNAL_QNAME_TO_VALUE;
+	static {
+		EXTERNAL_QNAME_TO_VALUE = new HashMap<>();
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1", "(-1)");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus2", "(-2)");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1", "(+1)");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2", "(+2)");
+	}
+	
+	public String getExternalImpact() {
+		if (!hasValue(EXTERNAL_IMPACT)) return "";
+		String qname = getValue(EXTERNAL_IMPACT);
+		return EXTERNAL_QNAME_TO_VALUE.get(qname);
+	}
 }
