@@ -158,7 +158,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		TaxonSearchResponse result = getTaxonomyDAO().searchInternal(new TaxonSearch(taxon, 1000).onlyExact());
 		Set<String> qnames = new HashSet<>();
 		for (Match exactmatch : result.getExactMatches()) {
-			qnames.add(exactmatch.getTaxonId().toString());
+			qnames.add(exactmatch.getTaxon().getQname().toString());
 		}
 		for (String qname : qnames) {
 			qnames.addAll(getTaxonomyDAO().getIucnDAO().getFinnishSpecies(qname));

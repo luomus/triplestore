@@ -1,54 +1,27 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.Document.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TaxonSearchResponse {
 
 	public static class Match {
 		
-		private final Qname taxonId;
+		private final Taxon taxon;
 		private final String matchingName;
-		private String scientificName;
-		private String scientificNameAuthorship;
-		private Qname taxonRank;
 		private Double similarity;
 		private final List<InformalTaxonGroup> informalGroups = new ArrayList<>();
 		
-		public Match(Qname taxonId, String matchingName) {
-			this.taxonId = taxonId;
+		public Match(Taxon taxon, String matchingName) {
+			this.taxon = taxon;
 			this.matchingName = matchingName.toLowerCase().trim();
-		}
-
-		public String getScientificName() {
-			return scientificName;
-		}
-
-		public void setScientificName(String scientificName) {
-			this.scientificName = scientificName;
-		}
-
-		public String getScientificNameAuthorship() {
-			return scientificNameAuthorship;
-		}
-
-		public void setScientificNameAuthorship(String scientificNameAuthorship) {
-			this.scientificNameAuthorship = scientificNameAuthorship;
-		}
-
-		public Qname getTaxonRank() {
-			return taxonRank;
-		}
-
-		public void setTaxonRank(Qname taxonRank) {
-			this.taxonRank = taxonRank;
 		}
 
 		public Double getSimilarity() {
@@ -62,13 +35,13 @@ public class TaxonSearchResponse {
 		public List<InformalTaxonGroup> getInformalGroups() {
 			return informalGroups;
 		}
-
-		public Qname getTaxonId() {
-			return taxonId;
-		}
-
+		
 		public String getMatchingName() {
 			return matchingName;
+		}
+
+		public Taxon getTaxon() {
+			return taxon;
 		}
 		
 	}
@@ -123,16 +96,17 @@ public class TaxonSearchResponse {
 	}
 
 	private Node toNode(Match match) {
-		Node matchNode = new Node(match.taxonId.toString());
+		Taxon t = match.getTaxon();
+		Node matchNode = new Node(t.getQname().toString());
 		matchNode.addAttribute("matchingName", match.getMatchingName());
-		if (given(match.getScientificName())) {
-			matchNode.addAttribute("scientificName", match.getScientificName());
+		if (given(t.getScientificName())) {
+			matchNode.addAttribute("scientificName", t.getScientificName());
 		}
-		if (given(match.getScientificNameAuthorship())) {
-			matchNode.addAttribute("scientificNameAuthorship", match.scientificNameAuthorship);
+		if (given(t.getScientificNameAuthorship())) {
+			matchNode.addAttribute("scientificNameAuthorship", t.getScientificNameAuthorship());
 		}
-		if (given(match.getTaxonRank())) {
-			matchNode.addAttribute("taxonRank", match.getTaxonRank().toString());
+		if (given(t.getTaxonRank())) {
+			matchNode.addAttribute("taxonRank", t.getTaxonRank().toString());
 		}
 		if (given(match.getSimilarity())) {
 			Double similarity = Utils.round(match.getSimilarity(), 3);

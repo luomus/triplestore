@@ -258,12 +258,12 @@ public class IucnDAOImple implements IucnDAO {
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
-		if (!taxon.isSpecies()) {
-			throw new IllegalStateException("Taxon " +taxon.getScientificName() + " (" + speciesQname + ") is not species it is " + taxon.getTaxonRank());
-		}
-		if (!taxon.isFinnish()) {
-			throw new IllegalStateException("Taxon " +taxon.getScientificName() + " (" + speciesQname + ") is not marked as finnish");
-		}
+//		if (!taxon.isSpecies()) {
+//			throw new IllegalStateException("Taxon " +taxon.getScientificName() + " (" + speciesQname + ") is not species it is " + taxon.getTaxonRank());
+//		}
+//		if (!taxon.isFinnish()) {
+//			throw new IllegalStateException("Taxon " +taxon.getScientificName() + " (" + speciesQname + ") is not marked as finnish");
+//		}
 		IUCNEvaluationTarget target = new IUCNEvaluationTarget(taxon, container);
 		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
 			target.setEvaluation(evaluation);

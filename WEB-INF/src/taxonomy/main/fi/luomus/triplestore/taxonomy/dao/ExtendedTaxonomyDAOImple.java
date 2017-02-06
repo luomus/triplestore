@@ -34,7 +34,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
 	private static final String TAXON_SEARCH_LIKELY_MATCH_SQL = "" +
-			" SELECT   qname, name, scientificname, author, taxonrank, utl_match.jaro_winkler(name, ?) match " +
+			" SELECT   qname, name, utl_match.jaro_winkler(name, ?) match " +
 			" FROM     "+SCHEMA+".taxon_search_materialized   " +
 			" WHERE    utl_match.jaro_winkler(name, ?) > " + JARO_WINKLER_DISTANCE +
 			" AND      name != ? " + 
@@ -42,7 +42,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			" ORDER BY match DESC, name  ";
 
 	private static final String TAXON_SEARCH_PARTIAL_MATCH_SQL = "" +
-			" SELECT   qname, name, scientificname, author, taxonrank  " +
+			" SELECT   qname, name " +
 			" FROM     "+SCHEMA+".taxon_search_materialized   " +
 			" WHERE    name LIKE ? " +
 			" AND      name != ? " +
@@ -50,7 +50,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			" ORDER BY name  ";
 
 	private static final String TAXON_SEARCH_EXACT_MATCH_SQL = "" +
-			" SELECT   qname, name, scientificname, author, taxonrank            " +
+			" SELECT   qname, name " +
 			" FROM     "+SCHEMA+".taxon_search_materialized                     " +
 			" WHERE    (name = ? AND COALESCE(checklist, '.') = ? )              " +
 			" OR       qname = ?                                                 ";
@@ -196,7 +196,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				Match match = toMatch(rs, taxonSearch);
 				if (match == null) continue;
 				if (limit-- < 1) break;
-				match.setSimilarity(rs.getDouble(6));
+				match.setSimilarity(rs.getDouble(3));
 				matches.add(match);
 			}
 		} finally {
@@ -230,21 +230,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private Match toMatch(ResultSet rs, TaxonSearch taxonSearch) throws SQLException {
 		Qname taxonId = new Qname(rs.getString(1));
 		if (!taxonContainer.hasTaxon(taxonId))  return null;
-		
-		String name = rs.getString(2);
-		String scientificName = rs.getString(3);
-		String author = rs.getString(4);
-		String taxonrank = rs.getString(5);
-		Match match = new Match(taxonId, name);
-		match.setScientificName(scientificName);
-		match.setScientificNameAuthorship(author);
-		match.setTaxonRank(taxonrank == null ? null : new Qname(taxonrank));
-				
-		return handleTaxonMatch(taxonSearch, match, taxonId);
-	}
-
-	private Match handleTaxonMatch(TaxonSearch taxonSearch, Match match, Qname taxonId) {
 		Taxon taxon = getTaxon(taxonId);
+		String name = rs.getString(2);
+		Match match = new Match(taxon, name);
 		if (taxonSearch.hasFilters()) {
 			if (!taxonMatchesFilters(taxonSearch, taxon)) return null;
 		}
