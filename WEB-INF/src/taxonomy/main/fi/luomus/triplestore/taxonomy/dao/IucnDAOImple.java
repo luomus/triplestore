@@ -288,7 +288,7 @@ public class IucnDAOImple implements IucnDAO {
 		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
 		 
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
-		if (config.developmentMode()) {
+		if (config.developmentMode()) { // XXX
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
 				searchParams.objectresource(qname);
 			}
