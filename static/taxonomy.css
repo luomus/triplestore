@@ -243,6 +243,7 @@ tr.errorMessage td {
 	white-space: nowrap;
 	overflow: hidden;
 	font-size: 90%;
+	vertical-align: top;
 }
 
 .informalGroupsTable tr:nth-child(2n) {

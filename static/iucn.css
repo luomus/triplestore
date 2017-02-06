@@ -366,3 +366,9 @@ span.synonyms {
   display: block;
   font-size: 80%;
 }
+
+td.groupEditors {
+  white-space: normal;
+  padding-bottom: 1em;
+  vertical-align: top;
+}

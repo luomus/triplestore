@@ -43,7 +43,7 @@
 			<td class="taxonGroupStat" id="${taxonGroup.qname}">
 				<@loadingSpinner "" />
 			</td>
-			<td>
+			<td class="groupEditors">
 				<@editors taxonGroup.qname.toString() />
 			</td>
 		<#else>
