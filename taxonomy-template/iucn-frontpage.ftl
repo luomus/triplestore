@@ -52,7 +52,7 @@
 				${taxonGroup.name.forLocale("fi")!""}
 			</td>
 			<td> &nbsp; </td>
-			<td> &nbsp; </td>
+			<td class="groupEditors"> &nbsp; </td>
 		</#if>
 		<#if user.admin><td><a class="button" href="${baseURL}/iucn/editors/${taxonGroup.qname}">Modify editors (admin only)</a></td></#if>
 	</tr>
