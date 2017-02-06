@@ -12,6 +12,8 @@ import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,12 +26,23 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
 
+	private static final String ORDER_BY = "orderBy";
 	private static final String TAXON = "taxon";
 	private static final String STATE = "state";
 	private static final String RED_LIST_STATUS = "redListStatus";
 	private static final int DEFAULT_PAGE_SIZE = 100;
 	private static final long serialVersionUID = -9070472068743470346L;
 
+	private static final Comparator<IUCNEvaluationTarget> ALPHA_COMPARATOR = new Comparator<IUCNEvaluationTarget>() {
+		@Override
+		public int compare(IUCNEvaluationTarget o1, IUCNEvaluationTarget o2) {
+			String s1 = o1.getTaxon().getScientificName();
+			String s2 = o2.getTaxon().getScientificName();
+			if (s1 == null) s1 = "\uffff'";
+			if (s2 == null) s2 = "\uffff'";
+			return s1.compareTo(s2);
+		}}; 
+	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
@@ -49,6 +62,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		String[] states = req.getParameterValues(STATE);
 		String[] redListStatuses = req.getParameterValues(RED_LIST_STATUS); 
 		int selectedYear = (int) responseData.getDatamodel().get("selectedYear");
+		String orderBy = req.getParameter(ORDER_BY);
+		if (orderBy == null) {
+			orderBy = session.get(ORDER_BY);
+		}
 		
 		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses)) {
 			taxon = session.get(TAXON);
@@ -64,10 +81,17 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			responseData.setData("filterError", "Taksonomiarajaus oli liian laaja.");
 		}
 		
+		if ("alphabetic".equals(orderBy)) {
+			List<IUCNEvaluationTarget> sorted = new ArrayList<>(filteredTargets);
+			Collections.sort(sorted, ALPHA_COMPARATOR);
+			filteredTargets = sorted;
+		}
+		
 		session.put(TAXON, taxon);
 		session.setObject(STATE, states);
 		session.setObject(RED_LIST_STATUS, redListStatuses);
-
+		session.setObject(ORDER_BY, orderBy);
+		
 		int pageSize = pageSize(req);
 		int currentPage = currentPage(req);
 		int pageCount = pageCount(filteredTargets.size(), pageSize);
@@ -88,7 +112,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("states", states)
 				.setData(TAXON, taxon)
 				.setData("redListStatuses", redListStatuses)
-				.setData("permissions", hasIucnPermissions(groupQname, req));
+				.setData("permissions", hasIucnPermissions(groupQname, req))
+				.setData(ORDER_BY, orderBy);
 	}
 
 	private static class TaxonLoadException extends Exception {

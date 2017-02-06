@@ -50,7 +50,6 @@ import org.apache.http.client.methods.HttpGet;
 public class IucnDAOImple implements IucnDAO {
 
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
-	private static final String SCIENTIFIC_NAME = "scientific_name";
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.38";
 	private static final String SORT_ORDER = "sortOrder";
@@ -183,7 +182,6 @@ public class IucnDAOImple implements IucnDAO {
 					.addParameter(ONLY_FINNISH, true)
 					.addParameter(SELECTED_FIELDS, QNAME)
 					.addParameter(INFORMAL_GROUP_FILTERS, groupQname)
-					.addParameter(SORT_ORDER, SCIENTIFIC_NAME)
 					.addParameter(PAGE, "1")
 					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
 			while (true) {

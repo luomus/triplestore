@@ -15,6 +15,14 @@
 <div style="float: left; margin: 2em;">
 <form action="${baseURL}/iucn/group/${group.qname}/${selectedYear}" method="get" id="filters"">
 <fieldset style="max-width:600px;">
+	<legend>Järjestys</legend>
+	<select id="orderInput" name="orderBy" class="chosen">
+		<option value="taxonomic" <#if !orderBy?? || orderBy = "taxonomic">selected="selected"</#if>>Taksonominen</option>
+		<option value="alphabetic" <#if orderBy?? && orderBy = "alphabetic">selected="selected"</#if>>Aakkosjärjestys</option>
+	</select>
+	<br /><br />
+</fieldset>
+<fieldset style="max-width:600px;">
 	<legend>Rajaa</legend>
 	<label>Tilalla</label> 
 		<select name="state" multiple="multiple" class="chosen" data-placeholder="Valitse">
@@ -167,6 +175,10 @@ $(function() {
 	$("#clearButton").on('click', function() {
     	window.location.href = '${baseURL}/iucn/group/${group.qname}/${selectedYear}?clearFilters=true';
     	return false;
+	});
+	
+	$("#orderInput").on('change', function() {
+		$("#filters").submit();
 	});
 	
 	$(".remarks").tooltip();
