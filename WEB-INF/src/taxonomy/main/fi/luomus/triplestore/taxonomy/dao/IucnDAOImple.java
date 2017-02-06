@@ -185,7 +185,6 @@ public class IucnDAOImple implements IucnDAO {
 					.addParameter(PAGE, "1")
 					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
 			while (true) {
-				System.out.println("Loading finnish species for informal group " + groupQname + " -> " + uri);
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
 				if (!response.hasKey(RESULTS)) throw new RuntimeException("Failed to get species: " + uri.toString());
 				for (JSONObject species : response.getArray(RESULTS).iterateAsObject()) {
@@ -232,7 +231,6 @@ public class IucnDAOImple implements IucnDAO {
 					.addParameter(SELECTED_FIELDS, QNAME)
 					.addParameter(PAGE, 1)
 					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
-			System.out.println("Loading finnish species for " + taxonQname + " -> " + uri);
 			while (true) {
 				JSONObject response = client.contentAsJson(new HttpGet(uri.getURI()));
 				if (!response.hasKey(RESULTS)) throw new RuntimeException("Failed to get species: " + uri.toString());
