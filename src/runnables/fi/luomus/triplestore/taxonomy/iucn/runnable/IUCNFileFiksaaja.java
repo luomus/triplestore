@@ -15,7 +15,7 @@ public class IUCNFileFiksaaja {
 	}
 
 	private static void main() throws Exception {
-		File orig = new File("C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2015/Linnut_siirto.csv");
+		File orig = new File("C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2015/Linnut_siirto_muokattu2010_formaattiin.csv");
 		File fixed = new File(orig.getParentFile(), orig.getName().replace(".csv", "_fixed.csv"));
 		String completedLine = "";
 		for (String line : FileUtils.readLines(orig)) {

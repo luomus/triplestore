@@ -530,7 +530,7 @@ public class IUCNLineData {
 		String s = Utils.removeWhitespace(reasonForStatusChange);
 		List<Qname> list = new ArrayList<>();
 		for (String part : s.split(Pattern.quote(","))) {
-			Qname r = STATUS_CHANGE_REASONS.get(part);
+			Qname r = STATUS_CHANGE_REASONS.get(part.toLowerCase());
 			if (r != null) list.add(r);
 		}
 		return list;
@@ -676,6 +676,8 @@ public class IUCNLineData {
 		STATUS_CHANGE_REASONS.put("2", new Qname("MKV.reasonForStatusChangeMoreInformation"));
 		STATUS_CHANGE_REASONS.put("3", new Qname("MKV.reasonForStatusChangeChangesInCriteria"));
 		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
+		STATUS_CHANGE_REASONS.put("aito muutos", new Qname("MKV.reasonForStatusChangeGenuine"));
+		STATUS_CHANGE_REASONS.put("tiedon lisääntyminen", new Qname("MKV.reasonForStatusChangeMoreInformation"));
 	}
 
 	private static final Map<String, Qname> RED_LIST_STATUSES;
