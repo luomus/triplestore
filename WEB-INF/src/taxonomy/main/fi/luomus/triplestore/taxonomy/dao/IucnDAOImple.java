@@ -18,12 +18,9 @@ import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
@@ -53,7 +50,6 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.301";
 	private static final String SORT_ORDER = "sortOrder";
-	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
 	private static final String MO_YEAR = "MO.year";
@@ -448,33 +444,6 @@ public class IucnDAOImple implements IucnDAO {
 		return triplestoreDAO.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
 	}
 
-	private void store(IUCNHabitatObject habitat) throws Exception {
-		Qname id = given(habitat.getId()) ? habitat.getId() : getSeqNextValAndAddResource();
-		habitat.setId(id);
-		Model model = new Model(new Subject(id));
-		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
-		model.addStatement(new Statement(HABITAT_PREDICATE, new ObjectResource(habitat.getHabitat())));
-		for (Qname type : habitat.getHabitatSpecificTypes()) {
-			model.addStatement(new Statement(HABITAT_SPESIFIC_TYPE_PREDICATE, new ObjectResource(type)));
-		}
-		model.addStatement(new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(String.valueOf(habitat.getOrder()))));
-		triplestoreDAO.store(model);
-	}
-
-	private void store(IUCNEndangermentObject endangermentObject) throws Exception {
-		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource();
-		endangermentObject.setId(id);
-		Model model = new Model(id);
-		model.setType(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS);
-		model.addStatementIfObjectGiven(IUCNEvaluation.ENDANGERMENT, endangermentObject.getEndangerment());
-		model.addStatementIfObjectGiven(SORT_ORDER, String.valueOf(endangermentObject.getOrder()));
-		triplestoreDAO.store(model);
-	}
-
-	private boolean given(Qname id) {
-		return id != null && id.isSet();
-	}
-
 	@Override
 	public EditHistory getEditHistory(IUCNEvaluation thisPeriodData) throws Exception {
 		EditHistory editHistory = new EditHistory();
@@ -506,73 +475,10 @@ public class IucnDAOImple implements IucnDAO {
 		return new EditHistoryEntry(thisPeriodData.getValue(IUCNEvaluation.EDIT_NOTES), thisPeriodData.getValue(IUCNEvaluation.LAST_MODIFIED_BY));
 	}
 
-	@Override
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
-		if (existingEvaluation != null) {
-			deleteOccurrences(existingEvaluation);
-			deleteEndangermentObjects(existingEvaluation);
-			deleteHabitatObjects(existingEvaluation);
-		}
-		storeOccurrencesAndSetIdToModel(givenData);
-		storeEndangermentObjectsAdnSetIdToModel(givenData);
-		storeHabitatObjectsAndSetIdsToModel(givenData);
-		triplestoreDAO.store(givenData.getModel());
-	}
+	
 
-	private void storeEndangermentObjectsAdnSetIdToModel(IUCNEvaluation givenData) throws Exception {
-		Model model = givenData.getModel();
-		for (IUCNEndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
-			this.store(endangermentObject);
-			model.addStatement(new Statement(HAS_ENDANGERMENT_REASON_PREDICATE, new ObjectResource(endangermentObject.getId())));
-		}
-		for (IUCNEndangermentObject endangermentObject : givenData.getThreats()) {
-			this.store(endangermentObject);
-			model.addStatement(new Statement(HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
-		}
-	}
+	
 
-	private void storeHabitatObjectsAndSetIdsToModel(IUCNEvaluation givenData) throws Exception {
-		Model model = givenData.getModel();
-		IUCNHabitatObject primaryHabitat = givenData.getPrimaryHabitat();
-		if (primaryHabitat != null) {
-			this.store(primaryHabitat);
-			model.addStatement(new Statement(PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
-		}
-		for (IUCNHabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
-			this.store(secondaryHabitat);
-			model.addStatement(new Statement(SECONDARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
-		}
-	}
-
-	private void storeOccurrencesAndSetIdToModel(IUCNEvaluation givenData) throws Exception {
-		for (Occurrence occurrence : givenData.getOccurrences()) {
-			triplestoreDAO.store(new Qname(givenData.getSpeciesQname()), occurrence);
-			givenData.getModel().addStatement(new Statement(HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
-		}
-	}
-
-	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
-		if (existingEvaluation.getPrimaryHabitat() != null) {
-			triplestoreDAO.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
-		}
-		for (IUCNHabitatObject habitat : existingEvaluation.getSecondaryHabitats()) {
-			triplestoreDAO.delete(new Subject(habitat.getId()));
-		}
-	}
-
-	private void deleteOccurrences(IUCNEvaluation existingEvaluation) throws Exception {
-		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
-			triplestoreDAO.delete(new Subject(occurrence.getId()));
-		}
-	}
-
-	private void deleteEndangermentObjects(IUCNEvaluation existingEvaluation) throws Exception {
-		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
-			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
-		}
-		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getThreats()) {
-			triplestoreDAO.delete(new Subject(endangermentObject.getId()));
-		}
-	}
+	
 
 }

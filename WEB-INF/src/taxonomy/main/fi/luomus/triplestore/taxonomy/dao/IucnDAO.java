@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -7,9 +10,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-
-import java.util.List;
-import java.util.Map;
 
 public interface IucnDAO {
 
@@ -44,8 +44,6 @@ public interface IucnDAO {
 	public Qname getSeqNextValAndAddResource() throws Exception;
 
 	public EditHistory getEditHistory(IUCNEvaluation evaluation) throws Exception;
-
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
 
 	void completeLoading(IUCNEvaluation evaluation) throws Exception;
 

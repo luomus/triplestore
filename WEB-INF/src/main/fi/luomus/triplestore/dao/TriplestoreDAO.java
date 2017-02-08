@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.SQLException;
+import java.util.List;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
@@ -17,10 +20,8 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.SQLException;
-import java.util.List;
 
 public interface TriplestoreDAO {
 
@@ -245,6 +246,12 @@ public interface TriplestoreDAO {
 	 */
 	public boolean resourceExists(Qname resourceQname) throws Exception;
 
+	/**
+	 * Store IUCN evaluation
+	 * @param givenData
+	 * @param existingEvaluation
+	 * @throws Exception
+	 */
+	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
 	
-
 }
