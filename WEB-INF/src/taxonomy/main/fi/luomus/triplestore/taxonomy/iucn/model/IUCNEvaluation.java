@@ -240,22 +240,29 @@ public class IUCNEvaluation {
 		return evaluation.hasStatements(RED_LIST_STATUS);
 	}
 
-	public boolean hasCorrectedIndex() {
+	public boolean hasCorrectedStatusForRedListIndex() {
 		return evaluation.hasStatements(RED_LIST_INDEX_CORRECTION);
 	}
 
-	public Integer getCorrectedIucnIndex() {
-		if (hasCorrectedIndex()) {
-			return Integer.valueOf(getValue(RED_LIST_INDEX_CORRECTION));
+	public String getCorrectedStatusForRedListIndex() {
+		if (hasCorrectedStatusForRedListIndex()) {
+			return getValue(RED_LIST_INDEX_CORRECTION);
 		}
 		return null;
 	}
 
-	public Integer getCalculatedIucnIndex() {
-		if (!hasIucnStatus()) return null;
-		String iucnStatus = getIucnStatus();
-		if (!RED_LIST_STATUS_TO_INDEX.containsKey(iucnStatus)) throw new UnsupportedOperationException("Unknown redListStatus " + iucnStatus);
-		return RED_LIST_STATUS_TO_INDEX.get(iucnStatus);
+	private Integer getCalcuatedIndex(String status) {
+		if (status == null) return null;
+		if (!RED_LIST_STATUS_TO_INDEX.containsKey(status)) throw new UnsupportedOperationException("Unknown redListStatus " + status);
+		return RED_LIST_STATUS_TO_INDEX.get(status);
+	}
+	
+	public Integer getCalculatedRedListIndex() {
+		return getCalcuatedIndex(getIucnStatus());
+	}
+	
+	public Integer getCalculatedCorrectedRedListIndex() {
+		return getCalcuatedIndex(getCorrectedStatusForRedListIndex());
 	}
 
 	public String getSpeciesQname() {
@@ -267,7 +274,7 @@ public class IUCNEvaluation {
 	}
 
 	public boolean isVulnerable() {
-		Integer index = getCalculatedIucnIndex();
+		Integer index = getCalculatedRedListIndex();
 		if (index == null) return false;
 		return index >= 2;
 	}

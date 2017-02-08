@@ -149,10 +149,10 @@
 		    		</td>
 					<td>
 						<#if yearEval.hasIucnStatus()>
-							<#if yearEval.hasCorrectedIndex()>
-								${yearEval.correctedIucnIndex} <span class="correctedIndex">[KORJATTU]</span>
+							<#if yearEval.hasCorrectedStatusForRedListIndex()>
+								${yearEval.calculatedCorrectedRedListIndex!""} (${yearEval.correctedStatusForRedListIndex?replace("MX.iucn", "")}) <span class="correctedIndex">[KORJATTU]</span>
 							<#else>
-								${yearEval.calculatedIucnIndex!"-"}
+								${yearEval.calculatedRedListIndex!"-"} (${yearEval.iucnStatus?replace("MX.iucn", "")})
 							</#if>
 						<#else>
 							-
@@ -196,15 +196,12 @@
 			</p>
 			<p>
 				<label>Valitse korjattu luokka</label>
-				<select id="redListIndexCorrectionSelect"  data-placeholder="...">
+				<select name="MKV.redListIndexCorrection"  data-placeholder="...">
 					<option value="" label=".."></option>
 					<#list statusProperty.range.values as enumValue>
-						<option value="${enumValue.qname}">${enumValue.label.forLocale("fi")?html}</option>	
+						<option value="${enumValue.qname}" <#if (evaluation.correctedStatusForRedListIndex!"") = enumValue.qname>selected="selected"</#if>>${enumValue.label.forLocale("fi")?html}</option>	
 					</#list>
 				</select>
-			</p>
-			<p><label>Korjattu indeksi</label>
-				<input id="redListIndexCorrectionInput" name="MKV.redListIndexCorrection" type="text" class="integerProperty" value="<#if evaluation??>${(evaluation.getValue("MKV.redListIndexCorrection")!"")?html}</#if>">
 			</p>
 			<p>
 				<label>Muistiinpanot</label>
@@ -973,11 +970,6 @@ $(function() {
     	}
     });
     
-    $("#redListIndexCorrectionSelect").on('change', function() {
-    	var index = getRedListCorrectionIndex($(this).val());
-    	$("#redListIndexCorrectionInput").val(index);
-    });
-    
     $("input[name='MKV.populationSizePeriodEnd'], input[name='MKV.populationSizePeriodBeginning']").on('change', function() {
     	var end = $("input[name='MKV.populationSizePeriodEnd']").val();
     	var beginning = $("input[name='MKV.populationSizePeriodBeginning']").val();
@@ -1054,21 +1046,6 @@ function updateNotes(noteInput) {
 		});
 		return false;
 	});
-}
-
-var statusToIndex = { 
-	"MX.iucnEX": 5,
-	"MX.iucnEW": 5,
-	"MX.iucnRE": 5,
-	"MX.iucnCR": 4,
-	"MX.iucnEN": 3,
-	"MX.iucnVU": 2,
-	"MX.iucnNT": 1,
-	"MX.iucnLC": 0
-}
-		
-function getRedListCorrectionIndex(status) {
-	return statusToIndex[status];
 }
 
 var statusComparator = {

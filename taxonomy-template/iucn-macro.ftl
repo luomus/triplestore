@@ -77,10 +77,10 @@
 		</td>
 		<td class="redListIndexTableField">
 			<#if evaluation.hasIucnStatus()>
-				<#if evaluation.hasCorrectedIndex()>
-					${evaluation.correctedIucnIndex} <span class="correctedIndex">[KORJATTU]</span>
+				<#if evaluation.hasCorrectedStatusForRedListIndex()>
+					${evaluation.calculatedCorrectedRedListIndex!""} (${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")}) <span class="correctedIndex">[KORJATTU]</span>
 				<#else>
-					${evaluation.calculatedIucnIndex!"-"}
+					${evaluation.calculatedRedListIndex!"-"} (${evaluation.iucnStatus?replace("MX.iucn", "")})
 				</#if>
 			<#else>
 				-
