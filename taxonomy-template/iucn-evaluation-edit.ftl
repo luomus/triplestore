@@ -1056,7 +1056,10 @@ var statusComparator = {
 	"MX.iucnEN": 4,
 	"MX.iucnVU": 3,
 	"MX.iucnNT": 2,
-	"MX.iucnLC": 1
+	"MX.iucnLC": 1,
+	"MX.iucnDD": -1,
+	"MX.iucnNA": -1,
+	"MX.iucnNE": -1
 };
 
 function criteriaStatusChanged() {
