@@ -134,8 +134,13 @@
 </#if>
 
 <script>
-$(function() {
+window.onpageshow = function(event) {
+	if (event.persisted) {
+    	window.location.reload() 
+	}
+};
 
+$(function() {
 	$(".markNEButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
