@@ -81,7 +81,7 @@
 				<a href="${baseURL}/iucn/group/${groupQname}/${selectedYear}">
 					${taxonGroups[groupQname].name.forLocale("fi")!""}
 				</a>
-				<p class="info">Uhanalaisuusarviojat: <@editors groupQname /></p>
+				<p class="info">Uhanalaisuusarvioijat: <@editors groupQname /></p>
 			</li>
 		</#list>
 	</ul>
