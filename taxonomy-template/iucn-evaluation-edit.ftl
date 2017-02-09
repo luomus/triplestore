@@ -88,7 +88,7 @@
 </div>
 
 <div class="taxonInfo">
-	<h6>Hallinnolliset ominaisuudet</h6>
+	<h6>Hallinnollinen asema</h6>
 	<#if taxon.administrativeStatuses?has_content>
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
