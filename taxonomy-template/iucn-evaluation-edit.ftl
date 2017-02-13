@@ -362,6 +362,9 @@
 		</td>
 	</tr>
 	
+	<@iucnInput "MKV.percentageOfGlobalPopulation" "MKV.percentageOfGlobalPopulationNotes" />
+	
+	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
 

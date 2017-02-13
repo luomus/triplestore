@@ -69,6 +69,18 @@ public class IUCNValidator {
 		validateCriteriaFormat(givenData, validationResult);
 		validateEvaluationPeriodLength(givenData, validationResult);
 		validateValidCriteriaStatuses(givenData, validationResult);
+		validateGlobalPercentage(givenData, validationResult);
+	}
+
+	private void validateGlobalPercentage(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (givenData.hasValue(IUCNEvaluation.PERCENTAGE_OF_GLOBAL_POPULATION)) {
+			try {
+				double d = Double.valueOf(givenData.getValue(IUCNEvaluation.PERCENTAGE_OF_GLOBAL_POPULATION));
+				if (d < 0 || d > 100) {
+					validationResult.setError("Oltava väliltä 0-100%", IUCNEvaluation.PERCENTAGE_OF_GLOBAL_POPULATION);
+				}
+			} catch (Exception e) {}
+		}
 	}
 
 	private void validateValidCriteriaStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {

@@ -93,6 +93,7 @@ public class IUCNEvaluation {
 	public static final String INDIVIDUAL_COUNT_MIN = "MKV.individualCountMin";
 	public static final String EXTERNAL_IMPACT = "MKV.exteralPopulationImpactOnRedListStatus";
 	public static final String NOTE_DATE_SEPARATOR = "; ";
+	public static final String PERCENTAGE_OF_GLOBAL_POPULATION = "MKV.percentageOfGlobalPopulation";
 
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
