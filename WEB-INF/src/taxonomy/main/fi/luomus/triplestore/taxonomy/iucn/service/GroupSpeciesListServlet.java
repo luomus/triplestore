@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
 
+	private static final String PAGE_SIZE = "pageSize";
 	private static final String ORDER_BY = "orderBy";
 	private static final String TAXON = "taxon";
 	private static final String STATE = "state";
@@ -63,16 +64,25 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		String[] redListStatuses = req.getParameterValues(RED_LIST_STATUS); 
 		int selectedYear = (int) responseData.getDatamodel().get("selectedYear");
 		String orderBy = req.getParameter(ORDER_BY);
+		Integer pageSize = pageSize(req);
+
 		if (orderBy == null) {
 			orderBy = session.get(ORDER_BY);
 		}
 		
-		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses)) {
+		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses) && pageSize == null) {
 			taxon = session.get(TAXON);
 			states = (String[]) session.getObject(STATE);
-			redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);	
+			redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);
+			
 		}
-				
+		if (pageSize == null) {
+			pageSize = (Integer) session.getObject(PAGE_SIZE);
+			if (pageSize == null) {
+				pageSize = DEFAULT_PAGE_SIZE;
+			}
+		}
+		
 		List<IUCNEvaluationTarget> filteredTargets;
 		try {
 			filteredTargets = filter(targets, states, taxon, redListStatuses, selectedYear);
@@ -91,8 +101,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		session.setObject(STATE, states);
 		session.setObject(RED_LIST_STATUS, redListStatuses);
 		session.setObject(ORDER_BY, orderBy);
+		session.setObject(PAGE_SIZE, pageSize);
 		
-		int pageSize = pageSize(req);
 		int currentPage = currentPage(req);
 		int pageCount = pageCount(filteredTargets.size(), pageSize);
 		if (currentPage > pageCount) currentPage = pageCount;
@@ -107,7 +117,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("remarks", container.getRemarksForGroup(groupQname))
 				.setData("currentPage", currentPage)
 				.setData("pageCount", pageCount)
-				.setData("pageSize", pageSize)
+				.setData(PAGE_SIZE, pageSize)
 				.setData("defaultPageSize", DEFAULT_PAGE_SIZE)
 				.setData("states", states)
 				.setData(TAXON, taxon)
@@ -231,9 +241,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 	}
 
-	private int pageSize(HttpServletRequest req) {
-		String pageSize = req.getParameter("pageSize");
-		if (!given(pageSize)) return DEFAULT_PAGE_SIZE;
+	private Integer pageSize(HttpServletRequest req) {
+		String pageSize = req.getParameter(PAGE_SIZE);
+		if (!given(pageSize)) return null;
 		try {
 			int i = Integer.valueOf(pageSize);
 			if (i < 10) return 10;
