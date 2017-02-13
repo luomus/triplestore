@@ -3,19 +3,20 @@
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
-<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a></p>
+<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a> (13.2. muutokset vielä päivittämättä)</p>
 
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 13.2.2017</h6>
-	</p>
-		Alueellisen uhanalaisuuden ilmoittaminen on muutettu Syken toivomaan uuteen muotoon. Pahoittelut muutoksen aiheuttamasta hetkittäisestä järjestelmän toimimattomuudesta!
-	</p>
-	<p>
-		Alueellisen uhanalaisuuden kentät saa näkyville painamalla "Määritä alueellinen uhanalaisuus" -painiketta.
-	</p>
-	<p>(Iltapävällä 13.2. tulee uusi katko jolloin tulee lisää uudistuksia)</p>
+	<ul>
+	<li>Alueellisen uhanalaisuuden ilmoittaminen on muuttunut. Alueelliselle uhanalaisuudelle on nyt erilliset valinnat. Alueellisen uhanalaisuuden kentät saa näkyville painamalla "Määritä alueellinen uhanalaisuus" -painiketta.</li>
+	<li>Lähteet -osio on jaettu kahteen erilaiseen tyyppiin; julkaisuihin ja muihin lähteisiin.</li>
+	<li>Järjestelmä muistaa lajiluettelon halutun koon (jota säädetään luettelon alalaidasta). Lisätty seuraava ja edellinen -linkit.</li>
+	<li>Arviointialueiden (1a-4d) kartta on saatavilla työkalusta kenttien ohessa.</li>
+	<li>Uusi kenttä: Osuus globaalista populaatiosta.</li>
+	<li><b>Paihoittelut uudistusten käyttöönoton aiheuttamasta katkosta palvelun toiminnassa. Katkot pyritään ajoittamaan virka-ajan (7-17) ulkopuolelle.</b></li>
+	</ul>
 </div>
 
 <table class="resourceListTable informalGroupsTable">
