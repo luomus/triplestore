@@ -3,7 +3,7 @@
 function changeYear() {
 	var year = $("#yearSelector").val();
 	var currentLocation = window.location.href;
-	var currentySelectedYear = '${selectedYear}';
+	var currentySelectedYear = '${selectedYear!""}';
 	var newLocation = currentLocation.replace(currentySelectedYear, year);
 	window.location.href = newLocation;
 }
