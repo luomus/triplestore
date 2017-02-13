@@ -1,18 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.methods.HttpGet;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -44,8 +31,22 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.client.methods.HttpGet;
+
 public class IucnDAOImple implements IucnDAO {
 
+	private static final String TRUE = "true";
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.301";
@@ -53,6 +54,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
 	private static final String MO_YEAR = "MO.year";
+	private static final String MO_THREATENED = "MO.threatened";
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
@@ -381,6 +383,10 @@ public class IucnDAOImple implements IucnDAO {
 		if (model.hasStatements(MO_YEAR)) {
 			int year = Integer.valueOf(model.getStatements(MO_YEAR).get(0).getObjectLiteral().getContent());
 			occurrence.setYear(year);
+		}
+		if (model.hasStatements(MO_THREATENED)) {
+			boolean threatened = TRUE.equals(model.getStatements(MO_THREATENED).get(0).getObjectLiteral().getContent());
+			occurrence.setThreatened(threatened);
 		}
 		return occurrence;
 	}

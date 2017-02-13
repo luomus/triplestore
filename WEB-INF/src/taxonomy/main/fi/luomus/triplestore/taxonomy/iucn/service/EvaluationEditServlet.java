@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -37,6 +26,17 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -162,7 +162,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceUncertain", "Esiintyy mahdollisesti vyöhykkeellä (epävarma)", referenceStatuses));
 		statuses.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
-		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccursButThreatened", "RT - Esiintyy, alueellisesti uhanalainen", referenceStatuses));
 		return statuses;
 	} 
 
@@ -421,9 +420,25 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private void setValue(IUCNEvaluation evaluation, RdfProperties iucnProperties, String parameterName, String value) {
 		if (parameterName.startsWith(IUCNEvaluation.HAS_OCCURRENCE)) {
-			// MKV.hasOccurrence___ML.xxx
-			Qname areaQname = splitAreaQname(parameterName);
-			evaluation.addOccurrence(new Occurrence(null, areaQname, new Qname(value)));
+			// MKV.hasOccurrence___ML.xxx___status
+			// MKV.hasOccurrence___ML.xxx___threatened
+			String areaQname = splitAreaQname(parameterName);
+			String field = splitField(parameterName);
+			if (evaluation.hasOccurrence(areaQname)) {
+				if (field.equals("status")) {
+					evaluation.getOccurrence(areaQname).setStatus(new Qname(value));
+				} else if ("RT".equals(value)) {
+					evaluation.getOccurrence(areaQname).setThreatened(true);
+				}
+			} else {
+				if (field.equals("status")) {
+					evaluation.addOccurrence(new Occurrence(null, new Qname(areaQname), new Qname(value)));
+				} else if ("RT".equals(value)){
+					Occurrence o = new Occurrence(null, new Qname(areaQname), null);
+					o.setThreatened(true);
+					evaluation.addOccurrence(o);
+				}
+			}
 			return;
 		}
 		if (parameterName.startsWith(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
@@ -446,8 +461,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return order;
 	}
 
-	private Qname splitAreaQname(String parameterName) {
-		return new Qname(parameterName.split(Pattern.quote("___"))[1]);
+	private String splitField(String parameterName) {
+		return parameterName.split(Pattern.quote("___"))[2];
+	}
+	
+	private String splitAreaQname(String parameterName) {
+		return parameterName.split(Pattern.quote("___"))[1];
 	}
 
 	private void setToModel(Model model, RdfProperties iucnProperties, String parameterName, String value) {

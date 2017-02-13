@@ -155,11 +155,6 @@ public class IUCNValidator {
 	}
 
 	private void validateOccurrences(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		for (Occurrence o : givenData.getOccurrences()) {
-			if (o.getYear() == null || o.getYear().intValue() != givenData.getEvaluationYear()) {
-				validationResult.setError("Ohjelmointivirhe: Occurrences vuosi ei ole kunnossa", IUCNEvaluation.HAS_OCCURRENCE);
-			}
-		}
 		String status = givenData.getIucnStatus();
 		if (OCCURRENCES_REQUIRED_STATUSES.contains(status)) {
 			if (givenData.getOccurrences().isEmpty()) {
@@ -253,8 +248,22 @@ public class IUCNValidator {
 		if (!given(givenData.getValue(IUCNEvaluation.STATE))) {
 			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.STATE + " puuttuu!", null);
 		}
+		
+		for (Occurrence o : givenData.getOccurrences()) {
+			if (o.getYear() == null || o.getYear().intValue() != givenData.getEvaluationYear()) {
+				validationResult.setError("Ohjelmointivirhe: Occurrences vuosi ei ole kunnossa", IUCNEvaluation.HAS_OCCURRENCE);
+			}
+			if (o.getStatus() == null) {
+				validationResult.setError("Jokin esiintymisarvo on ilmoitettava jos RT on merkitty", null);
+			} else if (o.getThreatened() != null && o.getThreatened() && !ALLOWED_FOR_RT.contains(o.getStatus())) {
+				validationResult.setError("Tämä esiintymisarvo ei ole sallittu RT-arvon kanssa", null);
+			}
+		}
 	}
 
+	private static final Set<Qname> ALLOWED_FOR_RT = 
+			Utils.set(new Qname("MX.typeOfOccurrenceOccurs"), new Qname("MX.typeOfOccurrenceAnthropogenic"), new Qname("MX.typeOfOccurrenceUncertain"));
+	
 	private void validateInvasive(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getValue(IUCNEvaluation.RED_LIST_STATUS);
 		if (!given(status)) return;

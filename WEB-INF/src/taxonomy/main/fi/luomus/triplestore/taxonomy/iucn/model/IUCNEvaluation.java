@@ -1,13 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -17,6 +9,14 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IUCNEvaluation {
 
@@ -120,7 +120,7 @@ public class IUCNEvaluation {
 	private List<IUCNEndangermentObject> endangermentReasons = null;
 	private List<IUCNEndangermentObject> threats = null;
 	private boolean incompletelyLoaded = false;
-	
+
 	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
 		this.evaluationProperties = evaluationProperties;
@@ -256,11 +256,11 @@ public class IUCNEvaluation {
 		if (!RED_LIST_STATUS_TO_INDEX.containsKey(status)) throw new UnsupportedOperationException("Unknown redListStatus " + status);
 		return RED_LIST_STATUS_TO_INDEX.get(status);
 	}
-	
+
 	public Integer getCalculatedRedListIndex() {
 		return getCalcuatedIndex(getIucnStatus());
 	}
-	
+
 	public Integer getCalculatedCorrectedRedListIndex() {
 		return getCalcuatedIndex(getCorrectedStatusForRedListIndex());
 	}
@@ -351,7 +351,9 @@ public class IUCNEvaluation {
 	}
 
 	private Occurrence copy(Occurrence occurrence) {
-		return new Occurrence(null, occurrence.getArea(), occurrence.getStatus());
+		Occurrence copy = new Occurrence(null, occurrence.getArea(), occurrence.getStatus());
+		copy.setThreatened(occurrence.getThreatened());
+		return copy;
 	}
 
 	private void copy(String predicateQname, IUCNEvaluation copyTarget) {
@@ -404,10 +406,18 @@ public class IUCNEvaluation {
 		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1", "(+1)");
 		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2", "(+2)");
 	}
-	
+
 	public String getExternalImpact() {
 		if (!hasValue(EXTERNAL_IMPACT)) return "";
 		String qname = getValue(EXTERNAL_IMPACT);
 		return EXTERNAL_QNAME_TO_VALUE.get(qname);
+	}
+
+	public boolean hasRegionalThreatenedData() {
+		if (hasValue("MKV.regionallyThreatenedNotes") || hasValue("MKV.regionallyThreatenedPrivateNotes")) return true;
+		for (Occurrence o : getOccurrences()) {
+			if (o.getThreatened() != null && o.getThreatened()) return true;
+		}
+		return false;
 	}
 }

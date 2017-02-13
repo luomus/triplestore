@@ -372,3 +372,21 @@ td.groupEditors {
   padding-bottom: 1em;
   vertical-align: top;
 }
+
+select.regionalOccurrence {
+  width: 350px;
+}
+.regionalThreatened input {
+  width: auto;
+}
+.regionalThreatened {
+  margin-left: 1em;
+}
+.regionalThreatened {
+  display: none;
+}
+.buttonContainer button {
+  font-size: 10px;
+  margin-left: 1em;
+  margin-bottom: 0.3em;
+}

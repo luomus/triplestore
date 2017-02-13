@@ -96,7 +96,7 @@
 			</#list>
 		</ul>
 	<#else>
-		<span class="info">Ei hallinnollisia ominaisuuksia</span>
+		<span class="info">Ei hallinnollista asemaa</span>
 	</#if>
 </div>
 
@@ -292,7 +292,7 @@
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
 	<#if permissions>
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; RT-arvoa voi käyttää vain luokille LC ja NT</span> &nbsp;&nbsp; <button id=\"markAllDoesNotOccurButton\">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>" />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span>" />
 	<#else>
 	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus" />
 	</#if>
@@ -300,7 +300,7 @@
 		<@iucnOccurrence areaQname />
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
-	<@iucnTextarea "MKV.regionalStatusNotes" />
+	<@iucnTextarea "MKV.regionallyThreatenedNotes" "regionalThreatened" "MKV.regionallyThreatenedPrivateNotes" />
 
 	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span>" />   
 	<@iucnHabitatFields />   
@@ -510,20 +510,36 @@
 						<#break>
 					</#if>
 				</#list>
+				<#if comparison.getOccurrence(areaQname).threatened!false>
+					&nbsp; RT
+				</#if>
 			</#if>
 		</td>
 		<td>
 			<#if permissions>
-				<select name="MKV.hasOccurrence___${areaQname}" data-placeholder="..." class="regionalOccurrence">
+				<#if areaQname = "ML.690">
+					<div class="buttonContainer"> 
+						<button id="markAllDoesNotOccurButton">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>
+						<button id="revealRegionalThreatenedButton">Määritä alueellinen uhanalaisuus</button>
+					</div>
+				</#if>
+				<select name="MKV.hasOccurrence___${areaQname}___status" data-placeholder="..." class="regionalOccurrence">
 					<option value="" label=".."></option>
 					<#list regionalOccurrenceStatuses as prop>
-						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).status.toString() == prop.qname.toString()>
+						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && ((evaluation.getOccurrence(areaQname).status.toString())!"") == prop.qname.toString()>
 							<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")?html}</option>
 						<#else>
 							<option value="${prop.qname}">${prop.label.forLocale("fi")?html}</option>
 						</#if>
 					</#list>
 				</select>
+				<span class="regionalThreatened">
+					RT &nbsp; <input type="checkbox" name="MKV.hasOccurrence___${areaQname}___threatened" value="RT"
+						<#if evaluation?? && evaluation.hasOccurrence(areaQname) && evaluation.getOccurrence(areaQname).threatened!false>
+							checked="checked"
+						</#if>
+					   />
+				</span>
 			<#else>
 				<#if evaluation?? && evaluation.hasOccurrence(areaQname)>
 					<#assign areaStatus = evaluation.getOccurrence(areaQname).status>
@@ -994,11 +1010,21 @@ $(function() {
     	});
     }); 
     
+    $("#revealRegionalThreatenedButton").on('click', function() {
+    	$(".regionalThreatened").show();
+    });
+    
     $("#copyButton").on('click', function() {
     	$(this).prop('disabled','disabled');
     	window.location.href = '${baseURL}/iucn/species/${taxon.qname}/${selectedYear}?copy=true';
     });
+
+	<#if evaluation?? && evaluation.hasRegionalThreatenedData()>
+		$(".regionalThreatened").show();
+	</#if>
+
 });
+
 
 function isPositiveInteger(str) {
     var n = ~~Number(str);
