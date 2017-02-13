@@ -17,6 +17,10 @@ import java.util.regex.Pattern;
 
 public class IUCNLineData {
 
+	public enum Mode {
+		V2010, SAMMALLEET2019
+
+	}
 	private static final Qname OCC_EX = new Qname("MX.typeOfOccurrenceExtirpated");
 	private static final Qname DOES_NOT_OCCUR = new Qname("MX.doesNotOccur");
 	private static final Qname OCCURS = new Qname("MX.typeOfOccurrenceOccurs");
@@ -27,6 +31,7 @@ public class IUCNLineData {
 	private static final Qname ANTHROPOGENIC = OCC_ANTROPOGENIC;
 	private static final Qname EXTIRPATED = OCC_EX;
 	private static final Qname STABLE = new Qname("MX.typeOfOccurrenceStablePopulation");
+	public String taxonQname;
 	public String scientificName;
 	public String finnishName;
 	public String alternativeFinnishNames;
@@ -42,12 +47,16 @@ public class IUCNLineData {
 	public String generationAge;
 	public String evaluationPeriodLength;
 	public String individualCount;
+	public String individualCountNotes;
 	public String populationSizePeriodBeginning;
 	public String populationSizePeriodEnd;
 	public String decreaseDuringPeriod;
 	public String populationVaries;
+	public String populationVariesNotes;
 	public String fragmentedHabitats;
+	public String fragmentedHabitatsNotes;
 	public String borderGain;
+	public String borderGainNotes;
 	public String endangermentReasons;
 	public String threats;
 	public String criteriaA;
@@ -55,6 +64,11 @@ public class IUCNLineData {
 	public String criteriaC;
 	public String criteriaD;
 	public String criteriaE;
+	public String criteriaANotes;
+	public String criteriaBNotes;
+	public String criteriaCNotes;
+	public String criteriaDNotes;
+	public String criteriaENotes;
 	public String groundsForEvaluationNotes;
 	public String redListStatus;
 	public String criteriaForStatus;
@@ -63,11 +77,27 @@ public class IUCNLineData {
 	public String possiblyRE;
 	public String lastSightingNotes;
 	public String lsaRecommendation;
+	public String lsaRecommendationNotes;
 	public String legacyPublications;
+	public String redListStatusAccuracyNotes;
+	public String editNotes;
 	private final String[] parts;
 
-	public IUCNLineData(String[] parts) {
+	public IUCNLineData(Mode mode, String[] parts) {
 		this.parts = parts;
+		if (mode == Mode.V2010) {
+			v2010();
+		}
+		if (mode == Mode.SAMMALLEET2019) {
+			sammaleet2019();
+		}
+	}
+
+	public IUCNLineData(String[] parts) {
+		this(Mode.V2010, parts);		
+	}
+
+	private void v2010() {
 		scientificName = s(1);
 		finnishName = s(12);
 		alternativeFinnishNames = s(13);
@@ -117,6 +147,69 @@ public class IUCNLineData {
 		legacyPublications = s(68);
 	}
 
+	
+	private void sammaleet2019() {
+		taxonQname = s(0);
+		taxonomicNotes = s(1);
+		typeOfOccurrenceInFinland = s(2);
+		distributionArea = s(3);
+		occurrenceArea = s(4);
+		occurences.put(new Qname("ML.690"), s(5));
+		occurences.put(new Qname("ML.691"), s(6));
+		occurences.put(new Qname("ML.692"), s(7));
+		occurences.put(new Qname("ML.693"), s(8));
+		occurences.put(new Qname("ML.694"), s(9));
+		occurences.put(new Qname("ML.695"), s(10));
+		occurences.put(new Qname("ML.696"), s(11));
+		occurences.put(new Qname("ML.697"), s(12));
+		occurences.put(new Qname("ML.698"), s(13));
+		occurences.put(new Qname("ML.699"), s(14));
+		occurences.put(new Qname("ML.700"), s(15));
+		primaryHabitat = s(16);
+		secondaryHabitats = s(17);
+		habitatNotes = s(18);
+		occurrenceNotes = s(19);
+		generationAge = s(20);
+		evaluationPeriodLength = s(21);
+		individualCount = s(23);
+		individualCountNotes = s(22);
+		populationSizePeriodBeginning = s(24);
+		populationSizePeriodEnd = s(25);
+		decreaseDuringPeriod = s(26);
+		populationVaries = s(28);
+		populationVariesNotes = s(27);
+		fragmentedHabitats = s(30);
+		fragmentedHabitatsNotes = s(29);
+		
+		borderGain = s(32);
+		borderGainNotes = s(31);
+		
+		endangermentReasons = s(33);
+		threats = s(35);
+		
+		criteriaA = s(37);
+		criteriaANotes = s(38);
+		criteriaB = s(39);
+		criteriaBNotes = s(40);
+		criteriaC = s(41);
+		criteriaCNotes = s(42);
+		criteriaD = s(43);
+		criteriaDNotes = s(44);
+		
+		groundsForEvaluationNotes = s(45);
+		redListStatus = s(46);
+		criteriaForStatus = s(47);
+		reasonForStatusChange = s(50);
+		redListStatusRange = s(48);
+		possiblyRE = s(51);
+		lastSightingNotes = s(52);
+		lsaRecommendation = s(54);
+		lsaRecommendationNotes = s(55);
+		legacyPublications = s(56);
+		redListStatusAccuracyNotes = s(53);
+		editNotes = s(57);
+	}
+	
 	private String s(int i) {
 		try {
 			String s = parts[i].trim();
@@ -223,6 +316,11 @@ public class IUCNLineData {
 
 	private Qname getStatus(String s) {
 		s = s.toLowerCase();
+		if (s.equals("hävinnyt")) return OCC_EX;
+		if (s.equals("esiintyy")) return OCCURS;
+		if (s.equals("ei havaintoja")) return DOES_NOT_OCCUR;
+		if (s.equals("satunnainen")) return RARE;
+		if (s.equals("esiintyy mahdollisesti")) return OCC_UNCERTAIN;
 		if (s.contains("?") || s.contains("(")) return OCC_UNCERTAIN;
 		if (s.equals("na")) return OCC_ANTROPOGENIC; 
 		if (s.equals("x") || s.equals("+") || s.contains("rt")) return OCCURS;
@@ -434,6 +532,7 @@ public class IUCNLineData {
 	}
 
 	public String getIndividualCountNotes() {
+		if (individualCountNotes != null) return individualCountNotes;
 		return individualCount;
 	}
 
@@ -479,6 +578,7 @@ public class IUCNLineData {
 	}
 
 	public String getPopulationVariesNotes() {
+		if (populationVariesNotes != null) return populationVariesNotes;
 		return populationVaries;
 	}
 
@@ -487,6 +587,7 @@ public class IUCNLineData {
 	}
 
 	public String getFragmentedHabitatsNotes() {
+		if (fragmentedHabitatsNotes != null) return fragmentedHabitatsNotes;
 		return fragmentedHabitats;
 	}
 
@@ -495,6 +596,7 @@ public class IUCNLineData {
 	}
 
 	public String getBorderGainNotes() {
+		if (borderGainNotes != null) return borderGainNotes;
 		return borderGain;
 	}
 
@@ -517,11 +619,32 @@ public class IUCNLineData {
 		return reasons(threats);
 	}
 
-	public String getCriteriaA() { return criteriaA; }
-	public String getCriteriaB() { return criteriaB; }
-	public String getCriteriaC() { return criteriaC; }
-	public String getCriteriaD() { return criteriaD; }
-	public String getCriteriaE() { return criteriaE; }
+	private String criteria(String criteria) {
+		if (criteria == null) return null;
+		if (criteria.contains(":")) {
+			return criteria.split(Pattern.quote(":"))[0];
+		}
+		return criteria;
+	}
+
+	public Qname status(String criteria) {
+		if (criteria == null) return null;
+		if (!criteria.contains(":")) return null;
+		String status = criteria.split(Pattern.quote(":"))[1].trim();
+		return RED_LIST_STATUSES.get(status);
+	}
+	
+	public String getCriteriaA() { return criteria(criteriaA); }
+	public String getCriteriaB() { return criteria(criteriaB); }
+	public String getCriteriaC() { return criteria(criteriaC); }
+	public String getCriteriaD() { return criteria(criteriaD); }
+	public String getCriteriaE() { return criteria(criteriaE); }
+	public Qname getCriteriaAStatus() { return status(criteriaA); }
+	public Qname getCriteriaBStatus() { return status(criteriaB); }
+	public Qname getCriteriaCStatus() { return status(criteriaC); }
+	public Qname getCriteriaDStatus() { return status(criteriaD); }
+	public Qname getCriteriaEStatus() { return status(criteriaE); }
+	
 	public String getGroundsForEvaluationNotes() { return groundsForEvaluationNotes; }
 	public String getCriteriaForStatus() {return criteriaForStatus; }
 
@@ -541,7 +664,10 @@ public class IUCNLineData {
 	}
 
 	public Qname getRedListStatus() {
-		String s = redListStatus.replace(".", "").replace("*", "").trim();
+		String s = redListStatus.replace(".", "").replace("*", "").replace("∙", "").trim();
+		if (s.contains("(")) {
+			s = s.split(Pattern.quote("("))[0].trim();
+		}
 		return RED_LIST_STATUSES.get(s);
 	}
 
@@ -581,6 +707,7 @@ public class IUCNLineData {
 	};
 
 	public String getLsaRecommendationNotes() {
+		if (lsaRecommendationNotes != null) return lsaRecommendationNotes;
 		return lsaRecommendation;
 	};
 
@@ -678,6 +805,8 @@ public class IUCNLineData {
 		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
 		STATUS_CHANGE_REASONS.put("aito muutos", new Qname("MKV.reasonForStatusChangeGenuine"));
 		STATUS_CHANGE_REASONS.put("tiedon lisääntyminen", new Qname("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("tiedon kasvu", new Qname("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("taksonominen muutos", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
 	}
 
 	private static final Map<String, Qname> RED_LIST_STATUSES;
@@ -686,5 +815,10 @@ public class IUCNLineData {
 		for (String s : "EX,EW,RE,CR,EN,VU,NT,LC,DD,NA,NE".split(",")) {
 			RED_LIST_STATUSES.put(s, new Qname("MX.iucn"+s));
 		}
+	}
+
+	public String getTaxonQname() {
+		if (taxonQname == null) return "";
+		return taxonQname;
 	}
 }
