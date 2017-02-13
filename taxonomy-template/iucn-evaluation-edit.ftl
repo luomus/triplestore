@@ -291,10 +291,11 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
+	<#assign link = " &nbsp;&nbsp; <a href=\"${staticURL}\\img\\Aluellisen arvioinnin tarkastelualueet.jpg\" target=\"_staticmap\">&raquo; Alueet</a>" >
 	<#if permissions>
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span>" />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span>" + link/>
 	<#else>
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus" />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus " +link />
 	</#if>
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
@@ -367,7 +368,8 @@
 	
 	<@iucnSection "Lähteet" />
 	<@iucnPublications "MKV.publication" />   
-
+	<@iucnTextarea "MKV.otherSources" />
+	
 	</tbody>
 </table>
 
@@ -719,7 +721,10 @@
 
 <#macro iucnPublications fieldName>
 	<tr>
-		<th><@iucnLabel fieldName /></th>
+		<th>
+			<@iucnLabel fieldName />
+			<p class="info">(Huom: Samaan tietokantaan ei kannata viitata kovin monella eri latauspäivämäärällä; esimerkiksi yksi viittaus per arviointikausi riittänee.</p> 
+		</th>
 		<td>
 			<@showPublications fieldName comparison />
 			<#if comparison??>${(comparison.getValue("MKV.legacyPublications")!"")?html}</#if>
@@ -759,7 +764,7 @@
 						<th>Tai luo uusi julkaisu</th> 
 					</tr>
 					<tr>
-						<td><textarea class="createPublication" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Esim. 'Boyko, C.B & Wilson, World Marine, Freshwater and Terrestrial Isopod Crustaceans database. Accessed at http://www.marinespecies.org/isopoda on 2016-02-12'"></textarea></td>
+						<td><textarea class="createPublication" name="newIucnPublicationCitation" id="createNewIucnPublicationCitationInput" placeholder="Kirjoita viite"></textarea></td>
 					</tr>	
 				</table>
 			<#else>

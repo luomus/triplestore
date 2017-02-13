@@ -10,8 +10,7 @@
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 13.2.2017</h6>
 	</p>
-		Alueellisen uhanalaisuuden ilmoittaminen on muutettu Syken toivomaan uuteen muotoon. Jotkut ehtivät jo käyttää vanhaa tapaa, ja nämä tiedot siirretään
-		käyttämään uusia "checkbokseja". Pahoittelut muutoksen aiheuttamasta hetkittäisestä järjestelmän toimimattomuudesta!
+		Alueellisen uhanalaisuuden ilmoittaminen on muutettu Syken toivomaan uuteen muotoon. Pahoittelut muutoksen aiheuttamasta hetkittäisestä järjestelmän toimimattomuudesta!
 	</p>
 	<p>
 		Alueellisen uhanalaisuuden kentät saa näkyville painamalla "Määritä alueellinen uhanalaisuus" -painiketta.

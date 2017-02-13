@@ -390,3 +390,7 @@ select.regionalOccurrence {
   margin-left: 1em;
   margin-bottom: 0.3em;
 }
+
+#createNewIucnPublicationCitationInput {
+  height: 150px;
+}
