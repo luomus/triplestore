@@ -79,7 +79,7 @@
 </#if>
 </div>
 <div class="clear"></div>
-
+<span id="species"></span>
 <#if targets?has_content>
 <table class="iucnSpeciesTable">
 	<thead>
@@ -98,6 +98,10 @@
 		<tfoot>
 			<tr>
 				<td colspan="7">
+					<#if currentPage != 1>
+					<span><a href="?page=${currentPage-1}#species">&laquo; Edellinen</a></span>
+					|
+					</#if> 
 					<span>
 					Sivu
 						<select id="pageSelector">
@@ -111,6 +115,11 @@
 						</select> 
 					/ ${pageCount}
 					</span>
+					<#if pageCount != currentPage>
+					|
+					<span><a href="?page=${currentPage+1}#species">Seuraava &raquo;</a></span>
+					</#if>
+					|
 					<span>
 						Lajeja sivulla 
 						<input size="5" maxlength="4" type="text" value="${pageSize}" id="pageSizeSelector" />
@@ -153,28 +162,14 @@ $(function() {
 	});
 	
 	$("#pageSelector, #pageSizeSelector").on('change', function() {
-		var url = window.location.href.split('?')[0];
 		var defaultPageSize = ${defaultPageSize};
 		var page = $("#pageSelector").val();
 		var pageSize = $("#pageSizeSelector").val();
-		url += "?page=" + page;
+		url = "?page=" + page;
 		if (pageSize != defaultPageSize) {
 			url += "&pageSize=" + pageSize;
 		}
-		<#if redListStatuses??>
-			<#list redListStatuses as status>
-				url += "&redListStatus=${status}";
-			</#list>
-		</#if>
-		<#if states??>
-			<#list states as state>
-				url += "&state=${state}";
-			</#list>
-		</#if>
-		<#if taxon?has_content>
-			url += "&taxon=${taxon}";
-		</#if>
-		window.location.href = url;
+		window.location.href = url+"#species";
 	});
 	
 	$("#clearButton").on('click', function() {

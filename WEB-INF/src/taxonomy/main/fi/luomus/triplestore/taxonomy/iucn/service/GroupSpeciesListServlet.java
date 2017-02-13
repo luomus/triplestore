@@ -70,7 +70,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			orderBy = session.get(ORDER_BY);
 		}
 		
-		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses) && pageSize == null) {
+		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses)) {
 			taxon = session.get(TAXON);
 			states = (String[]) session.getObject(STATE);
 			redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);
