@@ -1,9 +1,9 @@
 package fi.luomus.triplestore.dao;
 
-import fi.luomus.commons.db.connectivity.ConnectionDescription;
-
 import org.apache.tomcat.jdbc.pool.DataSource;
 import org.apache.tomcat.jdbc.pool.PoolProperties;
+
+import fi.luomus.commons.db.connectivity.ConnectionDescription;
 
 public class DataSourceDefinition {
 
@@ -15,7 +15,8 @@ public class DataSourceDefinition {
 		p.setPassword(desc.password());
 		
 		p.setDefaultAutoCommit(true); // non-transaction mode: connection will be set to transaction mode if updates are done
-		p.setMaxActive(30);
+		p.setMaxActive(40);
+		p.setMaxWait(120 * 1000); // 2 minutes
 		p.setMaxIdle(8);
 		p.setMinIdle(2);
 		p.setInitialSize(2);
