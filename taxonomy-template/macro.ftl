@@ -14,7 +14,7 @@
 	<#elseif printNoValue><span class="editor">Editors: [admin only]</span> </#if>
 	<#if experts?has_content>
 		<span class="expert">Experts: 
-			<#list experts as expertQname>${persons[expertQname.toString()].fullname}<#if expertQname_has_next>, </#if></#list>
+			<#list experts as expertQname>${(persons[expertQname.toString()].fullname)!expertQname}<#if expertQname_has_next>, </#if></#list>
 		</span>
 	<#elseif printNoValue><span class="expert">Experts:[none]</span></#if>
 </@compress></#macro>
