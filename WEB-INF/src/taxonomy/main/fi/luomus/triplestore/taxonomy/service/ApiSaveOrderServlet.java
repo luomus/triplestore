@@ -36,7 +36,7 @@ public class ApiSaveOrderServlet extends ApiBaseServlet {
 			((EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxon))).invalidate();
 		}
 		
-		return new ResponseData().setOutputAlreadyPrinted();
+		return apiSuccessResponse(res);
 	}
 	
 }

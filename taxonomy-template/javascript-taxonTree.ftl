@@ -224,12 +224,23 @@ function saveSorting(e) {
 	$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
 	
 	saveOrder(order);
-	endDisableOfTools();
 }
 
 function saveOrder(order) {
+	endDisableOfTools();
+	blockingSaver();
 	var s = ''+order;
-	$.ajax({type: 'POST', url: '${baseURL}/api/saveorder/', data: {order: s} });
+	$.ajax({type: 'POST', url: '${baseURL}/api/saveorder/', data: {order: s} }).done(function() {
+		endBlockingSaver();
+	});
+}
+
+function blockingSaver() {
+	$("#greyOutElement").text('Saving... Please wait!').show();
+}
+
+function endBlockingSaver() {
+	$("#greyOutElement").hide().text('');
 }
 
 function disableToolsExcept(e) {
