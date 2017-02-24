@@ -49,11 +49,7 @@ function initColumnsPortlets() {
 	$(".taxonEditSection").validate();
 	
 	$(".taxonEditSection").find(":input").bind("change keyup", function() {
-		var section = $(this).closest(".taxonEditSection"); 
-		if(section.find(".saveButton").length === 0) {
-			section.append('<input type="submit" class="saveButton" value="Save changes" />');
-			section.find(".saveButton").button().hide().fadeIn('slow');
-		}
+		addSaveButtonTo(this);
 	});
 	
 	$(".multirowSection").each(function() {
@@ -71,10 +67,18 @@ function initColumnsPortlets() {
 				rowToCopy.find('select').val('fi');
 			}
 			tableToAddNewRow.append(rowToCopy);
+			addSaveButtonTo(this);
 			return false;
 		});
 	});
 	
+	function addSaveButtonTo(e) {
+		var section = $(e).closest(".taxonEditSection"); 
+		if (section.find(".saveButton").length === 0) {
+			section.append('<input type="submit" class="saveButton" value="Save changes" />');
+			section.find(".saveButton").button().hide().fadeIn('slow');
+		}
+	}
 	
 	$(".taxonEditSection").submit(function() {
 		if (!$(this).valid()) return false;
