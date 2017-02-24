@@ -472,7 +472,7 @@
 <script>
 $(function() {
 
-	$("#notes").attr("placeholder", "In english");
+	$("textarea").attr("placeholder", "In english");
 	
 	$("#deleteTaxon").on('click', function() {
 		var taxonToDeleteQname = $("#taxonToEditQname").text();

@@ -159,7 +159,7 @@
 	<#if property.isBooleanProperty()>
 		NO SUPPORT FOR BOOLEANS
 	</#if>
-	<select id="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
+	<select name="${field}" <@checkPermissions permissions /> > 
 		<option value=""></option>
 		<#list property.range.values as optionValue>
 			<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
@@ -191,9 +191,9 @@
 		<#assign value = defaultValue>
 	</#if>
 	<#if properties.hasProperty(field) && properties.getProperty(field).isDateProperty()>
-		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> class="datepicker" />
+		<input type="text" name="${field}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> class="datepicker" />
 	<#else>
-		<input type="text" name="${field}" id="${cleanedName}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> />
+		<input type="text" name="${field}" value="${value?html}" autocomplete="${autocomplete}" <@checkPermissions permissions/> />
 	</#if>
 </#macro>
 
@@ -204,7 +204,7 @@
 	<#else>
 		<#assign value = defaultValue>
 	</#if>
-	<textarea name="${field}" id="${cleanedName}" <@checkPermissions permissions /> class="${class}">${value?html}</textarea>
+	<textarea name="${field}" <@checkPermissions permissions /> class="${class}">${value?html}</textarea>
 </#macro>
 
 <#function cleanName field>
