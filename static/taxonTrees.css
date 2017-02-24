@@ -258,3 +258,9 @@ div.taxonInfo .vernacularNameFI {
 	display: block;
 	padding-left: 1em;
 }
+
+div.loading {
+  margin-top: 3em;
+  font-size: 2em;
+  font-color: rgb(179,193,206);
+}

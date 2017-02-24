@@ -25,28 +25,29 @@ function editTaxon(e) {
 		alert('Taxon to edit has not been defined! Please report how you got this error, I have not been able to reproduce it! -Esko');
 		return;
 	}
+	$("#editTaxonContent").html('<div class="loading">Loading...</div>');
 	$.get("${baseURL}/api/taxonToEdit/"+taxon, function(data) {
-		scrollToTaxonEditSection();
-		$("#editTaxonContent").html(data);
-		initColumnsPortlets();
+		console.log('valmis');
+		$("html").animate({
+        	scrollTop: $("#editTaxon").offset().top
+    	}, 200, "swing", function() {
+    		$("#editTaxonContent").html(data);
+			console.log('html pistetty');
+			initColumnsPortlets();
+			console.log('init columns valmis');
+    	});
   	});
-}
-
-function scrollToTaxonEditSection() {
-    $("html, body").animate({
-        scrollTop: $("#editTaxon").offset().top
-    }, 700);
 }
 
 function initColumnsPortlets() {
 
 	$("#editTaxonContent").find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
 	
-	$("#editTaxonContent").find(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+	//$("#editTaxonContent").find(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
 	
-	$("#editTaxonContent").find("button, .button").button();
+	//$("#editTaxonContent").find("button, .button").button();
 	
-	$(".taxonEditSection").validate();
+	//$(".taxonEditSection").validate();
 	
 	$(".taxonEditSection").find(":input").bind("change keyup", function() {
 		addSaveButtonTo(this);

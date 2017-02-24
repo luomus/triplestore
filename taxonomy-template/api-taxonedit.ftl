@@ -1,3 +1,4 @@
+<div>
 <#include "macro.ftl">
 
 <h5 id="taxonEditHeader">
@@ -538,4 +539,4 @@ $(function() {
 	
 });
 </script>
-
+</div>
