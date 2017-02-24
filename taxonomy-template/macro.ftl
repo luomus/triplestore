@@ -9,7 +9,7 @@
 <#macro printEditorExpertSpecific editors experts printNoValue=true><@compress single_line=true>
 	<#if editors?has_content>
 		<span class="editor">Editors: 
-			<#list editors as editorQname>${persons[editorQname.toString()].fullname}<#if editorQname_has_next>, </#if></#list>
+			<#list editors as editorQname>${(persons[editorQname.toString()].fullname)!editorQname}<#if editorQname_has_next>, </#if></#list>
 		</span>
 	<#elseif printNoValue><span class="editor">Editors: [admin only]</span> </#if>
 	<#if experts?has_content>
