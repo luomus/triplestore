@@ -27,14 +27,11 @@ function editTaxon(e) {
 	}
 	$("#editTaxonContent").html('<div class="loading">Loading...</div>');
 	$.get("${baseURL}/api/taxonToEdit/"+taxon, function(data) {
-		console.log('valmis');
 		$("html").animate({
         	scrollTop: $("#editTaxon").offset().top
     	}, 200, "swing", function() {
     		$("#editTaxonContent").html(data);
-			console.log('html pistetty');
 			initColumnsPortlets();
-			console.log('init columns valmis');
     	});
   	});
 }
