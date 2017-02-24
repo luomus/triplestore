@@ -232,10 +232,12 @@ div.taxonWithTools.ui-draggable {
 .portlet { margin: 0 1em 1em 0; }
 .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: pointer; }
 .portlet-header .ui-icon { float: right; }
-.portlet-content { padding: 0.4em; white-space: nowrap; }
+.portlet-content { padding: 0.4em; }
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder * { visibility: hidden; }
-
+.portlet-content label { white-space: nowrap; }
+.portlet-content table { border-collapse: collapse; }
+.portlet-content textarea { height: 5em; width: 100%; }
 
 .checklistHeader {
 	position: absolute;

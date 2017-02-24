@@ -50,11 +50,8 @@
 		</select>
 	<@portletFooter />
 	
-	<@portletHeader "Source of taxonomy" "" "reloadAfterSaveSection" />
+	<@portletHeader "Source of taxonomy" "" "multirowSection"/>
 		<table class="publicationSelect">
-			<tr>
-				<th>Select publications</th> 
-			</tr>
 			<#list taxon.originalPublications as existingPublicationQname>
 			<tr>
 				<td>
@@ -77,21 +74,16 @@
 					</select>
 				</td>
 			</tr>
-			<tr>
-				<th>Or create new publication</th> 
-			</tr>
-			<tr>
-				<td><input <@checkPermissions/> type="text" name="newPublicationCitation" id="createNewPublicationInput" placeholder="Type citaction, for example 'Silfverberg, H. 2007. Changes in the list of Finnish insects 2001-2005. - Entomol. Fenn. 18:82-101'"/></td>
-			</tr>
 		</table>
-		<div></div>
 	<@portletFooter />
 	
-	<@portletHeader "Administrative statuses" "" "reloadAfterSaveSection" />
+	<@portletHeader "Administrative statuses" "" "multirowSection" />
+		<table>
 		<#list taxon.administrativeStatuses as status>
-			<@labeledSelect "MX.hasAdminStatus" status />
+			<tr><td><@select "MX.hasAdminStatus" status /></td></tr>
 		</#list>
-		<@labeledSelect "MX.hasAdminStatus" "" />
+		<tr><td><@select "MX.hasAdminStatus" status /></td></tr>
+		</table>
 	<@portletFooter />	 
 		
 </div>
@@ -120,19 +112,25 @@
 	<@portletFooter />	
 	
 	
-	<@portletHeader "Occurrence in Finland" "" "reloadAfterSaveSection" />
+	<@portletHeader "Occurrence in Finland" "" "multirowSection" />
 		<@labeledSelect "MX.occurrenceInFinland" />
 		
-		<#list taxon.typesOfOccurrenceInFinland as type>
-			<@labeledSelect "MX.typeOfOccurrenceInFinland" type />
-		</#list>
-		<@labeledSelect "MX.typeOfOccurrenceInFinland" "" />
-		<br /><br />
-		<@label "MX.occurrenceInFinlandPublication" />
-		<table class="publicationSelect">
+		<table>
 			<tr>
-				<th>Select publication</th> 
+				<th><label>Type of occurrence</label></th>
 			</tr>
+			<#list taxon.typesOfOccurrenceInFinland as type>
+				<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
+			</#list>
+			<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
+		</table>
+		
+		<@label "MX.typeOfOccurrenceInFinlandNotes" "longtext" />
+		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
+	<@portletFooter />				
+
+	<@portletHeader "Source of occurrence" "" "multirowSection" />
+		<table class="publicationSelect">
 			<#list taxon.occurrenceInFinlandPublications as existingPublicationQname>
 			<tr>
 				<td>
@@ -155,24 +153,11 @@
 					</select>
 				</td>
 			</tr>
-			<tr>
-				<th>Or create new publication</th> 
-			</tr>
-			<tr>
-				<td><input <@checkPermissions/> type="text" name="newOccurrenceInFinlandPublicationCitation" id="createNewOccurrenceInFinlandPublicationInput" placeholder="Type citaction, for example 'Hudd, R. & Leskelä, A. 1998. Acidification-induced species shifts in coastal fisheries off the River Kyrönjoki, Finland: A case study. Ambio 27: 535–538.'"/></td>
-			</tr>
-		</table>
-		
-		<br /><br />
-		<@label "MX.typeOfOccurrenceInFinlandNotes" "longtext" />
-		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
-		
-		<div></div>
-	<@portletFooter />				
-
-	<@portletHeader "Informal groups" "" "reloadAfterSaveSection" />
+		</table>		
+	<@portletFooter />	
+	
+	<@portletHeader "Informal groups" "" "multirowSection" />
 		<#assign headerPrinted = false>
-		
 		<#list taxon.informalTaxonGroups as groupQname>
 			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
 				<#if !headerPrinted>
@@ -188,23 +173,26 @@
 			<br/>
 		</#if>
 		
+		<table>
 		<#list taxon.explicitlySetInformalTaxonGroups as groupQname>
-			<p>
+			<tr><td>
 			<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" class="chosen" <@checkPermissions/> >
 				<option value=""></option>
 				<#list informalGroups?keys as groupQnameString>
 					<option value="${groupQnameString}" <#if same(groupQname.toString(), groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
 				</#list>
 			</select>
-			</p>
+			</td></tr>
 		</#list>
-		
+		<tr><td>
 		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Add new group" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list informalGroups?keys as groupQnameString>
 				<option value="${groupQnameString}">${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
 			</#list>
 		</select>
+		</td></tr>
+		</table>
 	<@portletFooter />				
 
 </div>
@@ -393,6 +381,28 @@
 	</div>
 </#if>
 
+<#macro emptyEditors>
+	<p>
+		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
+	</p>
+</#macro>
+
+<#macro emptyExperts>
+	<p>
+		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
+	</p>
+</#macro>
+
 <div class="column">
   <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
 	<@portletHeader "Editors and Experts" />
@@ -415,14 +425,9 @@
 			</select>
 			</p>
 		</#list>
-		<p>
-		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-		</p>
+		<@emptyEditors />
+		<@emptyEditors />
+		<@emptyEditors />
 		
 		<p><label>Experts</label></p>
 		<#list taxon.explicitlySetExperts as expertQname>
@@ -435,14 +440,9 @@
 			</select>
 			</p>
 		</#list>
-		<p>
-		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-		</p>
+		<@emptyExperts />
+		<@emptyExperts />
+		<@emptyExperts />
 		
 		<div class="info">
 			Note that after saving the changes you must close and re-open the affected branches in the taxonomy tree to be able to see the changes.  

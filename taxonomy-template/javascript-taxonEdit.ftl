@@ -57,16 +57,18 @@ function initColumnsPortlets() {
 		$(this).find('table').after(addNewRowButton);
 		addNewRowButton.click(function() {
 			var tableToAddNewRow = $(this).parent().find('table'); 
-			var rowToCopy = $(tableToAddNewRow).find('tr').last().clone();
-			var input = rowToCopy.find(':input').first(); 
-			input.val('');
-			var name = input.attr("name");
+			var rowClone = $(tableToAddNewRow).find('tr').last().clone();
+			rowClone.find('.chosen-container').remove();
+			var clonedInput = rowClone.find(':input').first().val('').show().removeAttr('display');
+			if (clonedInput.hasClass('chosen')) clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
+			rowClone.find('.chosen-container').removeAttr('style');
+			var name = clonedInput.attr("name");
 			if (name.indexOf("___") > -1) {
 				name = name.split("___")[0] + "___fi";
-				input.attr('name', name);
-				rowToCopy.find('select').val('fi');
+				clonedInput.attr('name', name);
+				rowClone.find('select').val('fi');
 			}
-			tableToAddNewRow.append(rowToCopy);
+			tableToAddNewRow.append(rowClone);
 			addSaveButtonTo(this);
 			return false;
 		});
@@ -152,11 +154,6 @@ function submitTaxonEditSection(section) {
 
 function showSuccess(section, data) {
 	$(".success").remove();
-	if ($(section).hasClass("reloadAfterSaveSection")) {
-		var taxonQname = $(section).find(".taxonQname").first().val().replace("MX.","MX");
-		var taxonSection = $("#"+taxonQname).find(".taxonInfo").first();
-		editTaxon(taxonSection);
-	}
 	var successText = $('<div class="success">Saved!</div>');
 	$(section).append(successText);
 	$(section).append(data);

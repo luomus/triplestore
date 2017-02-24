@@ -71,13 +71,12 @@
 .resourceListTable tr:nth-child(even) {
 	background-color: #eee;
 }
-.resourceListTable td, th {
+.resourceListTable td, .resourceListTable th {
 	padding: 5px;
 }
 
 label.longtext {
 	display: block;
-	margin-top: 1em;
 }
 
 label { 
@@ -148,6 +147,8 @@ form ul li {
 }
 a.addNewItem {
 	color: rgb(20,110,20);
+	margin-bottom: 9px;
+	display: block;
 }
 
 div.success {
@@ -174,11 +175,14 @@ div#taxonEditHeader {
 	color: rgb(131, 121, 121);
 	font-weight: bold;
 }
-.publicationSelect select, .publicationSelect input {
+.publicationSelect select, select.chosen, .chosen-container {
 	width: 350px;
 }
+#nameDecidedBy {
+  width: 185px;
+}
 .publicationSelect .chosen-drop {
-	width: 700px !important;
+	width: 800px !important;
 }
 
 tr.errorMessage td {
