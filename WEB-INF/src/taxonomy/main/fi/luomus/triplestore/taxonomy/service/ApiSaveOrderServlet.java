@@ -21,10 +21,10 @@ public class ApiSaveOrderServlet extends ApiBaseServlet {
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String order = req.getParameter("order");
-		String parent = order.split(",")[0];
-		parent = parent.trim().replace("MX", "MX.");
+		String firstToOrder = order.split(",")[0];
+		firstToOrder = firstToOrder.trim().replace("MX", "MX.");
 		
-		checkPermissionsToAlterTaxon(parent, req);
+		checkPermissionsToAlterTaxon(firstToOrder, req);
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();

@@ -228,7 +228,8 @@ function saveSorting(e) {
 }
 
 function saveOrder(order) {
-	$.post('${baseURL}/api/saveorder?order='+order);
+	var s = ''+order;
+	$.ajax({type: 'POST', url: '${baseURL}/api/saveorder/', data: {order: s} });
 }
 
 function disableToolsExcept(e) {
