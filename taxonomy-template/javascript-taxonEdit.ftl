@@ -19,6 +19,7 @@ $(function() {
 	
 function editTaxon(e) {
 	if ($("#taxonDragMode").prop('checked') === true) return;
+	if (toolsDisabled) return;
 	var taxon = $(e).closest(".taxonWithTools").attr('id');
 	if (typeof taxon == 'undefined') {
 		alert('Taxon to edit has not been defined! Please report how you got this error, I have not been able to reproduce it! -Esko');

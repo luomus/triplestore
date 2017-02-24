@@ -243,13 +243,17 @@ function endBlockingSaver() {
 	$("#greyOutElement").hide().text('');
 }
 
+var toolsDisabled = false;
+
 function disableToolsExcept(e) {
+	toolsDisabled = true;
 	$("#greyOutElement").show();
 	$(e).addClass('aboveGreyOutElement');
 	$(e).find('.taxonToolButton').find(':visible').addClass('hiddenWhenDisablingTools').hide();
 }
 
 function endDisableOfTools() {
+	toolsDisabled = false;
 	$('.aboveGreyOutElement').removeClass('aboveGreyOutElement');
 	$("#greyOutElement").hide();
 	$('.hiddenWhenDisablingTools').show();
