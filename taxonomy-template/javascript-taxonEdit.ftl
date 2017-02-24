@@ -80,15 +80,15 @@ function initColumnsPortlets() {
 		$(this).find(".saveButton").remove();
 		if ($(this).hasClass("scientificNameSection")) {
 			var qname = $(this).find(".taxonQname").first().val();
-			var taxonRank = $(this).find("#taxonRank").val();
-			var scientificName = $(this).find("#scientificName").val();
-			var author = $(this).find("#scientificNameAuthorship").val();
+			var taxonRank = $(this).find(".taxonRank").first().val();
+			var scientificName = $(this).find(".scientificName").first().val();
+			var author = $(this).find(".scientificNameAuthorship").first().val();
         	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
         	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
         } 
         else if ($(this).hasClass("primaryVernacularNameSection")) {
         	var qname = $(this).find(".taxonQname").first().val();
-			var finnishName = $(this).find("#vernacularName___fi").val();
+			var finnishName = $(this).find(".vernacularName___fi").first().val();
 			updateFinnishNameToTree(qname, finnishName);
         }
 		submitTaxonEditSection(this); 
