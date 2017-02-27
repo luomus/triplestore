@@ -196,13 +196,11 @@ function enableSorting(e) {
 function cancelSorting(e) {
 	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
 	list.sortable("destroy");
-	setTimeout(function() {
-		restoreOrder(originalSortOrder, list);
-		$(e).closest('.sortingControls').hide(300);
-		$(e).closest('.sortingControls').find('.saveSortingButton').hide();
-		$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
-		endDisableOfTools();
-	}, 200);
+	restoreOrder(originalSortOrder, list);
+	$(e).closest('.sortingControls').hide(300);
+	$(e).closest('.sortingControls').find('.saveSortingButton').hide();
+	$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
+	endDisableOfTools();
 }
 function restoreOrder(originalSortOrder, list) {
 	$(originalSortOrder).each(function() {

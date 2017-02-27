@@ -52,13 +52,11 @@ function searchTaxon(taxonSearchForm, onlySpecies, onlyFinnish) {
 	$("body").css("cursor", "progress");
 	$.get('${baseURL}/api/taxonomy-search-content/?q='+encodeURIComponent(taxon)+'&onlySpecies='+onlySpecies+'&onlyFinnish='+onlyFinnish+'&locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
 		resultViewContainer.html(data);
+		if (data.length > 5000){
+			resultViewContainer.collapse({showMoreText: '+ Show more'});
+		}
 		resultViewContainer.fadeIn(1000);
-		setTimeout(function() {
-			if (resultViewContainer.height() > 200) {
-				resultViewContainer.collapse({showMoreText: '+ Show more'});
-			}
-	  		$("body").css("cursor", "default");
-	  	}, 50);
+	  	$("body").css("cursor", "default");
   	});
 }
 
