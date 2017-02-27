@@ -306,21 +306,7 @@ function changeTaxonDragMode() {
 			});
 			$(this).append(dropContainer);
 		});
-		$(".synonyms").each(function() {
-			var dropContainer = $('<div class="taxonDropArea ui-widget ui-widget-header"><p>Drop taxon here</p></div>');
-			dropContainer.disableSelection();
-			dropContainer.droppable({
-				activeClass: "ui-state-hover",
-				hoverClass: "ui-state-active",
-				accept: validateTaxonSynonymDrop,
-				drop: taxonSynonymDropHandler,
-				tolerance: "pointer" 
-			});
-			$(this).append(dropContainer);
-		});
-		
 		taxonTreeGraphs.repaintEverything();
-		
 		$(".taxonWithTools").not(".rootTaxon").draggable({ revert: "invalid", helper: "clone", cursor: 'move' });
 	} else {
 		$("#taxonTree").find("button, .button, .ui-button").prop("disabled", false).removeClass("ui-state-disabled");
@@ -349,9 +335,6 @@ function childContainerIsChildOfTaxon(taxonID, childContainerID) {
 	var childContainerParentContainer = $("#"+childrenOfID).closest('.taxonChilds');
 	if (childContainerParentContainer.length === 0) return false;
 	return childContainerIsChildOfTaxon(taxonID, childContainerParentContainer.attr('id')); 
-}
-function validateTaxonSynonymDrop(e) {
-	return !e.hasClass('hasChildren');
 }
 
 function taxonDropHandler(event, ui) {
@@ -386,46 +369,6 @@ function confirmChangeOfParent(droppedTaxonId, newParentId) {
 	var droppedTaxonName = $('#'+droppedTaxonId).find('.scientificName').first().text();
 	var newParentName = $('#'+newParentId).find('.scientificName').first().text();
 	return confirm('Please confirm: set ' + droppedTaxonName + ' to be part of ' + newParentName + '?');
-}
-
-function taxonSynonymDropHandler(event, ui) {
-	var droppedTaxon = ui.draggable;
-	var droppedTaxonId = droppedTaxon.attr('id');
-	
-	
-	var newSynonymParentSynonymContainer = $(this).closest('.synonyms');
-	var newSynonymParentId = newSynonymParentSynonymContainer.attr('id').replace("Synonyms","");
-	
-	if (!confirmSynonymDrop(droppedTaxonId, newSynonymParentId)) return;
-	$.post('${baseURL}/api/setAsSynonym?taxon='+encodeURIComponent(droppedTaxonId)+"&newSynonymParent="+encodeURIComponent(newSynonymParentId), function(data) {
-		if (data == "ok") {
-			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
-			droppedTaxon.fadeOut(function() {
-				newSynonymParentSynonymContainer.prepend(droppedTaxon);
-				droppedTaxon.find('.synonyms').remove();
-				droppedTaxon.find('.showChildrenTools').remove();
-				droppedTaxon.find('.checklistChangesMidTree').remove();
-				taxonTreeGraphs.repaintEverything();
-				droppedTaxon.fadeIn(function() {
-					taxonTreeGraphs.repaintEverything();
-				});
-			});
-		} else {
-			var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
-			validationDialog.appendTo("body");
-			validationDialog.dialog({
-				modal: true, height: 'auto', width: 600, 
-				close: function() { 
-					$("#validationDialog").remove(); 
-				}
-			});
-		}
-	});
-}
-function confirmSynonymDrop(droppedTaxonId, newSynonymParentId) {
-	var droppedTaxonName = $('#'+droppedTaxonId).find('.scientificName').first().text();
-	var newSynonymParentName = $('#'+newSynonymParentId).find('.scientificName').first().text();
-	return confirm('Please confirm: set ' + droppedTaxonName + ' to be synonym of ' + newSynonymParentName + '?');
 }
 
 function addNewChild(e) {
