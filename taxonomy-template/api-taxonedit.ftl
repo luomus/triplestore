@@ -455,12 +455,15 @@
 </div>
 </#if>
 
-<#if !taxon.hasChildren()>
-	<div class="taxonDeleteContainer">
+<div class="taxonDeleteContainer">
+<#if !taxon.hasCriticalData()>
 		<button id="detachTaxon" class="ui-state-error">Detach taxon</button>
 		<button id="deleteTaxon" class="ui-state-error">Delete taxon</button>
-	</div>
+<#else>
+	<p><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span> Can not delete or detach this taxon, it has critical data.</p>
 </#if>
+</div>
+
 
 <div class="clear"></div>
 
@@ -477,7 +480,7 @@ $(function() {
 		var lastAllowedTaxonDeleteTimestamp = ${lastAllowedTaxonDeleteTimestamp};
 		
 		if (taxonToDeteteCreatedAt < lastAllowedTaxonDeleteTimestamp) {
-			alert('This taxon can not be deleted anymore. You can only delete taxons for 5 hours after creation. Please, contact admins to get taxon deleted.');
+			alert('This taxon can not be deleted anymore. You can only delete taxons for 5 hours after creation. Please, contact admins to get taxon deleted. You can detach the taxon from the checklist.');
 			return;
 		}
 		

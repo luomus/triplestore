@@ -51,6 +51,7 @@
 			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> 
 			
 			<@printScientificNameAndAuthor taxon />
+			<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			
 			<#if additionalClass == "rootTaxon">

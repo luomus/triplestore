@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/deleteTaxon/*"})
 public class ApiDeleteTaxon extends ApiBaseServlet {
@@ -30,8 +30,8 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 		if (created < lastAllowed) {
 			throw new IllegalStateException("Can no longer delete taxon "+taxonQname+" because time limit has gone: " + created + " >= " + lastAllowed );
 		}
-		if (taxon.hasChildren()) {
-			throw new IllegalStateException("Can not delete "+taxonQname+": It has children.");
+		if (taxon.hasCriticalData()) {
+			throw new IllegalStateException("Can not delete "+taxonQname+": It has critical data.");
 		}
 		
 		taxon.invalidate();

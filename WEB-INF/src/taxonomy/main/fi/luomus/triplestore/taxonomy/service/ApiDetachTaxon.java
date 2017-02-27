@@ -1,14 +1,14 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/detachTaxon/*"})
 public class ApiDetachTaxon extends ApiBaseServlet {
@@ -25,8 +25,8 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
 		checkPermissionsToAlterTaxon(taxon, req);
 		
-		if (taxon.hasChildren()) {
-			throw new IllegalStateException("Can not delete "+taxonQname+": It has children.");
+		if (taxon.hasCriticalData()) {
+			throw new IllegalStateException("Can not detach "+taxonQname+": It has critical data.");
 		}
 		
 		taxon.invalidate();

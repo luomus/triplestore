@@ -78,6 +78,25 @@ public class EditableTaxon extends Taxon {
 		taxonContainer.invalidateTaxon(this);
 	}
 
+	private Boolean hasCriticalData = null;
+	
+	public boolean hasCriticalData() {
+		if (hasCriticalData == null) { 
+			hasCriticalData = initHasCriticalData();
+		}
+		return hasCriticalData;
+	}
 
+	private boolean initHasCriticalData() {
+		if (this.hasChildren()) return true;
+		if (this.hasSecureLevel()) return true;
+		if (!this.getAdministrativeStatuses().isEmpty()) return true;
+		if (!this.getDescriptions().getContextsWithContentAndLocales().isEmpty()) return true;
+		if (!this.getInvasiveSpeciesMainGroups().isEmpty()) return true;
+		if (!this.getExplicitlySetEditors().isEmpty()) return true;
+		if (!this.getExplicitlySetExperts().isEmpty()) return true;
+		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) return true;
+		return false;
+	}
 
 }
