@@ -1,10 +1,11 @@
 package fi.luomus.triplestore.models;
 
-import fi.luomus.commons.json.JSONArray;
-import fi.luomus.commons.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import fi.luomus.commons.json.JSONArray;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.utils.Utils;
 
 public class ValidationData {
 
@@ -20,6 +21,10 @@ public class ValidationData {
 		}
 		public String getMessage() {
 			return message;
+		}
+		@Override
+		public String toString() {
+			return Utils.debugS(field, message);
 		}
 	}
 	

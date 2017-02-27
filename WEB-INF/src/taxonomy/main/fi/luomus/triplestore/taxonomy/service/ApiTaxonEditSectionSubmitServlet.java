@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -21,19 +29,11 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -5176480667635744000L;
-	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
+	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName", "MX.tradeName");
 	private static final Set<String> FI_SV = Utils.set("fi", "sv");
 
 	@Override
