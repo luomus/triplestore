@@ -1,17 +1,27 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.LocalizedTexts;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
+import fi.luomus.triplestore.utils.StringUtils;
 
 public class TaxonValidator {
 
@@ -21,14 +31,16 @@ public class TaxonValidator {
 
 	private static final Qname SPECIES = new Qname("MX.species");
 
-	private final ExtendedTaxonomyDAO dao;
+	private final TriplestoreDAO triplestoreDAO;
+	private final ExtendedTaxonomyDAO taxonomyDAO;
 	private final ErrorReporter errorReporter;
 	private final ValidationData validationData;
-	
-	public TaxonValidator(ExtendedTaxonomyDAO dao, ErrorReporter errorReporter) {
+
+	public TaxonValidator(TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
+		this.triplestoreDAO = triplestoreDAO;
 		this.errorReporter = errorReporter;
 		this.validationData = new ValidationData();
-		this.dao = dao;
+		this.taxonomyDAO = taxonomyDAO;
 	}
 
 	public ValidationData validate(Taxon taxon) {
@@ -40,7 +52,7 @@ public class TaxonValidator {
 		}
 		return validationData;
 	}
-	
+
 	private void setWarning(String field, String warning) {
 		validationData.setWarning(field, warning);
 	}
@@ -48,11 +60,11 @@ public class TaxonValidator {
 	private void setError(String field, String error) {
 		validationData.setError(field, error);		
 	}
-	
+
 	private boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
-	
+
 	private void tryValidate(Taxon taxon) throws Exception {
 		if (given(taxon.getScientificNameAuthorship()) && !given(taxon.getScientificName())) {
 			setError("Author", "Author should be given only if scientific name has been given.");
@@ -65,19 +77,19 @@ public class TaxonValidator {
 		validateVernacularName("Trade name", taxon.getTradeNames(), taxon);
 
 		if (given(taxon.getScientificName())) {
-			List<Taxon> matches = dao.taxonNameExistsInChecklistForOtherTaxon(taxon.getScientificName(), taxon.getChecklist(), taxon.getQname());
+			List<Taxon> matches = taxonomyDAO.taxonNameExistsInChecklistForOtherTaxon(taxon.getScientificName(), taxon.getChecklist(), taxon.getQname());
 			for (Taxon match : matches) {
 				setError("Scientific name", "Name already used in this checklist for taxon: " + debug(match));
 			}
 		}
 		for (String vernacularName : taxon.getVernacularName().getAllTexts().values()) {
-			List<Taxon> matches = dao.taxonNameExistsInChecklistForOtherTaxon(vernacularName, taxon.getChecklist(), taxon.getQname());
+			List<Taxon> matches = taxonomyDAO.taxonNameExistsInChecklistForOtherTaxon(vernacularName, taxon.getChecklist(), taxon.getQname());
 			for (Taxon match : matches) {
 				setError("Vernacular name", "Name " + vernacularName + " already used in this checklist for taxon: " + debug(match));
 			}
 		}
 		for (String alternativeVernacularName : taxon.getAlternativeVernacularNames().getAllValues()) {
-			List<Taxon> matches = dao.taxonNameExistsInChecklistForOtherTaxon(alternativeVernacularName, taxon.getChecklist(), taxon.getQname());
+			List<Taxon> matches = taxonomyDAO.taxonNameExistsInChecklistForOtherTaxon(alternativeVernacularName, taxon.getChecklist(), taxon.getQname());
 			for (Taxon match : matches) {
 				setWarning("Alternative vernacular name", "Name " + alternativeVernacularName + " already used in this checklist for taxon: " + debug(match));
 			}
@@ -89,7 +101,7 @@ public class TaxonValidator {
 			validateVernacularName(fieldName, name, taxon);
 		}
 	}
-	
+
 	private void validateVernacularName(String fieldName, LocalizedTexts names, Taxon taxon) {
 		for (String name : names.getAllValues()) {
 			validateVernacularName(fieldName, name, taxon);
@@ -123,7 +135,7 @@ public class TaxonValidator {
 				return;
 			}
 		}
-		
+
 	}
 
 	private String allowParentheses(String name) {
@@ -136,7 +148,7 @@ public class TaxonValidator {
 	}
 
 	private static final Set<Character> SCIENTIFIC_ALLOWED_FOR_SPECIES = Utils.set('.', '/', '-', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'); // numbers are for viruses
-	
+
 	private void validateScientificName(Taxon taxon) {
 		String name = taxon.getScientificName();
 		if (name == null) return;
@@ -161,7 +173,7 @@ public class TaxonValidator {
 			setError("Scientific name", "Must contain a space for species and subspecies (etc). Use full form: [Genus] [specific epithet]");
 			return;
 		}
-		
+
 		if (taxon.isSpecies()) {
 			Taxon genusParentTaxon = taxon.getParentOfRank(GENUS);
 			if (genusParentTaxon != null) {
@@ -179,7 +191,7 @@ public class TaxonValidator {
 		if (!scientificName.contains(" ")) return scientificName.trim();
 		return scientificName.split(Pattern.quote(" "))[0].trim();
 	}
-	
+
 	private String allowSpace(String name) {
 		return name.replace(" ", "");
 	}
@@ -207,6 +219,90 @@ public class TaxonValidator {
 			s = s.replace("  ", " ");
 		}
 		return s;
+	}
+
+	public ValidationData validateDescriptions(Collection<Statement> statements) {
+		try {
+			for (Statement s : statements) {
+				validateDescription(s);
+			}
+		} catch (Exception e) {
+			setError("SYSTEM ERROR", "Could not complete validations. ICT-team has been notified. Reason: " + e.getMessage());
+			errorReporter.report("Validation error", e);
+		}
+		return validationData;
+	}
+
+	private void validateDescription(Statement s) {
+		String error = validateDescription(s.getObjectLiteral().getContent());
+		if (error == null) return;
+		String fieldDescription = getFieldDescription(s.getPredicate());
+		setError(fieldDescription, error);
+	}
+
+	private String getFieldDescription(Predicate predicate) {
+		Map<String, List<RdfProperty>> variables = TaxonDescriptionsServlet.cachedDescriptionGroupVariables.get(triplestoreDAO);
+		for (List<RdfProperty> properties : variables.values()) {
+			for (RdfProperty p : properties) {
+				if (p.getQname().toString().equals(predicate.getQname())) {
+					try {
+						return p.getLabel().forLocale("fi") + " - " + p.getLabel().forLocale("en");
+					} catch  (Exception e) {
+						return p.getQname().toString();
+					}
+				}
+			}
+		}
+		throw new IllegalStateException("No desc variable found: " + predicate.getQname());
+	}
+
+	private static final String ALLOWED_TAGS_STRING = "p, a, b, strong, i, em, ul, li";
+	private static final Collection<String> ALLOWED_TAGS; 
+	static {
+		ALLOWED_TAGS = new ArrayList<>();
+		for (String tag : ALLOWED_TAGS_STRING.split(Pattern.quote(","))) {
+			tag = tag.trim();
+			ALLOWED_TAGS.add(tag);
+			ALLOWED_TAGS.add("/"+tag);
+		}
+	}
+
+	private String validateDescription(String content) {
+		if (StringUtils.countOfUTF8Bytes(content) >= 4000) {
+			return "Too long text.";
+		}
+		content = Utils.removeWhitespace(content).toLowerCase();
+		if (content.contains("style=")) {
+			return "Custom styles are not allowed";
+		}
+		Set<String> tags = parseTags(content);
+		tags.removeAll(ALLOWED_TAGS);
+		if (!tags.isEmpty()) {
+			return "Unallowed tag: " + tags.iterator().next() + ". Allowed tags are: " + ALLOWED_TAGS_STRING;
+		}
+		return null;
+	}
+
+	private Set<String> parseTags(String content) {
+		Set<String> tags = new HashSet<>();
+		boolean tagOpen = false;
+		String tag = "";
+		for (char c : content.toCharArray()) {
+			if (c == '<') {
+				tagOpen = true;
+				continue;
+			}
+			if (c == '>') {
+				tagOpen = false;
+				if (!tag.isEmpty()) tags.add(tag);
+				tag = "";
+				continue;
+			}
+			if (tagOpen) {
+				tag += c;
+			}
+		}
+		return tags;
 	}
 
 }

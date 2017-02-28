@@ -46,7 +46,7 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		
 		responseData.setData("newTaxon", taxon);
 		
-		ValidationData validationData = new TaxonValidator(taxonomyDAO, getErrorReporter()).validate(taxon);
+		ValidationData validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);
 		responseData.setData("validationResults", validationData);
 		
 		return responseData;

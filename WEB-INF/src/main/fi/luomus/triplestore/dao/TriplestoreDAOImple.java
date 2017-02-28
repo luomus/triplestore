@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -33,17 +44,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
+import fi.luomus.triplestore.utils.StringUtils;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -200,10 +201,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		if (statement.isLiteralStatement()) {
 			String content = statement.getObjectLiteral().getContent();
 			if (!given(content)) return;
-			if (content.length() >= 4000) {
-				throw new IllegalArgumentException("Content is longer than 4000 characters.");
+			if (content.length() >= 1000) {
+				content = StringUtils.trimToByteLength(content, 4000);
 			}
-			addStatement.setString(i++, statement.getObjectLiteral().getContent());
+			addStatement.setString(i++, content);
 			addStatement.setString(i++, statement.getObjectLiteral().getLangcode());
 		} else {
 			addStatement.setString(i++, statement.getObjectResource().getQname());

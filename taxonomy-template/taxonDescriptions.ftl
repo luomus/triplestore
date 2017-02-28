@@ -26,10 +26,6 @@
 	${taxon.qname}
 </h5>
 
-<#if noPermissions??>
-	<div class="noPermissionsToAlterTaxon"><span class="ui-icon ui-icon-info" title="Note!"></span> You do not have permissions to edit descriptions for this taxon.</div>
-</#if>
-
 <#assign locales = ["fi","sv","en"] />
 
 <#list groups as group>

@@ -8,12 +8,17 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
@@ -21,7 +26,8 @@ public class TaxonValidatorTests {
 
 	private static final Qname GENUSMUS = new Qname("MX.666");
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
-	private final ExtendedTaxonomyDAO dao = new TestTaxonDAO();
+	private final TriplestoreDAO triplestoreDAO = new TriplestoreDAOStub();
+	private final ExtendedTaxonomyDAO taxonomyDAO = new TestTaxonDAO();
 	private final ErrorReporter errorReporter = new ErrorReporingToSystemErr();
 	private static TaxonContainer taxonContainer = new TestTaxonContainer();
 	
@@ -64,7 +70,7 @@ public class TaxonValidatorTests {
 	
 	@Before
 	public void before() {
-		validator = new TaxonValidator(dao, errorReporter);
+		validator = new TaxonValidator(triplestoreDAO, taxonomyDAO, errorReporter);
 		taxon = new Taxon(new Qname("MX.1"), taxonContainer);	
 	}
 	
@@ -246,5 +252,46 @@ public class TaxonValidatorTests {
 		assertEquals("[]", result.getWarnings().toString());
 	}
 	
+	
+	@Test
+	public void test_description_fields() {
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("<p>foobar</p>", "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_description_fields_2() {
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("foobar <iframe>", "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframe. Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_description_fields_2_1() {
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("foobar < iframe src=\"\">", "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframesrc=\"\". Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_description_fields_3() {
+		String longtext = "Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text. Very long text.";
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral(longtext, "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[Yleiskuvaus - General description : Too long text.]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_description_fields_4() {
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("<p style=\"color: red;\">", "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[Yleiskuvaus - General description : Custom styles are not allowed]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
 	
 }

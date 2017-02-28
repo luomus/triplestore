@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.utils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.services.ResponseData;
@@ -9,14 +17,6 @@ import fi.luomus.lajiauth.model.AuthenticationEvent;
 import fi.luomus.lajiauth.model.AuthenticationSource;
 import fi.luomus.lajiauth.model.UserDetails;
 import fi.luomus.lajiauth.service.LajiAuthClient;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class LoginUtil  {
 
@@ -165,7 +165,7 @@ public class LoginUtil  {
 		session.put("user_qname", authentication.getUserQname());
 		session.put("person_token", authentication.getPersonToken());
 		if (authentication.isForAdminUser()) {
-			session.put("role", "admin");
+			// XXX session.put("role", "admin");
 		}
 		session.setTimeout(60 * 7);
 	}

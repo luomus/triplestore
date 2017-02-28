@@ -1,14 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.Content.Context;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperty;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,11 +10,52 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.Content.Context;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
 @WebServlet(urlPatterns = {"/taxonomy-editor/taxon-descriptions/*"})
 public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 
-	private static final Qname SPECIES_DESC_VARIABLES = new Qname("MX.speciesDescriptionVariables");
+	public static final Qname SPECIES_DESC_VARIABLES = new Qname("MX.speciesDescriptionVariables");
 	private static final long serialVersionUID = -2281661002076649983L;
+
+	private static final SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO> cachedDescriptionGroups = 
+			new SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO>(
+					new SingleObjectCacheResourceInjected.CacheLoader<List<RdfProperty>, TriplestoreDAO>() {
+						@Override
+						public List<RdfProperty> load(TriplestoreDAO dao) {
+							try {
+								return dao.getAltValues(SPECIES_DESC_VARIABLES);
+							} catch (Exception e) {
+								throw new RuntimeException("Loading desc groups", e);
+							}
+						}
+					}, 10);
+	
+	public static final SingleObjectCacheResourceInjected<Map<String, List<RdfProperty>>, TriplestoreDAO> cachedDescriptionGroupVariables = 
+			new SingleObjectCacheResourceInjected<Map<String, List<RdfProperty>>, TriplestoreDAO>(
+					new SingleObjectCacheResourceInjected.CacheLoader<Map<String, List<RdfProperty>>, TriplestoreDAO>() {
+						@Override
+						public Map<String, List<RdfProperty>> load(TriplestoreDAO dao) {
+							try {
+								Map<String, List<RdfProperty>> descriptionGroupVariables = new LinkedHashMap<>();
+								List<RdfProperty> descriptionGroups = cachedDescriptionGroups.get(dao);
+								for (RdfProperty descriptionGroup : descriptionGroups) {
+									descriptionGroupVariables.put(descriptionGroup.getQname().toString(), dao.getAltValues(descriptionGroup.getQname()));
+								}
+								return descriptionGroupVariables;
+							} catch (Exception e) {
+								throw new RuntimeException("Loading desc variables", e);
+							}
+						}
+					}, 10);
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -34,33 +66,22 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 		} 
 
 		TriplestoreDAO dao = getTriplestoreDAO();
-		Map<String, List<RdfProperty>> descriptionGroupVariables = new LinkedHashMap<>();
-		List<RdfProperty> descriptionGroups = dao.getAltValues(SPECIES_DESC_VARIABLES);
-		for (RdfProperty descriptionGroup : descriptionGroups) {
-			descriptionGroupVariables.put(descriptionGroup.getQname().toString(), dao.getAltValues(descriptionGroup.getQname()));
-		}
-
 		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
 
+		Map<String, List<RdfProperty>> descriptionGroupVariables = cachedDescriptionGroupVariables.get(dao);
 		Set<String> groupsWithContent = resolveGroupsWithContent(descriptionGroupVariables, taxon);
 
 		if (taxon.getChecklist() != null) {
 			responseData.setData("checklist", taxonomyDAO.getChecklists().get(taxon.getChecklist().toString()));
 		}
 
-		try {
-			checkPermissionsToAlterTaxon(taxon, req);
-		} catch (IllegalAccessException noAcess) {
-			responseData.setData("noPermissions", "true");
-		}
-		
 		return responseData
 				.setViewName("taxonDescriptions")
 				.setData("taxon", taxon)
 				.setData("root", taxon)
 				.setData("variables", descriptionGroupVariables)
-				.setData("groups", descriptionGroups)
+				.setData("groups", cachedDescriptionGroups.get(dao))
 				.setData("groupsWithContent", groupsWithContent);
 	}
 
@@ -79,7 +100,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	private boolean hasContent(Taxon taxon, List<RdfProperty> descriptionVariables) {
 		Context defaultContext = taxon.getDescriptions().getDefaultContext();
 		if (defaultContext == null) return false;
-		
+
 		for (RdfProperty descriptionVariable : descriptionVariables) {
 			String property = descriptionVariable.getQname().toString();
 			if (given(defaultContext.getText(property, "fi"))) {

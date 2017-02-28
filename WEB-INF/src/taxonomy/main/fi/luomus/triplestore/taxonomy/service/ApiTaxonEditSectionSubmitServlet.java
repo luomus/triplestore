@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -24,6 +27,7 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
@@ -42,13 +46,16 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String newPublicationCitation = req.getParameter("newPublicationCitation");
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
 
-		checkPermissionsToAlterTaxon(taxonQname, req);
-
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-
+		
 		RdfProperties properties = dao.getProperties("MX.taxon");
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
+
+		boolean editingDescriptionFields = !containsNonDescriptionFields(usedAndGivenStatements, dao); 
+		if (!editingDescriptionFields) {
+			checkPermissionsToAlterTaxon(taxonQname, req);
+		}
 
 		if (given(newPublicationCitation)) {
 			Publication publication = storePublication(newPublicationCitation, dao);
@@ -66,9 +73,34 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		
 		taxon.invalidate();
 		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
-		ValidationData validationData = new TaxonValidator(taxonomyDAO, getErrorReporter()).validate(taxon);
-		
+		ValidationData validationData;
+		if (editingDescriptionFields) {
+			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validateDescriptions(usedAndGivenStatements.getGivenStatements());
+		} else {
+			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
+		}
+				
 		return new ResponseData().setViewName("api-taxoneditsubmit").setData("validationResults", validationData);
+	}
+
+	private boolean containsNonDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
+		Set<String> descriptionFields = getDescriptionFields(dao);
+		for (Used used : usedAndGivenStatements.getUsed()) {
+			if (!descriptionFields.contains(used.getPredicate().getQname())) return true;
+			
+		}
+		return false;
+	}
+
+	private Set<String> getDescriptionFields(TriplestoreDAO dao) {
+		Set<String> fieldQnames = new HashSet<>();
+		Map<String, List<RdfProperty>> descriptionVariables = TaxonDescriptionsServlet.cachedDescriptionGroupVariables.get(dao);
+		for (List<RdfProperty> properties : descriptionVariables.values()) {
+			for (RdfProperty p : properties) {
+				fieldQnames.add(p.getQname().toString());
+			}
+		}
+		return fieldQnames;
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, Taxon taxon) throws Exception {
