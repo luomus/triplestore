@@ -46,11 +46,15 @@ function initColumnsPortlets() {
 
 	$("#editTaxonContent").find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
 	
-	$(".nameDecidedDate").attr('placeholder', 'yyyy-mm-dd').datepicker({ showOn: "both", dateFormat: "yy-mm-dd", defaultDate: 0, firstDay: 1 });
+	$(".nameDecidedDate").attr('placeholder', 'yyyy-mm-dd').datepicker({ showOn: "both", dateFormat: "yy-mm-dd", defaultDate: 0, firstDay: 1, maxDate: new Date });
 	
+	$("<button>Me</button>").on('click', function() {
+		var myQname = '${user.qname}';
+		$("#nameDecidedBy").val(myQname).trigger("chosen:updated").change();
+		return false;
+	}).insertAfter($("#nameDecidedBy_chosen"));
+
 	$("#editTaxonContent").find("button, .button").button();
-	
-	//$(".taxonEditSection").validate();
 	
 	$(".taxonEditSection").find(":input").bind("change keyup", function() {
 		addSaveButtonTo(this);
