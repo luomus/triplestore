@@ -46,7 +46,7 @@ function initColumnsPortlets() {
 
 	$("#editTaxonContent").find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
 	
-	//$("#editTaxonContent").find(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+	$(".nameDecidedDate").attr('placeholder', 'yyyy-mm-dd').datepicker({ showOn: "both", dateFormat: "yy-mm-dd", defaultDate: 0, firstDay: 1 });
 	
 	$("#editTaxonContent").find("button, .button").button();
 	
