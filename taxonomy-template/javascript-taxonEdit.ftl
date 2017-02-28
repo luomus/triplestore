@@ -46,6 +46,7 @@ function initColumnsPortlets() {
 
 	$("#editTaxonContent").find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
 	
+	<#if !(noPermissions??)>
 	$(".nameDecidedDate").attr('placeholder', 'yyyy-mm-dd').datepicker({ showOn: "both", dateFormat: "yy-mm-dd", defaultDate: 0, firstDay: 1, maxDate: new Date });
 	
 	$("<button>Me</button>").on('click', function() {
@@ -53,6 +54,7 @@ function initColumnsPortlets() {
 		$("#nameDecidedBy").val(myQname).trigger("chosen:updated").change();
 		return false;
 	}).insertAfter($("#nameDecidedBy_chosen"));
+	</#if>
 
 	$("#editTaxonContent").find("button, .button").button();
 	
@@ -60,6 +62,7 @@ function initColumnsPortlets() {
 		addSaveButtonTo(this);
 	});
 	
+	<#if !(noPermissions??)>
 	$(".multirowSection").each(function() {
 		var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
 		$(this).find('table').after(addNewRowButton);
@@ -81,13 +84,16 @@ function initColumnsPortlets() {
 			return false;
 		});
 	});
+	</#if>
 	
 	function addSaveButtonTo(e) {
+		<#if !(noPermissions??)>
 		var section = $(e).closest(".taxonEditSection"); 
 		if (section.find(".saveButton").length === 0) {
 			section.append('<input type="submit" class="saveButton" value="Save changes" />');
 			section.find(".saveButton").button().hide().fadeIn('slow');
 		}
+		</#if>
 	}
 	
 	$(".taxonEditSection").submit(function() {

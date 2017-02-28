@@ -317,7 +317,7 @@
 				<tr>
 					<td>${area.abbreviation}</td><td>&nbsp;${area.name.forLocale("fi")!""}</td>
 					<td>
-						<select name="MO.occurrence___${area.qname}">
+						<select name="MO.occurrence___${area.qname}" <@checkPermissions/>>
 							<option value=""></option>
 							<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
 								<#if taxon.occurrences.hasStatus(area.qname, prop.qname)>
