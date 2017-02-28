@@ -11,6 +11,7 @@ import org.junit.Test;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.triplestore.models.ValidationData;
@@ -18,13 +19,32 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 public class TaxonValidatorTests {
 
+	private static final Qname GENUSMUS = new Qname("MX.666");
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
 	private final ExtendedTaxonomyDAO dao = new TestTaxonDAO();
 	private final ErrorReporter errorReporter = new ErrorReporingToSystemErr();
-	private static TaxonContainer taxonContainer = null;
+	private static TaxonContainer taxonContainer = new TestTaxonContainer();
 	
 	private static final Qname SPECIES = new Qname("MX.species");
 
+	private static class TestTaxonContainer extends TaxonContainerStub {
+		private static final Qname GENUS = new Qname("MX.genus");
+		@Override
+		public boolean hasTaxon(Qname q) {
+			if (q.equals(GENUSMUS)) return true;
+			return false;
+		}
+		@Override
+		public Taxon getTaxon(Qname q) throws NoSuchTaxonException {
+			if (q.equals(GENUSMUS)) {
+				Taxon t = new Taxon(GENUSMUS, this);
+				t.setScientificName("Genusmus");
+				t.setTaxonRank(GENUS);
+				return t;
+			}
+			return null;
+		}
+	}
 	private static class TestTaxonDAO extends TaxonomyDAOStub {
 		@Override
 		public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception {
@@ -134,6 +154,46 @@ public class TaxonValidatorTests {
 		taxon.setScientificName("Unrankedilius taxonomius");
 		ValidationData result = validator.validate(taxon);
 		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_sciname_vs_genusname() {
+		taxon.setScientificName("Genusmus perus");
+		taxon.setTaxonRank(SPECIES);
+		taxon.setParentQname(GENUSMUS); // Name = Genusmus
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_sciname_vs_genusname_2() {
+		taxon.setScientificName("Xxxxx perus");
+		taxon.setTaxonRank(SPECIES);
+		taxon.setParentQname(GENUSMUS); // Name = Genusmus
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[Scientific name : Genus of a species must match the name of the parent genus (Genusmus)]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_sciname_vs_genusname_3() {
+		taxon.setScientificName("Genusmus (Genusmus) perus");
+		taxon.setTaxonRank(SPECIES);
+		taxon.setParentQname(GENUSMUS); // Name = Genusmus
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_sciname_vs_genusname_4() {
+		taxon.setScientificName("Xxxx (Genusmus) perus");
+		taxon.setTaxonRank(SPECIES);
+		taxon.setParentQname(GENUSMUS); // Name = Genusmus
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[Scientific name : Genus of a species must match the name of the parent genus (Genusmus)]", result.getErrors().toString());
 		assertEquals("[]", result.getWarnings().toString());
 	}
 	

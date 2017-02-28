@@ -2,6 +2,7 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.LocalizedTexts;
@@ -9,24 +10,50 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.models.BaseValidator;
+import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
-public class TaxonValidator extends BaseValidator<Taxon> {
+public class TaxonValidator {
+
+	private static final Qname GENUS = new Qname("MX.genus");
 
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
 
 	private static final Qname SPECIES = new Qname("MX.species");
 
 	private final ExtendedTaxonomyDAO dao;
-
+	private final ErrorReporter errorReporter;
+	private final ValidationData validationData;
+	
 	public TaxonValidator(ExtendedTaxonomyDAO dao, ErrorReporter errorReporter) {
-		super(errorReporter);
+		this.errorReporter = errorReporter;
+		this.validationData = new ValidationData();
 		this.dao = dao;
 	}
 
-	@Override
-	public void tryValidate(Taxon taxon) throws Exception {
+	public ValidationData validate(Taxon taxon) {
+		try {
+			tryValidate(taxon);
+		} catch (Exception e) {
+			setError("SYSTEM ERROR", "Could not complete validations. ICT-team has been notified. Reason: " + e.getMessage());
+			errorReporter.report("Validation error", e);
+		}
+		return validationData;
+	}
+	
+	private void setWarning(String field, String warning) {
+		validationData.setWarning(field, warning);
+	}
+
+	private void setError(String field, String error) {
+		validationData.setError(field, error);		
+	}
+	
+	private boolean given(Object o) {
+		return o != null && o.toString().trim().length() > 0;
+	}
+	
+	private void tryValidate(Taxon taxon) throws Exception {
 		if (given(taxon.getScientificNameAuthorship()) && !given(taxon.getScientificName())) {
 			setError("Author", "Author should be given only if scientific name has been given.");
 		}
@@ -132,9 +159,27 @@ public class TaxonValidator extends BaseValidator<Taxon> {
 		}
 		if (taxon.isSpecies() && !taxon.getScientificName().contains(" ")) {
 			setError("Scientific name", "Must contain a space for species and subspecies (etc). Use full form: [Genus] [specific epithet]");
+			return;
+		}
+		
+		if (taxon.isSpecies()) {
+			Taxon genusParentTaxon = taxon.getParentOfRank(GENUS);
+			if (genusParentTaxon != null) {
+				String speciesGenusEpithet = parseGenus(taxon.getScientificName());
+				String parentGenusName = parseGenus(genusParentTaxon.getScientificName());
+				if (!speciesGenusEpithet.equals(parentGenusName)) {
+					setError("Scientific name", "Genus of a species must match the name of the parent genus (" + parentGenusName + ")");
+				}
+			}
 		}
 	}
 
+	private String parseGenus(String scientificName) {
+		if (scientificName == null) return "";
+		if (!scientificName.contains(" ")) return scientificName.trim();
+		return scientificName.split(Pattern.quote(" "))[0].trim();
+	}
+	
 	private String allowSpace(String name) {
 		return name.replace(" ", "");
 	}
