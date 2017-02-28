@@ -4,6 +4,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -17,6 +18,7 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/changeparent/*"})
 public class ApiChangeParentServlet extends ApiBaseServlet {
 
+	private static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
 	private static final long serialVersionUID = 9165675894617551000L;
 
 	@Override
@@ -53,6 +55,7 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentQname)));
+		dao.store(new Subject(taxonQname), new Statement(new Predicate("sortOrder"), new ObjectLiteral(LAST_IN_ORDER)));
 		if (taxon.getChecklist() == null) {
 			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.nameAccordingTo"), new ObjectResource(newParent.getChecklist())));
 			Qname newTaxonConcept = dao.addTaxonConcept();
