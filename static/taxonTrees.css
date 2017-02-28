@@ -183,9 +183,6 @@ div.sortingControls button {
 .taxonChilds li {
 	list-style: none;
 }
-.saveSortingButton {
-	display: none;
-}
 #greyOutElement {
 	position: fixed;
 	top: 0;

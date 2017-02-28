@@ -182,12 +182,7 @@ function enableSorting(e) {
 	disableToolsExcept($(e).closest('.taxonChilds'));
 	$(e).fadeTo(300, 0);
 	$(e).closest('.taxonChildTools').find('.sortingControls').fadeIn(300);
-	$(e).closest('.taxonChilds').find('.childTaxonList').sortable({ 
-		axis: "y",
-		stop: function() {
-			$(e).closest('.taxonChildTools').find('.sortingControls').find('.saveSortingButton').fadeIn(300);
-		} 
-	}).disableSelection();
+	$(e).closest('.taxonChilds').find('.childTaxonList').sortable({ axis: "y" }).disableSelection();
 	originalSortOrder = new Array();
 	$(e).closest('.taxonChilds').find('.taxonWithTools').each(function() {
 		originalSortOrder.push($(this).attr('id'));
@@ -198,7 +193,6 @@ function cancelSorting(e) {
 	list.sortable("destroy");
 	restoreOrder(originalSortOrder, list);
 	$(e).closest('.sortingControls').hide(300);
-	$(e).closest('.sortingControls').find('.saveSortingButton').hide();
 	$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
 	endDisableOfTools();
 }
@@ -218,7 +212,6 @@ function saveSorting(e) {
 	});
 	list.sortable("destroy");
 	$(e).closest('.sortingControls').hide(300);
-	$(e).closest('.sortingControls').find('.saveSortingButton').hide();
 	$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
 	
 	saveOrder(order);
