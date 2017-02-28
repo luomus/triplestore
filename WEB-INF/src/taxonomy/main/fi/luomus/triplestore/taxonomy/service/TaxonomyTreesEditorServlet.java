@@ -1,18 +1,19 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/*"})
 public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 
+	private static final String FAVICON_ICO = "favicon.ico";
 	private static final long serialVersionUID = 2891309144359367681L;
 	public static final Qname DEFAULT_ROOT_QNAME = new Qname("MX.53761");
 
@@ -21,7 +22,7 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req).setViewName("taxonEditMain");
 
 		Qname root = getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(req); 
-		if (root == null) {
+		if (root == null || root.toString().equals(FAVICON_ICO)) {
 			return redirectTo404(res);
 		}
 
