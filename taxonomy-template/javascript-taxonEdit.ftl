@@ -21,6 +21,9 @@ $(function() {
 });
 	
 function editTaxon(e) {
+	if ($(".saveButton").length > 0) {
+		if (!confirm('This taxon has unsaved changes. Are you sure you want to change to a different taxon?')) return;
+	}
 	if ($("#taxonDragMode").prop('checked') === true) return;
 	if (toolsDisabled) return;
 	var taxon = $(e).closest(".taxonWithTools").attr('id');
@@ -178,5 +181,15 @@ function languageChanged(languageSelector) {
 	name = name.split("___")[0] + "___" + selectedLangcode;
 	input.attr("name", name);
 }
+
+
+
+$(window).on('beforeunload', function() {
+	if ($(".saveButton").length > 0) {
+		return "foo";
+	}
+	return undefined;
+});
+
 
 </script>
