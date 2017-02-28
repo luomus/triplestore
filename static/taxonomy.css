@@ -197,6 +197,9 @@ tr.errorMessage td {
 	font-size: 15px;
 	padding: 10px;
 }
+.taxonDeleteContainer .info {
+	max-width: none;
+}
 
 .taxonWithTools.ui-draggable-dragging .taxonDropArea { 
 	visibility: hidden; 

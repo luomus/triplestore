@@ -460,7 +460,8 @@
 		<button id="detachTaxon" class="ui-state-error">Detach taxon</button>
 		<button id="deleteTaxon" class="ui-state-error">Delete taxon</button>
 <#else>
-	<p><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span> Can not delete or detach this taxon, it has critical data.</p>
+	<p><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span> This taxon can not be deleted or detached. It has critical data.</p>
+	<p class="info">(Children, administrative properties, description texts, editors/experts, etc.)</p>
 </#if>
 </div>
 
