@@ -367,7 +367,23 @@
 			Here you can explicitly set or change the editors and experts of this taxon. This will affect this taxon and all child taxons. However, if a child taxon 
 			has a different explicitly set experts or editors, that will override what is set here.
 		</div>
-	
+		
+		<#if !taxon.explicitlySetExperts?has_content && !taxon.explicitlySetEditors?has_content>
+			<p><label>Inherited editors and experts:</label></p>
+		</#if>
+
+		<#if !taxon.explicitlySetEditors?has_content && taxon.editors?has_content>
+			<span class="editor">Editors: 
+				<#list taxon.editors as editorQname>${(persons[editorQname.toString()].fullname)!editorQname}<#if editorQname_has_next>, </#if></#list>
+			</span>
+		<#elseif !taxon.explicitlySetEditors?has_content><span class="editor">Editors: [admin only]</span> </#if>
+
+		<#if !taxon.explicitlySetExperts?has_content && taxon.experts?has_content>
+			<span class="expert">Experts: 
+				<#list taxon.experts as expertQname>${(persons[expertQname.toString()].fullname)!expertQname}<#if expertQname_has_next>, </#if></#list>
+			</span>
+		<#elseif !taxon.explicitlySetExperts?has_content><span class="expert">Experts:[none]</span></#if>
+		
 		<p><label>Editors</label></p>
 		<#list taxon.explicitlySetEditors as editorQname>
 			<p>
