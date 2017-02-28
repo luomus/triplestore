@@ -112,6 +112,24 @@ public class TaxonValidatorTests {
 	}
 	
 	@Test
+	public void test_sciname_6() {
+		taxon.setScientificName("\"Phylpylyrus\"");
+		taxon.setTaxonRank(new Qname("MX.class"));
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_sciname_7() {
+		taxon.setScientificName("Phylpylyrus \"maximus\"");
+		taxon.setTaxonRank(new Qname("MX.species"));
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[Scientific name : Must not contain the character '\"']", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
 	public void test_vernacularName() {
 		taxon.addVernacularName("fi", "pussihukka");
 		ValidationData result = validator.validate(taxon);
