@@ -115,7 +115,7 @@ public class TaxonValidator extends BaseValidator<Taxon> {
 		if (name == null) return;
 		name = name.trim().toLowerCase(); 
 		if (name.isEmpty()) return;
-		if (SUBGENUS.equals(taxon.getTaxonRank()) || taxon.isSpecies()) {
+		if (SUBGENUS.equals(taxon.getTaxonRank()) || taxon.isSpecies() || taxon.getTaxonRank() == null) {
 			name = allowParentheses(name);
 			name = allowSpace(name);
 		}

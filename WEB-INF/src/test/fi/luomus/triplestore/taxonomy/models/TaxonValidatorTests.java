@@ -130,6 +130,14 @@ public class TaxonValidatorTests {
 	}
 	
 	@Test
+	public void test_sciname_8() {
+		taxon.setScientificName("Unrankedilius taxonomius");
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
 	public void test_vernacularName() {
 		taxon.addVernacularName("fi", "pussihukka");
 		ValidationData result = validator.validate(taxon);
