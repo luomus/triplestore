@@ -254,8 +254,16 @@ public class TaxonValidatorTests {
 	
 	
 	@Test
-	public void test_description_fields() {
+	public void test_description_fields_1() {
 		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("<p>foobar</p>", "fi")));
+		ValidationData result = validator.validateDescriptions(s);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_description_fields_1_2() {
+		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("<a href=\"http://..\">foobar</a>", "fi")));
 		ValidationData result = validator.validateDescriptions(s);
 		assertEquals("[]", result.getErrors().toString());
 		assertEquals("[]", result.getWarnings().toString());
@@ -273,7 +281,7 @@ public class TaxonValidatorTests {
 	public void test_description_fields_2_1() {
 		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("foobar < iframe src=\"\">", "fi")));
 		ValidationData result = validator.validateDescriptions(s);
-		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframesrc=\"\". Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
+		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframe. Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
 		assertEquals("[]", result.getWarnings().toString());
 	}
 	
