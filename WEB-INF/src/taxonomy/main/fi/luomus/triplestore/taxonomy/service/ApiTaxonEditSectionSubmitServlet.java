@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -32,6 +21,17 @@ import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
@@ -154,7 +154,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!properties.hasProperty(predicate.getQname())) continue;
 			RdfProperty predicateProperty = properties.getProperty(predicate);
 
-			// luotetaan käyttöliittymään, että saadaan tälle taksonille predikaatista JA kontekstista kaikilla kielillä (tai objektina) tämän resurssi
+			// The UI should submit all information for this predicate in this context for all languages
 			usedAndGivenStatements.addUsed(predicate, context, null);
 			usedAndGivenStatements.addUsed(predicate, context, "fi");
 			usedAndGivenStatements.addUsed(predicate, context, "sv");
