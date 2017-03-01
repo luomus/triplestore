@@ -204,6 +204,19 @@ function restoreOrder(originalSortOrder, list) {
 	});
 }
 
+function sortAlphabetically(e) {
+	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
+    var listitems = $('li', list);
+    listitems.sort(function (a, b) {
+		var compA = $(a).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
+        var compB = $(b).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
+        return (compA < compB) ? -1 : 1;
+    });
+    list.append(listitems);
+    list.sortable("refreshPositions");
+    list.sortable("refresh");
+}
+
 function saveSorting(e) {
 	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
 	var order = new Array();

@@ -30,7 +30,11 @@
 			<a href="${baseURL}/${parentTaxon.qname}" class="button" onclick="changeRoot(this, '${baseURL}/${parentTaxon.qname}'); return false;">Use as work root</a>
 		</div>
 		<div class="clear"></div>
-		<div class="sortingControls ui-widget ui-widget-header""><button class="saveSortingButton" onclick="saveSorting(this);">Save sorting</button> <button onclick="cancelSorting(this);">Cancel</button></div>
+		<div class="sortingControls ui-widget ui-widget-header"">
+			<button class="saveSortingButton" onclick="saveSorting(this);">Save sorting</button>
+			<button class="sortAlphabeticallyButton" onclick="sortAlphabetically(this);">ABC..</button> 
+			<button onclick="cancelSorting(this);">Cancel</button>
+		</div>
 		<div class="clear"></div>
 	</div>
 </@compress></#macro>
