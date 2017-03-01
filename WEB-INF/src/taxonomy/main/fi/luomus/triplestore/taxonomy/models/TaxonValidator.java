@@ -1,13 +1,5 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.LocalizedTexts;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -22,6 +14,14 @@ import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 import fi.luomus.triplestore.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 public class TaxonValidator {
 
@@ -271,15 +271,19 @@ public class TaxonValidator {
 		if (StringUtils.countOfUTF8Bytes(content) >= 4000) {
 			return "Too long text.";
 		}
-		content = Utils.removeWhitespace(content).toLowerCase();
-		if (content.contains("style=")) {
-			return "Custom styles are not allowed";
-		}
+		content = content.toLowerCase();
+		
 		Set<String> tags = parseTags(content);
 		tags.removeAll(ALLOWED_TAGS);
 		if (!tags.isEmpty()) {
 			return "Unallowed tag: " + tags.iterator().next() + ". Allowed tags are: " + ALLOWED_TAGS_STRING;
 		}
+		
+		content = Utils.removeWhitespace(content);
+		if (content.contains("style=")) {
+			return "Custom styles are not allowed";
+		}
+		
 		return null;
 	}
 
@@ -292,7 +296,7 @@ public class TaxonValidator {
 				tagOpen = true;
 				continue;
 			}
-			if (c == '>') {
+			if (tagOpen && (c == '>' || (c == ' ' && !tag.isEmpty()))) {
 				tagOpen = false;
 				if (!tag.isEmpty()) tags.add(tag);
 				tag = "";
@@ -300,6 +304,7 @@ public class TaxonValidator {
 			}
 			if (tagOpen) {
 				tag += c;
+				tag = tag.trim();
 			}
 		}
 		return tags;
