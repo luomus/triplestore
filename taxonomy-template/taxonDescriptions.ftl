@@ -13,7 +13,7 @@
 	</div>
 </div>
 
-<div id="editTaxonDescriptions" class="ui-widget-content">
+<div id="editTaxonDescriptions">
 
 <h6><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h6>
 
@@ -25,6 +25,8 @@
 	&nbsp;
 	${taxon.qname}
 </h5>
+
+<div id="loadsUglyBlocker">Loading... Please wait!</div>
 
 <#assign locales = ["fi","sv","en"] />
 
@@ -62,7 +64,7 @@
 				</div>
 			</#list>
 		</div>
-	<@portletFooter />	
+	<@portletFooter />
 </#macro>
 
 <div class="clear"></div>
@@ -74,25 +76,42 @@
 
 
 <script>
-$(function() {
-	
-	$(".languageTabs").tabs();
-	
+
+function initTinyMCE() {
 	tinymce.init({
 		plugins: 'link code',
-    	selector: 'textarea',
+    	selector: '.tinymcenow',
     	menubar: false,
     	statusbar: false,
     	height: "210",
     	toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
     	setup: function(editor) {
-    		checkIfDisabled(editor);
     		editor.on('change', function(e) {
       			editor.save();
       			updateOriginal(editor.getElement());
     		});
   		}
   	});
+ }
+
+$(function() {
+	
+	$(document).ready(function() {
+		$("textarea:visible").addClass('tinymcenow');
+		initTinyMCE();
+		$(".initiallyClosed").on('click', function() {
+			$(this).next('.portlet-content').find('.ui-tabs-panel').first().find('textarea').addClass('tinymcenow');
+			initTinyMCE();
+		});
+		$("#loadsUglyBlocker").fadeOut('slow');
+	});
+	
+	$(".languageTabs").tabs({
+		activate: function(event, ui) {
+			ui.newPanel.find('textarea').addClass('tinymcenow');
+			initTinyMCE();
+		}
+	});
 	
 	$("#imagesButton").on('click', function() {
 		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}"></iframe></div>');
@@ -119,12 +138,6 @@ $(function() {
 
 function updateOriginal(e) {
 	$(e).trigger('change');
-}
-
-function checkIfDisabled(editor) {
-	if ($(editor.getElement()).prop('disabled') === true) {
-		editor.settings.readonly = true;
-	}
 }
 
 </script>
