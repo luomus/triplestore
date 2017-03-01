@@ -426,8 +426,11 @@ function addNewSynonym(e) {
 	var synonymOfID = $(e).closest('.taxonWithTools').attr('id');
 	$("#addNewSynonymDialog").find(":input").not(":input[type=submit]").val('');
 	$("#synonymOfTaxon").val(synonymOfID);
+	
 	var synonymOfName = $("#"+synonymOfID).find(".scientificName").first().text();
-	$("#synonymOfTaxonName").text(synonymOfName);
+	var synonymOfRank = $("#"+synonymOfID).find(".taxonRank").first().text().replace('[', '').replace(']','');
+	$("#synonymOfTaxonName").text(synonymOfName + " [" + synonymOfRank.replace('MX.','') + ']');
+	$("#newSynonymTaxonrank").val('MX.'+synonymOfRank);
 	$("#addNewSynonymDialog").dialog("open");
 }
 
