@@ -383,16 +383,22 @@ function addNewChild(e) {
 	$("#newTaxonParent").val(parentID);
 	var parentName = $("#"+parentID).find(".scientificName").first().text();
 	var parentRank = 'MX.' + $("#"+parentID).find(".taxonRank").first().text().replace('[', '').replace(']','');
-	$("#newTaxonParentName").text(parentName);
+	$("#newTaxonParentName").text(parentName + " [" + parentRank.replace('MX.','') + ']');
 	
 	$(".trimmedTaxonRankSelect").remove();
+	$(".speciesQuickButton").remove();
+	
 	var taxonRankSelect = $("#allTaxonRanksSelect").clone().removeAttr("id");
 	taxonRankSelect.addClass('trimmedTaxonRankSelect');
 	taxonRankSelect.show();
+	var showSpeciesQuickLink = false;
+	var bellowGenus = false;
 	if (parentRank !== 'MX.NO RANK!' && parentRank !== '') {
 		var remove = true;
 		taxonRankSelect.find('option').each(function() {
 			if ($(this).prop('value') === '') return true;
+			if ($(this).prop('value') === 'MX.genus') { showSpeciesQuickLink = true; bellowGenus = true; }
+			if ($(this).prop('value') === 'MX.species') { showSpeciesQuickLink = false; }
 			if ($(this).prop('value') === parentRank || $(this).prop('value') === 'MX.species') {
 				$(this).remove();
 				return false;
@@ -402,7 +408,17 @@ function addNewChild(e) {
 	}
 	
 	$("#taxonRankSelectPlaceholder").append(taxonRankSelect);
-	
+	if (bellowGenus) {
+		$("#newTaxonScientificName").val('').val(parentName + ' ');
+	}
+	if (showSpeciesQuickLink) {
+		$("#taxonRankSelectPlaceholder")
+			.append($('<button class="speciesQuickButton">species</button>').button()
+			.on('click', function() {
+				$('.trimmedTaxonRankSelect').val('MX.species');
+				return false;
+			}));
+	}
 	$("#addNewTaxonDialog").dialog("open");
 }
 
