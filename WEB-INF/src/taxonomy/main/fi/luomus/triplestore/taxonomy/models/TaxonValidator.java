@@ -244,7 +244,7 @@ public class TaxonValidator {
 		Set<String> tags = parseTags(content);
 		tags.removeAll(ALLOWED_TAGS);
 		if (!tags.isEmpty()) {
-			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next() + ". Allowed tags are: " + StringUtils.ALLOWED_TAGS);
+			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next().replace("/", "") + ". They were removed from the saved content! Allowed tags are: " + StringUtils.ALLOWED_TAGS);
 			return ;
 		}
 		
