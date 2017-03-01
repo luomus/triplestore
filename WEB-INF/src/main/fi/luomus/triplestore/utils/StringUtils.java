@@ -1,10 +1,53 @@
 package fi.luomus.triplestore.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Whitelist;
 
 public class StringUtils {
 
-	public static String trimToByteLength(String s, int size) {
+	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
+	private static final Whitelist WHITELIST;
+	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false);
+	
+	static {
+		WHITELIST = Whitelist.none()
+				.addAttributes("p", "style")
+				.addAttributes("a", "href");
+		for (String tag : ALLOWED_TAGS.split(Pattern.quote(","))) {
+			tag = tag.trim();
+			WHITELIST.addTags(tag);
+		}
+	}
+	
+	public static int countOfUTF8Bytes(String s) {
+		return toUTF8Bytes(s).length;
+	}
+	
+	public static String sanitizeLiteral(String content) {
+		if (!given(content)) return "";
+		if (content.length() >= 1000) {
+			content = StringUtils.trimToByteLength(content, 4000);
+		}
+		content = Jsoup.clean(content, "", WHITELIST, OUTPUT_SETTINGS);
+		content = content.replace("<p></p>", "").trim();
+		while (content.contains("  ")) {
+			content = content.replace("  ", " ");
+		}
+		if (content.endsWith("\n")) {
+			content = content.substring(0, content.length()-1);
+		}
+		return content.trim();
+	}
+	
+	private static boolean given(String s) {
+		return s != null && s.trim().length() > 0;
+	}
+
+	private static String trimToByteLength(String s, int size) {
 		if (s == null) return null;
 		byte[] utf8 = toUTF8Bytes(s);
 		while (utf8.length > size) {
@@ -20,10 +63,6 @@ public class StringUtils {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	public static int countOfUTF8Bytes(String s) {
-		return toUTF8Bytes(s).length;
 	}
 	
 }

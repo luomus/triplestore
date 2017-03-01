@@ -234,10 +234,24 @@ public class TaxonValidator {
 	}
 
 	private void validateDescription(Statement s) {
-		String error = validateDescription(s.getObjectLiteral().getContent());
-		if (error == null) return;
-		String fieldDescription = getFieldDescription(s.getPredicate());
-		setError(fieldDescription, error);
+		String content = s.getObjectLiteral().getContent();
+		
+		if (StringUtils.countOfUTF8Bytes(content) >= 4000) {
+			setError(getFieldDescription(s.getPredicate()), "The text was too long and it has been shortened!");
+		}
+		
+		content = content.toLowerCase();
+		Set<String> tags = parseTags(content);
+		tags.removeAll(ALLOWED_TAGS);
+		if (!tags.isEmpty()) {
+			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next() + ". Allowed tags are: " + StringUtils.ALLOWED_TAGS);
+			return ;
+		}
+		
+		content = Utils.removeWhitespace(content);
+		if (content.contains("style=")) {
+			setWarning(getFieldDescription(s.getPredicate()), "Custom styles are discouraged");
+		}
 	}
 
 	private String getFieldDescription(Predicate predicate) {
@@ -256,35 +270,14 @@ public class TaxonValidator {
 		throw new IllegalStateException("No desc variable found: " + predicate.getQname());
 	}
 
-	private static final String ALLOWED_TAGS_STRING = "p, a, b, strong, i, em, ul, li";
 	private static final Collection<String> ALLOWED_TAGS; 
 	static {
 		ALLOWED_TAGS = new ArrayList<>();
-		for (String tag : ALLOWED_TAGS_STRING.split(Pattern.quote(","))) {
+		for (String tag : StringUtils.ALLOWED_TAGS.split(Pattern.quote(","))) {
 			tag = tag.trim();
 			ALLOWED_TAGS.add(tag);
 			ALLOWED_TAGS.add("/"+tag);
 		}
-	}
-
-	private String validateDescription(String content) {
-		if (StringUtils.countOfUTF8Bytes(content) >= 4000) {
-			return "Too long text.";
-		}
-		content = content.toLowerCase();
-		
-		Set<String> tags = parseTags(content);
-		tags.removeAll(ALLOWED_TAGS);
-		if (!tags.isEmpty()) {
-			return "Unallowed tag: " + tags.iterator().next() + ". Allowed tags are: " + ALLOWED_TAGS_STRING;
-		}
-		
-		content = Utils.removeWhitespace(content);
-		if (content.contains("style=")) {
-			return "Custom styles are not allowed";
-		}
-		
-		return null;
 	}
 
 	private Set<String> parseTags(String content) {

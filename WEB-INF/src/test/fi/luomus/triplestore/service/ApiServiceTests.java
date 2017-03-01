@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -19,6 +18,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.service.EditorBaseServlet.Format;
+import fi.luomus.triplestore.utils.StringUtils;
 
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +31,8 @@ import org.junit.Test;
 
 public class ApiServiceTests {
 
+	private static final String RDF_DESCRIPTION = "rdf:Description";
+	private static final String MX_ORIGIN_AND_DISTRIBUTION_TEXT = "MX.originAndDistributionText";
 	private static TriplestoreDAO dao;
 	private static DataSource dataSource;
 	private static final Qname TEST_RESOURCE_QNAME = new Qname("JA.123");
@@ -226,11 +228,11 @@ public class ApiServiceTests {
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
-		assertEquals("http://tun.fi/JA.123", n.getNode("rdf:Description").getAttribute("rdf:about"));
-		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals("http://tun.fi/JA.123", n.getNode(RDF_DESCRIPTION).getAttribute("rdf:about"));
+		assertEquals(1, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
-		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
-		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+		assertEquals("bar", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getAttribute("xml:lang"));
 
 		// Put    rdfs:label "changed" @ sv for null context
 		predicateQname = "rdfs:label";
@@ -244,10 +246,10 @@ public class ApiServiceTests {
 
 		n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
-		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(1, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
-		assertEquals("changed", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
-		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+		assertEquals("changed", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getAttribute("xml:lang"));
 
 		// Put  rdfs:label "added" @ sv for context JA.1
 		predicateQname = "rdfs:label";
@@ -261,13 +263,13 @@ public class ApiServiceTests {
 
 		n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
-		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(2, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
-		assertEquals("changed", n.getNode("rdf:Description").getNode("rdfs:label").getContents());
-		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label").getAttribute("xml:lang"));
+		assertEquals("changed", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getContents());
+		assertEquals("sv", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label").getAttribute("xml:lang"));
 
-		assertEquals("added", n.getNode("rdf:Description").getNode("rdfs:label_CONTEXT_JA.1").getContents());
-		assertEquals("sv", n.getNode("rdf:Description").getNode("rdfs:label_CONTEXT_JA.1").getAttribute("xml:lang"));
+		assertEquals("added", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label_CONTEXT_JA.1").getContents());
+		assertEquals("sv", n.getNode(RDF_DESCRIPTION).getNode("rdfs:label_CONTEXT_JA.1").getAttribute("xml:lang"));
 	}
 
 	@Test
@@ -288,7 +290,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
-		assertEquals(3, n.getNode("rdf:Description").getChildNodes().size()); // Before changing rdfs:label for no language and null context there are 3 statements
+		assertEquals(3, n.getNode(RDF_DESCRIPTION).getChildNodes().size()); // Before changing rdfs:label for no language and null context there are 3 statements
 
 		// Put    rdfs:label "changed" @ no language for null context
 		String predicateQname = "rdfs:label";
@@ -303,7 +305,7 @@ public class ApiServiceTests {
 		n = new XMLReader().parse(response).getRootNode();
 		assertTrue(response.contains("<rdfs:label xml:lang=\"fi\">baari</rdfs:label>"));
 		assertTrue(response.contains("<rdfs:label>changed</rdfs:label>"));
-		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size()); // Statement for language "fi" should remain!
+		assertEquals(2, n.getNode(RDF_DESCRIPTION).getChildNodes().size()); // Statement for language "fi" should remain!
 	}
 
 	@Test
@@ -322,7 +324,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
-		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(1, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
 		// Put    MZ.isPartOf "JA.2" for null context
 		String predicateQname = "MZ.isPartOf";
@@ -336,7 +338,7 @@ public class ApiServiceTests {
 
 		n = new XMLReader().parse(response).getRootNode();
 		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://tun.fi/JA.2\""));
-		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(1, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 	}
 
 	@Test
@@ -355,7 +357,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
-		assertEquals(1, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(1, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
 		// Put    MZ.isPartOf "JA.2" for null context
 		String predicateQname = "MZ.isPartOf";
@@ -371,7 +373,7 @@ public class ApiServiceTests {
 		n = new XMLReader().parse(response).getRootNode();
 		assertTrue(response.contains("<MZ.isPartOf rdf:resource=\"http://tun.fi/JA.1\""));
 		assertTrue(response.contains("<MZ.isPartOf_CONTEXT_JA.2 rdf:resource=\"http://tun.fi/JA.2\""));
-		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(2, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 	}
 
 	@Test
@@ -392,7 +394,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		System.out.println(response);
 		Node n = new XMLReader().parse(response).getRootNode();
-		assertEquals(3, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(3, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 
 		// Put    rdfs:label "" for language "fi" and null context
 		String predicateQname = "rdfs:label";
@@ -406,7 +408,7 @@ public class ApiServiceTests {
 		System.out.println(response);
 
 		n = new XMLReader().parse(response).getRootNode();
-		assertEquals(2, n.getNode("rdf:Description").getChildNodes().size());
+		assertEquals(2, n.getNode(RDF_DESCRIPTION).getChildNodes().size());
 	}
 
 	@Test
@@ -427,13 +429,79 @@ public class ApiServiceTests {
 
 	@Test
 	public void tooLongLiteralContent() throws Exception {
-		try {
-			String literal = "<p>Perunarutto on peräisin Perun Andeilta tai Meksikosta, josta se levisi 1840-luvun alussa Pohjois-Amerikkaan. Euroopassa taudista on ensimmäisiä havaintoja Belgiasta 1843 tai 1844. Vuoden 1845 syksyllä tauti levisi kulovalkean tavoin Euroopan rannikkoseuduilla ja erityisesti Irlannissa, jossa se tuhosi valtaosan saaren perunasadosta. Tuhot toistuivat seuraavina kesinä entistä pahempina ja seurauksena arviolta miljoona irlantilaista nääntyi nälkään ja arviolta saman verran asukkaita joutui lähtemään siirtolaisiksi Amerikkaan ja Australiaan.</p><p>Suomessa perunaruton esiintymisestä Etelä-Suomessa raportoitiin ensimmäisen kerran eri sanomalehdissä syksyllä 1847. Seuraavana vuonna perunaruttoa esiintyi lehtitietojen mukaan hyvin tuhoisana etenkin Turun ja Viipurin seuduilla, mutta tautia esiintyi myös Pohjois-Suomessa aina Tornionjokilaaksoa myöten. 1800-luvun puolivälistä aina 1900-luvulle perunaruttoa esiintyi sanomalehtitietojen mukaan perunassa miltei joka kesä. Maanlaajuisia perunaruttoepidemioita oli kuitenkin enintään muutamana vuotena vuosikymmentä kohden. Tauti ilmaantui perunapelloille yleensä elokuun puolivälin jälkeen ja satotappiot johtuivat pääsääntöisesti mukuloiden pilaantumisesta kellareissa.</p><p>1900-luvulle asti Suomen maaseudulla asuva valtaväestö ei ollut erityisen riippuvainen perunasta, sitä kasvatettiin ensisijaisesti karjan rehuksi. Täten perunarutto ei Suomessa koskaan aiheuttanut maanlaajuista nälänhätää. Ruttovuosista joutuivat eniten kärsimään köyhät tilattomat ja nopeasti kehittyvien teollisuuspaikkakuntien työväki, joiden tärkeä energianlähde oli palstaviljelmillä kasvatettu peruna.</p><p>1900-luvulla julkaistiin tutkimusraportteja perunaruton esiintymisestä eri vuosikymmenillä ja niiden perusteella taudin esiintyminen oli varsin samanlaista aina 1990-luvulle asti &ndash; ensimmäiset ruttohavainnot tehtiin yleensä elokuun jälkipuoliskolla ja vakavia epidemioita esiintyi 2&ndash;3 kertaa vuosikymmenessä. Yksittäisillä viljelmillä tuhot toki saattoivat olla hyvin suuria. 1950-luvulta alkaen kemiallisia rutontorjunta-aineita alettiin aktiivisesti markkinoida viljelijöille, mutta kemiallinen rutontorjunta alkoi yleistyä vasta 1970-luvulla. Ruton hallitsemiseksi tuolloin tarvittiin enintään 1&ndash;3 torjuntakäsittelyä elo-syyskuussa.</p><p>1980-luvun lopulla perunarutosta tuli aivan uudenlainen ongelmatauti. Meksikosta levisi ensin Manner-Eurooppaan ja sittemmin 1990-luvun kuluessa miltei kaikille muillekin maapallon perunantuotantoalueille hyvin aggressiivinen uusi ruttopopulaatio. Vanha maailmanlaajuinen perunaruton populaatio koostui vain taudinaiheuttajan toisesta pariutumistyypistä (&rdquo;sukupuoli&rdquo;) A1. Toinen pariutumistyyppi A2 oli yleinen ainoastaan Meksikossa. Uusi erittäin nopeasti levittäytynyt populaatio sisälsi molemmat pariutumistyypit. Seurauksena uusi perunarutto alkoi tuottaa maassa säilyviä suvullisia munaitiöitä. Munaitiöiden avulla perunaruton aiheuttaja pystyy säilymään talven yli ilman eläviä perunan mukuloita. Nykyisin myös hyvin aggressiiviset ruttokannat, jotka aiemmin hävisivät tuhotessaan nopeasti perunan mukulat talven aikana, kykenevät säilymään munaitiöinä maassa.</p><p>Vakavin seuraus uuden ruttopopulaation leviämisestä Suomeen 1990-luvulla oli ruttoepidemioiden alun aikaistuminen. Maassa talvehtineet taudinaiheuttajan munaitiöt voivat tartuttaa perunan ja aiheuttaa vakavan epidemian jo taimettumisvaiheessa. Mukuloissa talvehtinut taudinaiheuttaja tarvitsee useita viikkoja lisääntyäkseen tasolle, joka saa aikaan vakavan ruttoepidemian. Suomessa ruton ilmaantuminen perunapelloille aikaistui1980-luvulta 2000-luvun alkuun mennessä 4&ndash;5 viikolla: kun rutto aiemmin iski elokuun puolivälissä, uusi rutto ilmaantuikin pelloille heti juhannuksen jälkeen.</p><p>Aluksi uusi rutto aiheutti pahoja ongelmia, koska torjuntatoimiin ryhdyttiin liian myöhään.&nbsp; Nyt uuden ruton kanssa on opittu elämään ja ajoittamaan torjuntatoimet oikein. Luomutuotannolle ja kotitarveviljelijöille aikaisin alkava perunarutto on kuitenkin pahoina ruttovuosina hyvin suuri ongelma.</p><p>&nbsp;</p>";
-			ApiServlet.put(new Qname("JA.123"), "MX.originAndDistributionText", null, literal, "fi", null, dao);
-			fail("Should throw exception");
-		} catch (IllegalArgumentException e) {
-			assertEquals("Content is longer than 4000 characters.", e.getMessage());
-		}
+		String literal = "<p>Perunarutto on peräisin Perun Andeilta tai Meksikosta, josta se levisi 1840-luvun alussa Pohjois-Amerikkaan. Euroopassa taudista on ensimmäisiä havaintoja Belgiasta 1843 tai 1844. Vuoden 1845 syksyllä tauti levisi kulovalkean tavoin Euroopan rannikkoseuduilla ja erityisesti Irlannissa, jossa se tuhosi valtaosan saaren perunasadosta. Tuhot toistuivat seuraavina kesinä entistä pahempina ja seurauksena arviolta miljoona irlantilaista nääntyi nälkään ja arviolta saman verran asukkaita joutui lähtemään siirtolaisiksi Amerikkaan ja Australiaan.</p><p>Suomessa perunaruton esiintymisestä Etelä-Suomessa raportoitiin ensimmäisen kerran eri sanomalehdissä syksyllä 1847. Seuraavana vuonna perunaruttoa esiintyi lehtitietojen mukaan hyvin tuhoisana etenkin Turun ja Viipurin seuduilla, mutta tautia esiintyi myös Pohjois-Suomessa aina Tornionjokilaaksoa myöten. 1800-luvun puolivälistä aina 1900-luvulle perunaruttoa esiintyi sanomalehtitietojen mukaan perunassa miltei joka kesä. Maanlaajuisia perunaruttoepidemioita oli kuitenkin enintään muutamana vuotena vuosikymmentä kohden. Tauti ilmaantui perunapelloille yleensä elokuun puolivälin jälkeen ja satotappiot johtuivat pääsääntöisesti mukuloiden pilaantumisesta kellareissa.</p><p>1900-luvulle asti Suomen maaseudulla asuva valtaväestö ei ollut erityisen riippuvainen perunasta, sitä kasvatettiin ensisijaisesti karjan rehuksi. Täten perunarutto ei Suomessa koskaan aiheuttanut maanlaajuista nälänhätää. Ruttovuosista joutuivat eniten kärsimään köyhät tilattomat ja nopeasti kehittyvien teollisuuspaikkakuntien työväki, joiden tärkeä energianlähde oli palstaviljelmillä kasvatettu peruna.</p><p>1900-luvulla julkaistiin tutkimusraportteja perunaruton esiintymisestä eri vuosikymmenillä ja niiden perusteella taudin esiintyminen oli varsin samanlaista aina 1990-luvulle asti &ndash; ensimmäiset ruttohavainnot tehtiin yleensä elokuun jälkipuoliskolla ja vakavia epidemioita esiintyi 2&ndash;3 kertaa vuosikymmenessä. Yksittäisillä viljelmillä tuhot toki saattoivat olla hyvin suuria. 1950-luvulta alkaen kemiallisia rutontorjunta-aineita alettiin aktiivisesti markkinoida viljelijöille, mutta kemiallinen rutontorjunta alkoi yleistyä vasta 1970-luvulla. Ruton hallitsemiseksi tuolloin tarvittiin enintään 1&ndash;3 torjuntakäsittelyä elo-syyskuussa.</p><p>1980-luvun lopulla perunarutosta tuli aivan uudenlainen ongelmatauti. Meksikosta levisi ensin Manner-Eurooppaan ja sittemmin 1990-luvun kuluessa miltei kaikille muillekin maapallon perunantuotantoalueille hyvin aggressiivinen uusi ruttopopulaatio. Vanha maailmanlaajuinen perunaruton populaatio koostui vain taudinaiheuttajan toisesta pariutumistyypistä (&rdquo;sukupuoli&rdquo;) A1. Toinen pariutumistyyppi A2 oli yleinen ainoastaan Meksikossa. Uusi erittäin nopeasti levittäytynyt populaatio sisälsi molemmat pariutumistyypit. Seurauksena uusi perunarutto alkoi tuottaa maassa säilyviä suvullisia munaitiöitä. Munaitiöiden avulla perunaruton aiheuttaja pystyy säilymään talven yli ilman eläviä perunan mukuloita. Nykyisin myös hyvin aggressiiviset ruttokannat, jotka aiemmin hävisivät tuhotessaan nopeasti perunan mukulat talven aikana, kykenevät säilymään munaitiöinä maassa.</p><p>Vakavin seuraus uuden ruttopopulaation leviämisestä Suomeen 1990-luvulla oli ruttoepidemioiden alun aikaistuminen. Maassa talvehtineet taudinaiheuttajan munaitiöt voivat tartuttaa perunan ja aiheuttaa vakavan epidemian jo taimettumisvaiheessa. Mukuloissa talvehtinut taudinaiheuttaja tarvitsee useita viikkoja lisääntyäkseen tasolle, joka saa aikaan vakavan ruttoepidemian. Suomessa ruton ilmaantuminen perunapelloille aikaistui1980-luvulta 2000-luvun alkuun mennessä 4&ndash;5 viikolla: kun rutto aiemmin iski elokuun puolivälissä, uusi rutto ilmaantuikin pelloille heti juhannuksen jälkeen.</p><p>Aluksi uusi rutto aiheutti pahoja ongelmia, koska torjuntatoimiin ryhdyttiin liian myöhään.&nbsp; Nyt uuden ruton kanssa on opittu elämään ja ajoittamaan torjuntatoimet oikein. Luomutuotannolle ja kotitarveviljelijöille aikaisin alkava perunarutto on kuitenkin pahoina ruttovuosina hyvin suuri ongelma.</p><p>&nbsp;</p>";
+		assertEquals(4111, literal.length());
+		assertEquals(4221, StringUtils.countOfUTF8Bytes(literal));
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, literal, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		literal = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		assertEquals(3859, literal.length());
+		assertEquals(3977, StringUtils.countOfUTF8Bytes(literal));
 	}
 
+	@Test
+	public void sanitizeLiterals_1() throws Exception {
+		String givenLiteral = "<p>Foobar</p>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		assertEquals(givenLiteral, storedLiteral);
+	}
+
+	@Test
+	public void sanitizeLiterals_2() throws Exception {
+		String givenLiteral = "Foo <a href=\"http://...\">bar</a>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		assertEquals(givenLiteral, storedLiteral);
+	}
+
+	@Test
+	public void sanitizeLiterals_3() throws Exception {
+		String givenLiteral = "Foo <iframe src=\"http://...\"></iframe>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		String expected = "Foo";
+		assertEquals(expected, storedLiteral);
+	}
+	
+	@Test
+	public void sanitizeLiterals_4() throws Exception {
+		String givenLiteral = "Foo <iframe src=\"http://...\"></a>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		String expected = "Foo &lt;/a&gt;";
+		assertEquals(expected, storedLiteral);
+	}
+	
+	@Test
+	public void sanitizeLiterals_5() throws Exception {
+		String givenLiteral = "Foo <p>bar";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		String expected = "Foo <p>bar</p>";
+		assertEquals(expected, storedLiteral);
+	}
+	
+	@Test
+	public void sanitizeLiterals_6() throws Exception {
+		String givenLiteral = "Foo <p>bar</a>";
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		String expected = "Foo <p>bar</p>";
+		assertEquals(expected, storedLiteral);
+	}
+	
 }

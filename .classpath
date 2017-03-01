@@ -31,5 +31,6 @@
 	<classpathentry kind="lib" path="C:/apache-tomcat/lib/tomcat-util.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/laji-auth-client-1.0.3-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/jsoup-1.10.2.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>
