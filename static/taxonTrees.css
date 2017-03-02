@@ -19,6 +19,8 @@ h3 {
 #taxonTree {
 	width: 100%;
 	min-height: 250px;
+	padding-top: 50px;
+	position: relative;
 }
 
 #editTaxon {
@@ -271,4 +273,22 @@ div.loading {
   margin-top: 3em;
   font-size: 2em;
   font-color: rgb(179,193,206);
+}
+
+#rootTree {
+    position: absolute;
+    top: 10px;
+	width: 250px;
+}
+.rootTreeNode a {
+	text-decoration: underline;
+	color: #0088CC;
+	margin-right: 3px;
+}
+.rootTreeNode {
+	float: left;
+	font-size: 70%;
+}
+.rootTreeNode:before {
+	content: "»";
 }

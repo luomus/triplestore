@@ -279,14 +279,12 @@ function changeToShowSynonymsMode() {
 	var url = location.href.split("?")[0] + "?synonymsMode=show";
 	document.location.href = url;
 }
-function goUp() {
-	<#if root.hasParent()>
-			var url = "${baseURL}/${root.parent.qname}";
-			if (!showSynonymsModeIsOn) {
-				url += "?synonymsMode=disable";
-			}
-			document.location.href = url;
-	</#if> 
+function goToTaxon(id) {
+		var url = "${baseURL}/"+id;
+		if (!showSynonymsModeIsOn) {
+			url += "?synonymsMode=disable";
+		}
+		document.location.href = url;
 }
 function changeRoot(e, url) {
 	if(confirmChangeOfRoot(e)) {
