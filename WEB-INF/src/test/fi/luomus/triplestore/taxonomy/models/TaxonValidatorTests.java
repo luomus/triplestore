@@ -273,7 +273,7 @@ public class TaxonValidatorTests {
 	public void test_description_fields_2() {
 		List<Statement> s = Utils.list(new Statement(new Predicate("MX.descriptionText"), new ObjectLiteral("foobar <iframe>", "fi")));
 		ValidationData result = validator.validateDescriptions(s);
-		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframe. Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
+		assertEquals("[Yleiskuvaus - General description : Unallowed tag: iframe. They were removed from the saved content! Allowed tags are: p, a, b, strong, i, em, ul, li]", result.getErrors().toString());
 		assertEquals("[]", result.getWarnings().toString());
 	}
 	
