@@ -432,8 +432,29 @@ function addNewSynonym(e) {
 	$("#addNewSynonymDialog").dialog("open");
 }
 
+function sendTaxon(e) {
+	var taxonToSendID = $(e).closest('.taxonWithTools').attr('id');
+	$("#sendTaxonDialog").find(":input").not(":input[type=submit]").val('');
+	$("#taxonToSendID").val(taxonToSendID);
+	
+	var taxonToSendName = $("#"+taxonToSendID).find(".scientificName").first().text();
+	$("#taxonToSendName").text(taxonToSendName);
+	$("#sendTaxonDialog").dialog("open");
+	return false;
+} 
+
 $(function() {
-	$("#addNewTaxonDialog, #addNewSynonymDialog").dialog({
+	
+	$(document).on('click', '.taxonInfo', function() {
+		editTaxon($(this).closest('.taxonInfo'));
+	});
+	$(document).on('click', '.taxonInfo .ui-icon', function(e) {
+		e.stopPropagation();
+	});
+	$(document).on('click', '.taxonInfo .sendTaxonTool', function(e) {
+		sendTaxon(this);
+	});
+	$(".taxonDialog").dialog({
  		autoOpen: false,
 		modal: true,
 		width: 550
@@ -452,6 +473,14 @@ $(function() {
 		},
 		messages: {
 			newSynonymScientificName: "Scientific name must be given if author given."
+		}
+	});
+	$("#sendTaxonDialogForm").validate({
+		rules: {
+			newParentID: { required: true }
+		},
+		messages: {
+			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
 		}
 	});
 });
@@ -496,6 +525,19 @@ function addNewSynonymDialogSubmit() {
 		synonymContainer.prepend(newSynonym);
 		taxonTreeGraphs.repaintEverything();
 		$("#addNewSynonymDialog").dialog("close");
+		$(".addButton").show();
+  	});
+}
+
+function sendTaxonAsChildDialogSubmit() {
+	if (!$("#sendTaxonDialogForm").valid()) return;
+	
+	var taxonToSendID = $('#taxonToSendID').val();
+	var newParentID = $('#newParentID').val();	
+	$.post('${baseURL}/api/sendtaxon?taxonToSendID='+encodeURIComponent(taxonToSendID)+'&newParentID='+encodeURIComponent(newParentID), function(data) {
+		$('#'+taxonToSendID).remove();
+		taxonTreeGraphs.repaintEverything();
+		$("#sendTaxonDialog").dialog("close");
 		$(".addButton").show();
   	});
 }

@@ -66,7 +66,7 @@
 			</div>
 	</div>
 	
-	<div id="addNewTaxonDialog" title="Add new taxon">
+	<div id="addNewTaxonDialog" class="taxonDialog" title="Add new taxon">
 		<form id="addNewTaxonDialogForm" onsubmit="addNewChildDialogSubmit(); return false;">
 			<input type="hidden" name="newTaxonParent" id="newTaxonParent" />
 			
@@ -93,7 +93,7 @@
 		</form>
 	</div>
 	
-	<div id="addNewSynonymDialog" title="Add new synonym">
+	<div id="addNewSynonymDialog" class="taxonDialog" title="Add new synonym">
 		<form id="addNewSynonymDialogForm" onsubmit="addNewSynonymDialogSubmit(); return false;">
 			<input type="hidden" name="synonymOfTaxon" id="synonymOfTaxon" />
 			<label>Synonym of</label>
@@ -114,6 +114,29 @@
 			</select> 
 			<br />
 			<input type="submit" class="button addButton" value="Add"  />
+		</form>
+	</div>
+	
+	<div id="sendTaxonDialog" class="taxonDialog" title="Send taxon as child">
+		<form id="sendTaxonDialogForm" onsubmit="sendTaxonAsChildDialogSubmit(); return false;">
+			<input type="hidden" name="taxonToSendID" id="taxonToSendID" />
+			<label>Taxon to send</label>
+			<span id="taxonToSendName">name</span>
+			<br />
+			<label for="newParent">New parent</label>
+			<input type="text" id="newParentID" name="newParentID" />
+			<br /> 
+			<label>&nbsp;</label> (type name or part of name and select taxon)
+			<br />
+			<input type="submit" class="button addButton" value="Send"  />
+			<p class="info">
+				The normal way to move a taxon (for example from one genus to other genus) is to open the children of both genuses side-by-side, to enable taxon dragging mode
+				and to drag the desired species to the other genus. However, when you have to move taxa somewhere that is very 'far' in the taxonomy tree, it can take a lot of clicks
+				to get the children side-by-side. Alternative is to use this dialogue to send the taxon to a new parent.</p> 
+			</p>
+			<p class="info">
+				After performing a send, if the new parent's children are visible, you must close and re-open the new parent's children to be able to see the sent taxon.
+			</p>
 		</form>
 	</div>
 	
