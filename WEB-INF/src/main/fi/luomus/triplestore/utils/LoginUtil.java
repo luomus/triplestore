@@ -165,7 +165,7 @@ public class LoginUtil  {
 		session.put("user_qname", authentication.getUserQname());
 		session.put("person_token", authentication.getPersonToken());
 		if (authentication.isForAdminUser()) {
-			//session.put("role", "admin");
+			session.put("role", "admin");
 		}
 		session.setTimeout(60 * 7);
 	}
