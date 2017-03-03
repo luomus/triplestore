@@ -20,7 +20,7 @@
 			<td class="citation">
 				${publication.citation?html}
 				<#if publication.getURI()?has_content>
-					<a href="${publication.getURI()?html}">Link</a>
+					<a href="${publication.getURI()?html}" target="_blank">[Link]</a>
 				</#if>
 			</td>
 			<td><a class="button" href="${baseURL}/publications/${publication.qname}">Modify</a></td>
