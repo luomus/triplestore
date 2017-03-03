@@ -185,6 +185,7 @@
 		</select>
 		</td></tr>
 		</table>
+		<p class="info">When adding a new informal group it is only required to add the 'lowest' group. 'Parent groups' are added automatically. (If you want to see them after saving, reload this view.)</p>
 	<@portletFooter />				
 
 </div>

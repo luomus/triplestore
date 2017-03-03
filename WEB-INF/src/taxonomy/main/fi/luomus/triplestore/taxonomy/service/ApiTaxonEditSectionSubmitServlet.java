@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -22,6 +23,9 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +40,15 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
+	private static final String MO_OCCURRENCE = "MO.occurrence";
+	private static final String CONTEXT = "_CONTEXT_";
+	private static final String EN = "en";
+	private static final String SV = "sv";
+	private static final String FI = "fi";
+	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
 	private static final long serialVersionUID = -5176480667635744000L;
 	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName", "MX.tradeName");
-	private static final Set<String> FI_SV = Utils.set("fi", "sv");
+	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -51,7 +61,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		
 		RdfProperties properties = dao.getProperties("MX.taxon");
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
-
+		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
+		
 		boolean editingDescriptionFields = !containsNonDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
@@ -83,6 +94,35 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return new ResponseData().setViewName("api-taxoneditsubmit").setData("validationResults", validationData);
 	}
 
+	private void addParentInformalGroupsIfGiven(UsedAndGivenStatements usedAndGivenStatements, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		List<Statement> newStatements = new ArrayList<>();
+		for (Statement s : usedAndGivenStatements.getGivenStatements()) {
+			if (s.getPredicate().toString().equals(IS_PART_OF_INFORMAL_TAXON_GROUP)) {
+				newStatements.addAll(parentInformalGroups(s, taxonomyDAO));
+			}
+		}
+		for (Statement s : newStatements) {
+			usedAndGivenStatements.addStatement(s);
+		}
+	}
+
+	private Collection<Statement> parentInformalGroups(Statement s, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		if (!s.isResourceStatement()) return Collections.emptyList();
+		if (!given(s.getObjectResource().getQname())) return Collections.emptyList();
+		
+		List<Statement> parentStatements = new ArrayList<>();
+		String informalGroupId = s.getObjectResource().getQname();
+		InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(informalGroupId);
+		if (group == null) return Collections.emptyList();
+		
+		while (group.hasParent()) {
+			parentStatements.add(new Statement(new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP), new ObjectResource(group.getParent())));
+			group = taxonomyDAO.getInformalTaxonGroups().get(group.getParent().toString());
+			if (group == null) break;
+		}
+		return parentStatements;
+	}
+
 	private boolean containsNonDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
 		Set<String> descriptionFields = getDescriptionFields(dao);
 		for (Used used : usedAndGivenStatements.getUsed()) {
@@ -108,7 +148,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		Occurrences occurrences = new Occurrences(taxon.getQname());
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
-			if (!parameterName.startsWith("MO.occurrence")) continue;
+			if (!parameterName.startsWith(MO_OCCURRENCE)) continue;
 			occurrenceDataGiven = true;
 			Qname area = new Qname(parameterName.split(Pattern.quote("___"))[1]); 
 			Qname status = new Qname(e.getValue()[0]);
@@ -133,7 +173,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
-			if (parameterName.startsWith("MO.occurrence")) continue;
+			if (parameterName.startsWith(MO_OCCURRENCE)) continue;
 			String[] values = e.getValue();
 
 			String langcode = null;
@@ -144,8 +184,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 
 			Context context = null;
-			if (parameterName.contains("_CONTEXT_")) {
-				String[] parts = parameterName.split(Pattern.quote("_CONTEXT_"));
+			if (parameterName.contains(CONTEXT)) {
+				String[] parts = parameterName.split(Pattern.quote(CONTEXT));
 				parameterName = parts[0];
 				context = new Context(parts[1]);
 			}
@@ -156,9 +196,9 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 			// The UI should submit all information for this predicate in this context for all languages
 			usedAndGivenStatements.addUsed(predicate, context, null);
-			usedAndGivenStatements.addUsed(predicate, context, "fi");
-			usedAndGivenStatements.addUsed(predicate, context, "sv");
-			usedAndGivenStatements.addUsed(predicate, context, "en");
+			usedAndGivenStatements.addUsed(predicate, context, FI);
+			usedAndGivenStatements.addUsed(predicate, context, SV);
+			usedAndGivenStatements.addUsed(predicate, context, EN);
 
 			for (String value : values) {
 				if (!given(value)) continue;
