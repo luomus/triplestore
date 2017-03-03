@@ -435,6 +435,7 @@ function addNewSynonym(e) {
 function sendTaxon(e) {
 	var taxonToSendID = $(e).closest('.taxonWithTools').attr('id');
 	$("#sendTaxonDialog").find(":input").not(":input[type=submit]").val('');
+	$("#newParentIdDisplay").text('');
 	$("#taxonToSendID").val(taxonToSendID);
 	
 	var taxonToSendName = $("#"+taxonToSendID).find(".scientificName").first().text();
@@ -476,6 +477,7 @@ $(function() {
 		}
 	});
 	$("#sendTaxonDialogForm").validate({
+		ignore: [],
 		rules: {
 			newParentID: { required: true }
 		},
@@ -483,6 +485,30 @@ $(function() {
 			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
 		}
 	});
+	
+	var cache = {}
+	var autocompleteSourceFunction = function (request, response) {
+		var term = request.term;
+		if (term in cache) {
+			response(cache[term]);
+		} else {
+			$.getJSON('${baseURL}/api/taxon-search/?q='+encodeURIComponent(term)+'&checklist=${checklist.qname}&format=jsonp&callback=?&v=2', function (data) {
+				cache[term] = data.result;
+				response(data.result);
+			});
+		}
+    };
+    var autocompleteTaxonSelectedFunction = function (event, ui) {
+		var selectedName = ui.item.label;
+		var selectedId =  ui.item.value
+		$("#newParentID").val(selectedId);
+		$("#newParentIDSelector").val(selectedName);
+		$("#newParentIdDisplay").text('('+selectedId+')');
+		return false;
+	};
+	
+	$("#newParentIDSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: autocompleteTaxonSelectedFunction })
+	
 });
 
 function addNewChildDialogSubmit() {
@@ -534,12 +560,22 @@ function sendTaxonAsChildDialogSubmit() {
 	
 	var taxonToSendID = $('#taxonToSendID').val();
 	var newParentID = $('#newParentID').val();	
-	$.post('${baseURL}/api/sendtaxon?taxonToSendID='+encodeURIComponent(taxonToSendID)+'&newParentID='+encodeURIComponent(newParentID), function(data) {
+	$.ajax({
+		type: "POST",
+		url: '${baseURL}/api/sendtaxon?taxonToSendID='+encodeURIComponent(taxonToSendID)+'&newParentID='+encodeURIComponent(newParentID),
+		suppressErrors: true 
+	})
+	.done(function(data) {
 		$('#'+taxonToSendID).remove();
 		taxonTreeGraphs.repaintEverything();
 		$("#sendTaxonDialog").dialog("close");
 		$(".addButton").show();
-  	});
+  	})
+  	.fail(function(xhr, status, error) {
+  		$(".addButton").show();
+  		alert(xhr.responseText);
+  		return false;
+  	});	
 }
 
 function changeChecklist() {

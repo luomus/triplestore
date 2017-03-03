@@ -6,10 +6,13 @@ $(function() {
 	});
 	
     $(document).ajaxError(function(event, response, settings, thrownError) {
+    	if (settings.suppressErrors) {
+        	return;
+    	}
     	if (!response.status) {
-    		// ignore, cancelled request
-    		alert('I ignored this! Well, I would if you remove this line!');
-    	} else if (response.status == 403) {
+    		return; // ignore, cancelled request
+    	} 
+    	if (response.status == 403) {
         	document.location.href = document.location.href;
 		} else {
 			document.location.href = '${baseURL}/error?error='+encodeURIComponent(settings.url + ': ' + response.status + ' : ' + thrownError);

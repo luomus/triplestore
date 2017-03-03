@@ -30,10 +30,35 @@ import org.json.XML;
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
+	private static final String NULL = "null";
+	private static final String LIMIT = "limit";
+	private static final String ONLY_FINNISH = "onlyFinnish";
+	private static final String ONLY_SPECIES = "onlySpecies";
+	private static final String ONLY_EXACT = "onlyExact";
+	private static final String TRUE = "true";
+	private static final String ERROR = "error";
+	private static final String CALLBACK = "callback";
+	private static final String EXACT_MATCHES = "exactMatches";
+	private static final String PARTIAL_MATCHES = "partialMatches";
+	private static final String LIKELY_MATCHES = "likelyMatches";
+	private static final String EXACT_MATCH = "exactMatch";
+	private static final String CURSIVE_NAME = "cursiveName";
+	private static final String SPECIES = "species";
+	private static final String TAXON_RANK_ID = "taxonRankId";
+	private static final String SCIENTIFIC_NAME = "scientificName";
+	private static final String SCIENTIFIC_NAME_AUTHORSHIP = "scientificNameAuthorship";
+	private static final String EN = "en";
+	private static final String SV = "sv";
+	private static final String FI = "fi";
+	private static final String ID = "id";
+	private static final String NAME = "name";
+	private static final String TAXON_RANK = "taxonRank";
+	private static final String CHECKLIST = "checklist";
+	private static final String REQUIRED_INFORMAL_TAXON_GROUP = "requiredInformalTaxonGroup";
+	private static final String MATCHING_NAME = "matchingName";
+	private static final String INFORMAL_GROUPS = "informalGroups";
 	private static final int DEFAULT_LIMIT = Integer.MAX_VALUE;
-
 	private static final long serialVersionUID = -1055689074656680611L;
-
 	private static final int ONE_HOUR_IN_SECONDS = 60*60*1;
 	private static final long MAX_TAXON_SEARCH_CACHE_ITEM_COUNT = 20000;
 	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
@@ -92,9 +117,9 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		int limit = getLimit(req);
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
-		boolean onlyExact = "true".equals(req.getParameter("onlyExact"));
-		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
-		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
+		boolean onlyExact = TRUE.equals(req.getParameter(ONLY_EXACT));
+		boolean onlySpecies = TRUE.equals(req.getParameter(ONLY_SPECIES));
+		boolean onlyFinnish = TRUE.equals(req.getParameter(ONLY_FINNISH));
 		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setOnlySpecies(onlySpecies);
 		for (Qname q : requiredInformalGroups) {
 			taxonSearch.addInformalTaxonGroup(q);
@@ -106,17 +131,17 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Format format = getFormat(req);
 
 		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), taxonSearch));
-		if (response.getRootNode().hasAttribute("error")) {
-			if (response.getRootNode().getAttribute("error").startsWith("Search word")) {
+		if (response.getRootNode().hasAttribute(ERROR)) {
+			if (response.getRootNode().getAttribute(ERROR).startsWith("Search word")) {
 				res.setStatus(400);
 			} else {
 				res.setStatus(500);
 			}
 		}
 		if (format == Format.JSONP) {
-			String callback = req.getParameter("callback");
+			String callback = req.getParameter(CALLBACK);
 			if (callback == null || callback.length() < 1) throw new IllegalArgumentException("Callback parameter must be given for jsonp response. Use 'callback'.");
-			return jsonpResponse(toJsonp(response, callback), res);
+			return jsonpResponse(toJsonp(response, callback, version), res);
 		}
 		if (jsonRequest(format)) {
 			if (version == 2) {
@@ -135,9 +160,9 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	private JSONObject toJsonV2(Document response) {
 		JSONObject json = new JSONObject();
 		Node root = response.getRootNode();
-		addJsonV2Matches(json, root, "exactMatch", "exactMatches");
-		addJsonV2Matches(json, root, "likelyMatches", "likelyMatches");
-		addJsonV2Matches(json, root, "partialMatches", "partialMatches");
+		addJsonV2Matches(json, root, EXACT_MATCH, EXACT_MATCHES);
+		addJsonV2Matches(json, root, LIKELY_MATCHES, LIKELY_MATCHES);
+		addJsonV2Matches(json, root, PARTIAL_MATCHES, PARTIAL_MATCHES);
 		return json;
 	}
 
@@ -151,23 +176,23 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 	private JSONObject toJsonV2(Node match) {
 		JSONObject json = new JSONObject();
-		json.setString("id", match.getName());
-		json.setString("matchingName", match.getAttribute("matchingName"));
-		if (match.hasAttribute("scientificName")) {
-			json.setString("scientificName", match.getAttribute("scientificName"));			
+		json.setString(ID, match.getName());
+		json.setString(MATCHING_NAME, match.getAttribute(MATCHING_NAME));
+		if (match.hasAttribute(SCIENTIFIC_NAME)) {
+			json.setString(SCIENTIFIC_NAME, match.getAttribute(SCIENTIFIC_NAME));			
 		}
-		if (match.hasAttribute("scientificNameAuthorship")) {
-			json.setString("scientificNameAuthorship", match.getAttribute("scientificNameAuthorship"));
+		if (match.hasAttribute(SCIENTIFIC_NAME_AUTHORSHIP)) {
+			json.setString(SCIENTIFIC_NAME_AUTHORSHIP, match.getAttribute(SCIENTIFIC_NAME_AUTHORSHIP));
 		}
 		Qname taxonRank = getTaxonRank(match);
 		if (given(taxonRank)) {
-			json.setString("taxonRankId", taxonRank.toString());	
+			json.setString(TAXON_RANK_ID, taxonRank.toString());	
 		}
-		json.setBoolean("species", Taxon.isSpecies(taxonRank));
-		json.setBoolean("cursiveName", Taxon.shouldCursive(taxonRank));
-		if (match.hasChildNodes("informalGroups")) {
-			for (Node group : match.getNode("informalGroups").getChildNodes()) {
-				json.getArray("informalGroups").appendObject(toJSONV2InformalGroup(group));
+		json.setBoolean(SPECIES, Taxon.isSpecies(taxonRank));
+		json.setBoolean(CURSIVE_NAME, Taxon.shouldCursive(taxonRank));
+		if (match.hasChildNodes(INFORMAL_GROUPS)) {
+			for (Node group : match.getNode(INFORMAL_GROUPS).getChildNodes()) {
+				json.getArray(INFORMAL_GROUPS).appendObject(toJSONV2InformalGroup(group));
 			}
 		}
 		return json;
@@ -175,21 +200,21 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 	private JSONObject toJSONV2InformalGroup(Node group) {
 		JSONObject json = new JSONObject();
-		json.setString("id", group.getName());
-		addJSONV2GroupName(group, json, "fi");
-		addJSONV2GroupName(group, json, "sv");
-		addJSONV2GroupName(group, json, "en");
+		json.setString(ID, group.getName());
+		addJSONV2GroupName(group, json, FI);
+		addJSONV2GroupName(group, json, SV);
+		addJSONV2GroupName(group, json, EN);
 		return json;
 	}
 
 	private void addJSONV2GroupName(Node group, JSONObject json, String locale) {
 		if (group.hasAttribute(locale)) {
-			json.getObject("name").setString(locale, group.getAttribute(locale));
+			json.getObject(NAME).setString(locale, group.getAttribute(locale));
 		}
 	}
 
 	private Qname getTaxonRank(Node match) {
-		if (match.hasAttribute("taxonRank")) return new Qname(match.getAttribute("taxonRank"));
+		if (match.hasAttribute(TAXON_RANK)) return new Qname(match.getAttribute(TAXON_RANK));
 		return null;
 	}
 
@@ -200,8 +225,8 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private Set<Qname> parseRequiredInformalGroups(HttpServletRequest req) {
-		if (req.getParameter("requiredInformalTaxonGroup") == null) return Collections.emptySet();
-		String[] groups = req.getParameterValues("requiredInformalTaxonGroup");
+		if (req.getParameter(REQUIRED_INFORMAL_TAXON_GROUP) == null) return Collections.emptySet();
+		String[] groups = req.getParameterValues(REQUIRED_INFORMAL_TAXON_GROUP);
 		Set<Qname> set = new HashSet<>();
 		for (String group : groups) {
 			for (String groupPart : group.split(Pattern.quote(","))) {
@@ -212,18 +237,18 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private Qname parseChecklist(HttpServletRequest req) {
-		String checklistParameter = req.getParameter("checklist");
+		String checklistParameter = req.getParameter(CHECKLIST);
 		if (!given(checklistParameter)) {
 			return MASTER_CHECKLIST;
 		} 
-		if (checklistParameter.equals("null")) {
+		if (checklistParameter.equals(NULL)) {
 			return null;
 		}
 		return new Qname(checklistParameter);
 	}
 
 	private int getLimit(HttpServletRequest req) {
-		String limit = req.getParameter("limit");
+		String limit = req.getParameter(LIMIT);
 		if (limit == null) return DEFAULT_LIMIT;
 		try {
 			return Integer.valueOf(limit);
@@ -241,6 +266,38 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		return new ResponseData().setOutputAlreadyPrinted();
 	}
 
+	protected String toJsonp(Document results, String callback, int version) {
+		if (version == 1) {
+			return toJsonp(results, callback);
+		}
+		if (version == 2) {
+			return toJsonpv2(results, callback);
+		}
+		throw new UnsupportedOperationException("Version " + version);
+	}
+	
+	private String toJsonpv2(Document results, String callback) {
+		JSONObject res = new JSONObject();
+		Set<String> alreadyAdded = new HashSet<>();
+		for (Node matchType : results.getRootNode()) {
+			for (Node match : matchType) {
+				String id = match.getName();
+				String name = match.getAttribute(MATCHING_NAME).replace("'", "\\'");
+				String test = id+name;
+				if (alreadyAdded.contains(test)) continue;
+				String group = match.hasChildNodes(INFORMAL_GROUPS) && match.getNode(INFORMAL_GROUPS).hasChildNodes() ? 
+						match.getNode(INFORMAL_GROUPS).getChildNodes().get(0).getAttribute(EN) : null;
+				String label = group == null ? name : name + " [" + group + "]";
+				JSONObject resultEntry = new JSONObject();
+				resultEntry.setString("value", id);
+				resultEntry.setString("label", label);
+				res.getArray("result").appendObject(resultEntry);
+				alreadyAdded.add(test);
+			}
+		}
+		return callback + "(" + res.toString() + ");";
+	}
+
 	protected String toJsonp(Document results, String callback) {
 		StringBuilder out = new StringBuilder();
 		out.append(callback + "({ result: [");
@@ -248,7 +305,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Set<String> matches = new LinkedHashSet<String>();
 		for (Node matchType : results.getRootNode()) {
 			for (Node match : matchType) {
-				String name = match.getAttribute("matchingName").replace("'", "\\'");
+				String name = match.getAttribute(MATCHING_NAME).replace("'", "\\'");
 				matches.add(name);
 			}
 		}

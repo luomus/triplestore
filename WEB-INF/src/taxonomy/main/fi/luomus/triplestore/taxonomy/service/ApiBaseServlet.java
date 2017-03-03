@@ -52,5 +52,13 @@ public abstract class ApiBaseServlet extends TaxonomyEditorBaseServlet {
 		out.flush();
 		return new ResponseData().setOutputAlreadyPrinted();
 	}
-		
+
+	protected ResponseData apiErrorResponse(String error, HttpServletResponse res) throws IOException {
+		res.setContentType("text/plain");
+		res.setStatus(400);
+		PrintWriter out = res.getWriter();
+		out.print(error);
+		out.flush();
+		return new ResponseData().setOutputAlreadyPrinted();
+	}
 }

@@ -120,15 +120,19 @@
 	<div id="sendTaxonDialog" class="taxonDialog" title="Send taxon as child">
 		<form id="sendTaxonDialogForm" onsubmit="sendTaxonAsChildDialogSubmit(); return false;">
 			<input type="hidden" name="taxonToSendID" id="taxonToSendID" />
+			<input type="hidden" name="newParentID" id="newParentID" />
+						
 			<label>Taxon to send</label>
 			<span id="taxonToSendName">name</span>
 			<br />
+			
 			<label for="newParent">New parent</label>
-			<input type="text" id="newParentID" name="newParentID" />
-			<br /> 
+			<input type="text" id="newParentIDSelector" name="newParentSelector" /> <span id="newParentIdDisplay"></span><br />
 			<label>&nbsp;</label> (type name or part of name and select taxon)
 			<br />
+			
 			<input type="submit" class="button addButton" value="Send"  />
+			
 			<p class="info">
 				The normal way to move a taxon (for example from one genus to other genus) is to open the children of both genuses side-by-side, to enable taxon dragging mode
 				and to drag the desired species to the other genus. However, when you have to move taxa somewhere that is very 'far' in the taxonomy tree, it can take a lot of clicks
@@ -136,6 +140,9 @@
 			</p>
 			<p class="info">
 				After performing a send, if the new parent's children are visible, you must close and re-open the new parent's children to be able to see the sent taxon.
+			</p>
+			<p class="info">
+				You must have permissions to the taxon being send OR to the new parent.
 			</p>
 		</form>
 	</div>

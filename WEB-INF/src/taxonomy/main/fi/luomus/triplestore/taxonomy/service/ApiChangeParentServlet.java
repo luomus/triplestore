@@ -1,9 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -15,10 +11,14 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/changeparent/*"})
 public class ApiChangeParentServlet extends ApiBaseServlet {
 
-	private static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
+	public static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
 	private static final long serialVersionUID = 9165675894617551000L;
 
 	@Override

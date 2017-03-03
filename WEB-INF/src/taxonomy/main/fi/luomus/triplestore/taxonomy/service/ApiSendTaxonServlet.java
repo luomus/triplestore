@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -21,30 +22,41 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		
+
 		String taxonToSendID = req.getParameter("taxonToSendID").replace("MX", "MX.");
 		String newParentID = req.getParameter("newParentID");
-		
+
 		System.out.println(taxonToSendID + " -> " + newParentID);
-		if ("foobar".equals("foobar")) {
-			return apiSuccessResponse(res);
-		}
+
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
 		EditableTaxon newParent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(newParentID));
-		
-		checkPermissionsToAlterTaxon(toSend, req);
-		checkPermissionsToAlterTaxon(newParent, req);
+
+		boolean permissionsToEither = false;
+		try {
+			checkPermissionsToAlterTaxon(toSend, req);
+			permissionsToEither = true;
+		} catch (Exception e) {}
+		if (!permissionsToEither) {
+			try {
+				checkPermissionsToAlterTaxon(newParent, req);
+				permissionsToEither = true;
+			} catch (Exception e) {}
+		}
+		if (!permissionsToEither) {
+			return apiErrorResponse("No permissions to move the taxon. You should have permissions either to the taxon being moved OR the new parent.", res);
+		}
 		
 		toSend.invalidate();
-		
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonToSendID), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentID)));
-		
+		dao.store(new Subject(taxonToSendID), new Statement(new Predicate("sortOrder"), new ObjectLiteral(ApiChangeParentServlet.LAST_IN_ORDER)));
+
 		toSend.invalidate();
 		newParent.invalidate();
-		
+
 		return apiSuccessResponse(res);
 	}
-	
+
 }
