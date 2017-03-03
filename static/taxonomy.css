@@ -305,3 +305,6 @@ span.indent { display: inline-block; }
   font-size: 5em;
 }
 
+#modifyCitation input {
+  width: 600px;
+}

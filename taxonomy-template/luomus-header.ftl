@@ -51,6 +51,9 @@
 		<#include "javascript-iucn.ftl">
 	</#if>
 	
+	<#if page == "publications">
+		<script src="${staticURL}/listjs/list.min.js"></script>
+	</#if>
 	<#include "javascript.ftl">
 	<#if page == "taxonEditMain" || page == "taxonDescriptions">
 		<#include "javascript-taxonTree.ftl">

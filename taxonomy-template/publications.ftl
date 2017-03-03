@@ -7,13 +7,17 @@
 <h1>Create and modify publications</h1>
 
 <p><a href="${baseURL}/publications/add">&raquo; Create new publicaton</a></p>
- 
+
+<div id="publications">
+
+<input class="search" placeholder="Rajaa julkaisuluetteloa" />
+
 <table class="resourceListTable">
-	<tbody>
+	<tbody class="list">
 	<#list publications?values as publication>
 		<tr>
 			<td><a href="${baseURL}/publications/${publication.qname}">${publication.qname}</a></td>
-			<td>
+			<td class="citation">
 				${publication.citation?html}
 				<#if publication.getURI()?has_content>
 					<a href="${publication.getURI()?html}">Link</a>
@@ -24,5 +28,12 @@
 	</#list>
 	</tbody>
 </table>
+</div>
+
+<script>
+$(function() {
+	new List('publications', { valueNames: [ 'citation' ] });
+});
+</script>
 
 <#include "luomus-footer.ftl">

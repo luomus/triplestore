@@ -12,7 +12,7 @@
 	<form action="${baseURL}/publications/${publication.qname}" method="post" id="publicationForm">
 </#if>
 
-	<ul>
+	<ul id="modifyCitation">
 		<li>
 			<label>Citation</label>
 			<textarea name="citation" class="required citation">${publication.citation?html}</textarea>  
