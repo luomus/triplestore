@@ -87,7 +87,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public void addOccurrences(EditableTaxon taxon) {
 		try {
 			Collection<Model> models = triplestoreDAO.getSearchDAO().search(
-					new SearchParams(100, 0)
+					new SearchParams(1000, 0)
 					.type("MO.occurrence")
 					.predicate("MO.taxon")
 					.objectresource(taxon.getQname().toString()));
