@@ -128,12 +128,13 @@ Returns HTTP 200 on success, HTTP 500 on failure.
 
 ##Installation
 
-1. Create LuOnto DB user, grant needed (see bellow)
+1. Create LuOnto DB user, grant needed privileges (see bellow)
 2. Add triplestore-v2.properties to  <catalina.base>/app-conf
 3. Place ojdbc6.jar to <catalina.base>/lib
 4. Add http basic authentication permissions to tomcat-users.xml
 5. Restart tomcat
 6. Deploy triplestore.war
+
 
 ###Grants
 ~~~
@@ -215,6 +216,22 @@ Taxon editor responds from /triplestore/taxonomy-editor
 
 1. Included in Triplestore-API, but requires it's own configuration file
 2. Add triplestore-v2-taxonomyeditor.properties to  <catalina.base>/app-conf
+3. Production enviroment may require allowing cross domain access to Taxon Editor fonts
+
+### tomcat/conf/web.xml - allow cors
+~~~
+   <!-- Allow cross domain access to fonts - This is for taxon editor -->
+    <filter>
+       <filter-name>CorsFilter</filter-name>
+       <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+     </filter>
+     <filter-mapping>
+       <filter-name>CorsFilter</filter-name>
+       <url-pattern>*.ttf</url-pattern>
+       <url-pattern>*.woff</url-pattern>
+     </filter-mapping>
+~~~
+
 
 ###Example configuration file
 ~~~
