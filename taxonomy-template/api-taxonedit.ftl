@@ -434,7 +434,7 @@
 		</table>
 	<@portletFooter />	 
 	
-	<@portletHeader "Secure levels etc (Admin only)" "initiallyClosed" />
+	<@portletHeader "Misc (secure levels, links) (Admin only)" "initiallyClosed" />
 		<@labeledSelect "MX.secureLevel" />
 		<@labeledSelect "MX.breedingSecureLevel" />
 		<@labeledSelect "MX.winteringSecureLevel" />
