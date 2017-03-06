@@ -1,18 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.http.client.methods.HttpGet;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -43,6 +30,24 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
@@ -84,8 +89,9 @@ public class IucnDAOImple implements IucnDAO {
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
-	private final IUCNContainer container;
+	private IUCNContainer container;
 	private final ErrorReporter errorReporter;
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		this.config = config;
@@ -93,6 +99,45 @@ public class IucnDAOImple implements IucnDAO {
 		this.taxonomyDAO = taxonomyDAO;
 		this.container = new IUCNContainer(this);
 		this.errorReporter = errorReporter;
+		startNightlyScheduler();
+		initializeContainer();
+	}
+
+	private void initializeContainer() {
+		try {
+			for (String groupQname : getGroupEditors().keySet()) {
+				container.getTargetsOfGroup(groupQname);
+			}
+		} catch (Exception e) {
+			errorReporter.report(e);
+		}
+	}
+
+	private void startNightlyScheduler() {
+		int repeatPeriod24H = 24 * 60;
+		long initialDelay = calculateInitialDelayTill6AM(repeatPeriod24H);
+		scheduler.scheduleAtFixedRate(
+				new Runnable() {
+					@Override
+					public void run() {
+						container = new IUCNContainer(IucnDAOImple.this);
+						IucnDAOImple.this.initializeContainer();
+					}
+				}, 
+				initialDelay, repeatPeriod24H, TimeUnit.MINUTES);
+	}
+
+	private long calculateInitialDelayTill6AM(int repeatPeriod24H) {
+		Calendar now = Calendar.getInstance();
+		now.setTime(new Date());
+		int hoursNow = now.get(Calendar.HOUR_OF_DAY);
+		int minutesNow = now.get(Calendar.MINUTE);
+
+		int minutesPassed12AM = hoursNow * 60 + minutesNow;
+		int minutesAt6AM = 6 * 60;
+
+		long initialDelay = minutesPassed12AM <= minutesAt6AM ? minutesAt6AM - minutesPassed12AM : repeatPeriod24H - (minutesPassed12AM - minutesAt6AM);
+		return initialDelay;
 	}
 
 	private final SingleObjectCache<Map<String, IUCNEditors>> 
@@ -261,7 +306,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private Map<String, Collection<IUCNEvaluation>> initialEvaluations = null;
 	private final static Object EVAL_LOAD_LOCK = new Object();
-	
+
 	private Collection<IUCNEvaluation> getEvaluations(String speciesQname) throws Exception {
 		if (initialEvaluations == null) {
 			synchronized (EVAL_LOAD_LOCK) {
@@ -276,9 +321,9 @@ public class IucnDAOImple implements IucnDAO {
 
 	private Map<String, Collection<IUCNEvaluation>> loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		
+
 		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
-		 
+
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
 		if (config.developmentMode()) { // XXX
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
@@ -286,7 +331,7 @@ public class IucnDAOImple implements IucnDAO {
 			}
 		}
 		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(searchParams);
-		
+
 		for (Model model :  evaluations) {
 			try {
 				IUCNEvaluation evaluation = createEvaluation(model);
@@ -475,10 +520,10 @@ public class IucnDAOImple implements IucnDAO {
 		return new EditHistoryEntry(thisPeriodData.getValue(IUCNEvaluation.EDIT_NOTES), thisPeriodData.getValue(IUCNEvaluation.LAST_MODIFIED_BY));
 	}
 
-	
 
-	
 
-	
+
+
+
 
 }
