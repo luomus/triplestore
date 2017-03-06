@@ -11,9 +11,9 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
-import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
+import fi.luomus.commons.utils.SingleObjectCache;
+import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
 import fi.luomus.triplestore.dao.SearchParams;
@@ -350,15 +350,15 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return roots;
 	}
 
-	private static final SingleObjectCacheResourceInjected<Map<String, Area>, TaxonomyDAO> cachedBiogeographicalProvinces = 
-			new SingleObjectCacheResourceInjected<Map<String, Area>, TaxonomyDAO>(
-					new SingleObjectCacheResourceInjected.CacheLoader<Map<String, Area>, TaxonomyDAO>() {
+	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 
+			new SingleObjectCache<Map<String, Area>>(
+					new CacheLoader<Map<String, Area>>() {
 						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");
 						@Override
-						public Map<String, Area> load(TaxonomyDAO dao) {
+						public Map<String, Area> load() {
 							try {
 								Map<String, Area> areas = new LinkedHashMap<>();
-								for (Area area : dao.getAreas().values()) {
+								for (Area area : getAreas().values()) {
 									if (area.getType().equals(BIOGEOGRAPHICAL_PROVINCE)) {
 										areas.put(area.getQname().toString(), area);
 									}
@@ -372,7 +372,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
-		return cachedBiogeographicalProvinces.get(this);
+		return cachedBiogeographicalProvinces.get();
 	}
 
 
