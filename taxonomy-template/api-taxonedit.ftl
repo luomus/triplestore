@@ -30,6 +30,24 @@
 		<label>ID</label> ${taxon.qname} 
 		<@labeledSelect "MX.taxonRank" />
 		<@labeledInput "MX.scientificName" />
+		
+		<span id="scientificNameTools">
+			${(taxon.scientificName!"")?html}
+			<span class="hidden" id="alteredScientificName">
+				<br />
+				<label>New scientific name</label>
+				<input type="text" name="alteredScientificname" />
+				<p><label>&nbsp;</label>Type in new name and save</p>
+			</span>
+			<span id="scientificNameToolButtons">
+				<br />
+				<label>&nbsp;</label>
+				<button id="fixTypo">Fix a typo</button> 
+				OR 
+				<button id="alterScientificName">Change name and create synonym</button>
+			</span>
+		</span>
+		
 		<@labeledInput "MX.scientificNameAuthorship" "on" />
 		<br />
 		<label for="nameDecidedBy">Name decision by</label>  

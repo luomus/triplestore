@@ -47,6 +47,21 @@ function editTaxon(e) {
 
 function initColumnsPortlets() {
 
+	$("#fixTypo").on('click', function() {
+		$("#scientificNameTools").fadeOut('fast', function() {
+			$("input.scientificName").fadeIn('slow').focus();
+			$("#scientificNameTools").html('<p><label>&nbsp;</label>Type in fixed name and save</p>').fadeTo('fast', 1);	
+		});
+		return false;
+	});
+	
+	$("#alterScientificName").on('click', function() {
+		$("#scientificNameToolButtons").fadeOut('fast', function() {
+			$("#alteredScientificName").fadeIn('fast');
+		});
+		return false;
+	});
+	
 	$("#editTaxonContent").find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
 	
 	<#if !(noPermissions??)>
