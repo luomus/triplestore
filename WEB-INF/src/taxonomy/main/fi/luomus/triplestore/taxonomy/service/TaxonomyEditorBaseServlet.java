@@ -2,7 +2,6 @@ package fi.luomus.triplestore.taxonomy.service;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
@@ -55,16 +54,16 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		} else {
 			responseData.setData("synonymsMode", "show");
 		}
-		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		TriplestoreDAO dao = getTriplestoreDAO();
 
 		responseData.setData("checklists", taxonomyDAO.getChecklists());
 		responseData.setData("persons", taxonomyDAO.getPersons());
 		responseData.setData("publications", taxonomyDAO.getPublications());
-		responseData.setData("areas", taxonomyDAO.getAreas());
 		responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
 		responseData.setData("properties", dao.getProperties("MX.taxon"));
 		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
+		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));

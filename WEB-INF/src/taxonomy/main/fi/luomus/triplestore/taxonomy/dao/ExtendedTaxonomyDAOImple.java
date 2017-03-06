@@ -1,6 +1,7 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
 import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -8,10 +9,14 @@ import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
+import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
@@ -23,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,20 +86,34 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public void addOccurrences(EditableTaxon taxon) {
 		try {
-			Collection<Model> models = triplestoreDAO.getSearchDAO().search("MO.taxon", taxon.getQname().toString());
+			Collection<Model> models = triplestoreDAO.getSearchDAO().search(
+					new SearchParams(100, 0)
+					.type("MO.occurrence")
+					.predicate("MO.taxon")
+					.objectresource(taxon.getQname().toString()));
 			for (Model model : models) {
 				Qname id = q(model.getSubject());
 				Qname area = null;
 				Qname status = null;
+				String notes = null;
+				Integer year = null;
 				for (Statement s : model.getStatements()) {
 					if (s.getPredicate().getQname().equals("MO.area")) {
 						area = q(s.getObjectResource());
-					}
-					if (s.getPredicate().getQname().equals("MO.status")) {
+					} else if (s.getPredicate().getQname().equals("MO.status")) {
 						status = q(s.getObjectResource());
+					} else if (s.getPredicate().getQname().equals("MO.notes")) {
+						notes = s.getObjectLiteral().getContent();
+					} else if (s.getPredicate().getQname().equals("MO.year")) {
+						try {
+							year = Integer.valueOf(s.getObjectLiteral().getContent());
+						} catch (Exception e) {}
 					}
 				}
-				taxon.getOccurrences().setOccurrence(id, area, status);
+				Occurrence occurrence = new Occurrence(id, area, status);
+				occurrence.setNotes(notes);
+				occurrence.setYear(year);
+				taxon.getOccurrences().setOccurrence(occurrence);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -137,7 +157,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			if (addedCount >= limit) return response;
 
 			if (taxonSearch.isOnlyExact() || searchword.length() <= 3) return response;
-			
+
 			List<Match> likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, taxonSearch, con);
 			response.getLikelyMatches().addAll(likelyMatches);
 			addedCount += likelyMatches.size();
@@ -329,5 +349,31 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		}
 		return roots;
 	}
+
+	private static final SingleObjectCacheResourceInjected<Map<String, Area>, TaxonomyDAO> cachedBiogeographicalProvinces = 
+			new SingleObjectCacheResourceInjected<Map<String, Area>, TaxonomyDAO>(
+					new SingleObjectCacheResourceInjected.CacheLoader<Map<String, Area>, TaxonomyDAO>() {
+						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");
+						@Override
+						public Map<String, Area> load(TaxonomyDAO dao) {
+							try {
+								Map<String, Area> areas = new LinkedHashMap<>();
+								for (Area area : dao.getAreas().values()) {
+									if (area.getType().equals(BIOGEOGRAPHICAL_PROVINCE)) {
+										areas.put(area.getQname().toString(), area);
+									}
+								}
+								return areas;
+							} catch (Exception e) {
+								throw new RuntimeException("Loading biogeographical provinces", e);
+							}
+						}
+					}, 60*60*7);
+
+	@Override
+	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
+		return cachedBiogeographicalProvinces.get(this);
+	}
+
 
 }

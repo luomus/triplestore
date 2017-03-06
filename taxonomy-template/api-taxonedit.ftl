@@ -308,17 +308,18 @@
   <#else>
 	<@portletHeader "Biogeographical province occurrences" "initiallyClosed" />
   </#if>
-		<table>
+		<table id="biogeographicalProvinceTable">
 			<tr>
 				<th colspan="2">Area</th>
 				<th>Status</th>
+				<th>Notes</th>
+				<th>Year</th>
 			</tr>
-			<#list occurrenceProperties.getProperty("MO.area").range.values as areaProp>
-				<#assign area = areas[areaProp.qname]>
+			<#list biogeographicalProvinces?values as area>
 				<tr>
 					<td>${area.abbreviation}</td><td>&nbsp;${area.name.forLocale("fi")!""}</td>
 					<td>
-						<select name="MO.occurrence___${area.qname}" <@checkPermissions/>>
+						<select class="status" name="MO.occurrence___${area.qname}___status" <@checkPermissions/>>
 							<option value=""></option>
 							<#list occurrenceProperties.getProperty("MO.status").range.values as prop>
 								<#if taxon.occurrences.hasStatus(area.qname, prop.qname)>
@@ -328,6 +329,12 @@
 								</#if>
 							</#list>
 						</select>
+					</td>
+					<td>
+						<input class="notes" name="MO.occurrence___${area.qname}___notes" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).notes)!"")?html}">
+					</td>
+					<td>
+						<input class="year" name="MO.occurrence___${area.qname}___year" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).year)!"")?html}">
 					</td>
 				</tr>
 			</#list>

@@ -308,3 +308,10 @@ span.indent { display: inline-block; }
 #modifyCitation input {
   width: 600px;
 }
+
+#biogeographicalProvinceTable .notes {
+  width: 320px;
+}
+#biogeographicalProvinceTable .year {
+  width: 40px;
+}

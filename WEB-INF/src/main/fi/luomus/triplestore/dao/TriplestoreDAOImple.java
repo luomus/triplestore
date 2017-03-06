@@ -672,17 +672,16 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public void store(Occurrences existingOccurrences, Occurrences alteredOccurrences) throws Exception {
-		// TODO voiko nyt käyttää jonkin muun toteutuksen logiikkaa?  Voi: store(model), mutta tämä hakee jokaisen occurences kannasta erikseen ja tämä on jo tehtynä -- ok?
 		for (Occurrence o : alteredOccurrences.getOccurrences()) {
 			Qname area = o.getArea();
 			Occurrence existing = existingOccurrences.getOccurrence(area);
 			if (existing == null) {
 				// insert
 				store(alteredOccurrences.getTaxonQname(), o);
-			} else if (!existing.getStatus().equals(o.getStatus())) {
+			} else if (!existing.equals(o)) {
 				// update
-				existing.setStatus(o.getStatus());
-				updateOccurrence(existing);
+				o.setId(existing.getId());
+				store(alteredOccurrences.getTaxonQname(), o);
 			}
 		}
 		for (Occurrence o : existingOccurrences.getOccurrences()) {
@@ -692,10 +691,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				this.delete(new Subject(o.getId()));
 			}
 		}
-	}
-
-	private void updateOccurrence(Occurrence o) throws SQLException, Exception {
-		this.store(new Subject(o.getId()), new Statement(new Predicate("MO.status"), new ObjectResource(o.getStatus())));
 	}
 
 	@Override

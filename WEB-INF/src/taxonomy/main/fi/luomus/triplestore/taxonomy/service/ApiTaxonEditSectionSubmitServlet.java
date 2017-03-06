@@ -13,6 +13,7 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -58,11 +59,11 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		
+
 		RdfProperties properties = dao.getProperties("MX.taxon");
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
 		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
-		
+
 		boolean editingDescriptionFields = !containsNonDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
@@ -81,7 +82,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 		storeOccurrences(req, dao, taxon);
-		
+
 		taxon.invalidate();
 		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 		ValidationData validationData;
@@ -90,7 +91,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		} else {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
 		}
-				
+
 		return new ResponseData().setViewName("api-taxoneditsubmit").setData("validationResults", validationData);
 	}
 
@@ -109,12 +110,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private Collection<Statement> parentInformalGroups(Statement s, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
 		if (!s.isResourceStatement()) return Collections.emptyList();
 		if (!given(s.getObjectResource().getQname())) return Collections.emptyList();
-		
+
 		List<Statement> parentStatements = new ArrayList<>();
 		String informalGroupId = s.getObjectResource().getQname();
 		InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(informalGroupId);
 		if (group == null) return Collections.emptyList();
-		
+
 		while (group.hasParent()) {
 			parentStatements.add(new Statement(new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP), new ObjectResource(group.getParent())));
 			group = taxonomyDAO.getInformalTaxonGroups().get(group.getParent().toString());
@@ -127,7 +128,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		Set<String> descriptionFields = getDescriptionFields(dao);
 		for (Used used : usedAndGivenStatements.getUsed()) {
 			if (!descriptionFields.contains(used.getPredicate().getQname())) return true;
-			
+
 		}
 		return false;
 	}
@@ -144,21 +145,61 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, Taxon taxon) throws Exception {
-		boolean occurrenceDataGiven = false;
 		Occurrences occurrences = new Occurrences(taxon.getQname());
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
 			if (!parameterName.startsWith(MO_OCCURRENCE)) continue;
-			occurrenceDataGiven = true;
-			Qname area = new Qname(parameterName.split(Pattern.quote("___"))[1]); 
-			Qname status = new Qname(e.getValue()[0]);
-			if (status.isSet()) {
-				occurrences.setOccurrence(null, area, status);
-			}
+			if (e.getValue() == null || e.getValue().length < 1) continue;
+			String value = e.getValue()[0];
+			if (!given(value)) continue;
+			parseOccurrence(parameterName, value, occurrences);
 		}
-		if (occurrenceDataGiven) {
+		if (occurrences.hasOccurrences()) {
 			dao.store(taxon.getOccurrences(), occurrences);
 		}
+	}
+
+	private void parseOccurrence(String parameterName, String value, Occurrences occurrences) {
+		// MO.occurrence___ML.xxx___status
+		// MO.occurrence___ML.xxx___notes
+		// MO.occurrence___ML.xxx___year
+		Qname areaQname = splitAreaQname(parameterName);
+		String field = splitField(parameterName);
+		Occurrence occurrence = occurrences.getOccurrence(areaQname);
+		if (occurrence == null) {
+			occurrence = new Occurrence(null, areaQname, null);
+		}
+		if (field.equals("status")) {
+			occurrence.setStatus(new Qname(value));
+		} else if (field.equals("notes")) {
+			occurrence.setNotes(value);
+		} else if (field.equals("year")) {
+			occurrence.setYear(parseYear(value));
+		}
+		occurrences.setOccurrence(occurrence);
+	}
+
+	private Integer parseYear(String value) {
+		try {
+			String s = "";
+			for (char c : value.toCharArray()) {
+				if (Character.isDigit(c)) {
+					s += c;
+				}
+			}
+			if (s.isEmpty()) return null;
+			return Integer.valueOf(s);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private Qname splitAreaQname(String parameterName) {
+		return new Qname(parameterName.split(Pattern.quote("___"))[1]);
+	}
+
+	private String splitField(String parameterName) {
+		return parameterName.split(Pattern.quote("___"))[2];
 	}
 
 	private Publication storePublication(String newPublicationCitation, TriplestoreDAO dao) throws Exception {

@@ -1,10 +1,5 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import fi.luomus.commons.containers.AdministrativeStatus;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.Checklist;
@@ -20,6 +15,11 @@ import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.xml.Document;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
@@ -163,6 +163,12 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
 	@Override
 	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
 		// Auto-generated method stub
 		return null;
 	}
