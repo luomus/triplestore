@@ -492,7 +492,7 @@ $(function() {
 		if (term in cache) {
 			response(cache[term]);
 		} else {
-			$.getJSON('${baseURL}/api/taxon-search/?q='+encodeURIComponent(term)+'&checklist=${checklist.qname}&format=jsonp&callback=?&v=2', function (data) {
+			$.getJSON('${baseURL}/api/taxon-search/?q='+encodeURIComponent(term)+'&checklist=${(checklist.qname)!"null"}&format=jsonp&callback=?&v=2', function (data) {
 				cache[term] = data.result;
 				response(data.result);
 			});
