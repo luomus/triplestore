@@ -1,5 +1,23 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.http.client.methods.HttpGet;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -30,24 +48,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
@@ -100,7 +100,6 @@ public class IucnDAOImple implements IucnDAO {
 		this.container = new IUCNContainer(this);
 		this.errorReporter = errorReporter;
 		startNightlyScheduler();
-		initializeContainer();
 	}
 
 	private void initializeContainer() {
