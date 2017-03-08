@@ -135,12 +135,21 @@ function initColumnsPortlets() {
 			var alteredAuthor = $("#alteredAuthor").val();
 			scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
 			author = (alteredAuthor) ? alteredAuthor : author;
+			
         	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
         	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
-        	$("#originalNamesView").find('.scientificName').first().text(scientificName);
-        	$("#originalNamesView").find('.author').first().text(author);
+        	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
+        	
         	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
         	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
+        	
+        	if (showSynonymsModeIsOn) {
+        		var taxon = $("#"+qname.replace("MX.", "MX"));
+				taxon.find(".synonyms .synonym").remove();
+				$.get("${baseURL}/api/synonymsOfTaxon/"+qname, function(data) {
+					taxon.find(".synonyms").prepend(data);
+				});				
+			}
         } 
         else if ($(this).hasClass("primaryVernacularNameSection")) {
         	var qname = $(this).find(".taxonQname").first().val();
@@ -151,6 +160,10 @@ function initColumnsPortlets() {
 		return false;
 	});
 	
+	function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {
+       	$("#originalNamesView").find('.scientificName').first().text(scientificName);
+       	$("#originalNamesView").find('.author').first().text(author);
+	}
 	
 	function updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author) {
 		var taxon = $("#"+qname.replace("MX.", "MX"));
@@ -212,7 +225,7 @@ function showSuccess(section, data) {
 		$("#validationDialog").dialog({
 			modal: true, height: 'auto', width: 600, 
 			close: function() { 
-				$("#validationDialog").remove(); 
+				$("#validationDialog").remove();
 				successText.hide().fadeIn('fast', function(){successText.fadeOut(2000,function() {successText.remove()})});
 			}
 		});
