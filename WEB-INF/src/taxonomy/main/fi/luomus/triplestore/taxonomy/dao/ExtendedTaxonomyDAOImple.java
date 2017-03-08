@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -22,17 +33,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
@@ -68,8 +68,8 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		super(config, 60 * 5, 20);
 		this.triplestoreDAO = triplestoreDAO;
-		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this, errorReporter);
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
+		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this, errorReporter);
 	}
 
 	@Override
