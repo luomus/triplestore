@@ -5,13 +5,14 @@ import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
 public class StringUtils {
 
 	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
 	private static final Whitelist WHITELIST;
-	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false);
+	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false).escapeMode(EscapeMode.xhtml);
 	
 	static {
 		WHITELIST = Whitelist.none()
@@ -33,7 +34,7 @@ public class StringUtils {
 			content = StringUtils.trimToByteLength(content, 4000);
 		}
 		content = Jsoup.clean(content, "", WHITELIST, OUTPUT_SETTINGS);
-		content = content.replace("<p></p>", "").trim();
+		content = content.replace("<p></p>", "").replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").trim();
 		while (content.contains("  ")) {
 			content = content.replace("  ", " ");
 		}

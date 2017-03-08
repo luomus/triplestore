@@ -2,9 +2,9 @@ package fi.luomus.triplestore.service;
 
 import static org.junit.Assert.assertEquals;
 
-import fi.luomus.triplestore.utils.StringUtils;
-
 import org.junit.Test;
+
+import fi.luomus.triplestore.utils.StringUtils;
 
 public class StringUtilsTests {
 
@@ -26,17 +26,31 @@ public class StringUtilsTests {
 	
 	@Test
 	public void tags() {
+		assertEquals("Foo bar", StringUtils.sanitizeLiteral("Foo <iframe href=\"...\"></iframe> bar"));
+		assertEquals("Foo", StringUtils.sanitizeLiteral("Foo <iframe src=\"http://...\"></iframe>"));
 		assertEquals("Foo <p>bar</p>", StringUtils.sanitizeLiteral("Foo <p>bar"));
-		assertEquals("Foo &lt; p &gt;bar", StringUtils.sanitizeLiteral("Foo < p >bar"));
+		assertEquals("Foo < p >bar", StringUtils.sanitizeLiteral("Foo < p >bar"));
 		assertEquals("Foo bar", StringUtils.sanitizeLiteral("Foo bar</p>"));
-		assertEquals("Foo bar&lt; /p&gt;", StringUtils.sanitizeLiteral("Foo bar< /p>"));
+		assertEquals("Foo bar< /p>", StringUtils.sanitizeLiteral("Foo bar< /p>"));
 		assertEquals("Foo <a href=\"http://..\">bar</a>", StringUtils.sanitizeLiteral("Foo <a href=\"http://..\">bar</a>"));
 		assertEquals("Foo <a href=\"http://..\">bar</a>", StringUtils.sanitizeLiteral("Foo <a href=\"http://..\">bar"));
 		assertEquals("Foo <a href=\"http://..\"></a>", StringUtils.sanitizeLiteral("Foo <a href=\"http://..\"bar</a>"));
 		assertEquals("Foo", StringUtils.sanitizeLiteral("Foo <a href=\"http://..\"bar"));
 		assertEquals("Foo <a href=\"/relative/MX.1\">bar</a>", StringUtils.sanitizeLiteral("Foo <a href=\"/relative/MX.1\">bar</a>"));
-		
-		assertEquals("Foo bar", StringUtils.sanitizeLiteral("Foo <iframe href=\"...\"></iframe> bar"));
+	}
+	
+	@Test
+	public void escapedTags() {
+		assertEquals("<script>alert('Hello');</script>", StringUtils.sanitizeLiteral("&lt;script&gt;alert('Hello');&lt;/script&gt;")); // We have to allow this
+	}
+	
+	@Test
+	public void noEntities() {
+		assertEquals("\"Hornet's nest\"", StringUtils.sanitizeLiteral("\"Hornet's nest\""));
+		assertEquals("<p>Letter ó</p>", StringUtils.sanitizeLiteral("<p>Letter ó</p>"));
+		assertEquals("\"Linnea\"", StringUtils.sanitizeLiteral("\"Linnea\""));
+		assertEquals("<p><5</p>", StringUtils.sanitizeLiteral("<p><5</p>"));
+		assertEquals("Linnea & Goris", StringUtils.sanitizeLiteral("Linnea & Goris"));
 	}
 	
 }

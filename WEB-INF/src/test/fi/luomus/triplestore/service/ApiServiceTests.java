@@ -5,6 +5,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -19,15 +28,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.service.EditorBaseServlet.Format;
 import fi.luomus.triplestore.utils.StringUtils;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class ApiServiceTests {
 
@@ -478,7 +478,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
-		String expected = "Foo &lt;/a&gt;";
+		String expected = "Foo </a>";
 		assertEquals(expected, storedLiteral);
 	}
 	
