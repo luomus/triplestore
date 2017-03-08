@@ -3,13 +3,14 @@
 -->
 <div id="rootTree">
 	<#macro rootTree taxon>
+		<div class="rootTreeNode">
+			<a href="${taxon.qname}" onclick="goToTaxon('${taxon.qname}'); return false;">
+				<span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span>
+			</a>
+		</div>
 		<#if taxon.hasParent()>
-			<div class="rootTreeNode">
-				<a href="#" onclick="goToTaxon('${taxon.parent.qname}'); return false;">
-					<span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span>
-				</a>
-			</div>
-			<#if !taxon.parent.taxonRank?? || taxon.parent.taxonRank.toString() != "MX.class">
+			<#assign parentRank = (taxon.parent.taxonRank.toString())!"norank">
+			<#if parentRank != "MX.division" && parentRank != "MX.class">
 				<@rootTree taxon.parent /> 
 			</#if>
 		</#if>
@@ -17,12 +18,12 @@
 	<#if root.hasParent()><@rootTree root.parent /></#if>
 </div>
 	
-	<div class="taxonLevel">
+<div class="taxonLevel">
 		
-		<div class="taxonChilds rootTaxonChilds" <#if root.hasParent()>id="${root.parent.qname?replace(".","")}Children"<#else>id="rootTaxonContainer"</#if>>
-			<ul class="childTaxonList">
-				<li><@printTaxon root "rootTaxon" /></li>
-			</ul>			
-		</div>
+	<div class="taxonChilds rootTaxonChilds" <#if root.hasParent()>id="${root.parent.qname?replace(".","")}Children"<#else>id="rootTaxonContainer"</#if>>
+		<ul class="childTaxonList">
+			<li><@printTaxon root "rootTaxon" /></li>
+		</ul>			
 	</div>
+</div>
 
