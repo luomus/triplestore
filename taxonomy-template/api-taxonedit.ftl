@@ -29,27 +29,37 @@
 		<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
 		<label>ID</label> ${taxon.qname} 
 		<@labeledSelect "MX.taxonRank" />
-		<@labeledInput "MX.scientificName" />
-		
-		<span id="scientificNameTools">
-			${(taxon.scientificName!"")?html}
-			<span class="hidden" id="alteredScientificName">
-				<br />
+
+		<div class="clear"></div>
+
+		<div id="scientificNameTools">
+			<div id="originalNamesView">
+				<label>Scientific name</label>
+				<@printScientificNameAndAuthor taxon />
+			</div>
+			<div id="originalNamesInputs" class="hidden">
+				<@labeledInput "MX.scientificName" />
+				<@labeledInput "MX.scientificNameAuthorship" "on" />
+			</div>
+			<div id="alteredNamesInputs" class="hidden">
 				<label>New scientific name</label>
-				<input type="text" name="alteredScientificname" />
-				<p><label>&nbsp;</label>Type in new name and save</p>
-			</span>
-			<span id="scientificNameToolButtons">
+				<input type="text" name="alteredScientificName" id="alteredScientificName" />
 				<br />
+				<label>New authors</label>
+				<input type="text" name="alteredAuthor" id="alteredAuthor" />
+			</div>
+			<span id="scientificNameToolButtons">
 				<label>&nbsp;</label>
-				<button id="fixTypo">Fix a typo</button> 
+				<button id="fixTypo">Fix a mistake</button> 
 				OR 
 				<button id="alterScientificName">Change name and create synonym</button>
 			</span>
-		</span>
+			<div class="clear"></div>
+			<span id="scientificNameHelp"></span>
+		</div>
+
+		<div class="clear"></div>
 		
-		<@labeledInput "MX.scientificNameAuthorship" "on" />
-		<br />
 		<label for="nameDecidedBy">Name decision by</label>  
 		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
@@ -58,8 +68,6 @@
 			</#list>
 		</select>
 		<@labeledInput "MX.nameDecidedDate" "on" />
-		<@labeledTextarea "MX.notes" />
-		<@labeledTextarea "MX.privateNotes" />
 		<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
 		<label>Hidden?</label>	
 		<select name="MX.hiddenTaxon" <@checkPermissions/> >
@@ -69,6 +77,11 @@
 		</select>
 	<@portletFooter />
 	
+	<@portletHeader "Notes" />
+		<@labeledTextarea "MX.notes" />
+		<@labeledTextarea "MX.privateNotes" />
+	<@portletFooter />
+
 	<@portletHeader "Source of taxonomy" "" "multirowSection"/>
 		<table class="publicationSelect">
 			<#list taxon.originalPublications as existingPublicationQname>

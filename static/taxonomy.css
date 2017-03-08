@@ -315,7 +315,3 @@ span.indent { display: inline-block; }
 #biogeographicalProvinceTable .year {
   width: 40px;
 }
-
-input.scientificName {
-  display: none;
-}

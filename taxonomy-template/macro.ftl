@@ -145,7 +145,7 @@
 	<#assign property = properties.getProperty(field)>
 	<#assign cleanedName = cleanName(field)>
 	<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
-	<label for="${cleanedName}" class="${class}">${property.label.forLocale(locale)!field}</label>
+	<label for="${cleanedName}" class="${cleanedName}Label ${class}">${property.label.forLocale(locale)!field}</label>
 </#macro>
 
 <#macro labeledSelect field defaultValue="taxonValue" permissions="requireEditorPermissions" >

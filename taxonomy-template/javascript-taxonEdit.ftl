@@ -48,16 +48,25 @@ function editTaxon(e) {
 function initColumnsPortlets() {
 
 	$("#fixTypo").on('click', function() {
-		$("#scientificNameTools").fadeOut('fast', function() {
-			$("input.scientificName").fadeIn('slow').focus();
-			$("#scientificNameTools").html('<p><label>&nbsp;</label>Type in fixed name and save</p>').fadeTo('fast', 1);	
+		$("#scientificNameToolButtons, #originalNamesView").fadeOut('fast', function() {
+			$("#originalNamesInputs").fadeIn('slow', function() {
+				$("#scientificNameHelp").html('<p class="info">Type in fixed name and save</p>').fadeIn(function() {
+					var e = $("#originalNamesInputs").find("input.scientificName").first(); 
+					var temp = e.val();
+					e.val('').val(temp).focus(); // setval trick is to get focus to last char
+				});
+			});
 		});
-		return false;
+		return false; 
 	});
 	
 	$("#alterScientificName").on('click', function() {
-		$("#scientificNameToolButtons").fadeOut('fast', function() {
-			$("#alteredScientificName").fadeIn('fast');
+		$("#scientificNameToolButtons, #originalNamesView").fadeOut('fast', function() {
+			$("#alteredNamesInputs").fadeIn('slow', function() {
+					$("#scientificNameHelp").html('<p class="info">Type in new name/authors and save. A new synonym is automatically created for the old name.</p>').fadeIn(function() {
+						$("#alteredScientificName").focus(); 
+					});
+				});
 		});
 		return false;
 	});
@@ -118,12 +127,20 @@ function initColumnsPortlets() {
 		if (!$(this).valid()) return false;
 		$(this).find(".saveButton").remove();
 		if ($(this).hasClass("scientificNameSection")) {
-			var qname = $(this).find(".taxonQname").first().val();
-			var taxonRank = $(this).find(".taxonRank").first().val();
-			var scientificName = $(this).find(".scientificName").first().val();
-			var author = $(this).find(".scientificNameAuthorship").first().val();
+			var qname = $(this).find("input.taxonQname").first().val();
+			var taxonRank = $(this).find("select.taxonRank").first().val();
+			var scientificName = $(this).find("input.scientificName").first().val();
+			var author = $(this).find("input.scientificNameAuthorship").first().val();
+			var alteredScientificName = $("#alteredScientificName").val();
+			var alteredAuthor = $("#alteredAuthor").val();
+			scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
+			author = (alteredAuthor) ? alteredAuthor : author;
         	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
         	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
+        	$("#originalNamesView").find('.scientificName').first().text(scientificName);
+        	$("#originalNamesView").find('.author').first().text(author);
+        	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
+        	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
         } 
         else if ($(this).hasClass("primaryVernacularNameSection")) {
         	var qname = $(this).find(".taxonQname").first().val();

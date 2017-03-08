@@ -1,5 +1,20 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
@@ -24,30 +39,25 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
+	private static final long serialVersionUID = -5176480667635744000L;
+	private static final Predicate OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE = new Predicate("MX.occurrenceInFinlandPublication");
+	private static final Predicate ORIGINAL_PUBLICATION_PREDICATE = new Predicate("MX.originalPublication");
+	private static final String MX_TAXON = "MX.taxon";
+	private static final String VALIDATION_RESULTS = "validationResults";
+	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
+	private static final Predicate AUTHOR_PREDICATE = new Predicate(MX_SCIENTIFIC_NAME_AUTHORSHIP);
+	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
+	private static final Predicate SCIENTIFICNAME_PREDICATE = new Predicate(MX_SCIENTIFIC_NAME);
 	private static final String MO_OCCURRENCE = "MO.occurrence";
 	private static final String CONTEXT = "_CONTEXT_";
 	private static final String EN = "en";
 	private static final String SV = "sv";
 	private static final String FI = "fi";
 	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
-	private static final long serialVersionUID = -5176480667635744000L;
+	private static final Predicate IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE = new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP);
 	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName", "MX.tradeName");
 	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
@@ -56,11 +66,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
 		String newPublicationCitation = req.getParameter("newPublicationCitation");
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
-
+		String alteredScientificName = req.getParameter("alteredScientificName");
+		String alteredAuthor = req.getParameter("alteredAuthor");
+		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
-		RdfProperties properties = dao.getProperties("MX.taxon");
+		RdfProperties properties = dao.getProperties(MX_TAXON);
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
 		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
 
@@ -71,18 +83,22 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 		if (given(newPublicationCitation)) {
 			Publication publication = storePublication(newPublicationCitation, dao);
-			usedAndGivenStatements.addStatement(new Statement(new Predicate("MX.originalPublication"), new ObjectResource(publication.getQname())));
+			usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
 		}
 		if (given(newOccurrenceInFinlandPublicationCitation)) {
 			Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
-			usedAndGivenStatements.addStatement(new Statement(new Predicate("MX.occurrenceInFinlandPublication"), new ObjectResource(publication.getQname())));
+			usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
 		}
 
-		dao.store(new Subject(taxonQname), usedAndGivenStatements);
-
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
+		
+		if (given(alteredScientificName)) {
+			setNewScientificNameAndAuthor(alteredScientificName, alteredAuthor, usedAndGivenStatements);
+			createAndStoreSynonym(dao, taxonomyDAO, taxon);
+		}
 		storeOccurrences(req, dao, taxon);
-
+		dao.store(new Subject(taxonQname), usedAndGivenStatements);
+		
 		taxon.invalidate();
 		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 		ValidationData validationData;
@@ -92,7 +108,33 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
 		}
 
-		return new ResponseData().setViewName("api-taxoneditsubmit").setData("validationResults", validationData);
+		return new ResponseData().setViewName("api-taxoneditsubmit").setData(VALIDATION_RESULTS, validationData);
+	}
+
+	private void createAndStoreSynonym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxon) throws Exception {
+		EditableTaxon synonym = taxonomyDAO.createTaxon();
+		synonym.setScientificName(taxon.getScientificName());
+		synonym.setScientificNameAuthorship(taxon.getScientificNameAuthorship());
+		synonym.setTaxonConceptQname(taxon.getTaxonConceptQname());
+		if (given(taxon.getTaxonRank())) {
+			synonym.setTaxonRank(taxon.getTaxonRank());
+		}
+		dao.addTaxon(synonym);
+	}
+
+	private void setNewScientificNameAndAuthor(String alteredScientificName, String alteredAuthor, UsedAndGivenStatements usedAndGivenStatements) {
+		Iterator<Statement> i = usedAndGivenStatements.getGivenStatements().iterator();
+		while (i.hasNext()) {
+			Statement s = i.next();
+			if (s.getPredicate().getQname().equals(MX_SCIENTIFIC_NAME)) {
+				i.remove();
+			}
+			if (s.getPredicate().getQname().equals(MX_SCIENTIFIC_NAME_AUTHORSHIP)) {
+				i.remove();
+			}
+		}
+		usedAndGivenStatements.addStatement(new Statement(SCIENTIFICNAME_PREDICATE, new ObjectLiteral(alteredScientificName)));
+		usedAndGivenStatements.addStatement(new Statement(AUTHOR_PREDICATE, new ObjectLiteral(alteredAuthor)));
 	}
 
 	private void addParentInformalGroupsIfGiven(UsedAndGivenStatements usedAndGivenStatements, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -117,7 +159,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (group == null) return Collections.emptyList();
 
 		while (group.hasParent()) {
-			parentStatements.add(new Statement(new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP), new ObjectResource(group.getParent())));
+			parentStatements.add(new Statement(IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE, new ObjectResource(group.getParent())));
 			group = taxonomyDAO.getInformalTaxonGroups().get(group.getParent().toString());
 			if (group == null) break;
 		}
