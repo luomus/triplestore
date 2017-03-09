@@ -39,7 +39,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		}
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
-		if (!given(synonymParent.getTaxonConceptQname())) {
+		if (!given(synonymParent.getTaxonConceptQname())) { // shouldn't be any
 			Qname taxonConcept = dao.addTaxonConcept();
 			dao.store(new Subject(synonymParent.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxonConcept)));
 			synonymParent.setTaxonConceptQname(taxonConcept);
