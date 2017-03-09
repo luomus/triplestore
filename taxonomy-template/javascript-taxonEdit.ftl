@@ -123,67 +123,6 @@ function initColumnsPortlets() {
 		</#if>
 	}
 	
-	$(".taxonEditSection").submit(function() {
-		if (!$(this).valid()) return false;
-		$(this).find(".saveButton").remove();
-		if ($(this).hasClass("scientificNameSection")) {
-			var qname = $(this).find("input.taxonQname").first().val();
-			var taxonRank = $(this).find("select.taxonRank").first().val();
-			var scientificName = $(this).find("input.scientificName").first().val();
-			var author = $(this).find("input.scientificNameAuthorship").first().val();
-			var alteredScientificName = $("#alteredScientificName").val();
-			var alteredAuthor = $("#alteredAuthor").val();
-			scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
-			author = (alteredAuthor) ? alteredAuthor : author;
-			
-        	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
-        	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
-        	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
-        	
-        	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
-        	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
-        	
-        	if (showSynonymsModeIsOn) {
-        		var taxon = $("#"+qname.replace("MX.", "MX"));
-				taxon.find(".synonyms .synonym").remove();
-				$.get("${baseURL}/api/synonymsOfTaxon/"+qname, function(data) {
-					taxon.find(".synonyms").prepend(data);
-				});				
-			}
-        } 
-        else if ($(this).hasClass("primaryVernacularNameSection")) {
-        	var qname = $(this).find(".taxonQname").first().val();
-			var finnishName = $(this).find(".vernacularName___fi").first().val();
-			updateFinnishNameToTree(qname, finnishName);
-        }
-		submitTaxonEditSection(this); 
-		return false;
-	});
-	
-	function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {
-       	$("#originalNamesView").find('.scientificName').first().text(scientificName);
-       	$("#originalNamesView").find('.author').first().text(author);
-	}
-	
-	function updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author) {
-		var taxon = $("#"+qname.replace("MX.", "MX"));
-		taxon.find(".taxonRank").first().text("["+taxonRank.replace("MX.", "")+"]");
-		taxon.find(".scientificName").first().text(scientificName);
-		taxon.find(".author").first().text(author);
-	}
-	
-	function updateFinnishNameToTree(qname, finnishName) {
-		var taxon = $("#"+qname.replace("MX.", "MX"));
-		taxon.find(".vernacularNameFI").first().text(finnishName);
-	}
-	
-	function updateRankScientificNameAndAuthorToEditHeader(scientificName, author) {
-		var header = $("#taxonEditHeader");
-		header.find(".scientificName").first().text(scientificName);
-		header.find(".author").first().text(author);
-	}
-	
-	
 	$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
 	.find(".portlet-header").addClass("ui-widget-header ui-corner-all")
 	.prepend("<span class='ui-icon ui-icon-minusthick'></span>")
@@ -200,6 +139,13 @@ function initColumnsPortlets() {
 		.toggleClass("ui-icon-plusthick");
 		$(this).parents(".portlet:first").find(".portlet-content").hide();
 	});
+	
+	$(".taxonEditSection").submit(function() {
+		if (!$(this).valid()) return false;
+		$(this).find(".saveButton").remove();
+		submitTaxonEditSection(this);
+		return false;
+	});
 }
 
 function submitTaxonEditSection(section) {
@@ -210,10 +156,68 @@ function submitTaxonEditSection(section) {
         data: values,
         success: function(data) {
         	showSuccess(section, data);
+        	afterTaxonEditSectionSubmit(section);
         }
     });
 }
 
+function afterTaxonEditSectionSubmit(section) {
+	var section = $(section);
+	if (section.hasClass("scientificNameSection")) {
+		var qname = section.find("input.taxonQname").first().val();
+		var taxonRank = section.find("select.taxonRank").first().val();
+		var scientificName = section.find("input.scientificName").first().val();
+		var author = section.find("input.scientificNameAuthorship").first().val();
+		var alteredScientificName = $("#alteredScientificName").val();
+		var alteredAuthor = $("#alteredAuthor").val();
+		scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
+		author = (alteredAuthor) ? alteredAuthor : author;
+			
+       	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
+       	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
+       	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
+        	
+       	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
+       	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
+        	
+       	if (showSynonymsModeIsOn) {
+       		var taxon = $("#"+qname.replace("MX.", "MX"));
+			taxon.find(".synonyms .synonym").remove();
+			$.get("${baseURL}/api/synonymsOfTaxon/"+qname, function(data) {
+				taxon.find(".synonyms").prepend(data);
+			});				
+		}
+    } 
+    else if (section.hasClass("primaryVernacularNameSection")) {
+      	var qname = section.find(".taxonQname").first().val();
+		var finnishName = section.find(".vernacularName___fi").first().val();
+		updateFinnishNameToTree(qname, finnishName);
+    }
+}
+
+function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {
+   	$("#originalNamesView").find('.scientificName').first().text(scientificName);
+   	$("#originalNamesView").find('.author').first().text(author);
+}
+	
+function updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author) {
+	var taxon = $("#"+qname.replace("MX.", "MX"));
+	taxon.find(".taxonRank").first().text("["+taxonRank.replace("MX.", "")+"]");
+	taxon.find(".scientificName").first().text(scientificName);
+	taxon.find(".author").first().text(author);
+}
+	
+function updateFinnishNameToTree(qname, finnishName) {
+	var taxon = $("#"+qname.replace("MX.", "MX"));
+	taxon.find(".vernacularNameFI").first().text(finnishName);
+}
+	
+function updateRankScientificNameAndAuthorToEditHeader(scientificName, author) {
+	var header = $("#taxonEditHeader");
+	header.find(".scientificName").first().text(scientificName);
+	header.find(".author").first().text(author);
+}
+	
 function showSuccess(section, data) {
 	$(".success").remove();
 	var successText = $('<div class="success">Saved!</div>');
