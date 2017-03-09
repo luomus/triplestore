@@ -105,6 +105,7 @@ public class IucnDAOImple implements IucnDAO {
 	private void initializeContainer() {
 		try {
 			for (String groupQname : getGroupEditors().keySet()) {
+				System.out.println("Refreshing informal group to IUCN container: " + groupQname);
 				container.getTargetsOfGroup(groupQname);
 			}
 		} catch (Exception e) {
@@ -119,8 +120,10 @@ public class IucnDAOImple implements IucnDAO {
 				new Runnable() {
 					@Override
 					public void run() {
+						System.out.println("IUCN container being reinitialized...");
 						container = new IUCNContainer(IucnDAOImple.this);
 						IucnDAOImple.this.initializeContainer();
+						System.out.println("Reinitializing IUCN container completed! ");
 					}
 				}, 
 				initialDelay, repeatPeriod24H, TimeUnit.MINUTES);
