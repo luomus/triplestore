@@ -460,55 +460,55 @@
 	<@portletFooter />	
 </div>
 
-<#if user.isAdmin()>
 <div class="column">
 
 	<@portletHeader "Administrative statuses (Admin only)" "initiallyClosed" "multirowSection" />
 		<table>
 		<#list taxon.administrativeStatuses as status>
-			<tr><td><@select "MX.hasAdminStatus" status /></td></tr>
+			<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
 		</#list>
-		<tr><td><@select "MX.hasAdminStatus" status /></td></tr>
+		<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
 		</table>
 	<@portletFooter />	 
 	
-	<@portletHeader "Misc (secure levels, links) (Admin only)" "initiallyClosed" />
-		<@labeledSelect "MX.secureLevel" />
-		<@labeledSelect "MX.breedingSecureLevel" />
-		<@labeledSelect "MX.winteringSecureLevel" />
-		<@labeledSelect "MX.nestSiteSecureLevel" />
-		<@labeledSelect "MX.naturaAreaSecureLevel" />
-
-		<hr />
-		<@labeledInput "MX.customReportFormLink" "on" />
-
-		<hr />
-		<label>External links</label>
-		<table>
-			<#list taxon.externalLinks as link>
-				<tr>
-					<td><@input "MX.externalLinkURL___${link.locale}" "on" link.toString()!"" /></td>
-					<td><@languageSelector link.locale /></td>
-				</tr>
-			</#list>
-				<tr>
-					<td><@input "MX.externalLinkURL___fi" "on" "" /></td>
-					<td><@languageSelector "fi" /></td>
-				</tr>
-			</table>
+	<@portletHeader "Secure levels (Admin only)" "initiallyClosed" />
+		<@labeledSelect "MX.secureLevel" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.breedingSecureLevel" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.winteringSecureLevel" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.nestSiteSecureLevel" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.naturaAreaSecureLevel" "taxonValue" "requireAdminPermissions" />
 	<@portletFooter />
 	
 	<@portletHeader "Invasive species (Admin only)" "initiallyClosed" />
-		<@labeledSelect "MX.invasiveSpeciesCategory" />
-		<@labeledSelect "MX.invasiveSpeciesEstablishment"  />
+		<@labeledSelect "MX.invasiveSpeciesCategory" "taxonValue" "requireAdminPermissions" />
+		<@labeledSelect "MX.invasiveSpeciesEstablishment" "taxonValue" "requireAdminPermissions" />
 		<#list taxon.invasiveSpeciesMainGroups as mainGroup>
-			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup />
+			<@labeledSelect "HBE.invasiveSpeciesMainGroup" mainGroup "requireAdminPermissions" />
 		</#list>
-		<@labeledSelect "HBE.invasiveSpeciesMainGroup" />
+		<@labeledSelect "HBE.invasiveSpeciesMainGroup" "" "requireAdminPermissions" />
 	<@portletFooter />
-
+	
+	<#if user.isAdmin()>
+		<@portletHeader "Misc (Admin only)" "initiallyClosed" />
+			<@labeledInput "MX.customReportFormLink" "on" />
+			<hr />
+			<label>External links</label>
+			<table>
+				<#list taxon.externalLinks as link>
+					<tr>
+						<td><@input "MX.externalLinkURL___${link.locale}" "on" link.toString()!"" /></td>
+						<td><@languageSelector link.locale /></td>
+					</tr>
+				</#list>
+					<tr>
+						<td><@input "MX.externalLinkURL___fi" "on" "" /></td>
+						<td><@languageSelector "fi" /></td>
+					</tr>
+				</table>
+		<@portletFooter />
+	</#if>
 </div>
-</#if>
+
 
 <div class="taxonDeleteContainer">
 <#if !taxon.hasCriticalData()>
