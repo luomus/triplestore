@@ -45,7 +45,9 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 			return apiErrorResponse("No permissions to move the taxon. You should have permissions either to the taxon being moved OR the new parent.", res);
 		}
 		
-		toSend.invalidate();
+		if (toSend.hasParent()) {
+			((EditableTaxon) toSend.getParent()).invalidate();
+		}
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		dao.store(new Subject(taxonToSendID), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentID)));
