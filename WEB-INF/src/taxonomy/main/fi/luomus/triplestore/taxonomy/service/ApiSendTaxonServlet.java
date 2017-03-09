@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -11,10 +15,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/sendtaxon/*"})
 public class ApiSendTaxonServlet extends ApiBaseServlet {
 
@@ -25,8 +25,6 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 		String taxonToSendID = req.getParameter("taxonToSendID").replace("MX", "MX.");
 		String newParentID = req.getParameter("newParentID");
-
-		System.out.println(taxonToSendID + " -> " + newParentID);
 
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
