@@ -69,18 +69,16 @@
 					<@printEditorExpertSpecific taxon.explicitlySetEditors taxon.explicitlySetExperts false />
 				</div>
 			</#if>
-			<#if !taxon.checklist??>
-				<div class="checklistChangesMidTree">
-					Checklist: Orphan taxa
-				</div>
-			<#elseif taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)> 
-				<div class="checklistChangesMidTree">
-					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
-				</div>
-			<#elseif additionalClass="synonym">
-				<div class="checklist">
-					Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
-				</div>
+			<#if additionalClass != "synonym">
+				<#if !taxon.checklist??>
+					<div class="checklistChangesMidTree">
+						Checklist: Orphan taxa
+					</div>
+				<#elseif taxon.hasParent() && !same(taxon.parent.checklist, taxon.checklist)> 
+					<div class="checklistChangesMidTree">
+						Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
+					</div>
+				</#if>
 			</#if>
 			<#if taxon.hidden>
 				<div class="checklistChangesMidTree">

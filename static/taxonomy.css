@@ -203,10 +203,6 @@ tr.errorMessage td {
 	max-width: none;
 }
 
-.taxonWithTools.ui-draggable-dragging .taxonDropArea { 
-	visibility: hidden; 
-}
-
 .showChildrenTools {
 	display: inline-block;
 }

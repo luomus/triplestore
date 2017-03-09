@@ -213,12 +213,16 @@ div.taxonDropArea {
 div.taxonDropArea {
 	cursor: default;
 }
+
 div.ui-draggable-dragging {
-	visibility: hidden;
+	border: 1px solid green;
 }
-div.ui-draggable-dragging .taxonInfo {
-	visibility: visible;
-} 
+div.ui-draggable-dragging .synonyms {
+	display: none;
+}
+div.taxonWithTools.ui-draggable {
+	cursor: move;
+}
 div.taxonDropArea.ui-droppable {
 	opacity: 0.3;
 }
@@ -234,9 +238,6 @@ div.taxonDropArea.ui-droppable.ui-state-active {
 }
 .ui-sortable .taxonWithTools {
 	cursor: ns-resize;
-}
-div.taxonWithTools.ui-draggable {
-	cursor: move;
 }
 .column { display: inline-block; vertical-align: top; text-align: left; }
 .portlet { margin: 0 1em 1em 0; }

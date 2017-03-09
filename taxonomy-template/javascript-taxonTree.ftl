@@ -356,6 +356,10 @@ function taxonDropHandler(event, ui) {
 				droppedTaxon.fadeIn(function() {
 					taxonTreeGraphs.repaintEverything();
 				});
+				droppedTaxon.find(".synonyms .synonym").remove();
+				$.get("${baseURL}/api/synonymsOfTaxon/"+droppedTaxonId, function(data) {
+					droppedTaxon.find(".synonyms").prepend(data);
+				});
 			});
 		} else {
 			var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');

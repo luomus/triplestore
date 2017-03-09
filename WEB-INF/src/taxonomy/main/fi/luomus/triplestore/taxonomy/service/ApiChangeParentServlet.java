@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -11,15 +15,19 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/changeparent/*"})
 public class ApiChangeParentServlet extends ApiBaseServlet {
 
-	public static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
 	private static final long serialVersionUID = 9165675894617551000L;
+
+	public static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
+
+	private static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
+	private static final Predicate SORT_ORDER_PREDICATE = new Predicate("sortOrder");
+	private static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
+	private static final Predicate CIRCUMSCRIPTION_PREDICATE = new Predicate("MX.circumscription");
+	private static final Predicate SCIENTITIF_NAME_PREDICATE = new Predicate("MX.scientificName");
+	private static final Qname GENUS = new Qname("MX.genus");
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -54,15 +62,38 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 		}
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
-		dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.isPartOf"), new ObjectResource(newParentQname)));
-		dao.store(new Subject(taxonQname), new Statement(new Predicate("sortOrder"), new ObjectLiteral(LAST_IN_ORDER)));
+		dao.store(new Subject(taxonQname), new Statement(IS_PART_OF_PREDICATE, new ObjectResource(newParentQname)));
+		dao.store(new Subject(taxonQname), new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(LAST_IN_ORDER)));
 		if (taxon.getChecklist() == null) {
-			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.nameAccordingTo"), new ObjectResource(newParent.getChecklist())));
+			dao.store(new Subject(taxonQname), new Statement(NAME_ACCORDING_TO_PREDICATE, new ObjectResource(newParent.getChecklist())));
 			Qname newTaxonConcept = dao.addTaxonConcept();
-			dao.store(new Subject(taxonQname), new Statement(new Predicate("MX.circumscription"), new ObjectResource(newTaxonConcept)));
+			dao.store(new Subject(taxonQname), new Statement(CIRCUMSCRIPTION_PREDICATE, new ObjectResource(newTaxonConcept)));
 		}
-
+		if (taxon.isSpecies()) {
+			changeScientificNameAndCreateSynonymOfOldName(taxon, newParent, taxonomyDAO, dao);
+		}
+		
+		taxon.invalidate();
+		
 		return apiSuccessResponse(res);
+	}
+
+	private void changeScientificNameAndCreateSynonymOfOldName(EditableTaxon taxon, EditableTaxon newParent, ExtendedTaxonomyDAO taxonomyDAO, TriplestoreDAO dao) throws Exception {
+		String newParentGenus = newParent.getScientificNameOfRank(GENUS);
+		if (!given(newParentGenus)) return;
+		String newScientificName = changeGenus(newParentGenus, taxon.getScientificName());
+		if (!given(newScientificName)) return;
+		if (newScientificName.equals(taxon.getScientificName())) return;
+
+		dao.store(new Subject(taxon.getQname()), new Statement(SCIENTITIF_NAME_PREDICATE, new ObjectLiteral(newScientificName)));
+		ApiTaxonEditSectionSubmitServlet.createAndStoreSynonym(dao, taxonomyDAO, taxon);
+	}
+
+	public static String changeGenus(String genusName, String scientificName) {
+		if (!given(scientificName)) return "";
+		if (!scientificName.contains(" ")) return scientificName;
+		String speciesEpithet = scientificName.substring(scientificName.indexOf(" "));
+		return genusName + speciesEpithet;
 	}
 
 }

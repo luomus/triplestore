@@ -19,6 +19,7 @@ public class ApiSynonymsOfTaxonServlet extends ApiBaseServlet {
 		ResponseData responseData = initResponseData(req).setViewName("api-synonymsOfTaxon");
 		
 		String synonymParentQname = getId(req);
+		if (!synonymParentQname.contains(".")) synonymParentQname = synonymParentQname.replace("MX", "MX.");
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon synonymParent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(synonymParentQname));
 		

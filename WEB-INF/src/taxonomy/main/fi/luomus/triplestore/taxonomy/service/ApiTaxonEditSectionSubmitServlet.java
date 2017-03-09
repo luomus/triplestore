@@ -111,7 +111,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return new ResponseData().setViewName("api-taxoneditsubmit").setData(VALIDATION_RESULTS, validationData);
 	}
 
-	private void createAndStoreSynonym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxon) throws Exception {
+	public static void createAndStoreSynonym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxon) throws Exception {
+		if (!given(taxon.getTaxonConceptQname())) { // shouldn't be any
+			Qname taxonConcept = dao.addTaxonConcept();
+			dao.store(new Subject(taxon.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxonConcept)));
+			taxon.setTaxonConceptQname(taxonConcept);
+			taxon.invalidate();
+		}
 		EditableTaxon synonym = taxonomyDAO.createTaxon();
 		synonym.setScientificName(taxon.getScientificName());
 		synonym.setScientificNameAuthorship(taxon.getScientificNameAuthorship());
@@ -119,6 +125,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (given(taxon.getTaxonRank())) {
 			synonym.setTaxonRank(taxon.getTaxonRank());
 		}
+		System.out.println("Created synonym " + synonym.getQname() + " " + synonym.getScientificName() + " for " + taxon.getQname() + ". Circ: " + taxon.getTaxonConceptQname());
 		dao.addTaxon(synonym);
 	}
 
