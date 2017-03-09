@@ -407,7 +407,7 @@ function addNewChild(e) {
 	
 	$("#taxonRankSelectPlaceholder").append(taxonRankSelect);
 	if (bellowGenus) {
-		$("#newTaxonScientificName").val('').val(parentName + ' ');
+		$("#newTaxonScientificName").val(parentName + ' ');
 	}
 	if (showSpeciesQuickLink) {
 		$("#taxonRankSelectPlaceholder")
@@ -418,6 +418,9 @@ function addNewChild(e) {
 			}));
 	}
 	$("#addNewTaxonDialog").dialog("open");
+	var e = $("#newTaxonScientificName"); 
+	var temp = e.val();
+	e.val('').val(temp).focus(); // setval trick is to get focus to last char
 }
 
 function addNewSynonym(e) {
