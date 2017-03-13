@@ -61,7 +61,7 @@
 			<div class="icons">
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
-				<#if showSynonymsAndSynonymTools && taxon.species><span class="sendTaxonTool ui-icon ui-icon-gear" title="Move"></span></#if>
+				<#if showSynonymsAndSynonymTools && taxon.species><span class="taxonToolButton ui-icon ui-icon-gear" title="Tools"></span></#if>
 			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			

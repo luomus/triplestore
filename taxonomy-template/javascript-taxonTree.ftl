@@ -459,8 +459,30 @@ $(function() {
 	$(document).on('click', '.taxonInfo .ui-icon', function(e) {
 		e.stopPropagation();
 	});
-	$(document).on('click', '.taxonInfo .sendTaxonTool', function(e) {
-		sendTaxon(this);
+	$(document).on('click', '.taxonInfo .taxonToolButton', function(e) {
+		$("#menu").remove();
+		var menu = $('<ul id="menu"></ul>');
+		menu.on('click', function() { return false; });
+		var menuMove = $('<li id="menuMove">Move</li>');
+		menuMove.on('click', function() {
+			sendTaxon(this);
+			return false;
+		});
+		menu.append(menuMove);
+		var hasCriticalData = $(this).closest('.taxonInfo').find('.criticalData').length > 0;
+		if (!hasCriticalData) {
+			var menuSplit = $('<li>Split</li>');
+			menuSplit.on('click', function() {
+				console.log('split');
+				return false;
+			});
+			menu.append(menuSplit);
+		} else {
+			menu.append('<li id="menuSplit" class="ui-state-disabled">Split</li>');
+		}
+		menu.menu();
+		$(this).after(menu);
+		return false;
 	});
 	$(".taxonDialog").dialog({
  		autoOpen: false,
