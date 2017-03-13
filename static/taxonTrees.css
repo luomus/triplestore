@@ -103,6 +103,7 @@ div.taxonChilds {
 	background-color: rgb(220,240,255);
 	padding: 0;
 	margin: 1px;
+	margin-bottom: 4px;
 	display: inline-block;
 	vertical-align: top;
 	text-align: left;
