@@ -1,4 +1,4 @@
-._jsPlumb_connector { opacity: 0.3; }
+._jsPlumb_connector { opacity: 0.4; }
 
 span.error {
 	color: red;
@@ -33,9 +33,6 @@ h3 {
 	margin-right: 10px;
 	padding-bottom: 30px;
 	min-height: 1000px;	
-}
-#editTaxon > * {
-	text-align: center;
 }
 
 .superdomain		{ background-color: rgb(201, 231, 255) } 
@@ -94,9 +91,9 @@ div.taxonLevel {
 	padding: 5px;
 	padding-bottom: 15px;
 	margin-bottom: 15px;
+	margin-left: 30px;
 	vertical-align: top;
 	font-size: 12px;
-	text-align: center;
 	border-bottom: 1px dotted rgb(200,200,200);
 }
 
@@ -129,7 +126,15 @@ div.taxonInfo {
 	padding: 3px;
 	border-radius: 3px;
 	vertical-align: middle;
+	min-width: 300px;
 }
+div.taxonInfo .icons {
+  float: right;
+}
+.synonym > div.taxonInfo {
+  min-width: 1px;
+}
+
 div.taxonInfo span {
 	display: inline-block;
 	vertical-align: middle;

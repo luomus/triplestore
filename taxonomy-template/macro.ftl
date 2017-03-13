@@ -55,9 +55,14 @@
 			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> 
 			
 			<@printScientificNameAndAuthor taxon />
-			<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
-			<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
-			<#if showSynonymsAndSynonymTools && taxon.species><span class="sendTaxonTool ui-icon ui-icon-gear" title="Move"></span></#if>
+			<#list taxon.misappliedNames as misappliedName> 
+				<span class="scientificName misappliedName <#if taxon.isSpecies()>speciesName</#if>">${misappliedName}</span>
+			</#list>
+			<div class="icons">
+				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
+				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
+				<#if showSynonymsAndSynonymTools && taxon.species><span class="sendTaxonTool ui-icon ui-icon-gear" title="Move"></span></#if>
+			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			
 			<#if additionalClass == "rootTaxon">
@@ -96,6 +101,7 @@
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
+				<span class="oneToOne" title="Taxon concept: ${taxon.taxonConceptQname!"NO CONCEPT"}">1:1</span>
 				<#list taxon.synonyms as synonymTaxon>	 
 					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>

@@ -14,6 +14,11 @@
 	white-space: nowrap;
 }
 
+.misappliedName {
+  text-decoration: overline;
+  color: red;
+}
+
 .author {
 	display: inline-block;
 	max-width: 150px;

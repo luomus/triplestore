@@ -121,7 +121,7 @@ function expandTree(e) {
 	
 	var taxaOfTaxonContainerToAddChildrenOfClicked = $("#"+taxonQnameOfClicked+"Children");
 	taxaOfTaxonContainerToAddChildrenOfClicked.html('<@loadingSpinner/>');
-	addTaxonConnection(taxaOfTaxonContainerOfClicked.attr('id'), taxonQnameOfClicked+'Children');
+	addTaxonConnection(taxonQnameOfClicked, taxonQnameOfClicked+'Children');
 	taxonTreeGraphs.repaintEverything();
 	var url = '${baseURL}/api/children/'+encodeURIComponent(taxonQnameOfClicked);
 	if (!showSynonymsModeIsOn) {
@@ -141,9 +141,9 @@ function addTaxonConnection(parent, child) {
 		connections[child] = taxonTreeGraphs.connect({
 			source: parent, 
 	   		target: child, 			   	
-			connector:["Bezier", { curviness:20 }],
+			connector:["Bezier", { curviness:50 }],
 	   		endpoint:"Blank",
-	   		anchors:["Bottom", "Top"], 
+	   		anchors:["Left", [0, 0, -1, 0]], 
 	   		paintStyle:{ 
 				lineWidth:3,
 				strokeStyle:"rgb(100, 140, 110)"
@@ -151,7 +151,7 @@ function addTaxonConnection(parent, child) {
 	   		overlays : [
 				["Arrow", {
 					cssClass:"l1arrow",
-					location:1.0, width:15,length:8
+					location:1.0, width:7,length:5
 				}]
 			]
 		});
