@@ -77,11 +77,6 @@
 		</select>
 	<@portletFooter />
 	
-	<@portletHeader "Notes" />
-		<@labeledTextarea "MX.notes" />
-		<@labeledTextarea "MX.privateNotes" />
-	<@portletFooter />
-
 	<@portletHeader "Source of taxonomy" "" "multirowSection"/>
 		<table class="publicationSelect">
 			<#list taxon.originalPublications as existingPublicationQname>
@@ -107,6 +102,11 @@
 				</td>
 			</tr>
 		</table>
+	<@portletFooter />
+	
+	<@portletHeader "Notes" />
+		<@labeledTextarea "MX.notes" />
+		<@labeledTextarea "MX.privateNotes" />
 	<@portletFooter />
 	
 </div>
