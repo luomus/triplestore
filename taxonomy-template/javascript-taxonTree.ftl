@@ -352,13 +352,13 @@ function taxonDropHandler(event, ui) {
 			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
 			droppedTaxon.fadeOut(function() {
   				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
-  				droppedTaxon.find('.checklistChangesMidTree').remove();
-				droppedTaxon.fadeIn(function() {
-					taxonTreeGraphs.repaintEverything();
-				});
-				droppedTaxon.find(".synonyms .synonym").remove();
-				$.get("${baseURL}/api/synonymsOfTaxon/"+droppedTaxonId, function(data) {
-					droppedTaxon.find(".synonyms").prepend(data);
+				$.get("${baseURL}/api/singleTaxonInfo/"+droppedTaxonId, function(data) {
+					droppedTaxon.replaceWith(data);
+					droppedTaxon = $("#"+droppedTaxonId);
+					droppedTaxon.find('button, .button').button();
+					droppedTaxon.fadeIn(function() {
+						taxonTreeGraphs.repaintEverything();
+					});
 				});
 			});
 		} else {

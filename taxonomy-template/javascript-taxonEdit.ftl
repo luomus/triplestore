@@ -173,20 +173,18 @@ function afterTaxonEditSectionSubmit(section) {
 		scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
 		author = (alteredAuthor) ? alteredAuthor : author;
 			
-       	updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author);
        	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
        	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
         	
        	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
        	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
         	
-       	if (showSynonymsModeIsOn) {
-       		var taxon = $("#"+qname.replace("MX.", "MX"));
-			taxon.find(".synonyms .synonym").remove();
-			$.get("${baseURL}/api/synonymsOfTaxon/"+qname, function(data) {
-				taxon.find(".synonyms").prepend(data);
-			});				
-		}
+   		var taxon = $("#"+qname.replace("MX.", "MX"));
+		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
+			taxon.replaceWith(data);
+			taxon = $("#"+qname.replace("MX.", "MX"));
+			taxon.find('button, .button').button();
+		});				
     } 
     else if (section.hasClass("primaryVernacularNameSection")) {
       	var qname = section.find(".taxonQname").first().val();
