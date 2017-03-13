@@ -123,9 +123,9 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	protected boolean hasIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
 		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
-		if (editors == null) return false;
+		if (editors == null || editors.getEditors().isEmpty()) return false;
 		User user = getUser(req);
-		if (user == null) return false;
+		if (user == null || user.getQname() == null) return false;
 		return editors.getEditors().contains(user.getQname());
 	}
 
