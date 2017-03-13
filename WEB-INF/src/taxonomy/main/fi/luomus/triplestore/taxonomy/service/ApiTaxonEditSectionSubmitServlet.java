@@ -1,20 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
@@ -38,6 +23,21 @@ import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
@@ -125,7 +125,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (given(taxon.getTaxonRank())) {
 			synonym.setTaxonRank(taxon.getTaxonRank());
 		}
-		System.out.println("Created synonym " + synonym.getQname() + " " + synonym.getScientificName() + " for " + taxon.getQname() + ". Circ: " + taxon.getTaxonConceptQname());
 		dao.addTaxon(synonym);
 	}
 
