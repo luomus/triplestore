@@ -136,7 +136,8 @@
 			<p class="info">
 				The normal way to move a taxon (for example from one genus to other genus) is to open the children of both genuses side-by-side, to enable taxon dragging mode
 				and to drag the desired species to the other genus. However, when you have to move taxa somewhere that is very 'far' in the taxonomy tree, it can take a lot of clicks
-				to get the children side-by-side. Alternative is to use this dialogue to send the taxon to a new parent.</p> 
+				to get the children side-by-side. Alternative is to use this dialogue to send the taxon to a new parent. No synonyms will be created! To automatically create synonyms, 
+				use taxon dragging. 
 			</p>
 			<p class="info">
 				After performing a send, if the new parent's children are visible, you must close and re-open the new parent's children to be able to see the sent taxon.
@@ -146,5 +147,53 @@
 			</p>
 		</form>
 	</div>
-	
+
+	<div id="splitTaxonDialog" class="taxonDialog" title="Split taxon">
+		<form id="splitTaxonDialogForm" target="${baseURL}/split" method="POST">
+			<input type="hidden" name="rootTaxonId" id="rootTaxonId" value="${root.qname}" />
+			<input type="hidden" name="taxonToSplitID" id="taxonToSplitID" />
+						
+			<label>Taxon to split</label>
+			<span id="taxonToSplitName">name</span>
+			<br />
+			
+			<label for="newParent">New taxons</label>
+			<table>
+				<thead>
+					<tr>
+						<th>Scientific name</th>
+						<th>Authors</th>
+						<th>Rank</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input name="scientificName___1" /></td>
+						<td><input name="authors___1" /></td>
+						<td>
+							<select name="rank___1"> 
+								<option value=""></option>
+								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
+									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
+								</#list>
+							</select>
+					 	</td>
+					</tr>
+				</tbody>
+			</table>
+			<a class="addNewItem">+ Add new</a>
+			<br />
+			
+			<input type="submit" class="button addButton" value="Split"  />
+			
+			<p class="info">
+				Taxon to split is removed from the checklist. The new taxons are added to the checklist and the splitted taxon is attached as a synonym (MANY:1) of all the new taxons.
+			</p>
+			<p>
+				The entire taxonomy tree view is reloaded after the split has been completed to show updated data.
+			</p>
+		</form>
+	</div>
+
+
 <#include "luomus-footer.ftl">

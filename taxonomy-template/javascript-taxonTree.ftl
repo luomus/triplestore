@@ -448,7 +448,14 @@ function sendTaxon(e) {
 	var taxonToSendName = $("#"+taxonToSendID).find(".scientificName").first().text();
 	$("#taxonToSendName").text(taxonToSendName);
 	$("#sendTaxonDialog").dialog("open");
-	return false;
+} 
+
+function splitTaxon(e) {
+	$("#splitTaxonDialog").find(":input").not(":input[type=submit], #rootTaxonId").val('');
+	var taxonToSplitID = $(e).closest('.taxonWithTools').attr('id');
+	var taxonToSplitName = $("#"+taxonToSplitID).find(".scientificName").first().text();
+	$("#taxonToSplitName").text(taxonToSplitName);
+	$("#splitTaxonDialog").dialog("open");
 } 
 
 $(function() {
@@ -473,7 +480,7 @@ $(function() {
 		if (!hasCriticalData) {
 			var menuSplit = $('<li>Split</li>');
 			menuSplit.on('click', function() {
-				console.log('split');
+				splitTaxon(this);
 				return false;
 			});
 			menu.append(menuSplit);
@@ -513,6 +520,18 @@ $(function() {
 		messages: {
 			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
 		}
+	});
+	
+	$("#splitTaxonDialog .addNewItem").on('click', function() {
+		var tableBody = $(this).parent().find('table tbody');
+		var clone =  tableBody.find('tr').last().clone();
+		clone.find(':input').each(function() {
+			var name = $(this).attr("name");
+			var field = name.split("___")[0];
+			var index =  parseInt(name.split("___")[1]) + 1;
+			$(this).attr('name', field + "___" + index);
+		});
+		tableBody.append(clone);
 	});
 	
 	var cache = {}

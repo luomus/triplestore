@@ -299,3 +299,7 @@ div.loading {
 .rootTreeNode:before {
 	content: "»";
 }
+
+#splitTaxonDialog input {
+  width: 150px;
+}
