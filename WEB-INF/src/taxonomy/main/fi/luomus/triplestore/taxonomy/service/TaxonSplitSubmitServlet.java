@@ -1,15 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.containers.rdf.Subject;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -22,9 +12,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
 @WebServlet(urlPatterns = {"/taxonomy-editor/split/*"})
 public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 
+	private static final Predicate MC_INCLUDED_IN_PREDICATE = new Predicate("MC.includedIn");
+	private static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
+	private static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
 	private static final long serialVersionUID = 6726551370591523603L;
 
 	@Override
@@ -46,15 +49,19 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		Collection<EditableTaxon> newTaxons = parseAndCreateNewTaxons(req, dao, taxonomyDAO, taxonToSplit);
 
 		taxonToSplit.invalidate();
-		dao.delete(new Subject(taxonToSplitID), new Predicate("MX.isPartOf"));
-		dao.delete(new Subject(taxonToSplitID), new Predicate("MX.nameAccordingTo"));
+		dao.delete(new Subject(taxonToSplitID), IS_PART_OF_PREDICATE);
+		dao.delete(new Subject(taxonToSplitID), NAME_ACCORDING_TO_PREDICATE);
 		
 		Qname splittedConcept = taxonToSplit.getTaxonConceptQname();
 		for (EditableTaxon newTaxon : newTaxons) {
 			Qname newTaxonConcept = newTaxon.getTaxonConceptQname();
-			dao.store(new Subject(newTaxonConcept), new Statement(new Predicate("MC.includedIn"), new ObjectResource(splittedConcept)));
+			dao.store(new Subject(newTaxonConcept), new Statement(MC_INCLUDED_IN_PREDICATE, new ObjectResource(splittedConcept)));
 		}
 		
+		return redirectToTree(res, taxonToSplitID, rootTaxonId);
+	}
+
+	private ResponseData redirectToTree(HttpServletResponse res, Qname taxonToSplitID, Qname rootTaxonId) {
 		if (taxonToSplitID.equals(rootTaxonId)) {
 			rootTaxonId = TaxonomyTreesEditorServlet.DEFAULT_ROOT_QNAME;
 		}
@@ -67,16 +74,18 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		for (Map<String, String> taxonData : newTaxonValues.values()) {
 			EditableTaxon taxon = taxonomyDAO.createTaxon();
 			taxon.setScientificName(taxonData.get("scientificName"));
+			if (!given(taxon.getScientificName())) continue;
 			taxon.setScientificNameAuthorship(taxonData.get("authors"));
 			if (taxonData.containsKey("rank")) {
 				taxon.setTaxonRank(new Qname(taxonData.get("rank")));
 			}
 			taxon.setChecklist(taxonToSplit.getChecklist());
 			taxon.setParentQname(taxonToSplit.getParentQname());
+			taxon.setTaxonConceptQname(dao.addTaxonConcept());
 			dao.addTaxon(taxon);
 			taxons.add(taxon);
 		}
-		return null;
+		return taxons;
 	}
 
 	private Map<Integer, Map<String, String>> parseNewTaxonValues(HttpServletRequest req) {

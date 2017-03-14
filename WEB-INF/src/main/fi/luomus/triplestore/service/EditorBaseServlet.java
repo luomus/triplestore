@@ -173,6 +173,10 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return getId(req);
 	}
 
+	protected static boolean given(Qname qname) {
+		return qname != null && qname.isSet();
+	}
+	
 	protected static boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}

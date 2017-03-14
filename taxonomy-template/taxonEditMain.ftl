@@ -149,7 +149,7 @@
 	</div>
 
 	<div id="splitTaxonDialog" class="taxonDialog" title="Split taxon">
-		<form id="splitTaxonDialogForm" target="${baseURL}/split" method="POST">
+		<form id="splitTaxonDialogForm" action="${baseURL}/split" method="POST">
 			<input type="hidden" name="rootTaxonId" id="rootTaxonId" value="${root.qname}" />
 			<input type="hidden" name="taxonToSplitID" id="taxonToSplitID" />
 						
@@ -168,10 +168,22 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td><input name="scientificName___1" /></td>
+						<td><input name="scientificName___1" required /></td>
 						<td><input name="authors___1" /></td>
 						<td>
 							<select name="rank___1"> 
+								<option value=""></option>
+								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
+									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
+								</#list>
+							</select>
+					 	</td>
+					</tr>
+					<tr>
+						<td><input name="scientificName___2" required /></td>
+						<td><input name="authors___2" /></td>
+						<td>
+							<select name="rank___2"> 
 								<option value=""></option>
 								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
 									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
