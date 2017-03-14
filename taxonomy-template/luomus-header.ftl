@@ -95,7 +95,6 @@
 				<nav id="mainmenu" role="navigation">
 					<ul class="nav-bar" role="menu">
 						<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
-						<li role="menuitem"><a href="${baseURL}/orphan">Orphan taxa</a></li>
 						<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
 						<li role="menuitem"><a href="${baseURL}/iucn">IUCN</a></li>
 						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
