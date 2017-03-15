@@ -107,6 +107,20 @@
 				</#list>
 				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add synonym</button></#if>
 			</div>
+			<div>
+				<span class="including">${taxon.taxonConceptQname!"NO CONCEPT"} INCLUDES</span>
+				<#list taxon.includedTaxa as included>
+					<span class="included">${included.taxonConceptQname}</span>
+					<@printTaxon included "synonym" false false />
+				</#list>
+			</div>
+			<div>
+				<span class="included">${taxon.taxonConceptQname!"NO CONCEPT"} INCLUDED IN</span>
+				<#list taxon.includingTaxa as including>
+					<span class="including">${including.taxonConceptQname}</span>
+					<@printTaxon including "synonym" false false />
+				</#list>
+			</div>
 		</#if>
 	</div>
 </#macro>

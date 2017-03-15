@@ -58,6 +58,8 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 			dao.store(new Subject(newTaxonConcept), new Statement(MC_INCLUDED_IN_PREDICATE, new ObjectResource(splittedConcept)));
 		}
 		
+		taxonomyDAO.clearTaxonConceptLinkings();
+		
 		return redirectToTree(res, taxonToSplitID, rootTaxonId);
 	}
 

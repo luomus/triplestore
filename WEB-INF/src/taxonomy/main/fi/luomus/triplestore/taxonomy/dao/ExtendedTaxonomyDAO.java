@@ -1,15 +1,15 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
@@ -39,5 +39,7 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception;
 	
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
+
+	public void clearTaxonConceptLinkings();
 	
 }

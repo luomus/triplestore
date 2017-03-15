@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -13,12 +19,10 @@ import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.utils.SingleObjectCache;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
@@ -28,8 +32,14 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 1*60*60, 5000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
 	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConceptLoader(), 1*60*60, 5000);
+	private final SingleObjectCache<ConceptIncludes> cachedTaxonConceptIncludes = new SingleObjectCache<>(new TaxonConceptIncludesLoader(), 1*60*60);
 	private final TriplestoreDAO triplestoreDAO;
 
+	private static class ConceptIncludes {
+		private final Map<Qname, Set<Qname>> incudedIn = new HashMap<>();
+		private final Map<Qname, Set<Qname>> incudes = new HashMap<>();
+	}
+	
 	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO) {
 		this.triplestoreDAO = triplestoreDAO;
 	}
@@ -112,12 +122,30 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		@Override
 		public TaxonConcept load(Qname conceptQname) {
 			try {
+				System.out.println("Getting taxon concept " + conceptQname);
 				TaxonConcept taxonConcept = new TaxonConcept(conceptQname);
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search("MX.circumscription", conceptQname.toString());
+				Collection<Model> models = triplestoreDAO.getSearchDAO().search(
+						new SearchParams(1000, 0)
+						.type("MX.taxon")
+						.predicate("MX.circumscription")
+						.objectresource(conceptQname.toString()));
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBePartOfConcept(taxon);
+					taxonConcept.setTaxonToBePartOfConcept(taxon.getQname());
+				}
+				ConceptIncludes conceptIncludes = cachedTaxonConceptIncludes.get();
+				if (conceptIncludes.incudedIn.containsKey(conceptQname)) {
+					for (Qname including : conceptIncludes.incudedIn.get(conceptQname)) {
+						taxonConcept.setToBeIncludedIn(including);
+						System.out.println(conceptQname + " is included in " + including);
+					}
+				}
+				if (conceptIncludes.incudes.containsKey(conceptQname)) {
+					for (Qname included : conceptIncludes.incudes.get(conceptQname)) {
+						taxonConcept.setToInclude(included);
+						System.out.println(conceptQname + " includes " + included);
+					}
 				}
 				return taxonConcept;
 			} catch (Exception e) {
@@ -126,6 +154,39 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
+	private class TaxonConceptIncludesLoader implements SingleObjectCache.CacheLoader<ConceptIncludes> {
+		private static final String MC_TAXON_CONCEPT = "MC.taxonConcept";
+		private static final String MC_INCLUDED_IN = "MC.includedIn";
+
+		@Override
+		public ConceptIncludes load() {
+			try {
+				ConceptIncludes conceptIncludes = new ConceptIncludes();
+				Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(MC_TAXON_CONCEPT).predicate(MC_INCLUDED_IN));
+				for (Model model : models) {
+					Qname includedConceptQname = q(model.getSubject());
+					if (!conceptIncludes.incudedIn.containsKey(includedConceptQname)) {
+						conceptIncludes.incudedIn.put(includedConceptQname, new HashSet<Qname>());
+					}
+					for (Statement s : model.getStatements(MC_INCLUDED_IN)) {
+						if (!s.isResourceStatement()) continue;
+						Qname includingConceptQname = q(s.getObjectResource());
+						conceptIncludes.incudedIn.get(includedConceptQname).add(includingConceptQname);
+						if (!conceptIncludes.incudes.containsKey(includingConceptQname)) {
+							conceptIncludes.incudes.put(includingConceptQname, new HashSet<Qname>());
+							System.out.println("adding " + includedConceptQname + " to be included in " + includingConceptQname);
+						}
+						conceptIncludes.incudes.get(includingConceptQname).add(includedConceptQname);
+						System.out.println("adding " + includingConceptQname + " to include " + includedConceptQname);
+					}
+				}
+				return conceptIncludes;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
 	@Override
 	public EditableTaxon getTaxon(Qname taxonId) throws NoSuchTaxonException {
 		EditableTaxon taxon = cachedTaxons.get(taxonId);
@@ -146,7 +207,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	@Override
 	public TaxonConcept getTaxonConcept(Qname taxonConceptQname) {
 		if (!given(taxonConceptQname)) return null;
-		return cachedTaxonConcepts.get(taxonConceptQname);
+		return cachedTaxonConcepts.get(taxonConceptQname);		
 	}
 
 	private boolean given(Qname qname) {
@@ -182,8 +243,14 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		cachedChildren.invalidateAll();
 		cachedTaxonConcepts.invalidateAll();
 		cachedTaxons.invalidateAll();
+		cachedTaxonConceptIncludes.invalidate();
 	}
 
+	public void clearTaxonConceptLinkings() {
+		cachedTaxonConceptIncludes.getForceReload();
+		cachedTaxonConcepts.invalidateAll();
+	}
+	
 	public void invalidateTaxon(Taxon taxon) {
 		synchronized (LOCK) {
 			alreadyInvalidatedTaxonsInIsolation.clear();
