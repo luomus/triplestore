@@ -101,12 +101,24 @@
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
-				<span class="oneToOne" title="Taxon concept: ${taxon.taxonConceptQname!"NO CONCEPT"}">1:1</span>
+				<span class="taxonConcept oneToOne" title="Taxon concept: ${taxon.taxonConceptQname!"NO CONCEPT"}">1:1</span>
 				<#list taxon.synonyms as synonymTaxon>	 
 					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>
-				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add synonym</button></#if>
+				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add 1:1 synonym</button></#if>
 			</div>
+			<#if taxon.taxonConceptQname??>
+				<#assign taxonConcept = taxon.taxonConcept>
+				<#if taxonConcept.includedConcepts?has_content || taxonConcept.includingConcepts?has_content>
+					<span id="${taxon.taxonConceptQname?replace(".","")}" class="taxonConcept taxonConceptLink" title="Taxon concept: ${taxon.taxonConceptQname}">C</span>
+					<#list taxonConcept.includedConcepts as included>
+						<script>taxonConceptLink('${included}', '${taxon.taxonConceptQname}');</script>
+					</#list>
+					<#list taxonConcept.includingConcepts as including>
+						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${including}');</script>
+					</#list>
+				</#if>
+			</#if>
 			<div>
 				<span class="including">${taxon.taxonConceptQname!"NO CONCEPT"} INCLUDES</span>
 				<#list taxon.includedTaxa as included>
@@ -121,6 +133,7 @@
 					<@printTaxon including "synonym" false false />
 				</#list>
 			</div>
+			
 		</#if>
 	</div>
 </#macro>

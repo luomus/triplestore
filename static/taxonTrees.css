@@ -303,3 +303,25 @@ div.loading {
 #splitTaxonDialog input {
   width: 150px;
 }
+
+.taxonConcept {
+	padding: 5px;
+	border: 1px solid grey;
+	background-color: rgb(163, 216, 255);
+	font-size: 1em;
+	color: white;
+	height: 15px;
+	width: 15px;
+	border-radius: 15px;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.taxonConceptLinkTargetContainer {
+	float: right;
+}
+
+.taxonConceptLinkTarget {
+	display: block;
+}

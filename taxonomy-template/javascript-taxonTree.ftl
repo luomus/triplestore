@@ -52,10 +52,14 @@ function expandTaxon(e) {
 }
 
 function removeEmptyTaxonlevels() {
+	$(".taxonConceptLinkTargetContainer").each(function() {
+		if ($(this).children().length === 0) {
+			$(this).remove();
+		}
+	});
 	$(".taxonLevel").each(function() {
-		var taxonLevel = $(this);
-		if (taxonLevel.children().length === 0) {
-			taxonLevel.remove();
+		if ($(this).children().length === 0) {
+			$(this).remove();
 		}
 	});
 }
@@ -71,7 +75,11 @@ function collapseTreeByTaxonQname(taxonQname) {
 		collapseTreeByTaxonQname($(this).attr('id'));
 	});
 	removeTaxonConnection(childrenContainerId);
+	$("#"+childrenContainerId).find(".taxonConceptLink").each(function() {
+		removeTaxonConceptConnection($(this).attr('id'));
+	});
 	$("#"+childrenContainerId).remove();
+	$(".taxonConceptLinkTarget").not("*[class*='taxonConceptLinkTargetOf']").remove();
 }
 
 function expandTree(e) {
@@ -656,5 +664,55 @@ $(function() {
 	$(".rootTaxon").find(".treePlusMinusSign").click();
 });
 
+function taxonConceptLink(fromConceptQname, toConceptQname) {
+	var fromConcept = fromConceptQname.replace('.','');
+	var toConcept = toConceptQname.replace('.','');
+	if ($('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTarget').length < 1) {
+		$('#taxonTree').find('.taxonLevel').last().append($('<div class="taxonConceptLinkTargetContainer"></div>'));
+	}
+	var target = $('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTargetContainer').first();
+	if ($('#'+toConcept).length < 1) {
+		target.append($('<span id="'+toConcept+'" class="taxonConcept taxonConceptLinkTarget" title="Taxon concept: '+toConceptQname+'">C</span>'));
+	}
+	addTaxonConceptConnection(fromConcept, toConcept);
+	taxonTreeGraphs.repaintEverything();
+}
+
+function addTaxonConceptConnection(from, to) {
+	$("#"+to).addClass('taxonConceptLinkTargetOf_'+from);
+	try {
+		connections[from] = taxonTreeGraphs.connect({
+			source: from, 
+	   		target: to, 			   	
+			connector:["Bezier", { curviness:50 }],
+	   		endpoint:"Blank",
+	   		anchors:["Right", "Left"], 
+	   		paintStyle:{ 
+				lineWidth:3,
+				strokeStyle:"rgb(38, 164, 255)"
+			},			   
+	   		overlays : [
+				["Arrow", {
+					cssClass:"l1arrow",
+					location:1.0, width:7,length:5
+				}]
+			]
+		});
+	} catch(e) {
+		alert(e.message);
+	}
+}
+
+function removeTaxonConceptConnection(from) {
+	$(".taxonConceptLinkTargetOf_"+from).removeClass("taxonConceptLinkTargetOf_"+from);
+	try {
+		if (connections[from] != undefined) {
+			taxonTreeGraphs.detach(connections[from]);
+			connections[from] = undefined;
+		}
+	} catch(e) {
+		alert(from + ' ' + e.message);
+	}
+}
 
 </script>
