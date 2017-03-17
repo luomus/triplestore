@@ -111,6 +111,12 @@
 			</select> 
 			<br />
 			<input type="submit" class="button addButton" value="Add"  />
+			<p class="info">
+				Use this feature to add a new scientific name for this taxon concept. The synonym name should have the same taxonomic circumscription than the name already in the checklist (1:1).
+			</p>
+			<p class="info">
+				To create synonyms where taxon concept is not the same, use the gear icon and select either 'split' (1:MANY) or 'merge' (MANY:1).
+			</p>
 		</form>
 	</div>
 	
@@ -196,10 +202,10 @@
 			<input type="submit" class="button addButton" value="Split"  />
 			
 			<p class="info">
-				Taxon to split is removed from the checklist. The new taxa are added to the checklist and the splitted taxon is attached as a synonym (MANY:1) of all the new taxa.
+				The taxon that is splitted is removed from the checklist. The new taxa are added to the checklist and their concepts are linked (MANY:1) with the concept of the splitted taxon.
 			</p>
 			<p class="info">
-				The entire taxonomy tree view is reloaded after the split has been completed to show updated data.
+				Note: Taxonomy tree view will be reloaded after the split has been completed to show updated data.
 			</p>
 		</form>
 	</div>
@@ -249,10 +255,10 @@
 			<input type="submit" class="button addButton" value="Merge"  />
 			
 			<p class="info">
-				All merged taxa are removed from the checklist. The new taxon is added to the checklist and the merged taxa are attached as a synonym (1:MANY) of all the new taxon.
+				All merged taxa are removed from the checklist. The new taxon is added to the checklist and its concept is linked (1:MANY) with the concepts of the merged taxa.
 			</p>
 			<p class="info">
-				The entire taxonomy tree view is reloaded after the merge has been completed to show updated data.
+				Note: Taxonomy tree view will be reloaded after the split has been completed to show updated data.
 			</p>
 		</form>
 	</div>
