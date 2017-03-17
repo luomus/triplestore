@@ -258,7 +258,7 @@
 				All merged taxa are removed from the checklist. The new taxon is added to the checklist and its concept is linked (1:MANY) with the concepts of the merged taxa.
 			</p>
 			<p class="info">
-				Note: Taxonomy tree view will be reloaded after the split has been completed to show updated data.
+				Note: Taxonomy tree view will be reloaded after the merge has been completed to show updated data.
 			</p>
 		</form>
 	</div>
