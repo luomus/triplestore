@@ -61,7 +61,9 @@
 			<div class="icons">
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
-				<#if showSynonymsAndSynonymTools && taxon.species><span class="taxonToolButton ui-icon ui-icon-gear" title="Tools"></span></#if>
+				<#if showSynonymsAndSynonymTools && taxon.species>
+					<span class="taxonToolButton ui-icon ui-icon-gear <#if taxon.allowsAlterationsBy(user)>allowsAlterationsByUser</#if>" title="Tools"></span>
+				</#if>
 			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			
@@ -111,10 +113,10 @@
 				<#if taxonConcept.includedConcepts?has_content || taxonConcept.includingConcepts?has_content>
 					<span id="${taxon.taxonConceptQname?replace(".","")}" class="taxonConcept taxonConceptLink" title="Taxon concept: ${taxon.taxonConceptQname}">C</span>
 					<#list taxonConcept.includedConcepts as included>
-						<script>taxonConceptLink('${included}', '${taxon.taxonConceptQname}');</script>
+						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${included}', 'includes');</script>
 					</#list>
 					<#list taxonConcept.includingConcepts as including>
-						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${including}');</script>
+						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${including}', 'includedIn');</script>
 					</#list>
 				</#if>
 			</#if>			

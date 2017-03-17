@@ -158,11 +158,14 @@ function expandTree(e) {
   	});
 }
 
-var connections = {};
-
+var connections = [];
+var connectionSeq = 1;
 function addTaxonConnection(parent, child) {
 	try {
-		connections[child] = taxonTreeGraphs.connect({
+		if (!connections[child]) {
+			connections[child] = [];
+		}
+		connections[child][connectionSeq++] = taxonTreeGraphs.connect({
 			source: parent, 
 	   		target: child, 			   	
 			connector:["Bezier", { curviness:50 }],
@@ -187,7 +190,9 @@ function addTaxonConnection(parent, child) {
 function removeTaxonConnection(child) {
 	try {
 		if (connections[child] != undefined) {
-			taxonTreeGraphs.detach(connections[child]);
+			$(connections[child]).each(function() {
+				taxonTreeGraphs.detach(this);
+			});
 			connections[child] = undefined;
 		}
 	} catch(e) {
@@ -484,6 +489,15 @@ function splitTaxon(e) {
 	$("#splitTaxonDialog").dialog("open");
 } 
 
+function mergeTaxon(e) {
+	$("#mergeTaxonDialog").find(":input").not(":input[type=submit], #rootTaxonId").val('');
+	var taxonToMergeID = $(e).closest('.taxonWithTools').attr('id');
+	var taxonToMergeName = $("#"+taxonToMergeID).find(".scientificName").first().text();
+	$("#initialTaxonToMergeId").val(taxonToMergeID);
+	$("#initialTaxonToMergeName").text(taxonToMergeName);
+	$("#mergeTaxonDialog").dialog("open");
+}
+
 $(function() {
 	
 	$(document).on('click', '.taxonInfo', function() {
@@ -503,15 +517,23 @@ $(function() {
 		});
 		menu.append(menuMove);
 		var hasCriticalData = $(this).closest('.taxonInfo').find('.criticalData').length > 0;
-		if (!hasCriticalData) {
+		var allowsAlterationsByUser = $(this).hasClass('allowsAlterationsByUser');
+		if (!hasCriticalData && allowsAlterationsByUser) {
 			var menuSplit = $('<li>Split</li>');
 			menuSplit.on('click', function() {
 				splitTaxon(this);
 				return false;
 			});
 			menu.append(menuSplit);
+			var menuMerge = $('<li>Merge</li>');
+			menuMerge.on('click', function() {
+				mergeTaxon(this);
+				return false;
+			});
+			menu.append(menuMerge);
 		} else {
 			menu.append('<li id="menuSplit" class="ui-state-disabled">Split</li>');
+			menu.append('<li id="menuMerge" class="ui-state-disabled">Merge</li>');
 		}
 		menu.menu();
 		$(this).after(menu);
@@ -556,6 +578,10 @@ $(function() {
 			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
 		}
 	});
+	$("#mergeTaxonDialogForm").validate({
+		ignore: [], // do not ignore hidden elements
+	});
+	
 	$("#splitTaxonDialog .addNewItem").on('click', function() {
 		var tableBody = $(this).parent().find('table tbody');
 		var clone =  tableBody.find('tr').last().clone();
@@ -571,6 +597,15 @@ $(function() {
 		tableBody.append(clone);
 	});
 	
+	$("#mergeTaxonDialog .addNewItem").on('click', function() {
+		var toClone = $(this).parent().find('.taxonToMergeIdSelectorContainer').last();
+		var clone =  toClone.clone();
+		clone.find(':input').val('');
+		clone.find('.taxonToMergeIdSelector').autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: taxonToMergeSelectedFunction });
+		toClone.after(clone);
+		clone.find('.taxonToMergeIdSelector').rules("add", {required:true});
+	});
+	
 	var cache = {}
 	var autocompleteSourceFunction = function (request, response) {
 		var term = request.term;
@@ -583,7 +618,7 @@ $(function() {
 			});
 		}
     };
-    var autocompleteTaxonSelectedFunction = function (event, ui) {
+    var newParentTaxonSelectedFunction = function (event, ui) {
 		var selectedName = ui.item.label;
 		var selectedId =  ui.item.value
 		$("#newParentID").val(selectedId);
@@ -592,8 +627,18 @@ $(function() {
 		return false;
 	};
 	
-	$("#newParentIDSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: autocompleteTaxonSelectedFunction })
+	var taxonToMergeSelectedFunction = function (event, ui) {
+		var element = $(event.target).parent();
+		var selectedName = ui.item.label;
+		var selectedId =  ui.item.value
+		element.find('.taxonToMergeId').val(selectedId);
+		element.find('.taxonToMergeIdSelector').val(selectedName);
+		element.find('.taxonToMergeIdSelectorIdDisplay').text('('+selectedId+')');
+		return false;
+	};
 	
+	$("#newParentIDSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: newParentTaxonSelectedFunction });
+	$(".taxonToMergeIdSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: taxonToMergeSelectedFunction });
 });
 
 function addNewChildDialogSubmit() {
@@ -682,7 +727,7 @@ $(function() {
 
 var loadingTaxaOfConcept = [];
 
-function taxonConceptLink(fromConceptQname, toConceptQname) {
+function taxonConceptLink(fromConceptQname, toConceptQname, direction) {
 	var fromConcept = fromConceptQname.replace('.','');
 	var toConcept = toConceptQname.replace('.','');
 	if ($('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTarget').length < 1) {
@@ -692,7 +737,7 @@ function taxonConceptLink(fromConceptQname, toConceptQname) {
 	if ($('#'+toConcept).length < 1) {
 		target.append($('<div id="'+toConcept+'Container" class="taxonConceptLinkTarget ui-widget ui-widget-content"> <span id="'+toConcept+'" class="taxonConcept" title="Taxon concept: '+toConceptQname+'">C</span>'));
 	}
-	addTaxonConceptConnection(fromConcept, toConcept);
+	addTaxonConceptConnection(fromConcept, toConcept, direction);
 	taxonTreeGraphs.repaintEverything();
 	if ($('#'+toConcept+'Container').find('.synonyms').length < 1 && !loadingTaxaOfConcept[toConceptQname]) {
 		loadingTaxaOfConcept[toConceptQname] = 1;
@@ -704,10 +749,29 @@ function taxonConceptLink(fromConceptQname, toConceptQname) {
 	}
 }
 
-function addTaxonConceptConnection(from, to) {
+function addTaxonConceptConnection(from, to, direction) {
 	$("#"+to+'Container').addClass('taxonConceptLinkTargetOf_'+from);
+	var overlaysDirection = [];
+	if (direction == 'includedIn') {
+		overlaysDirection = [
+				["Arrow", {
+					cssClass:"l1arrow",
+					location:1.0, width:15, length:30
+				}]
+			];
+	} else {
+		overlaysDirection = [
+				["Arrow", {
+					cssClass:"l1arrow",
+					direction: -1, location:0, width:15, length:30
+				}]
+			];
+	} 
 	try {
-		connections[from] = taxonTreeGraphs.connect({
+		if (!connections[from]) {
+			connections[from] = [];
+		}
+		connections[from][connectionSeq++] = taxonTreeGraphs.connect({
 			source: from, 
 	   		target: to, 			   	
 			connector:["Bezier", { curviness:25 }],
@@ -717,12 +781,7 @@ function addTaxonConceptConnection(from, to) {
 				lineWidth:3,
 				strokeStyle:"rgb(38, 164, 255)"
 			},			   
-	   		overlays : [
-				["Arrow", {
-					cssClass:"l1arrow",
-					location:1.0, width:7,length:5
-				}]
-			]
+	   		overlays : overlaysDirection
 		});
 	} catch(e) {
 		alert(e.message);

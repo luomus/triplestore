@@ -196,13 +196,65 @@
 			<input type="submit" class="button addButton" value="Split"  />
 			
 			<p class="info">
-				Taxon to split is removed from the checklist. The new taxons are added to the checklist and the splitted taxon is attached as a synonym (MANY:1) of all the new taxons.
+				Taxon to split is removed from the checklist. The new taxa are added to the checklist and the splitted taxon is attached as a synonym (MANY:1) of all the new taxa.
 			</p>
-			<p>
+			<p class="info">
 				The entire taxonomy tree view is reloaded after the split has been completed to show updated data.
 			</p>
 		</form>
 	</div>
 
-
+	<div id="mergeTaxonDialog" class="taxonDialog" title="Merge taxa">
+		<form id="mergeTaxonDialogForm" action="${baseURL}/merge" method="POST">
+			<input type="hidden" name="rootTaxonId" id="rootTaxonId" value="${root.qname}" />
+			<input type="hidden" name="taxonToMergeId" id="initialTaxonToMergeId" required />
+						
+			<label>Taxon to merge</label>
+			<span id="initialTaxonToMergeName">name</span>
+			<br />
+			
+			<label>Merge with taxa</label>
+			(type name or part of name and select taxon)
+			<div class="taxonToMergeIdSelectorContainer">
+				<input type="hidden" name="taxonToMergeId" class="taxonToMergeId" required />
+				<input type="text" class="taxonToMergeIdSelector" name="taxonToMergeIdSelector" /> <span class="taxonToMergeIdSelectorIdDisplay"></span><br />
+			</div>
+			<a class="addNewItem">+ Add new</a>
+			
+			<label for="newParent">New taxon</label>
+			<table>
+				<thead>
+					<tr>
+						<th>Scientific name</th>
+						<th>Authors</th>
+						<th>Rank</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input name="newTaxonScientificName" required /></td>
+						<td><input name="newTaxonAuthors" /></td>
+						<td>
+							<select name="newTaxonRank"> 
+								<option value=""></option>
+								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
+									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
+								</#list>
+							</select>
+					 	</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<input type="submit" class="button addButton" value="Merge"  />
+			
+			<p class="info">
+				All merged taxa are removed from the checklist. The new taxon is added to the checklist and the merged taxa are attached as a synonym (1:MANY) of all the new taxon.
+			</p>
+			<p class="info">
+				The entire taxonomy tree view is reloaded after the merge has been completed to show updated data.
+			</p>
+		</form>
+	</div>
+	
 <#include "luomus-footer.ftl">
