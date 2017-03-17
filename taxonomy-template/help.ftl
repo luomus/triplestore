@@ -29,7 +29,7 @@ Here you can find instructions on how to use the Taxon Editor.
 		</p>
 		<p><span class="qa">A:</span> 
 			Each taxon can have one or more person set as the editor of that taxon. If the taxon does not have any editors set, this property is inherited from the next higher taxon that has an editor.
-			Only administrators (ICT-staff) can edit those taxons that do not have anyone as editor (for example the very highest taxonomic levels). Administrators can edit any taxon.
+			Only administrators (ICT-staff) can edit those taxa that do not have anyone as editor (for example the very highest taxonomic levels). Administrators can edit any taxon.
 		</p> 
 	</li>
 	
@@ -47,15 +47,6 @@ Here you can find instructions on how to use the Taxon Editor.
 	
 	<li>
 		<p><span class="qa">Q:</span> 
-			What are orphan taxa?
-		</p>
-		<p><span class="qa">A:</span> 
-			Orphan taxa are taxons that have been added to a checklist, but do not connect to the root taxon of the checklist. The "Orphan taxa" view allows users to see these taxons, and if you are one of the editors of that taxon, you can connect it to a tree of that same checklist.
-		</p> 
-	</li>
-	
-	<li>
-		<p><span class="qa">Q:</span> 
 			I made a mistake, how to delete the taxon I created?
 		</p>
 		<p><span class="qa">A:</span> 
@@ -65,11 +56,11 @@ Here you can find instructions on how to use the Taxon Editor.
 	
 	<li>
 		<p><span class="qa">Q:</span> 
-			Can I "reuse" taxons? For example I find a taxon with a miss-typed name: Can I rename the taxon to something else?
+			Can I "reuse" taxa? For example I find a taxon with a misspelled name: Can I rename the taxon to something else?
 		</p>
 		<p><span class="qa">A:</span> 
-			You shouldn't. Each taxon gets an MX-identifier code. This should be "permanent" and should not mean something entirely different in the future.
-			The miss-typed name could be moved as a synonym (if it's a common mistake) or detached entirely.
+			You shouldn't. Each taxon gets a MX-identifier code. This should be "permanent" and should not mean something entirely different in the future.
+			The misspelled name can be detached entirely.
 		</p> 
 	</li>
 	

@@ -13,7 +13,7 @@ For example /triplestore/taxon-search?q=susi&onlyExact=true&format=json&v=2
 * requiredInformalTaxonGroup - one or more informal taxon group Qnames (comma separated or multiple parameters)
 * onlyExact - true|false, only exact matches (default false)
 * onlySpecies - true|false, only species or subspecies etc (default false)
-* onlyFinnish - true|false, only finnish taxons (default false)
+* onlyFinnish - true|false, only finnish taxa (default false)
 
 Triplestore-API
 ===============

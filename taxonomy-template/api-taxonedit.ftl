@@ -403,7 +403,7 @@
 	<@portletHeader "Editors and Experts" "initiallyClosed" />
   </#if>
 		<div class="info">
-			Here you can explicitly set or change the editors and experts of this taxon. This will affect this taxon and all child taxons. However, if a child taxon 
+			Here you can explicitly set or change the editors and experts of this taxon. This will affect this taxon and all child taxa. However, if a child taxon 
 			has a different explicitly set experts or editors, that will override what is set here.
 		</div>
 		
@@ -536,7 +536,7 @@ $(function() {
 		var lastAllowedTaxonDeleteTimestamp = ${lastAllowedTaxonDeleteTimestamp};
 		
 		if (taxonToDeteteCreatedAt < lastAllowedTaxonDeleteTimestamp) {
-			alert('This taxon can not be deleted anymore. You can only delete taxons for 5 hours after creation. Please, contact admins to get taxon deleted. You can detach the taxon from the checklist.');
+			alert('This taxon can not be deleted anymore. You can only delete taxa for 5 hours after creation. Please, contact admins to get taxon deleted. You can detach the taxon from the checklist.');
 			return;
 		}
 		
