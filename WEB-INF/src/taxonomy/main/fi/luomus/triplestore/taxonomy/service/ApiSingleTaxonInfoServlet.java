@@ -23,7 +23,9 @@ public class ApiSingleTaxonInfoServlet extends ApiBaseServlet {
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
 		
-		return responseData.setData("taxon", taxon);
+		boolean isSynonym = "true".equals(req.getParameter("synonym"));
+		
+		return responseData.setData("taxon", taxon).setData("isSynonym", isSynonym);
 	}
 	
 }

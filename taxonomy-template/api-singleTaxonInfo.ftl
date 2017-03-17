@@ -1,3 +1,6 @@
 <#include "macro.ftl">
-<@printTaxon taxon />
-	
+<#if isSynonym>
+	<@printTaxon taxon "synonym" false false />
+<#else>
+	<@printTaxon taxon />
+</#if>

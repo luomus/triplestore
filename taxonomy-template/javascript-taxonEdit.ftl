@@ -180,7 +180,8 @@ function afterTaxonEditSectionSubmit(section) {
        	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
         	
    		var taxon = $("#"+qname.replace("MX.", "MX"));
-		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
+   		var isSynonym = taxon.hasClass('synonym'); 
+		$.get("${baseURL}/api/singleTaxonInfo/"+qname+'?synonym='+isSynonym, function(data) {
 			taxon.find('.taxonConcept').each(function() {
 				removeTaxonConceptConnection($(this).attr('id'))
 			});
