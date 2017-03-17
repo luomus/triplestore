@@ -705,14 +705,7 @@ function addTaxonConceptConnection(from, to) {
 
 function removeTaxonConceptConnection(from) {
 	$(".taxonConceptLinkTargetOf_"+from).removeClass("taxonConceptLinkTargetOf_"+from);
-	try {
-		if (connections[from] != undefined) {
-			taxonTreeGraphs.detach(connections[from]);
-			connections[from] = undefined;
-		}
-	} catch(e) {
-		alert(from + ' ' + e.message);
-	}
+	removeTaxonConnection(from);
 }
 
 </script>
