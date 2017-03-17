@@ -5,10 +5,11 @@
 		<div id="toolbox" class="ui-widget ui-corner-all">
 			<div class="ui-widget-header noselect" id="toolboxToggle">Tools <span style="float: right;" class="ui-icon ui-icon-carat-1-s"></span></div>
 			<div id="toolBoxContent" class="ui-widget-content">
-			
-			<div id="checklistSelectorTool">
-				Working with checklist: 
-				<select name="checklistSelector" id="checklistSelector">
+			<#if user.admin>
+				<p><button id="clearCaches" onclick="clearCaches(); return false;">Clear all caches (Admin only)</button></p>
+				<div id="checklistSelectorTool">
+					Working with checklist (Admin only): 
+					<select name="checklistSelector" id="checklistSelector">
 					<option value=""></option>
 					<#list checklists?values as checklist>
 						<#if checklist.rootTaxon.set>
@@ -17,10 +18,11 @@
 							</option>
 						</#if>
 					</#list>
-				</select>
-				<button id="changeChecklistButton" onclick="changeChecklist(); return false;">Change</button>
-			</div>
-		
+					</select>
+					<button id="changeChecklistButton" onclick="changeChecklist(); return false;">Change</button>
+				</div>
+				<br />
+			</#if>
 			<table>
 				<tr>
 					<td>Synonyms:</td>
@@ -33,11 +35,6 @@
 					<td><div id="taxonDragModeSelectorTool" class="switchContainer"><input type="checkbox" id="taxonDragMode" name="taxonDragMode" onchange="changeTaxonDragMode();"/></div></td>
 				</tr>
 			</table>
-			
-			<#if user.admin>
-				<p><button id="clearCaches" onclick="clearCaches(); return false;">Clear all caches (admin only)</button></p>
-			</#if>
-						
 			<div id="taxonSearch">
 				Search taxon:
 				<form onsubmit="searchTaxon(this); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="taxonTree">
