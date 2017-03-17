@@ -1,11 +1,5 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -23,6 +17,12 @@ import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
@@ -122,7 +122,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		@Override
 		public TaxonConcept load(Qname conceptQname) {
 			try {
-				System.out.println("Getting taxon concept " + conceptQname);
 				TaxonConcept taxonConcept = new TaxonConcept(conceptQname);
 				Collection<Model> models = triplestoreDAO.getSearchDAO().search(
 						new SearchParams(1000, 0)
@@ -138,13 +137,11 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				if (conceptIncludes.incudedIn.containsKey(conceptQname)) {
 					for (Qname including : conceptIncludes.incudedIn.get(conceptQname)) {
 						taxonConcept.setToBeIncludedIn(including);
-						System.out.println(conceptQname + " is included in " + including);
 					}
 				}
 				if (conceptIncludes.incudes.containsKey(conceptQname)) {
 					for (Qname included : conceptIncludes.incudes.get(conceptQname)) {
 						taxonConcept.setToInclude(included);
-						System.out.println(conceptQname + " includes " + included);
 					}
 				}
 				return taxonConcept;
@@ -174,10 +171,8 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 						conceptIncludes.incudedIn.get(includedConceptQname).add(includingConceptQname);
 						if (!conceptIncludes.incudes.containsKey(includingConceptQname)) {
 							conceptIncludes.incudes.put(includingConceptQname, new HashSet<Qname>());
-							System.out.println("adding " + includedConceptQname + " to be included in " + includingConceptQname);
 						}
 						conceptIncludes.incudes.get(includingConceptQname).add(includedConceptQname);
-						System.out.println("adding " + includingConceptQname + " to include " + includedConceptQname);
 					}
 				}
 				return conceptIncludes;
