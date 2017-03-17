@@ -159,7 +159,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public ConceptIncludes load() {
 			try {
 				ConceptIncludes conceptIncludes = new ConceptIncludes();
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type(MC_TAXON_CONCEPT).predicate(MC_INCLUDED_IN));
+				Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).predicate(MC_INCLUDED_IN));
 				for (Model model : models) {
 					Qname includedConceptQname = q(model.getSubject());
 					if (!conceptIncludes.incudedIn.containsKey(includedConceptQname)) {
