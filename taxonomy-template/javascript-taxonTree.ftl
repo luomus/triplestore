@@ -2,6 +2,7 @@
 
 var taxonTreeGraphs;
 var showSynonymsModeIsOn = true;
+var headerPositioned = false;
 $(function() {
 		
 	taxonTreeGraphs = jsPlumb.getInstance();
@@ -10,6 +11,21 @@ $(function() {
 		taxonTreeGraphs.repaintEverything();
   	});
 	
+	$(window).on('scroll', function() {
+ 		var scrollTop = $(window).scrollTop();
+ 		if (scrollTop > 1) {
+ 			if (!headerPositioned) {
+ 				$('#toolbox').addClass('positioned');
+ 				headerPositioned = true;
+ 			}
+ 		} else {
+ 			if (headerPositioned) {
+ 				$('#toolbox').removeClass('positioned');
+ 				headerPositioned = false;
+ 			}
+ 		}
+ 	});
+ 	
 	var synonymCheckedInitially = <#if synonymsMode == "show">true<#else>false</#if>;
 	showSynonymsModeIsOn = synonymCheckedInitially; 
 	$("#synonymModeSelectorTool :checkbox").switchButton({

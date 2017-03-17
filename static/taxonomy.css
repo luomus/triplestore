@@ -29,10 +29,13 @@
 
 #toolbox {
 	position: fixed;
-	top: 60px;
+	top: 65px;
 	right: 15px;
 	width: 276px;
 	z-index: 10;
+}
+#toolbox.positioned {
+  top: 0px;
 }
 #toolboxToggle { cursor: pointer; }
 #toolbox > div { 
