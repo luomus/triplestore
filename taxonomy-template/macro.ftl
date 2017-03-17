@@ -101,7 +101,6 @@
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
-				<span class="taxonConcept oneToOne" title="Taxon concept: ${taxon.taxonConceptQname!"NO CONCEPT"}">1:1</span>
 				<#list taxon.synonyms as synonymTaxon>	 
 					<@printTaxon synonymTaxon "synonym" false false />
 				</#list>
