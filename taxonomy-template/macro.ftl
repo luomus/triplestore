@@ -117,22 +117,7 @@
 						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${including}');</script>
 					</#list>
 				</#if>
-			</#if>
-			<div>
-				<span class="including">${taxon.taxonConceptQname!"NO CONCEPT"} INCLUDES</span>
-				<#list taxon.includedTaxa as included>
-					<span class="included">${included.taxonConceptQname}</span>
-					<@printTaxon included "synonym" false false />
-				</#list>
-			</div>
-			<div>
-				<span class="included">${taxon.taxonConceptQname!"NO CONCEPT"} INCLUDED IN</span>
-				<#list taxon.includingTaxa as including>
-					<span class="including">${including.taxonConceptQname}</span>
-					<@printTaxon including "synonym" false false />
-				</#list>
-			</div>
-			
+			</#if>			
 		</#if>
 	</div>
 </#macro>

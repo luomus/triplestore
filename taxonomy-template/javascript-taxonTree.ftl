@@ -664,27 +664,37 @@ $(function() {
 	$(".rootTaxon").find(".treePlusMinusSign").click();
 });
 
+var loadingTaxaOfConcept = [];
+
 function taxonConceptLink(fromConceptQname, toConceptQname) {
 	var fromConcept = fromConceptQname.replace('.','');
 	var toConcept = toConceptQname.replace('.','');
 	if ($('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTarget').length < 1) {
-		$('#taxonTree').find('.taxonLevel').last().append($('<div class="taxonConceptLinkTargetContainer"></div>'));
+		$('#taxonTree').find('.taxonLevel').last().prepend($('<div class="taxonConceptLinkTargetContainer"></div>'));
 	}
 	var target = $('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTargetContainer').first();
 	if ($('#'+toConcept).length < 1) {
-		target.append($('<span id="'+toConcept+'" class="taxonConcept taxonConceptLinkTarget" title="Taxon concept: '+toConceptQname+'">C</span>'));
+		target.append($('<div id="'+toConcept+'Container" class="taxonConceptLinkTarget ui-widget ui-widget-content"> <span id="'+toConcept+'" class="taxonConcept" title="Taxon concept: '+toConceptQname+'">C</span>'));
 	}
 	addTaxonConceptConnection(fromConcept, toConcept);
 	taxonTreeGraphs.repaintEverything();
+	if ($('#'+toConcept+'Container').find('.synonyms').length < 1 && !loadingTaxaOfConcept[toConceptQname]) {
+		loadingTaxaOfConcept[toConceptQname] = 1;
+		$.get('${baseURL}/api/taxaOfConcept/'+encodeURIComponent(toConceptQname), function(data) {
+			$('#'+toConcept+'Container').append(data);
+			taxonTreeGraphs.repaintEverything();
+			loadingTaxaOfConcept[toConceptQname] = 0;
+		});
+	}
 }
 
 function addTaxonConceptConnection(from, to) {
-	$("#"+to).addClass('taxonConceptLinkTargetOf_'+from);
+	$("#"+to+'Container').addClass('taxonConceptLinkTargetOf_'+from);
 	try {
 		connections[from] = taxonTreeGraphs.connect({
 			source: from, 
 	   		target: to, 			   	
-			connector:["Bezier", { curviness:50 }],
+			connector:["Bezier", { curviness:25 }],
 	   		endpoint:"Blank",
 	   		anchors:["Right", "Left"], 
 	   		paintStyle:{ 

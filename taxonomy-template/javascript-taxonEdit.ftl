@@ -181,9 +181,13 @@ function afterTaxonEditSectionSubmit(section) {
         	
    		var taxon = $("#"+qname.replace("MX.", "MX"));
 		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
+			taxon.find('.taxonConcept').each(function() {
+				removeTaxonConceptConnection($(this).attr('id'))
+			});
 			taxon.replaceWith(data);
 			taxon = $("#"+qname.replace("MX.", "MX"));
 			taxon.find('button, .button').button();
+			taxonTreeGraphs.repaintEverything();
 		});				
     } 
     else if (section.hasClass("primaryVernacularNameSection")) {
