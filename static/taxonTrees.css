@@ -248,7 +248,7 @@ div.taxonDropArea.ui-droppable.ui-state-active {
 	cursor: ns-resize;
 }
 .column { display: inline-block; vertical-align: top; text-align: left; }
-.portlet { margin: 0 1em 1em 0; }
+.portlet { margin: 0 2em 3em 0; }
 .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: pointer; }
 .portlet-header .ui-icon { float: right; }
 .portlet-content { padding: 0.4em; }

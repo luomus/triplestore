@@ -78,13 +78,21 @@
 	<@portletFooter />
 	
 	<@portletHeader "Source of taxonomy" />
-		<#if !taxon.explicitlySetOriginalPublications?has_content && taxon.originalPublications?has_content>
+		<#if taxon.setToStopOriginalPublicationInheritance || (!taxon.explicitlySetOriginalPublications?has_content && taxon.originalPublications?has_content)>
 			<label>Inherited publications</label>
 			<ul class="inheritedValues">
 				<#list taxon.originalPublications as publicationQname>	
 					<li>${publications[publicationQname].citation}</li>
 				</#list>
 			</ul>
+			<p class="info">Publications are inherited from parents. If you define one or more publications, the parent's publications are no longer inherited. To stop inheriting without defining a new publication, use the provided tool. You must reload this view to see changes.</p>
+			<label>Stop inheritance</label>
+			<select name="MX.stopOriginalPublicationInheritance" <@checkPermissions/> >
+				<option value=""></option>
+				<option value="true" <#if taxon.setToStopOriginalPublicationInheritance>selected="selected"</#if>>Yes</option>
+				<option value="false">No</option>
+			</select>
+			<br /><br />
 		</#if>
 		<select id="originalPublicationSelector" name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
 			<option value=""></option>
@@ -95,6 +103,7 @@
 		<br/>
 		<p><label class="">Add a new publication</label></p>
 		<textarea class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Haukisalmi V (2015) Checklist of tapeworms (Platyhelminthes, Cestoda) of vertebrates in Finland. ZooKeys 533: 1–61.' "></textarea>
+		
 	<@portletFooter />
 	
 	<@portletHeader "Notes" />
@@ -146,13 +155,21 @@
 	<@portletFooter />				
 
 	<@portletHeader "Source of occurrence" />
-		<#if !taxon.explicitlySetOccurrenceInFinlandPublications?has_content && taxon.occurrenceInFinlandPublications?has_content>
+		<#if taxon.setToStopOccurrenceInFinlandPublicationInheritance || (!taxon.explicitlySetOccurrenceInFinlandPublications?has_content && taxon.occurrenceInFinlandPublications?has_content)>
 			<label>Inherited publications</label>
 			<ul class="inheritedValues">
 				<#list taxon.occurrenceInFinlandPublications as publicationQname>	
 					<li>${publications[publicationQname].citation}</li>
 				</#list>
 			</ul>
+			<p class="info">Publications are inherited from parents. If you define one or more publications, the parent's publications are no longer inherited. To stop inheriting without defining a new publication, use the provided tool. You must reload this view to see changes.</p>
+			<label>Stop inheritance</label>
+			<select name="MX.stopOccurrenceInFinlandPublicationInheritance" <@checkPermissions/> >
+				<option value=""></option>
+				<option value="true" <#if taxon.setToStopOccurrenceInFinlandPublicationInheritance>selected="selected"</#if>>Yes</option>
+				<option value="false">No</option>
+			</select>
+			<br /><br />
 		</#if>
 		<select id="occurrenceInFinlandPublicationSelector" name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
