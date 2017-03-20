@@ -40,7 +40,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
-		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MP") : new Qname(getQname(req));
+		Qname qname = addNew ? null : new Qname(getQname(req));
 		String citation = req.getParameter("citation");
 		String uri = req.getParameter("URI");
 

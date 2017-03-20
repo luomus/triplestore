@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.dao;
 
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
@@ -46,8 +35,23 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.StringUtils;
 
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
+	private static final String DC_URI = "dc:URI";
+	private static final String DC_BIBLIOGRAPHIC_CITATION = "dc:bibliographicCitation";
+	private static final String MP_PUBLICATION = "MP.publication";
 	private static final String SORT_ORDER = "sortOrder";
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 
@@ -260,7 +264,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.setType("MR.checklist");
 
 		for (Map.Entry<String, String> e : checklist.getFullname().getAllTexts().entrySet()) {
-			model.addStatementIfObjectGiven("dc:bibliographicCitation", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, e.getValue(), e.getKey());
 		}
 		for (Map.Entry<String, String> e : checklist.getNotes().getAllTexts().entrySet()) {
 			model.addStatementIfObjectGiven("rdfs:comment", e.getValue(), e.getKey());
@@ -289,10 +293,22 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public Publication storePublication(Publication publication) throws Exception {
+		if (!publication.getQname().isSet()) {
+			Collection<Model> existing = this.getSearchDAO().search(
+					new SearchParams(1, 0)
+					.type(MP_PUBLICATION)
+					.predicate(DC_BIBLIOGRAPHIC_CITATION)
+					.objectliteral(publication.getCitation()));
+			if (!existing.isEmpty()) {
+				publication.setQname(new Qname(existing.iterator().next().getSubject().getQname()));
+				return publication;
+			}
+			publication.setQname(this.getSeqNextValAndAddResource("MP"));
+		}
 		Model model = new Model(publication.getQname());
-		model.setType("MP.publication");
-		model.addStatementIfObjectGiven("dc:bibliographicCitation", publication.getCitation(), null);
-		model.addStatementIfObjectGiven("dc:URI", publication.getURI(), null);
+		model.setType(MP_PUBLICATION);
+		model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, publication.getCitation(), null);
+		model.addStatementIfObjectGiven(DC_URI, publication.getURI(), null);
 		store(model);
 		return publication;
 	}

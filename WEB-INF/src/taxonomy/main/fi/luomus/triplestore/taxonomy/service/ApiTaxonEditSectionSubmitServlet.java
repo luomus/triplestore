@@ -251,7 +251,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	private Publication storePublication(String newPublicationCitation, TriplestoreDAO dao) throws Exception {
-		Publication publication = new Publication(dao.getSeqNextValAndAddResource("MP"));
+		Publication publication = new Publication(null);
 		publication.setCitation(newPublicationCitation);
 		dao.storePublication(publication);
 		getTaxonomyDAO().getPublicationsForceReload();

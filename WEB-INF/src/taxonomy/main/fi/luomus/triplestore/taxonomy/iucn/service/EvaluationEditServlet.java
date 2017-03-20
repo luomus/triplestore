@@ -483,7 +483,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void insertPublicationAndSetToModel(TriplestoreDAO dao, IUCNEvaluation givenData, String citation) throws Exception {
-		Publication publication = new Publication(dao.getSeqNextValAndAddResource("MP"));
+		Publication publication = new Publication(null);
 		publication.setCitation(citation);
 		dao.storePublication(publication);
 		givenData.getModel().addStatement(new Statement(IucnDAO.PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
