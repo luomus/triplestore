@@ -44,15 +44,52 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
+	private static final String MR_IS_PUBLIC = "MR.isPublic";
+	private static final String MR_OWNER = "MR.owner";
+	private static final String MR_ROOT_TAXON = "MR.rootTaxon";
+	private static final String MVL_HAS_SUB_GROUP = "MVL.hasSubGroup";
+	private static final String MVL_NAME = "MVL.name";
+	private static final String MVL_INFORMAL_TAXON_GROUP = "MVL.informalTaxonGroup";
+	private static final String UNBOUNDED = "unbounded";
+	private static final Set<String> PERSON_ROLE_PREDICATES = Utils.set("MA.role", "MA.roleKotka", "MA.organisation");
+	private static final String MA_FULL_NAME = "MA.fullName";
+	private static final String RDF_LI_PREFIX = "rdf:_";
+	private static final String MO_THREATENED = "MO.threatened";
+	private static final String MO_NOTES = "MO.notes";
+	private static final String MO_YEAR = "MO.year";
+	private static final String MO_AREA = "MO.area";
+	private static final String MO_STATUS = "MO.status";
+	private static final String MO_TAXON = "MO.taxon";
+	private static final String MO_OCCURRENCE = "MO.occurrence";
+	private static final String RDF_ALT = "rdf:Alt";
+	private static final String MA_PERSON = "MA.person";
+	private static final String RDFS_LABEL = "rdfs:label";
+	private static final String MZ_UNIT_OF_MEASUREMENT = "MZ.unitOfMeasurement";
+	private static final String XSD_MAX_OCCURS = "xsd:maxOccurs";
+	private static final String XSD_MIN_OCCURS = "xsd:minOccurs";
+	private static final String SORT_ORDER2 = "sortOrder";
+	private static final String RDFS_RANGE = "rdfs:range";
+	private static final String MC_TAXON_CONCEPT = "MC.taxonConcept";
+	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
+	private static final String MX_CIRCUMSCRIPTION = "MX.circumscription";
+	private static final String MX_IS_PART_OF = "MX.isPartOf";
+	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
+	private static final String MX_TAXON_RANK = "MX.taxonRank";
+	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
+	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
+	private static final String MX_TAXON = "MX.taxon";
+	private static final String RDFS_COMMENT = "rdfs:comment";
+	private static final String MR_CHECKLIST = "MR.checklist";
 	private static final String DC_URI = "dc:URI";
 	private static final String DC_BIBLIOGRAPHIC_CITATION = "dc:bibliographicCitation";
 	private static final String MP_PUBLICATION = "MP.publication";
-	private static final String SORT_ORDER = "sortOrder";
+	private static final String SORT_ORDER = SORT_ORDER2;
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
@@ -261,17 +298,17 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public Checklist store(Checklist checklist) throws Exception {
 		Model model = new Model(checklist.getQname());
-		model.setType("MR.checklist");
+		model.setType(MR_CHECKLIST);
 
 		for (Map.Entry<String, String> e : checklist.getFullname().getAllTexts().entrySet()) {
 			model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, e.getValue(), e.getKey());
 		}
 		for (Map.Entry<String, String> e : checklist.getNotes().getAllTexts().entrySet()) {
-			model.addStatementIfObjectGiven("rdfs:comment", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven(RDFS_COMMENT, e.getValue(), e.getKey());
 		}
-		model.addStatementIfObjectGiven("MR.rootTaxon", checklist.getRootTaxon());
-		model.addStatementIfObjectGiven("MR.owner", checklist.getOwner());
-		model.addStatement(new Statement(new Predicate("MR.isPublic"), checklist.isPublic()));
+		model.addStatementIfObjectGiven(MR_ROOT_TAXON, checklist.getRootTaxon());
+		model.addStatementIfObjectGiven(MR_OWNER, checklist.getOwner());
+		model.addStatement(new Statement(new Predicate(MR_IS_PUBLIC), checklist.isPublic()));
 
 		store(model);
 		return checklist;
@@ -280,12 +317,12 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public InformalTaxonGroup storeInformalTaxonGroup(InformalTaxonGroup group) throws Exception {
 		Model model = new Model(group.getQname());
-		model.setType("MVL.informalTaxonGroup");
+		model.setType(MVL_INFORMAL_TAXON_GROUP);
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
-			model.addStatementIfObjectGiven("MVL.name", e.getValue(), e.getKey());
+			model.addStatementIfObjectGiven(MVL_NAME, e.getValue(), e.getKey());
 		}
 		for (Qname parent : group.getSubGroups()) {
-			model.addStatementIfObjectGiven("MVL.hasSubGroup", parent);
+			model.addStatementIfObjectGiven(MVL_HAS_SUB_GROUP, parent);
 		}
 		store(model);
 		return group;
@@ -316,22 +353,22 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public Taxon addTaxon(EditableTaxon taxon) throws SQLException {
 		Model model = new Model(taxon.getQname());
-		model.setType("MX.taxon");
+		model.setType(MX_TAXON);
 
-		model.addStatementIfObjectGiven("MX.scientificName", taxon.getScientificName());
-		model.addStatementIfObjectGiven("MX.scientificNameAuthorship", taxon.getScientificNameAuthorship());
-		model.addStatementIfObjectGiven("MX.taxonRank", taxon.getTaxonRank());
+		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME, taxon.getScientificName());
+		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME_AUTHORSHIP, taxon.getScientificNameAuthorship());
+		model.addStatementIfObjectGiven(MX_TAXON_RANK, taxon.getTaxonRank());
 
-		model.addStatementIfObjectGiven("MX.nameAccordingTo", taxon.getChecklist());
-		model.addStatementIfObjectGiven("MX.isPartOf", taxon.getParentQname());
+		model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
+		model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
 
 		if (!given(taxon.getTaxonConceptQname())) {
 			taxon.setTaxonConceptQname(this.addTaxonConcept());
 		}
-		model.addStatement(new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxon.getTaxonConceptQname())));
+		model.addStatement(new Statement(new Predicate(MX_CIRCUMSCRIPTION), new ObjectResource(taxon.getTaxonConceptQname())));
 
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
-		model.addStatement(new Statement(new Predicate("MZ.createdAtTimestamp"), new ObjectLiteral(createdAt)));
+		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
 		store(model);
 		return taxon;
@@ -345,7 +382,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public Qname addTaxonConcept() throws SQLException {
 		Qname id = getSeqNextValAndAddResource("MC");
 		Model model = new Model(id);
-		model.setType("MC.taxonConcept");
+		model.setType(MC_TAXON_CONCEPT);
 		store(model);
 		return id;
 	}
@@ -445,11 +482,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private RdfProperty createProperty(Model model) throws Exception {
-		String range = getValue("rdfs:range", model);
-		String sortOrder = getValue("sortOrder", model);
-		String minOccurs = getValue("xsd:minOccurs", model);
-		String maxOccurs = getValue("xsd:maxOccurs", model);
-		String unitOfMeasurement = getValue("MZ.unitOfMeasurement", model);
+		String range = getValue(RDFS_RANGE, model);
+		String sortOrder = getValue(SORT_ORDER2, model);
+		String minOccurs = getValue(XSD_MIN_OCCURS, model);
+		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
+		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);
 
 		Qname rangeQname = range == null ? null : new Qname(range); 
 		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
@@ -467,7 +504,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 
 		if (maxOccurs != null ) {
-			if ("unbounded".equals(maxOccurs)) {
+			if (UNBOUNDED.equals(maxOccurs)) {
 				property.setMaxOccurs(Integer.MAX_VALUE);
 			} else {
 				try {
@@ -486,10 +523,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 		LocalizedText labels = new LocalizedText();
 		LocalizedText comments = new LocalizedText();
-		for (Statement s : model.getStatements("rdfs:label")) {
+		for (Statement s : model.getStatements(RDFS_LABEL)) {
 			labels.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
 		}
-		for (Statement s : model.getStatements("rdfs:comment")) {
+		for (Statement s : model.getStatements(RDFS_COMMENT)) {
 			comments.set(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
 		}
 		property.setLabels(labels);
@@ -506,11 +543,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void addRangeValues(RdfProperty property, Model model) throws Exception {
-		if (property.getRange().getQname().toString().equals("MA.person")) {
+		if (property.getRange().getQname().toString().equals(MA_PERSON)) {
 			addPersons(property);
 		} else {
 			Model range = get(property.getRange().getQname());
-			if ("rdf:Alt".equals(range.getType())) {
+			if (RDF_ALT.equals(range.getType())) {
 				property.getRange().setRangeValues(getAltValues(range));
 			}
 		}
@@ -521,10 +558,14 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		public List<RdfProperty> load(TriplestoreDAO dao) {
 			try {
 				List<RdfProperty> rangeValues = new ArrayList<RdfProperty>();
-				for (Model m : dao.getSearchDAO().search("rdf:type", "MA.person")) {
+				Collection<Model> persons = dao.getSearchDAO().search(
+						new SearchParams(1000, 0)
+						.type(MA_PERSON)
+						.predicates(PERSON_ROLE_PREDICATES)); 
+				for (Model m : persons) {
 					RdfProperty rangeValue = new RdfProperty(new Qname(m.getSubject().getQname()), null);
 					String personName = m.getSubject().getQname();
-					for (Statement s : m.getStatements("MA.fullName")) {
+					for (Statement s : m.getStatements(MA_FULL_NAME)) {
 						personName = s.getObjectLiteral().getContent();
 						break;
 					}
@@ -554,11 +595,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Statement s : model.getStatements()) {
 			if (s.isLiteralStatement()) continue;
 			String predicate = s.getPredicate().getQname();
-			if (!predicate.startsWith("rdf:_")) continue;
+			if (!predicate.startsWith(RDF_LI_PREFIX)) continue;
 			String object = s.getObjectResource().getQname();
 			Model altmodel = get(object);
 			RdfProperty property = createProperty(altmodel);
-			property.setOrder(Integer.valueOf(predicate.replace("rdf:_", "")));
+			property.setOrder(Integer.valueOf(predicate.replace(RDF_LI_PREFIX, "")));
 			values.add(property);
 		}
 		Collections.sort(values);
@@ -717,13 +758,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
 		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO"); 
 		Model model = new Model(id);
-		model.setType("MO.occurrence");
-		model.addStatementIfObjectGiven("MO.taxon", taxonQname);
-		model.addStatementIfObjectGiven("MO.status", occurrence.getStatus());
-		model.addStatementIfObjectGiven("MO.area", occurrence.getArea());
-		model.addStatementIfObjectGiven("MO.year", s(occurrence.getYear()));
-		model.addStatementIfObjectGiven("MO.notes", occurrence.getNotes());
-		model.addStatementIfObjectGiven("MO.threatened", occurrence.getThreatened());
+		model.setType(MO_OCCURRENCE);
+		model.addStatementIfObjectGiven(MO_TAXON, taxonQname);
+		model.addStatementIfObjectGiven(MO_STATUS, occurrence.getStatus());
+		model.addStatementIfObjectGiven(MO_AREA, occurrence.getArea());
+		model.addStatementIfObjectGiven(MO_YEAR, s(occurrence.getYear()));
+		model.addStatementIfObjectGiven(MO_NOTES, occurrence.getNotes());
+		model.addStatementIfObjectGiven(MO_THREATENED, occurrence.getThreatened());
 		this.store(model);
 		occurrence.setId(id);
 	}
