@@ -152,7 +152,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	private class TaxonConceptIncludesLoader implements SingleObjectCache.CacheLoader<ConceptIncludes> {
-		private static final String MC_TAXON_CONCEPT = "MC.taxonConcept";
 		private static final String MC_INCLUDED_IN = "MC.includedIn";
 
 		@Override
