@@ -1,11 +1,11 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.Set;
-
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
+
+import java.util.Set;
 
 public class EditableTaxon extends Taxon {
 
@@ -97,6 +97,26 @@ public class EditableTaxon extends Taxon {
 		if (!this.getExplicitlySetExperts().isEmpty()) return true;
 		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) return true;
 		return false;
+	}
+
+	public boolean hasExplicitlySetOriginalPublication(String qname) {
+		return getExplicitlySetOriginalPublications().contains(new Qname(qname));
+	}
+	
+	public boolean hasExplicitlySetOccurrenceInFinlandPublication(String qname) {
+		return getExplicitlySetOccurrenceInFinlandPublications().contains(new Qname(qname));
+	}
+	
+	public boolean hasExplicitlySetEditor(String qname) {
+		return getExplicitlySetEditors().contains(new Qname(qname));
+	}
+	
+	public boolean hasExplicitlySetExpert(String qname) {
+		return getExplicitlySetExperts().contains(new Qname(qname));
+	}
+	
+	public boolean hasExplicitlySetInformalTaxonGroup(String qname) {
+		return getExplicitlySetInformalTaxonGroups().contains(new Qname(qname));
 	}
 
 }

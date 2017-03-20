@@ -77,31 +77,21 @@
 		</select>
 	<@portletFooter />
 	
-	<@portletHeader "Source of taxonomy" "" "multirowSection"/>
-		<table class="publicationSelect">
-			<#list taxon.originalPublications as existingPublicationQname>
-			<tr>
-				<td>
-					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> >
-						<option value=""></option>
-						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}" <#if same(existingPublicationQname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
-						</#list>
-					</select>
-				</td>
-			</tr>
+	<@portletHeader "Source of taxonomy" />
+		<#if !taxon.explicitlySetOriginalPublications?has_content && taxon.originalPublications?has_content>
+			<label>Inherited publications</label>
+			<ul class="inheritedValues">
+				<#list taxon.originalPublications as publicationQname>	
+					<li>${publications[publicationQname].citation}</li>
+				</#list>
+			</ul>
+		</#if>
+		<select name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
+			<option value=""></option>
+			<#list publications?keys as publicationQname>
+				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOriginalPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 			</#list>
-			<tr>
-				<td>
-					<select name="MX.originalPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
-						<option value=""></option>
-						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}">${publications[publicationQname].citation}</option>
-						</#list>
-					</select>
-				</td>
-			</tr>
-		</table>
+		</select>
 	<@portletFooter />
 	
 	<@portletHeader "Notes" />
@@ -152,40 +142,30 @@
 		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
 	<@portletFooter />				
 
-	<@portletHeader "Source of occurrence" "" "multirowSection" />
-		<table class="publicationSelect">
-			<#list taxon.occurrenceInFinlandPublications as existingPublicationQname>
-			<tr>
-				<td>
-					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> >
-						<option value=""></option>
-						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}" <#if same(existingPublicationQname, publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
-						</#list>
-					</select>
-				</td>
-			</tr>
+	<@portletHeader "Source of occurrence" />
+		<#if !taxon.explicitlySetOccurrenceInFinlandPublications?has_content && taxon.occurrenceInFinlandPublications?has_content>
+			<label>Inherited publications</label>
+			<ul class="inheritedValues">
+				<#list taxon.occurrenceInFinlandPublications as publicationQname>	
+					<li>${publications[publicationQname].citation}</li>
+				</#list>
+			</ul>
+		</#if>
+		<select name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list publications?keys as publicationQname>
+				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOccurrenceInFinlandPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 			</#list>
-			<tr>
-				<td>
-					<select name="MX.occurrenceInFinlandPublication" class="chosen" <@checkPermissions/> data-placeholder="Select existing publication" >
-						<option value=""></option>
-						<#list publications?keys as publicationQname>
-							<option value="${publicationQname}">${publications[publicationQname].citation}</option>
-						</#list>
-					</select>
-				</td>
-			</tr>
-		</table>		
+		</select>
 	<@portletFooter />	
 	
-	<@portletHeader "Informal groups" "" "multirowSection" />
+	<@portletHeader "Informal groups" />
 		<#assign headerPrinted = false>
 		<#list taxon.informalTaxonGroups as groupQname>
 			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
 				<#if !headerPrinted>
 					<label>Inherited groups</label>
-					<ul class="inheritedGroups">
+					<ul class="inheritedValues">
 					<#assign headerPrinted = true>
 				</#if>
 				<li>${informalGroups[groupQname.toString()].name.forLocale("fi")!""} - ${informalGroups[groupQname.toString()].name.forLocale("en")!groupQnameString}</li>
@@ -196,27 +176,14 @@
 			<br/>
 		</#if>
 		
-		<table>
-		<#list taxon.explicitlySetInformalTaxonGroups as groupQname>
-			<tr><td>
-			<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" class="chosen" <@checkPermissions/> >
-				<option value=""></option>
-				<#list informalGroups?keys as groupQnameString>
-					<option value="${groupQnameString}" <#if same(groupQname.toString(), groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
-				</#list>
-			</select>
-			</td></tr>
-		</#list>
-		<tr><td>
-		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Add new group" class="chosen" <@checkPermissions/> >
+		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list informalGroups?keys as groupQnameString>
-				<option value="${groupQnameString}">${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
+				<option value="${groupQnameString}" <#if taxon.hasExplicitlySetInformalTaxonGroup(groupQnameString)>selected="selected"</#if> >${informalGroups[groupQnameString].name.forLocale("fi")!""} - ${informalGroups[groupQnameString].name.forLocale("en")!groupQnameString}</option>
 			</#list>
 		</select>
-		</td></tr>
-		</table>
-		<p class="info">When adding a new informal group it is only required to add the 'lowest' group. 'Parent groups' are added automatically. (If you want to see them after saving, reload this view.)</p>
+		
+		<p class="info">When adding a new informal group it is only required to add the 'lowest' group. 'Parent groups' are added automatically. (If you want to see them after saving, reload this view by clicking this taxon in the tree again.)</p>
 	<@portletFooter />				
 
 </div>
@@ -374,28 +341,6 @@
 	
 </div>
 
-<#macro emptyEditors>
-	<p>
-		<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-	</p>
-</#macro>
-
-<#macro emptyExperts>
-	<p>
-		<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}">${persons[personQnameString].fullname}</option>
-			</#list>
-		</select>
-	</p>
-</#macro>
-
 <div class="column">
   <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
 	<@portletHeader "Editors and Experts" />
@@ -424,34 +369,20 @@
 		<#elseif !taxon.explicitlySetExperts?has_content><span class="expert">Experts:[none]</span></#if>
 		
 		<p><label>Editors</label></p>
-		<#list taxon.explicitlySetEditors as editorQname>
-			<p>
-			<select name="MX.taxonEditor" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-				<option value=""></option>
-				<#list persons?keys as personQnameString>
-					<option value="${personQnameString}" <#if same(editorQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
-				</#list>
-			</select>
-			</p>
-		</#list>
-		<@emptyEditors />
-		<@emptyEditors />
-		<@emptyEditors />
-		
+		<select name="MX.taxonEditor" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}" <#if taxon.hasExplicitlySetEditor(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
+
 		<p><label>Experts</label></p>
-		<#list taxon.explicitlySetExperts as expertQname>
-			<p>
-			<select name="MX.taxonExpert" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
-				<option value=""></option>
-				<#list persons?keys as personQnameString>
-					<option value="${personQnameString}" <#if same(expertQname.toString(), personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
-				</#list>
-			</select>
-			</p>
-		</#list>
-		<@emptyExperts />
-		<@emptyExperts />
-		<@emptyExperts />
+		<select name="MX.taxonExpert" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
+			<option value=""></option>
+			<#list persons?keys as personQnameString>
+				<option value="${personQnameString}" <#if taxon.hasExplicitlySetExpert(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+			</#list>
+		</select>
 		
 		<div class="info">
 			Note that after saving the changes you must close and re-open the affected branches in the taxonomy tree to be able to see the changes.  

@@ -186,7 +186,15 @@ div#taxonEditHeader {
 	font-weight: bold;
 }
 .publicationSelect select, select.chosen, .chosen-container {
-	width: 350px;
+	width: 380px;
+}
+li.search-choice {
+  max-height: 48px;
+  overflow: hidden;
+}
+li.search-choice:HOVER {
+  max-height: 300px;
+  overflow: hidden;
 }
 #nameDecidedBy {
   width: 185px;
@@ -290,10 +298,16 @@ span.indent { display: inline-block; }
 	font-size: 9px;
 }
 
-.inheritedGroups li {
+.inheritedValues li {
   max-width: 350px;
   white-space: nowrap;
   overflow: hidden;
+  margin-bottom: 1em;
+}
+
+.inheritedValues li:HOVER {
+  white-space: normal;
+  overflow: auto;
 }
 
 #loadsUglyBlocker {
