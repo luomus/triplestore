@@ -256,5 +256,17 @@ $(window).on('beforeunload', function() {
 	return undefined;
 });
 
+function addedOccurrenceInFinlandPublication(qname, citation) {
+	publicationAdded(qname, citation, '#occurrenceInFinlandPublicationSelector');
+}
+function addedPublication(qname, citation) {
+	publicationAdded(qname, citation, '#originalPublicationSelector');
+}
+
+function publicationAdded(qname, citation, selector) {
+	$(selector).append('<option value="'+qname+'" selected="selected">'+citation+'</option>');
+	$(selector).trigger("chosen:updated");
+	$(selector).closest('.taxonEditSection').find('.newPublicationInput').val('');
+}
 
 </script>

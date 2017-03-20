@@ -185,7 +185,7 @@ div#taxonEditHeader {
 	color: rgb(131, 121, 121);
 	font-weight: bold;
 }
-.publicationSelect select, select.chosen, .chosen-container {
+.publicationSelect select, select.chosen, .chosen-container, .newPublicationInput {
 	width: 380px;
 }
 li.search-choice {

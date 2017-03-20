@@ -86,12 +86,15 @@
 				</#list>
 			</ul>
 		</#if>
-		<select name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
+		<select id="originalPublicationSelector" name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
 			<option value=""></option>
 			<#list publications?keys as publicationQname>
 				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOriginalPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 			</#list>
 		</select>
+		<br/>
+		<p><label class="">Add a new publication</label></p>
+		<textarea class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Haukisalmi V (2015) Checklist of tapeworms (Platyhelminthes, Cestoda) of vertebrates in Finland. ZooKeys 533: 1–61.' "></textarea>
 	<@portletFooter />
 	
 	<@portletHeader "Notes" />
@@ -151,12 +154,15 @@
 				</#list>
 			</ul>
 		</#if>
-		<select name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
+		<select id="occurrenceInFinlandPublicationSelector" name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list publications?keys as publicationQname>
 				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOccurrenceInFinlandPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
 			</#list>
 		</select>
+		<br/>
+		<p><label class="">Add a new publication</label></p>
+		<textarea class="newPublicationInput" name="newOccurrenceInFinlandPublicationCitation" id="newOccurrenceInFinlandPublicationCitation" placeholder="For example 'Huhta, V., Hyvönen, R., Kaasalainen, P., Koskenniemi, A., Muona, J., Mäkelä, I., Sulander, M. & Vilkamaa, P. 1986: Soil fauna of Finnish coniferous forests. Annales Zoologici Fennici 23: 345-360.' "></textarea>
 	<@portletFooter />	
 	
 	<@portletHeader "Informal groups" />
@@ -458,7 +464,7 @@
 <script>
 $(function() {
 
-	$("textarea").attr("placeholder", "In english");
+	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
 	
 	$("#deleteTaxon").on('click', function() {
 		var taxonToDeleteQname = $("#taxonToEditQname").text();

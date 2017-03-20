@@ -63,6 +63,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		ResponseData responseData = new ResponseData().setViewName("api-taxoneditsubmit");
 		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
 		String newPublicationCitation = req.getParameter("newPublicationCitation");
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
@@ -76,7 +77,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
 		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
 
-		boolean editingDescriptionFields = !containsNonDescriptionFields(usedAndGivenStatements, dao); 
+		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
 		}
@@ -84,10 +85,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (given(newPublicationCitation)) {
 			Publication publication = storePublication(newPublicationCitation, dao);
 			usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+			responseData.setData("addedPublication", publication);
 		}
 		if (given(newOccurrenceInFinlandPublicationCitation)) {
 			Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
 			usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+			responseData.setData("addedOccurrenceInFinlandPublication", publication);
 		}
 
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
@@ -108,7 +111,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
 		}
 
-		return new ResponseData().setViewName("api-taxoneditsubmit").setData(VALIDATION_RESULTS, validationData);
+		return responseData.setData(VALIDATION_RESULTS, validationData);
 	}
 
 	public static void createAndStoreSynonym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxon) throws Exception {
@@ -172,13 +175,14 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return parentStatements;
 	}
 
-	private boolean containsNonDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
+	private boolean editingDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
+		if (usedAndGivenStatements.getUsed().isEmpty()) return false;
 		Set<String> descriptionFields = getDescriptionFields(dao);
 		for (Used used : usedAndGivenStatements.getUsed()) {
-			if (!descriptionFields.contains(used.getPredicate().getQname())) return true;
+			if (!descriptionFields.contains(used.getPredicate().getQname())) return false;
 
 		}
-		return false;
+		return true;
 	}
 
 	private Set<String> getDescriptionFields(TriplestoreDAO dao) {
