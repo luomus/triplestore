@@ -4,10 +4,14 @@
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 <p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a> (13.2. muutokset vielä päivittämättä)</p>
+<p><a href="https://beta.laji.fi/map" target="_blank">Karttatyökaluun</a> (arviointialueiden rajat, koordinaattien selvitys)</p>
 
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 20.3.2016</h6>
+	<p>Linkki karttatyökaluun lisätty. Mahdollisuus nähdä valitun alueen pinta-ala on tulossa tänne ja havaintohaun viranomaispuolelle.</p>
+	
 	<h6>Uudistuksia 13.2.2017</h6>
 	<ul>
 	<li>Alueellisen uhanalaisuuden ilmoittaminen on muuttunut. Alueelliselle uhanalaisuudelle on nyt erilliset valinnat. Alueellisen uhanalaisuuden kentät saa näkyville painamalla "Määritä alueellinen uhanalaisuus" -painiketta.</li>
