@@ -1,5 +1,12 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.Collection;
+import java.util.HashSet;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -9,13 +16,6 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.util.Collection;
-import java.util.HashSet;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/merge/*"})
 public class TaxonMergeSubmitServlet extends TaxonomyEditorBaseServlet {
@@ -66,12 +66,19 @@ public class TaxonMergeSubmitServlet extends TaxonomyEditorBaseServlet {
 		for (EditableTaxon taxonToMerge : toMerge) {
 			dao.delete(new Subject(taxonToMerge.getQname()), IS_PART_OF_PREDICATE);
 			dao.delete(new Subject(taxonToMerge.getQname()), NAME_ACCORDING_TO_PREDICATE);
+			if (notSet(taxonToMerge.getTaxonConceptQname())) {
+				taxonToMerge.setTaxonConceptQname(dao.addTaxonConcept());
+			}
 			dao.store(new Subject(taxonToMerge.getTaxonConceptQname()), new Statement(MC_INCLUDED_IN_PREDICATE, new ObjectResource(newTaxon.getTaxonConceptQname())));
 		}
 
 		taxonomyDAO.clearTaxonConceptLinkings();
 
 		return redirectToTree(res, toMerge, rootTaxonId);
+	}
+
+	private boolean notSet(Qname taxonConceptQname) {
+		return taxonConceptQname == null || !taxonConceptQname.isSet();
 	}
 
 	private EditableTaxon parseAndCreateNewTaxon(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxonToMerge) throws Exception {

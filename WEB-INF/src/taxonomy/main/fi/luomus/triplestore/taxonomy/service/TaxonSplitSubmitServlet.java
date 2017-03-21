@@ -52,6 +52,10 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		dao.delete(new Subject(taxonToSplitID), IS_PART_OF_PREDICATE);
 		dao.delete(new Subject(taxonToSplitID), NAME_ACCORDING_TO_PREDICATE);
 		
+		if (notGiven(taxonToSplit.getTaxonConceptQname())) {
+			taxonToSplit.setTaxonConceptQname(dao.addTaxonConcept());
+		}
+		
 		Qname splittedConcept = taxonToSplit.getTaxonConceptQname();
 		for (EditableTaxon newTaxon : newTaxons) {
 			Qname newTaxonConcept = newTaxon.getTaxonConceptQname();
@@ -61,6 +65,10 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		taxonomyDAO.clearTaxonConceptLinkings();
 		
 		return redirectToTree(res, taxonToSplitID, rootTaxonId);
+	}
+
+	private boolean notGiven(Qname taxonConceptQname) {
+		return taxonConceptQname == null || !taxonConceptQname.isSet();
 	}
 
 	private ResponseData redirectToTree(HttpServletResponse res, Qname taxonToSplitID, Qname rootTaxonId) {
