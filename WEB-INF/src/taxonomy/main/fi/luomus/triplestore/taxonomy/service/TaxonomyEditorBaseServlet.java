@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
@@ -13,14 +16,11 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = 6941260573571219110L;
 	private static final int TAXON_DELETE_THRESHOLD_SECONDS = 60*60*5;
-
+	private static final Object LOCK = new Object();
 	private static ExtendedTaxonomyDAO taxonomyDAO;
 
 	@Override
@@ -76,8 +76,12 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	protected ExtendedTaxonomyDAO getTaxonomyDAO() {
 		if (taxonomyDAO == null) {
-			TriplestoreDAOConst.SCHEMA = getConfig().get("LuontoDbName");
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(this.getConfig(), getTriplestoreDAO(), getErrorReporter());
+			synchronized (LOCK) {
+				if (taxonomyDAO == null) {
+					TriplestoreDAOConst.SCHEMA = getConfig().get("LuontoDbName");
+					taxonomyDAO = new ExtendedTaxonomyDAOImple(this.getConfig(), getTriplestoreDAO(), getErrorReporter());
+				}
+			}
 		}
 		return taxonomyDAO;
 	}

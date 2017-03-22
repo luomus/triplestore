@@ -94,6 +94,7 @@ public class IucnDAOImple implements IucnDAO {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
 	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
+		System.out.println("Creating " +  IucnDAOImple.class.getName());
 		this.config = config;
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;

@@ -67,6 +67,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		super(config, 60 * 5, 20);
+		System.out.println("Creating " +  ExtendedTaxonomyDAOImple.class.getName());
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
 		this.iucnDAO = new IucnDAOImple(config, triplestoreDAO, this, errorReporter);
