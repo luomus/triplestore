@@ -32,7 +32,8 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	public static enum Format { RDFXMLABBREV, RDFXML, JSON, XML, JSONP, JSON_RDFXMLABBREV, JSON_RDFXML }
 	public static final Format DEFAULT_FORMAT = Format.RDFXMLABBREV;
-
+	private static final Object LOCK = new Object();
+	
 	@Override
 	protected String configFileName() {
 		return "triplestore-v2.properties";
@@ -143,8 +144,12 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	private DataSource getDataSource() {
 		if (dataSource == null) {
-			TriplestoreDAOConst.SCHEMA = getConfig().get("LuontoDbName");
-			dataSource = DataSourceDefinition.initDataSource(getConfig().connectionDescription());
+			synchronized (LOCK) {
+				if (dataSource == null) {
+					TriplestoreDAOConst.SCHEMA = getConfig().get("LuontoDbName");
+					dataSource = DataSourceDefinition.initDataSource(getConfig().connectionDescription());
+				}
+			}
 		}
 		return dataSource;
 	}
