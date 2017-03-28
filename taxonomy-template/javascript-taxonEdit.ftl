@@ -114,13 +114,11 @@ function initColumnsPortlets() {
 	</#if>
 	
 	function addSaveButtonTo(e) {
-		<#if !(noPermissions??)>
 		var section = $(e).closest(".taxonEditSection"); 
 		if (section.find(".saveButton").length === 0) {
 			section.append('<input type="submit" class="saveButton" value="Save changes" />');
 			section.find(".saveButton").button().hide().fadeIn('slow');
 		}
-		</#if>
 	}
 	
 	$(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")

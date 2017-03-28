@@ -48,12 +48,14 @@
 				<label>New authors</label>
 				<input type="text" name="alteredAuthor" id="alteredAuthor" />
 			</div>
+			<#if noPermissions??><#else>
 			<span id="scientificNameToolButtons">
 				<label>&nbsp;</label>
 				<button id="fixTypo">Fix a mistake</button> 
 				OR 
 				<button id="alterScientificName">Change name and create synonym</button>
 			</span>
+			</#if>
 			<div class="clear"></div>
 			<span id="scientificNameHelp"></span>
 		</div>
@@ -102,7 +104,7 @@
 		</select>
 		<br/>
 		<p><label class="">Add a new publication</label></p>
-		<textarea class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Haukisalmi V (2015) Checklist of tapeworms (Platyhelminthes, Cestoda) of vertebrates in Finland. ZooKeys 533: 1–61.' "></textarea>
+		<textarea <@checkPermissions/> class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Haukisalmi V (2015) Checklist of tapeworms (Platyhelminthes, Cestoda) of vertebrates in Finland. ZooKeys 533: 1–61.' "></textarea>
 		
 	<@portletFooter />
 	
@@ -179,7 +181,7 @@
 		</select>
 		<br/>
 		<p><label class="">Add a new publication</label></p>
-		<textarea class="newPublicationInput" name="newOccurrenceInFinlandPublicationCitation" id="newOccurrenceInFinlandPublicationCitation" placeholder="For example 'Huhta, V., Hyvönen, R., Kaasalainen, P., Koskenniemi, A., Muona, J., Mäkelä, I., Sulander, M. & Vilkamaa, P. 1986: Soil fauna of Finnish coniferous forests. Annales Zoologici Fennici 23: 345-360.' "></textarea>
+		<textarea <@checkPermissions/> class="newPublicationInput" name="newOccurrenceInFinlandPublicationCitation" id="newOccurrenceInFinlandPublicationCitation" placeholder="For example 'Huhta, V., Hyvönen, R., Kaasalainen, P., Koskenniemi, A., Muona, J., Mäkelä, I., Sulander, M. & Vilkamaa, P. 1986: Soil fauna of Finnish coniferous forests. Annales Zoologici Fennici 23: 345-360.' "></textarea>
 	<@portletFooter />	
 	
 	<@portletHeader "Informal groups" />
