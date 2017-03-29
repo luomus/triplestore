@@ -1,4 +1,20 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -27,25 +43,9 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
 import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 public class IUCN2010Sisaan {
 
-	private static final String FILE_PATH = "C:/Users/Zz/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
+	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010; // XXX
 	private static final String BLABLABLA = "blablabla blablabla blablabla blablabla blablabla";
@@ -99,7 +99,7 @@ public class IUCN2010Sisaan {
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
 			process();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			//if (!f.getName().equals("Hämähäkit_siirto.csv")) continue;
+			if (!f.getName().equals("Kovakuoriaiset_siirto.csv") && !f.getName().equals("Korennot_siirto.csv")) continue; // XXX
 			System.out.println(f.getName());
 			process(f);
 		}

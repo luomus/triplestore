@@ -92,10 +92,12 @@ public class IucnDAOImple implements IucnDAO {
 	private IUCNContainer container;
 	private final ErrorReporter errorReporter;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-	public IucnDAOImple(Config config, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
+	private final boolean devMode;
+	
+	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		System.out.println("Creating " +  IucnDAOImple.class.getName());
 		this.config = config;
+		this.devMode = devMode;
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
 		this.container = new IUCNContainer(this);
@@ -221,7 +223,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
-		if (config.developmentMode() && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
+		if (devMode && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
@@ -328,7 +330,7 @@ public class IucnDAOImple implements IucnDAO {
 		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
 
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
-		if (config.developmentMode()) { // XXX
+		if (devMode) { // XXX
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
 				searchParams.objectresource(qname);
 			}

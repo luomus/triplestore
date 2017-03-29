@@ -1,8 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 public class IUCNLineData {
 
@@ -98,7 +98,12 @@ public class IUCNLineData {
 	}
 
 	private void v2010() {
-		scientificName = s(1);
+		String sciNameField = s(1);
+		if (sciNameField.startsWith("MX.")) {
+			taxonQname = sciNameField;
+		} else {
+			scientificName = sciNameField;
+		}
 		finnishName = s(12);
 		alternativeFinnishNames = s(13);
 		taxonomicNotes = s(16);
