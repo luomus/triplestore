@@ -173,8 +173,10 @@ public class CriteriaFormatValidatorTests {
 		mc2.getSubCriteria('c').addSpecifications("ii");
 
 		MainCriteria mc3 = new MainCriteria("D1");
-
-		String actual = CriteriaFormatValidator.toCriteriaString(Utils.list(mc1, mc2, mc3));
+		
+		MainCriteria mc4 = new MainCriteria("");
+		
+		String actual = CriteriaFormatValidator.toCriteriaString(Utils.list(mc1, mc2, mc3, mc4));
 		String expected = "A1ab(i,iv)+2c(ii); D1";
 		assertEquals(expected, actual);
 	}

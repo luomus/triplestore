@@ -204,6 +204,7 @@ public class CriteriaFormatValidator {
 		StringBuilder b = new StringBuilder();
 		String prevPrefix = null;
 		for (MainCriteria mainCriteria : criterias) {
+			if (!given(mainCriteria.getMainCriteria())) continue;
 			if (prevPrefix == null || !mainCriteria.getMainCriteria().startsWith(prevPrefix)) {
 				if (prevPrefix != null) {
 					b.append("; ");
@@ -230,6 +231,10 @@ public class CriteriaFormatValidator {
 			}
 		}
 		return b.toString();
+	}
+
+	private static boolean given(String s) {
+		return s != null && s.length() > 0;
 	}
 
 	public static List<MainCriteria> parseCriteria(String criteria) {
