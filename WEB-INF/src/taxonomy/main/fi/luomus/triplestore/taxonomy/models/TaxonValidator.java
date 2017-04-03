@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.LocalizedTexts;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -14,14 +22,6 @@ import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 import fi.luomus.triplestore.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 public class TaxonValidator {
 
@@ -154,6 +154,14 @@ public class TaxonValidator {
 		if (name == null) return;
 		name = name.trim().toLowerCase(); 
 		if (name.isEmpty()) return;
+
+		if (SUBGENUS.equals(taxon.getTaxonRank())) {
+			if (!name.contains("(") && !name.contains(")") && !name.contains("subg.")) {
+				setError("Scientific name", "For subgenuses, use the following form \"Bombus (Bombus)\" or \"Carex subg. Carex\"");
+				return;
+			}
+		}
+		
 		if (SUBGENUS.equals(taxon.getTaxonRank()) || taxon.isSpecies() || taxon.getTaxonRank() == null) {
 			name = allowParentheses(name);
 			name = allowSpace(name);
