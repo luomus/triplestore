@@ -58,6 +58,15 @@
 	</#if>
 </div>	
 
+<div class="taxonInfo">
+	<h6>Kansankieliset nimet</h6>
+	<#list taxon.vernacularName.allTexts?values as name>
+		${name}
+	</#list>
+	<#list taxon.alternativeVernacularNames.allValues as name>
+		${name}
+	</#list>
+</div>
 
 <div class="taxonInfo">
 	<h6>Huomioita taksonomiasta</h6>
