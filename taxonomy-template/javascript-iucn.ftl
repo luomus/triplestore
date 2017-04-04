@@ -4,7 +4,15 @@ function changeYear() {
 	var year = $("#yearSelector").val();
 	var currentLocation = window.location.href;
 	var currentySelectedYear = '${selectedYear!""}';
-	var newLocation = currentLocation.replace(currentySelectedYear, year);
+	var newLocation = "";
+	if (currentLocation.endsWith("/iucn") || currentLocation.endsWith("/iucn/")) {
+		if (!currentLocation.endsWith("/")) {
+			currentLocation = currentLocation + "/";
+		}
+		newLocation = currentLocation + year; 
+	} else {
+		newLocation = currentLocation.replace(currentySelectedYear, year);
+	}
 	window.location.href = newLocation;
 }
 
