@@ -32,11 +32,19 @@
 			<option value="notStarted" <#if states?? && states?seq_contains("notStarted")>selected="selected"</#if>>Aloittamattomat</option>
 		</select>
 	<br />
-	<label>Luokalla</label>
+	<label>Luokalla ${selectedYear}</label>
 		<select name="redListStatus" multiple="multiple" class="chosen" data-placeholder="Valitse">
 			<option value=""></option>
 			<#list statusProperty.range.values as value>
 				<option value="${value.qname}" <#if redListStatuses?? && redListStatuses?seq_contains(value.qname)>selected="selected"</#if>>${value.label.forLocale("fi")}</option>
+			</#list>
+		</select>
+	<br />
+	<label>Edellisen arvioinnin luokalla</label>
+		<select name="prevRedListStatus" multiple="multiple" class="chosen" data-placeholder="Valitse">
+			<option value=""></option>
+			<#list statusProperty.range.values as value>
+				<option value="${value.qname}" <#if prevRedListStatuses?? && prevRedListStatuses?seq_contains(value.qname)>selected="selected"</#if>>${value.label.forLocale("fi")}</option>
 			</#list>
 		</select>
 	<br />

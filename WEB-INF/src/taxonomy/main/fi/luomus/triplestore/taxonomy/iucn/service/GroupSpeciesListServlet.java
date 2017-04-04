@@ -1,16 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.session.SessionHandler;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +12,17 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
 
@@ -31,6 +31,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	private static final String TAXON = "taxon";
 	private static final String STATE = "state";
 	private static final String RED_LIST_STATUS = "redListStatus";
+	private static final String PREV_RED_LIST_STATUS = "prevRedListStatus";
 	private static final int DEFAULT_PAGE_SIZE = 100;
 	private static final long serialVersionUID = -9070472068743470346L;
 
@@ -61,7 +62,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		String clearFilters = req.getParameter("clearFilters");
 		String taxon = req.getParameter(TAXON);
 		String[] states = req.getParameterValues(STATE);
-		String[] redListStatuses = req.getParameterValues(RED_LIST_STATUS); 
+		String[] redListStatuses = req.getParameterValues(RED_LIST_STATUS);
+		String[] prevRedListStatuses = req.getParameterValues(PREV_RED_LIST_STATUS);
 		int selectedYear = (int) responseData.getDatamodel().get("selectedYear");
 		String orderBy = req.getParameter(ORDER_BY);
 		Integer pageSize = pageSize(req);
@@ -70,10 +72,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			orderBy = session.get(ORDER_BY);
 		}
 		
-		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses)) {
+		if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) {
 			taxon = session.get(TAXON);
 			states = (String[]) session.getObject(STATE);
 			redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);
+			prevRedListStatuses = (String[]) session.getObject(PREV_RED_LIST_STATUS);
 			
 		}
 		if (pageSize == null) {
@@ -85,7 +88,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		
 		List<IUCNEvaluationTarget> filteredTargets;
 		try {
-			filteredTargets = filter(targets, states, taxon, redListStatuses, selectedYear);
+			filteredTargets = filter(targets, states, taxon, redListStatuses, prevRedListStatuses, selectedYear);
 		} catch (TaxonLoadException e) {
 			filteredTargets = targets;
 			responseData.setData("filterError", "Taksonomiarajaus oli liian laaja.");
@@ -100,6 +103,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		session.put(TAXON, taxon);
 		session.setObject(STATE, states);
 		session.setObject(RED_LIST_STATUS, redListStatuses);
+		session.setObject(PREV_RED_LIST_STATUS, prevRedListStatuses);
 		session.setObject(ORDER_BY, orderBy);
 		session.setObject(PAGE_SIZE, pageSize);
 		
@@ -122,6 +126,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("states", states)
 				.setData(TAXON, taxon)
 				.setData("redListStatuses", redListStatuses)
+				.setData("prevRedListStatuses", prevRedListStatuses)
 				.setData("permissions", hasIucnPermissions(groupQname, req))
 				.setData(ORDER_BY, orderBy);
 	}
@@ -130,9 +135,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		private static final long serialVersionUID = -6749180766121111373L;
 	}
 
-	private List<IUCNEvaluationTarget> filter(List<IUCNEvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, int selectedYear) throws Exception {
+	private List<IUCNEvaluationTarget> filter(List<IUCNEvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, String[] prevRedListStatuses, int selectedYear) throws Exception {
 		List<IUCNEvaluationTarget> filtered = new ArrayList<>();
-		if (!given(states) && !given(taxon) && !given(redListStatuses)) return targets;
+		if (!given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) return targets;
 
 		Set<String> taxonQnames = null;
 		if (given(taxon)) {
@@ -145,8 +150,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 		for (IUCNEvaluationTarget target : targets) {
 			IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
+			IUCNEvaluation prevEvaluation = target.getPreviousEvaluation(selectedYear);
 			if (given(redListStatuses)) {
 				if (!redListStatusesMatch(redListStatuses, evaluation)) continue;
+			}
+			if (given(prevRedListStatuses)) {
+				if (!redListStatusesMatch(prevRedListStatuses, prevEvaluation)) continue;
 			}
 			if (given(states)) {
 				if (!statesMatch(states, evaluation)) continue;
