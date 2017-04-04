@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -14,10 +18,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-evaluated/*"})
 public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
@@ -38,7 +38,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		IUCNContainer container = iucnDAO.getIUCNContainer();
 
-		IUCNEvaluation evaluation = createNotEvaluatedEvaluation(speciesQname, year, editor, iucnDAO);
+		IUCNEvaluation evaluation = createEvaluation(speciesQname, year, editor, iucnDAO);
 		getTriplestoreDAO(req).store(evaluation.getModel());
 		container.setEvaluation(evaluation);
 		IUCNEvaluationTarget target = container.getTarget(evaluation.getSpeciesQname());
@@ -51,7 +51,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 				.setData("selectedYear", year);
 	}
 
-	private IUCNEvaluation createNotEvaluatedEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO) throws Exception {
+	protected IUCNEvaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO) throws Exception {
 		IUCNEvaluation evaluation = iucnDAO.createNewEvaluation();
 		Model model = evaluation.getModel();
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EVALUATED_TAXON), new ObjectResource(speciesQname)));

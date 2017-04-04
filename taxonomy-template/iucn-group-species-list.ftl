@@ -160,6 +160,16 @@ $(function() {
 			});
 		});
 	});
+	$(".markNAButton").on('click', function() {
+		var row = $(this).closest('tr');
+		var speciesQname = row.attr('id');
+		$.post('${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}', function(data) {
+			row.fadeOut('slow', function () {
+				row.html(data);
+				row.fadeIn('slow');
+			});
+		});
+	});
 	
 	$("#pageSelector, #pageSizeSelector").on('change', function() {
 		var defaultPageSize = ${defaultPageSize};
