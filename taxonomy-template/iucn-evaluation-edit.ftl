@@ -286,7 +286,29 @@
 	<@iucnTextarea "MKV.taxonomicNotes" />
 	
 	<@iucnSection "Esiintymistä koskevat tiedot" />
-	<@iucnInput "MKV.typeOfOccurrenceInFinland" "MKV.typeOfOccurrenceInFinlandNotes" "" occurrenceStatuses />
+	<tr>
+		<th>
+			<@iucnLabel "MKV.typeOfOccurrenceInFinland" />
+			<div class="propertyComments">
+				<ul> 
+					<li><b>Vakiintunut</b> = lisääntyvä, alkuperäinen tai uudempi vakiintunut, luontaisesti levinnyt tai ennen 1800 ihmisen tuoma ja luontoon levinnyt</li>
+					<li><b>Uusi laji</b> = luontaisesti levinnyt, mutta ei vakiintunut (tai vakiintumisesta ei ole varmuutta)</li>
+					<li><b>Hävinnyt</b> = laji on hävinnyt Suomesta</li>
+					<li><b>Säännöllinen vierailija</b> = ei lisäänny, esiintyminen +/- ennustettavaa</li>
+					<li><b>Satunnainen vierailija</b> = ei lisäänny, esiintyminen +/- ennustamatonta</li>
+					<li><b>Vieraslaji</b> = laji on tullut alueelle ihmisen avustamana (tahattomasti tai tahallisesti) vuoden 1800 jälkeen</li>
+				</ul>
+			</div>
+		</th>
+		<td><@showValue "MKV.typeOfOccurrenceInFinland" comparison occurrenceStatuses /> <@showNotes "MKV.typeOfOccurrenceInFinlandNotes" comparison /></td>
+		<td>
+			<#if permissions>
+				<@iucnInputField "MKV.typeOfOccurrenceInFinland" occurrenceStatuses /> <@editableNotes "MKV.typeOfOccurrenceInFinlandNotes" />
+			<#else>
+				<@showValue "MKV.typeOfOccurrenceInFinland" evaluation occurrenceStatuses /> <@showNotes "MKV.typeOfOccurrenceInFinlandNotes" evaluation />
+			</#if>
+		</td>
+	</tr>
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />

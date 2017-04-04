@@ -1,5 +1,16 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
@@ -26,17 +37,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -136,12 +136,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private Collection<RdfProperty> initOccurrenceStatuses() throws Exception {
 		List<RdfProperty> occurrences = new ArrayList<>();
 		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceStablePopulation", "Vakiintunut = lisääntyvä, alkuperäinen tai uudempi vakiintunut, luontaisesti levinnyt", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceNotEstablished", "Uusi laji = luontaisesti levinnyt, mutta ei vakiintunut (tai vakiintumisesta ei ole varmuutta)", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt = laji on hävinnyt Suomesta", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceVagrant", "Säännöllinen vierailija = ei lisäänny, esiintyminen +/- ennustettavaa", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceRareVagrant", "Satunnainen vierailija = ei lisäänny, esiintyminen +/- ennustamatonta", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Vieraslaji = laji on tullut alueelle ihmisen avustamana (tahattomasti tai tahallisesti) vuoden 1800 jälkeen", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceStablePopulation", "Vakiintunut", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceNotEstablished", "Uusi laji", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceVagrant", "Säännöllinen vierailija", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceRareVagrant", "Satunnainen vierailija", referenceStatuses));
+		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Vieraslaji", referenceStatuses));
 		return occurrences;
 	}
 
