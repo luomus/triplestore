@@ -6,6 +6,7 @@ public class IUCNYearlyGroupStat {
 	private final int year;
 	private final String groupQname;
 	private Integer readyCount = null;
+	private Integer startedCount = null;
 
 	public IUCNYearlyGroupStat(int year, String groupQname, IUCNContainer iucnContainer) {
 		this.iucnContainer = iucnContainer;
@@ -15,15 +16,16 @@ public class IUCNYearlyGroupStat {
 
 	public void invalidate() {
 		readyCount = null;
+		startedCount = null;
 	}
 
 	public int getReadyCount() throws Exception {
 		if (readyCount != null) return readyCount;
-		readyCount = count();
+		readyCount = countReady();
 		return readyCount;
 	}
 
-	private int count() throws Exception {
+	private int countReady() throws Exception {
 		int count = 0;
 		for (IUCNEvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
 			IUCNEvaluation evaluation = target.getEvaluation(year);
@@ -33,6 +35,22 @@ public class IUCNYearlyGroupStat {
 		return count;
 	}
 
+	public int getStartedCount() throws Exception {
+		if (startedCount != null) return startedCount;
+		startedCount = countStarted();
+		return startedCount;
+	}
+
+	private int countStarted() throws Exception {
+		int count = 0;
+		for (IUCNEvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
+			IUCNEvaluation evaluation = target.getEvaluation(year);
+			if (evaluation == null) continue;
+			if (evaluation.isStarted()) count++;
+		}
+		return count;
+	}
+	
 	public int getSpeciesOfGroupCount() throws Exception {
 		return iucnContainer.getTargetsOfGroup(groupQname).size();
 	}

@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -9,14 +17,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IUCNEvaluation {
 
@@ -71,6 +71,7 @@ public class IUCNEvaluation {
 	public static final String RED_LIST_INDEX_CORRECTION = "MKV.redListIndexCorrection";
 	public static final String RED_LIST_STATUS_NOTES = "MKV.redListStatusNotes";
 	public static final String NE_MARK_NOTES = "Merkitty ei-arvioitavaksi pikatoiminnolla.";
+	public static final String NA_MARK_NOTES = "Merkitty arviointiin soveltumattomaksi pikatoiminnolla.";
 	public static final String INDEX_CHANGE_NOTES = "Punaisen kirjan indeksiä (RLI) muutettu.";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
@@ -218,6 +219,10 @@ public class IUCNEvaluation {
 		return STATE_READY.equals(getState());
 	}
 
+	public boolean isStarted() {
+		return STATE_STARTED.equals(getState());
+	}
+	
 	private String getState() {
 		return getValue(STATE);
 	}

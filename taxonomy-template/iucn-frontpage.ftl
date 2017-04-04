@@ -9,6 +9,12 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 6.4.2016</h6>
+	<ul>
+		<li>NA-pikanappi lisätty lajiluetteloon</li>
+		
+	</ul>
+	
 	<h6>Uudistuksia 20.3.2016</h6>
 	<p>Linkki karttatyökaluun lisätty. Mahdollisuus nähdä valitun alueen pinta-ala on tulossa tänne ja havaintohaun viranomaispuolelle.</p>
 	

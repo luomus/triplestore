@@ -45,6 +45,10 @@
   color: blue;
 }
 
+.started {
+	color: grey;
+}
+
 .resourceListTable, .iucnSpeciesTable {
   border-collapse: collapse;
 }
