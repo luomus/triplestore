@@ -21,7 +21,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	private static final long serialVersionUID = 6941260573571219110L;
 	private static final int TAXON_DELETE_THRESHOLD_SECONDS = 60*60*5;
 	private static final Object LOCK = new Object();
-	private static ExtendedTaxonomyDAO taxonomyDAO;
+	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 
 	@Override
 	protected String configFileName() {
@@ -36,7 +36,11 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	@Override
-	protected void applicationDestroy() {}
+	protected void applicationDestroy() {
+		if (taxonomyDAO == null) {
+			taxonomyDAO.close();
+		}
+	}
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {

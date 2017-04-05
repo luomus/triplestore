@@ -13,7 +13,6 @@ import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -25,7 +24,7 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 public class PublicTaxonSearchApiTests {
 
 	private static TriplestoreDAO triplestoreDAO;
-	private static TaxonomyDAO taxonomyDAO;
+	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 	private static DataSource dataSource;
 
 	@BeforeClass
@@ -40,6 +39,7 @@ public class PublicTaxonSearchApiTests {
 	@AfterClass 
 	public static void tearDownAfterClass() throws Exception {
 		dataSource.close();
+		taxonomyDAO.close();
 	}
 
 	@Test

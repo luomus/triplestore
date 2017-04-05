@@ -90,7 +90,7 @@ public class IUCN2010Sisaan {
 	}
 
 	private static TriplestoreDAO triplestoreDAO;
-	private static ExtendedTaxonomyDAO taxonomyDAO;
+	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 
 	public static void main(String[] args) {
 		DataSource dataSource = null;
@@ -101,6 +101,7 @@ public class IUCN2010Sisaan {
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
 			process();
+			taxonomyDAO.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

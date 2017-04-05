@@ -93,7 +93,7 @@ public class IucnDAOImple implements IucnDAO {
 	private final ErrorReporter errorReporter;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final boolean devMode;
-	
+
 	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		System.out.println("Creating " +  IucnDAOImple.class.getName());
 		this.config = config;
@@ -103,6 +103,14 @@ public class IucnDAOImple implements IucnDAO {
 		this.container = new IUCNContainer(this);
 		this.errorReporter = errorReporter;
 		startNightlyScheduler();
+	}
+
+	public void close() {
+		try {
+			if (scheduler != null) {
+				scheduler.shutdownNow();
+			}
+		} catch (Exception e) {}
 	}
 
 	private void initializeContainer() {

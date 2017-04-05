@@ -62,7 +62,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			" OR       qname = ?                                                 ";
 
 	private final TriplestoreDAO triplestoreDAO;
-	private final IucnDAO iucnDAO;
+	private final IucnDAOImple iucnDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
@@ -79,6 +79,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
 		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, this, errorReporter);
+	}
+	
+	public void close() {
+		if (iucnDAO != null) iucnDAO.close();
 	}
 	
 	@Override
