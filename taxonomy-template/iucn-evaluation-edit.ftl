@@ -300,7 +300,7 @@
 			<@iucnLabel "MKV.typeOfOccurrenceInFinland" />
 			<div class="propertyComments">
 				<ul> 
-					<li><b>Vakiintunut</b> = lisääntyvä, alkuperäinen tai uudempi vakiintunut, luontaisesti levinnyt tai ennen 1800 ihmisen tuoma ja luontoon levinnyt</li>
+					<li><b>Vakiintunut</b> = luontaisesti levinnyt, lisääntyvä ja alkuperäinen tai uudempi vakiintunut tulokas (tyypillisesti lisääntynyt alueella ainakin 10 v). Myös ennen vuotta 1800 luontoon vakiintunut, ihmisen tuoma laji</li>
 					<li><b>Uusi laji</b> = luontaisesti levinnyt, mutta ei vakiintunut (tai vakiintumisesta ei ole varmuutta)</li>
 					<li><b>Hävinnyt</b> = laji on hävinnyt Suomesta</li>
 					<li><b>Säännöllinen vierailija</b> = ei lisäänny, esiintyminen +/- ennustettavaa</li>
