@@ -12,7 +12,7 @@
 	<h6>Uudistuksia 6.4.2016</h6>
 	<ul>
 		<li>NA-pikanappi lisätty lajiluetteloon</li>
-		
+		<li>LC-pikanappi lisätty lajiluetteloon (käytetään vain jos ei ilmoiteta muuta tietoa kuin luokka ja ensisijainen elinympäristö)</li>
 	</ul>
 	
 	<h6>Uudistuksia 20.3.2016</h6>
