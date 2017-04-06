@@ -1,5 +1,17 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,17 +23,6 @@ import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.session.SessionHandler;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -112,10 +113,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		if (currentPage > pageCount) currentPage = pageCount;
 
 		List<IUCNEvaluationTarget> pageTargets = pageTargets(currentPage, pageSize, filteredTargets);
-
+		TriplestoreDAO dao = getTriplestoreDAO();
 		return responseData.setViewName("iucn-group-species-list")
 				.setData("group", group)
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
+				.setData("statusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("persons", getTaxonomyDAO().getPersons())
 				.setData("targets", pageTargets)
 				.setData("remarks", container.getRemarksForGroup(groupQname))
@@ -128,7 +129,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("redListStatuses", redListStatuses)
 				.setData("prevRedListStatuses", prevRedListStatuses)
 				.setData("permissions", hasIucnPermissions(groupQname, req))
-				.setData(ORDER_BY, orderBy);
+				.setData(ORDER_BY, orderBy)
+				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
+				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
+				.setData("occurrenceStatuses", getOccurrenceStatuses())
+				.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 	}
 
 	private static class TaxonLoadException extends Exception {

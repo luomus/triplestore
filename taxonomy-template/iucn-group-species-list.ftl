@@ -150,6 +150,15 @@
 	<p>Ei osumia</p>
 </#if>
 
+<div id="NAForm">
+	<table>
+		<@typeOfOccurrenceInFinland />
+		<tr><td colspan="2"></td><td><button>Merkitse NA-luokkaan</button></td></tr>
+	</table>
+</div>
+
+<@propertyCommentsScript />
+
 <script>
 window.onpageshow = function(event) {
 	if (event.persisted) {
@@ -158,6 +167,8 @@ window.onpageshow = function(event) {
 };
 
 $(function() {
+	$("#NAForm").dialog({width: 400, modal: true, position: { my: "bottom", at: "center", of: window }, autoOpen: false });
+	
 	$(".markNEButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
@@ -171,12 +182,19 @@ $(function() {
 	$(".markNAButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
-		$.post('${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}', function(data) {
-			row.fadeOut('slow', function () {
-				row.html(data);
-				row.fadeIn('slow');
+		$("#NAForm").find('select').val('');
+		$("#NAForm").find('button').unbind('click').on('click', function() {
+			var typeOfOccurrenceInFinland = $("#NAForm").find('select').first().val();
+			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
+			$.post(req, function(data) {
+				$("#NAForm").dialog("close");
+				row.fadeOut('slow', function () {
+					row.html(data);
+					row.fadeIn('slow');
+				});
 			});
 		});
+		$("#NAForm").dialog("open");
 	});
 	
 	$("#pageSelector, #pageSizeSelector").on('change', function() {

@@ -1,17 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -30,13 +18,20 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -112,72 +107,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("redListIndexPermissions", permissions(req, target, null))
-				.setData("habitatLabelIndentator", getHabitatLabelIndentaror(dao));
-	}
-
-	HabitatLabelIndendator habitatLabelIndendator = null;
-	
-	private HabitatLabelIndendator getHabitatLabelIndentaror(TriplestoreDAO dao) throws Exception {
-		if (habitatLabelIndendator == null) {
-			habitatLabelIndendator = new HabitatLabelIndendator(dao.getProperty(IucnDAO.HABITAT_PREDICATE).getRange().getValues());
-		}
-		return habitatLabelIndendator;
-	}
-
-	private static Collection<RdfProperty> occurrenceStatuses;
-
-	private Collection<RdfProperty> getOccurrenceStatuses() throws Exception {
-		if (occurrenceStatuses == null) {
-			occurrenceStatuses = initOccurrenceStatuses();
-		}
-		return occurrenceStatuses;
-	}
-
-	private Collection<RdfProperty> initOccurrenceStatuses() throws Exception {
-		List<RdfProperty> occurrences = new ArrayList<>();
-		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceStablePopulation", "Vakiintunut", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceNotEstablished", "Uusi laji", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceVagrant", "Säännöllinen vierailija", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceRareVagrant", "Satunnainen vierailija", referenceStatuses));
-		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Vieraslaji", referenceStatuses));
-		return occurrences;
-	}
-
-	private static Collection<RdfProperty> regionalOccurrenceStatuses;
-	
-	private Collection<RdfProperty> getRegionalOccurrenceStatuses() throws Exception {
-		if (regionalOccurrenceStatuses == null) {
-			regionalOccurrenceStatuses = initRegionalOccurrenceStatuses();
-		}
-		return regionalOccurrenceStatuses;
-	}
-	
-	private List<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
-		List<RdfProperty> statuses = new ArrayList<>();
-		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
-		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccurs", "Esiintyy vyöhykkeellä", referenceStatuses));
-		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt vyöhykkeeltä (RE)", referenceStatuses));
-		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
-		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceUncertain", "Esiintyy mahdollisesti vyöhykkeellä (epävarma)", referenceStatuses));
-		statuses.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
-		return statuses;
-	} 
-
-	private RdfProperty buildOccurrenceStatus(String id, String label, Collection<RdfProperty> referenceStatuses) {
-		Qname qname = new Qname(id);
-		if (!contains(referenceStatuses, qname)) throw new IllegalStateException("Unknown reference status: " + id);
-		RdfProperty p = new RdfProperty(qname);
-		p.setLabels(new LocalizedText().set("fi", label));
-		return p;
-	}
-
-	private boolean contains(Collection<RdfProperty> referenceStatuses, Qname qname) {
-		for (RdfProperty p : referenceStatuses) {
-			if (p.getQname().equals(qname)) return true;
-		}
-		return false;
+				.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 	}
 
 	protected boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target, IUCNEvaluation thisPeriodData) throws Exception {
