@@ -30,6 +30,11 @@ public class IUCNContainer {
 		this.iucnDAO = iucnDAO;
 	}
 
+	public Collection<IUCNEvaluationTarget> getTargets() {
+		List<IUCNEvaluationTarget> t = new ArrayList<>(targets.values());
+		return Collections.unmodifiableCollection(t);
+	}
+	
 	public IUCNEvaluationTarget getTarget(String speciesQname) throws Exception {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
 		synchronized (LOCK) {

@@ -1,5 +1,42 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.LocalizedText;
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
+import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.http.HttpClientService;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.SingleObjectCache;
+import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
+import fi.luomus.commons.utils.URIBuilder;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.SearchParams;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,48 +46,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.methods.HttpGet;
 
-import fi.luomus.commons.config.Config;
-import fi.luomus.commons.containers.Area;
-import fi.luomus.commons.containers.LocalizedText;
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.ObjectLiteral;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperties;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.db.connectivity.TransactionConnection;
-import fi.luomus.commons.http.HttpClientService;
-import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.reporting.ErrorReporter;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.utils.SingleObjectCache;
-import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
-import fi.luomus.commons.utils.URIBuilder;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.dao.SearchParams;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.dao.TriplestoreDAOConst;
-import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-
 public class IucnDAOImple implements IucnDAO {
 
+	private static final Predicate TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE = new Predicate("MX.typeOfOccurrenceInFinland");
 	private static final String TRUE = "true";
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
@@ -117,7 +126,6 @@ public class IucnDAOImple implements IucnDAO {
 		try {
 			initialEvaluations = null;
 			for (String groupQname : getGroupEditors().keySet()) {
-				System.out.println("Refreshing informal group to IUCN container: " + groupQname);
 				container.getTargetsOfGroup(groupQname);
 			}
 		} catch (Exception e) {
@@ -125,36 +133,108 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	}
 
+	private final Runnable iucnContainerReinitializer = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("IUCN container being reinitialized...");
+			try {
+				container = new IUCNContainer(IucnDAOImple.this);
+				IucnDAOImple.this.initializeContainer();
+				getEvaluations("MX.1");
+			} catch (Exception e) {
+				errorReporter.report("IUCN container reinitializing", e);
+			}
+			System.out.println("Reinitializing IUCN container completed!");
+		}
+	};
+
+	private final Runnable taxonDataSynchronizer = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("Starting to synchronize taxon data with IUCN data...");
+			try {
+				getEvaluations("MX.1");
+				int currentYear = DateUtils.getCurrentYear();
+				int c = 1;
+				for (IUCNEvaluationTarget target : container.getTargets()) {
+					Qname speciesQname = new Qname(target.getQname());
+					boolean modifiedTaxon = false;
+					if (c++ % 5000 == 0) System.out.println(" ... syncing " + c);
+					for (IUCNEvaluation evaluation : target.getEvaluations()) {
+						Integer year = evaluation.getEvaluationYear();
+						if (!evaluation.isReady()) continue;
+						if (!evaluation.hasIucnStatus()) continue;
+						if (year == null || year > currentYear) continue;
+
+						Qname status = new Qname(evaluation.getIucnStatus());
+						Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
+						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
+						Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
+						Set<Qname> taxonsTypeOfOccurrenceInFinland = taxon.getTypesOfOccurrenceInFinland();
+
+						if (taxonRedListStatus == null || !taxonRedListStatus.equals(status)) {
+							updateRedListStatus(taxon, year, status);
+							modifiedTaxon = true;
+						}
+						if (given(typeOfOccurrenceInFinland) && !taxonsTypeOfOccurrenceInFinland.contains(typeOfOccurrenceInFinland)) {
+							Set<Qname> types = new HashSet<>(taxonsTypeOfOccurrenceInFinland);
+							types.add(typeOfOccurrenceInFinland);
+							updateTypesOfOccurrenceInFinland(taxon, types);
+							modifiedTaxon = true;
+						}
+					}
+					if (modifiedTaxon) {
+						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
+						taxon.invalidate();
+					}
+				}
+			} catch (Exception e) {
+				errorReporter.report("Syncing taxon data with IUCN data", e);
+			}
+			System.out.println("Synchronizing taxon data with IUCN data completed!");
+		}
+
+		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Set<Qname> taxonsTypeOfOccurrenceInFinland) throws Exception {
+			UsedAndGivenStatements statements = new UsedAndGivenStatements();
+			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
+			for (Qname type : taxonsTypeOfOccurrenceInFinland) {
+				statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(type)));
+			}
+			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+		}
+
+		private void updateRedListStatus(EditableTaxon taxon, Integer year, Qname status) throws Exception {
+			Predicate statusPredicate = new Predicate("MX.redListStatus"+year+"Finland");
+			triplestoreDAO.store(new Subject(taxon.getQname()), new Statement(statusPredicate, new ObjectResource(status)));
+		}
+
+		private boolean given(Qname qname) {
+			return qname != null && qname.isSet();
+		}
+	};
+
 	private void startNightlyScheduler() {
 		int repeatPeriod24H = 24 * 60;
-		long initialDelay = calculateInitialDelayTill6AM(repeatPeriod24H);
+		long intitialDelay3am = calculateInitialDelayTill(3, repeatPeriod24H);
+		long intitialDelay6am = calculateInitialDelayTill(6, repeatPeriod24H);
 		scheduler.scheduleAtFixedRate(
-				new Runnable() {
-					@Override
-					public void run() {
-						System.out.println("IUCN container being reinitialized...");
-						container = new IUCNContainer(IucnDAOImple.this);
-						IucnDAOImple.this.initializeContainer();
-						try {
-							getEvaluations("MX.1");
-						} catch (Exception e) {
-						}
-						System.out.println("Reinitializing IUCN container completed! ");
-					}
-				}, 
-				initialDelay, repeatPeriod24H, TimeUnit.MINUTES);
+				taxonDataSynchronizer, 
+				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+		scheduler.scheduleAtFixedRate(
+				iucnContainerReinitializer, 
+				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
 	}
 
-	private long calculateInitialDelayTill6AM(int repeatPeriod24H) {
+	private long calculateInitialDelayTill(int hour, int repeatPeriod24H) {
 		Calendar now = Calendar.getInstance();
 		now.setTime(new Date());
 		int hoursNow = now.get(Calendar.HOUR_OF_DAY);
 		int minutesNow = now.get(Calendar.MINUTE);
 
 		int minutesPassed12AM = hoursNow * 60 + minutesNow;
-		int minutesAt6AM = 6 * 60;
+		int minutesAtHour = hour * 60;
 
-		long initialDelay = minutesPassed12AM <= minutesAt6AM ? minutesAt6AM - minutesPassed12AM : repeatPeriod24H - (minutesPassed12AM - minutesAt6AM);
+		long initialDelay = minutesPassed12AM <= minutesAtHour ? minutesAtHour - minutesPassed12AM : repeatPeriod24H - (minutesPassed12AM - minutesAtHour);
 		return initialDelay;
 	}
 
@@ -236,6 +316,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
+		System.out.println("Loading species of group " + groupQname + " for IUCN evaluation...");
 		if (devMode && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once

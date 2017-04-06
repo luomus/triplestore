@@ -29,9 +29,9 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private static final Object LOCK = new Object();
 
 	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
-	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 1*60*60, 5000);
-	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 1*60*60, 5000);
-	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConceptLoader(), 1*60*60, 5000);
+	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
+	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
+	private final Cached<Qname, TaxonConcept> cachedTaxonConcepts = new Cached<Qname, TaxonConcept>(new TaxonConceptLoader(), 3*60*60, 25000);
 	private final SingleObjectCache<ConceptIncludes> cachedTaxonConceptIncludes = new SingleObjectCache<>(new TaxonConceptIncludesLoader(), 1*60*60);
 	private final TriplestoreDAO triplestoreDAO;
 
