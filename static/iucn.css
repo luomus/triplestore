@@ -97,7 +97,6 @@
   background-color: rgb(222, 233, 242);
 }
 
-.iucnSpeciesTable td:nth-child(4),
 .iucnSpeciesTable td:nth-child(5),
 .iucnSpeciesTable td:nth-child(6),
 .iucnSpeciesTable td:nth-child(7)
@@ -397,4 +396,8 @@ select.regionalOccurrence {
 
 #createNewIucnPublicationCitationInput {
   height: 150px;
+}
+
+#LCForm .secondaryHabitatRow {
+  display: none;
 }

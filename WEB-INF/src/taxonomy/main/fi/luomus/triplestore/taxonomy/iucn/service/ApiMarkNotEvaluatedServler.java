@@ -39,7 +39,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		IUCNContainer container = iucnDAO.getIUCNContainer();
 
 		IUCNEvaluation evaluation = createEvaluation(speciesQname, year, editor, iucnDAO, req);
-		getTriplestoreDAO(req).store(evaluation.getModel());
+		getTriplestoreDAO(req).store(evaluation, null);
 		container.setEvaluation(evaluation);
 		IUCNEvaluationTarget target = container.getTarget(evaluation.getSpeciesQname());
 

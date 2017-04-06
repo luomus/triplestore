@@ -87,7 +87,21 @@
 			</#if>
 		</td>
 	<#else>
-		<td><span class="state notStarted">Ei aloitettu</span> <#if permissions><button class="markNEButton">NE</button><button class="markNAButton">NA</button></#if></td>
+		<td>
+			<span class="state notStarted">Ei aloitettu</span> 
+			<#if permissions>
+				<button class="markNEButton">NE</button>
+				<button class="markNAButton">NA</button>
+				<#if target.hasPreviousEvaluation(year)>
+					<#assign prevEvaluation = target.getPreviousEvaluation(year)>
+					<#if prevEvaluation.hasIucnStatus()>
+						<#if prevEvaluation.iucnStatus == "MX.iucnLC">
+							<button class="markLCButton">LC</button>
+						</#if>
+					</#if>
+				</#if>
+			</#if>
+		</td>
 		<td>-</td>
 		<td>-</td>
 		<td>-</td>
@@ -389,7 +403,7 @@
 </#macro>
 
 <#macro iucnHabitatFields>
-	<tr>
+	<tr class="primaryHabitatRow">
 		<th><@iucnLabel "MKV.primaryHabitat" /></th>
 		<td>
 			<#if comparison?? && comparison.primaryHabitat??>
@@ -413,7 +427,7 @@
 			</#if>
 		</td>
 	</tr>
-	<tr>
+	<tr class="secondaryHabitatRow">
 		<th><@iucnLabel "MKV.secondaryHabitat" /></th>
 		<td>
 			<#if comparison??>
