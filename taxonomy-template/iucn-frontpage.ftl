@@ -11,8 +11,10 @@
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 6.4.2016</h6>
 	<ul>
-		<li>NA-pikanappi lisätty lajiluetteloon</li>
-		<li>LC-pikanappi lisätty lajiluetteloon (käytetään vain jos ei ilmoiteta muuta tietoa kuin luokka ja ensisijainen elinympäristö)</li>
+		<li>Korjattu vika joka yö tapahtuvassa järjestelmän uudelleenlatauksessa, josta johtuen arvioinnit eivät näkyneet lajiluettelossa.</li>
+		<li>NA-pikanappi lisätty lajiluetteloon.</li>
+		<li>LC-pikanappi lisätty lajiluetteloon. (Käytetään vain jos ei haluta ilmoittaaa muuta tietoa kuin luokka ja ensisijainen elinympäristö.)</li>
+		<li>Lajiluettelon rajaus edellisen arvioinnin luokan mukaan. (Vinkki: Kätevä tapa saada esille vain NE,NA tai LC lajit "alta pois" läpi käytäväksi.)</li>
 	</ul>
 	
 	<h6>Uudistuksia 20.3.2016</h6>
@@ -25,7 +27,6 @@
 	<li>Järjestelmä muistaa lajiluettelon halutun koon (jota säädetään luettelon alalaidasta). Lisätty seuraava ja edellinen -linkit.</li>
 	<li>Arviointialueiden (1a-4d) kartta on saatavilla työkalusta kenttien ohessa.</li>
 	<li>Uusi kenttä: Osuus globaalista populaatiosta.</li>
-	<li><b>Paihoittelut uudistusten käyttöönoton aiheuttamasta katkosta palvelun toiminnassa. Katkot pyritään ajoittamaan virka-ajan (7-17) ulkopuolelle.</b></li>
 	</ul>
 </div>
 
