@@ -1,17 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.session.SessionHandler;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -23,6 +11,19 @@ import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -112,9 +113,17 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		int pageCount = pageCount(filteredTargets.size(), pageSize);
 		if (currentPage > pageCount) currentPage = pageCount;
 
-		List<IUCNEvaluationTarget> pageTargets = pageTargets(currentPage, pageSize, filteredTargets);
+		List<IUCNEvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
+		
 		TriplestoreDAO dao = getTriplestoreDAO();
-		return responseData.setViewName("iucn-group-species-list")
+		if (isFileDownload(req)) {
+			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
+			responseData.setContentType("text/csv; charset=utf-8");
+			responseData.setViewName("iucn-group-species-download");
+		} else {
+			responseData.setViewName("iucn-group-species-list");
+		}
+		return responseData
 				.setData("group", group)
 				.setData("statusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("persons", getTaxonomyDAO().getPersons())
@@ -134,6 +143,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
+	}
+
+	private boolean isFileDownload(HttpServletRequest req) {
+		return req.getParameter("download") != null;
 	}
 
 	private static class TaxonLoadException extends Exception {

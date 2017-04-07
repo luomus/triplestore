@@ -97,6 +97,9 @@
   background-color: rgb(222, 233, 242);
 }
 
+.iucnSpeciesTable td:nth-child(4) {
+	min-width: 220px;
+}
 .iucnSpeciesTable td:nth-child(5),
 .iucnSpeciesTable td:nth-child(6),
 .iucnSpeciesTable td:nth-child(7)
@@ -400,4 +403,16 @@ select.regionalOccurrence {
 
 #LCForm .secondaryHabitatRow {
   display: none;
+}
+
+#downloadButton img {
+	max-height: 30px;
+	margin: 2px;
+	margin-right: 1em;
+	float: left;
+}
+#downloadButton {
+	float: right;
+	margin: 1em;
+	max-width: 200px;
 }

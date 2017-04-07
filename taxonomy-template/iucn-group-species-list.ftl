@@ -87,7 +87,14 @@
 </#if>
 </div>
 <div class="clear"></div>
+
+
+<button id="downloadButton"><img src="${staticURL}/img/CSV.png" alt="CSV"/>Lataa luetteloon rajattujen lajien arvioinnit tiedostoon</button>
+<div class="clear"></div>
+
 <span id="species"></span>
+
+
 <#if targets?has_content>
 <table class="iucnSpeciesTable">
 	<thead>
@@ -259,6 +266,14 @@ $(function() {
 	});
 	
 	$(".remarks").tooltip();
+	
+	$("#downloadButton").on('click', function() {
+		if (window.location.href.indexOf("?") != -1) {
+			window.location.href = window.location.href + "&download=true";
+		} else {
+			window.location.href = window.location.href + "?download=true";
+		}
+	});
 });
 function hideRedListIndexTableFields() {
 	<#if selectedYear == draftYear>
