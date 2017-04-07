@@ -337,3 +337,8 @@ span.indent { display: inline-block; }
 img.finnishTaxonFlag {
 	width: 15px;
 }
+
+table.redListTable th, table.redListTable td {
+	padding: 2px;
+	padding-right: 5px;
+}

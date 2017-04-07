@@ -417,7 +417,25 @@
 </div>
 
 <div class="column">
-
+	
+	<@portletHeader "Red List Finland" />
+		<table class="redListTable">
+		<#list evaluationYears as year>
+			<tr>
+				<th>${year}</th>
+				<td>
+					<#if taxon.getRedListStatusForYear(year)??>
+						${redListStatusProperty.range.getValueFor(taxon.getRedListStatusForYear(year)).label.forLocale("fi")}
+					<#else>
+						-
+					</#if>
+				</td>
+			</tr>
+		</#list>
+		</table>
+		<p class="info">Red list statuses are modified using the IUCN editor.</p>
+	<@portletFooter />	
+	
 	<@portletHeader "Administrative statuses (Admin only)" "initiallyClosed" "multirowSection" />
 		<table>
 		<#list taxon.administrativeStatuses as status>

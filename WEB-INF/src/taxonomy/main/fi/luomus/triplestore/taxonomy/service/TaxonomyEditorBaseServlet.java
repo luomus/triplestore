@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
@@ -10,11 +14,9 @@ import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
@@ -71,6 +73,8 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
+		responseData.setData("evaluationYears", taxonomyDAO.getIucnDAO().getEvaluationYears());
+		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)));
 		return responseData;
 	}
 

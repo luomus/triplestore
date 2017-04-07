@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonToEdit/*"})
 public class ApiTaxonToEditServlet extends ApiBaseServlet {
@@ -30,9 +30,7 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 
 		dao.addOccurrences(taxon);
 		
-		responseData.setData("taxon", taxon);
-
-		return responseData;
+		return responseData.setData("taxon", taxon);
 	}
 
 }
