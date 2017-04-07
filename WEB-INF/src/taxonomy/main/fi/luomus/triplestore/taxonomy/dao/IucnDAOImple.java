@@ -1,5 +1,25 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.http.client.methods.HttpGet;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.LocalizedText;
@@ -36,26 +56,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.http.client.methods.HttpGet;
 
 public class IucnDAOImple implements IucnDAO {
 
@@ -316,8 +316,8 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
-		System.out.println("Loading species of group " + groupQname + " for IUCN evaluation...");
 		if (devMode && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
+		System.out.println("Loading species of group " + groupQname + " for IUCN evaluation...");
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
