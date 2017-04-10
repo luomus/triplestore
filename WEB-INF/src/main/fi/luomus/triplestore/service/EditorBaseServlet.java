@@ -100,7 +100,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		if (restartNotified.contains(user.getQname())) return null;
 		restartNotified.add(user.getQname());
 		if (!restartedLately()) return null;
-		return "Editor was restarted at " + DateUtils.format(restartDate, "dd.MM.yyyy HH:mm") + ". Apologies for the for the inconvenience!";
+		return "Käynnistetty uudelleen / editor was restarted at " + DateUtils.format(restartDate, "dd.MM.yyyy HH:mm") + ". Pahoittelut häiriöstä! Apologies for the for the inconvenience!";
 	}
 	
 	private static Date initLastRestartNofify() {
