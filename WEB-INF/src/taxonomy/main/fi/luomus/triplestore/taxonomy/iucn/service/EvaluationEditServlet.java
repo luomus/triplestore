@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -24,14 +32,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -96,17 +96,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
 				.setData("taxon", taxonomyDAO.getTaxon(new Qname(target.getQname())))
-				.setData("evaluation", thisPeriodData)
-				.setData("comparison", comparisonData)
-				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
-				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
-				.setData("endangermentObjectProperties", dao.getProperties(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS))
-				.setData("areas", iucnDAO.getEvaluationAreas())
-				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
-				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("redListIndexPermissions", permissions(req, target, null))
+				.setData("evaluation", thisPeriodData)
+				.setData("comparison", comparisonData)
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 	}
 

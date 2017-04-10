@@ -326,6 +326,9 @@
 							<#break>
 						</#if>
 					</#list>
+					<#if evaluation.getOccurrence(areaQname).threatened!false>
+						&nbsp; RT
+					</#if>
 				</#if>
 			</#if>
 		</td>
@@ -481,14 +484,14 @@
 	</div>
 </#macro>
 
-<#macro showHabitatPairValue habitatObject>
+<#macro showHabitatPairValue habitatObject csv=false>
 	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")?html}
-	<br />
+	<#if !csv><br /></#if>
 	<#list habitatObject.habitatSpecificTypes as type>
-		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
-		<#if type_has_next><br /></#if>
+		<#if !csv>&nbsp; &nbsp; </#if>${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
+		<#if type_has_next && !csv><br /></#if>
 	</#list>
-	<br />
+	<#if !csv><br /></#if>
 </#macro>
 
 <#macro iucnPublications fieldName>
@@ -548,7 +551,6 @@
 
 <#macro showPublications fieldName data="NONE">
 	<#if data != "NONE">
-		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
 			<#if publications[value]??>
 				${publications[value].citation?html}

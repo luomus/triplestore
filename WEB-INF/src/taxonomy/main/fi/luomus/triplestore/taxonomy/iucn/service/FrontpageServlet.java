@@ -1,15 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import fi.luomus.commons.containers.LocalizedText;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.RdfProperty;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.Iterables;
+
+import fi.luomus.commons.containers.LocalizedText;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
 public class FrontpageServlet extends TaxonomyEditorBaseServlet {
@@ -32,14 +35,23 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		int selectedYear = selectedYear(req);
 		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
 		Map<String, IUCNEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
+		TriplestoreDAO dao = getTriplestoreDAO();
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
 				.setData("draftYear", getDraftYear(evaluationYears))
 				.setData("selectedYear", selectedYear)
-				.setData("checklist", getTaxonomyDAO().getChecklists().get("MR.1"))
-				.setData("taxonGroups", getTaxonomyDAO().getInformalTaxonGroups())
-				.setData("taxonGroupRoots", getTaxonomyDAO().getInformalTaxonGroupRoots())
-				.setData("taxonGroupEditors", groupEditors);
+				.setData("taxonGroups", taxonomyDAO.getInformalTaxonGroups())
+				.setData("taxonGroupRoots", taxonomyDAO.getInformalTaxonGroupRoots())
+				.setData("taxonGroupEditors", groupEditors)
+				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
+				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
+				.setData("endangermentObjectProperties", dao.getProperties(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS))
+				.setData("areas", iucnDAO.getEvaluationAreas())
+				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
+				.setData("occurrenceStatuses", getOccurrenceStatuses())
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)));
 	}
 
 	protected int selectedYear(HttpServletRequest req) throws Exception {

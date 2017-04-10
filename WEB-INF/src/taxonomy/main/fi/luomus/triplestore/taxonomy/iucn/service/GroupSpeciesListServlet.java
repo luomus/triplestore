@@ -117,6 +117,14 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		
 		TriplestoreDAO dao = getTriplestoreDAO();
 		if (isFileDownload(req)) {
+			for (IUCNEvaluationTarget target : pageTargets) {
+				if (target.hasEvaluation(selectedYear)) {
+					IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
+					if (evaluation.isIncompletelyLoaded()) {
+						container.complateLoading(evaluation);
+					}
+				}
+			}
 			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
 			responseData.setContentType("text/csv; charset=utf-8");
 			responseData.setViewName("iucn-group-species-download");

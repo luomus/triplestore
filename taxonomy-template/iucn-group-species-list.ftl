@@ -89,7 +89,10 @@
 <div class="clear"></div>
 
 
-<button id="downloadButton"><img src="${staticURL}/img/CSV.png" alt="CSV"/>Lataa luetteloon rajattujen lajien arvioinnit tiedostoon</button>
+<div id="download">
+	<button><img src="${staticURL}/img/CSV.png" alt="CSV"/>Lataa rajattujen lajien arvioinnit tiedostoon</button>
+	<a target="_blank" href="https://beta.laji.fi/about/1068">Lue kuinka viet tiedostot Exceliin</a>
+</div>
 <div class="clear"></div>
 
 <span id="species"></span>
@@ -267,7 +270,7 @@ $(function() {
 	
 	$(".remarks").tooltip();
 	
-	$("#downloadButton").on('click', function() {
+	$("#download button").on('click', function() {
 		if (window.location.href.indexOf("?") != -1) {
 			window.location.href = window.location.href + "&download=true";
 		} else {

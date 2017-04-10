@@ -405,14 +405,14 @@ select.regionalOccurrence {
   display: none;
 }
 
-#downloadButton img {
+#download img {
 	max-height: 30px;
 	margin: 2px;
 	margin-right: 1em;
 	float: left;
 }
-#downloadButton {
+#download {
 	float: right;
 	margin: 1em;
-	max-width: 200px;
+	max-width: 220px;
 }
