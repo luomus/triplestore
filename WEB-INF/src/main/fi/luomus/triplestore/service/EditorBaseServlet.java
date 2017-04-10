@@ -2,9 +2,13 @@ package fi.luomus.triplestore.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +21,7 @@ import fi.luomus.commons.services.BaseServlet;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
 import fi.luomus.commons.session.SessionHandlerImple;
+import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.URIBuilder;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -85,15 +90,40 @@ public abstract class EditorBaseServlet extends BaseServlet {
 			new CreatableResource("ML", "Area", "ML.area"),
 			new CreatableResource("MP", "Publication", "MP.publication"));
 
+	private static final Date restartDate = new Date();
+	private static final Date lastRestartNofity = initLastRestartNofify();
+	private static final Set<Qname> restartNotified = new HashSet<>();
+	
+	public static String getRestartMessage(User user) {
+		if (user == null) return null;
+		if (user.getQname() == null || !user.getQname().isSet()) return null;
+		if (restartNotified.contains(user.getQname())) return null;
+		restartNotified.add(user.getQname());
+		if (!restartedLately()) return null;
+		return "Editor was restarted at " + DateUtils.format(restartDate, "dd.MM.yyyy HH:mm") + ". Apologies for the for the inconvenience!";
+	}
+	
+	private static Date initLastRestartNofify() {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MINUTE, 30);
+		return c.getTime();
+	}
+
+	private static boolean restartedLately() {
+		return new Date().before(lastRestartNofity);
+	}
+
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
 		log(req);
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 		SessionHandler session = getSession(req);
 		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
-			responseData.setData("user", getUser(session));
+			User user = getUser(session);
+			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
 			responseData.setData("successMessage", session.getFlashSuccess());
 			responseData.setData("errorMessage", session.getFlashError());
+			responseData.setData("restartMessage", getRestartMessage(user));
 			responseData.setData("creatableResources", CREATABLE_RESOURCES);
 			Config config = getConfig();
 			if (config.defines("TriplestoreSelf_Username")) {

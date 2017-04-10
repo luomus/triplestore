@@ -60,7 +60,11 @@
 		<#include "javascript-taxonEdit.ftl">
 	</#if>
 
-	
+	<#if restartMessage??>
+		<script>
+			alert('${restartMessage}');
+		</script>
+	</#if>
 </head>
 
 <body>
