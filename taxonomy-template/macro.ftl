@@ -113,10 +113,10 @@
 				<#if taxonConcept.includedConcepts?has_content || taxonConcept.includingConcepts?has_content>
 					<span id="${taxon.taxonConceptQname?replace(".","")}" class="taxonConcept taxonConceptLink" title="Taxon concept: ${taxon.taxonConceptQname}">C</span>
 					<#list taxonConcept.includedConcepts as included>
-						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${included}', 'includes');</script>
+						<script>$(function() { taxonConceptLink('${taxon.taxonConceptQname}', '${included}', 'includes'); });</script>
 					</#list>
 					<#list taxonConcept.includingConcepts as including>
-						<script>taxonConceptLink('${taxon.taxonConceptQname}', '${including}', 'includedIn');</script>
+						<script>$(function() { taxonConceptLink('${taxon.taxonConceptQname}', '${including}', 'includedIn'); });</script>
 					</#list>
 				</#if>
 			</#if>			
