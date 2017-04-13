@@ -19,6 +19,7 @@ title_iucn-frontpage = IUCN - Punainen kirja
 title_iucn-editors = IUCN - Punainen kirja | Editors
 title_iucn-group-species-list = IUCN - Punainen kirja | Lajiluettelo
 title_iucn-evaluation-edit = IUCN - Punainen kirja | Lajin sivu
+title_invasiveSpeciesList = Invasive Alien Species List
 
 exactMatch = Exact match found
 likelyMatches = Approximate matches

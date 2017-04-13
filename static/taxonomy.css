@@ -342,3 +342,17 @@ table.redListTable th, table.redListTable td {
 	padding: 2px;
 	padding-right: 5px;
 }
+
+table#invasiveSpecies {
+	border-collapse: collapse;
+	font-size: 80%;
+}
+table#invasiveSpecies td, table#invasiveSpecies th {
+	border: 1px solid grey;
+	padding: 2px;
+}
+table#invasiveSpecies .error {
+	background-color: rgb(200,100,100);
+	color: white;
+	display: block;
+}
