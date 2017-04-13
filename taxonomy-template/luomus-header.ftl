@@ -104,6 +104,7 @@
 						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
 						<li role="menuitem"><a href="${baseURL}/informalGroups">Informal groups</a></li>
 						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
+						<li role="menuitem"><a href="${baseURL}/invasive">Invasive</a></li>
 						<li role="menuitem"><a href="${baseURL}/help">Help</a></li>
 					</ul>
 				</nav>
