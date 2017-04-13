@@ -300,19 +300,16 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
-	<#assign link = " &nbsp;&nbsp; <a href=\"${staticURL}/img/Aluellisen arvioinnin tarkastelualueet.jpg\" target=\"_staticmap\">&raquo; Alueet</a>" >
-	<#if permissions>
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span>" + link/>
-	<#else>
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus " +link />
-	</#if>
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span> &nbsp;&nbsp; <a href=\"${staticURL}/img/Aluellisen arvioinnin tarkastelualueet.jpg\" target=\"_staticmap\">&raquo; Alueet</a> " />
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
 	<@iucnTextarea "MKV.regionallyThreatenedNotes" "regionalThreatened" "MKV.regionallyThreatenedPrivateNotes" />
 
-	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span>" />   
+	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span> &nbsp;&nbsp; <a href=\"${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf\" target=\"_staticmap\">&raquo; Elinympäristöluokkien tulkintaohje</a> " /> 
+	<p><a href="${staticURL}/" target="_blank">Lataa  </a></p>
+	
 	<@iucnHabitatFields />   
 	<@iucnTextarea "MKV.habitatGeneralNotes" />
 	

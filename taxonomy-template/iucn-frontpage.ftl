@@ -4,14 +4,16 @@
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 <p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a> (13.2. - 11.4. muutokset vielä päivittämättä)</p>
+<p><a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Lataa elinympöristöluokkien tulkintaohje </a></p>
 <p><a href="https://beta.laji.fi/map" target="_blank">Karttatyökaluun</a> (arviointialueiden rajat, koordinaattien selvitys)</p>
 
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 6.-11.4.2016</h6>
+	<h6>Uudistuksia 6.-13.4.2016</h6>
 	<ul>
-		<li>Lajiluettelosta on mahdollista ladata CSV-muodossa arviointien tiedot (ensimmäinen versio, tulenee muuttumaan).</li>
+		<li>Elinympäristöjen tulkintaohje on saatavilla arviointilomakkeelta elinympäristöjen ilmoittamisen ohesta ja tämän sivun yläosasta.</li>
+		<li>Lajiluettelosta on mahdollista ladata CSV-muodossa arviointien tiedot.</li>
 		<li>Korjattu vika joka yö tapahtuvassa järjestelmän uudelleenlatauksessa, josta johtuen arvioinnit eivät näkyneet lajiluettelossa.</li>
 		<li>NA-pikanappi lisätty lajiluetteloon.</li>
 		<li>LC-pikanappi lisätty lajiluetteloon. (Käytetään vain jos ei haluta ilmoittaaa muuta tietoa kuin luokka ja ensisijainen elinympäristö.)</li>
