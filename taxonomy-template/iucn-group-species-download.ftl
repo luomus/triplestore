@@ -1,5 +1,4 @@
-<#include "iucn-macro.ftl">
-<@compress single_line=true>
+<#include "iucn-macro.ftl"><@compress single_line=true>
 "Lahko, Heimo","Tieteellinen nimi","Synonyymit","Kansankieliset nimet","Taksonomiatietokannan kommentit","Arvioinnin kommentit taksonomiasta","Hallinnollinen asema","Arvioinnin tila","Muokattu","Muokkaaja",<#t>
 "Luokka","RLI","Edellinen luokka","Kommentit arviosta","ARVIOINNIN TIEDOT ALKAVAT",<#t>
 "Vakinaisuus","Levinneisuusalueen koko","..muistiinpanot","Esiinymisalueen koko","..muistiinpanot","Kommentit esiintymisestä",<#t>
@@ -14,7 +13,7 @@
 <#list ["A", "B", "C", "D", "E"] as criteria>
 "${criteria} kriteerit","..muistiinpanot","${criteria} luokka","..muistiinpanot",<#t>
 </#list>
-"Kommentit kriteereistä (julkinen)","Luokka","..muistiinpanot","Kriteerit","..muistiinpanot","DD-syy","..muistiinpanot","Vaihteluväli","Alentaminen tai korottaminen","..muistiinpanot","Muutoksen syy","..muistiinpanot",<#t>
+"Kommentit kriteereistä (julkinen)","Luokka","..muistiinpanot","Alentaminen tai korottaminen muistiinpanot","Kriteerit","..muistiinpanot","DD-syy","..muistiinpanot","Vaihteluväli","Muutoksen syy","..muistiinpanot",<#t>
 "Mahdollisesti hävinnyt","..muistiinpanot","Viimeisin havainto","Kommentit arvioinnin tarkkuudesta/luotettavuudesta (julkinen)","Ehd. LSA erityisesti suojeltavaksi","..muistiinpanot","Osuus globaalista pop.","..muistiinpanot",<#t>
 "Julkaisut","Muut lähteet"
 
@@ -70,26 +69,15 @@ ${target.getEvaluation(selectedYear).remarks?replace("\n","")?replace("\r","")}
 "<@showValue "MKV.occurrenceAreaNotes" evaluation />",<#t>
 "<@showValue "MKV.occurrenceNotes" evaluation />",<#t>
 <#list areas?keys as areaQname>
-"<#if evaluation.hasOccurrence(areaQname)>
-<#assign areaStatus = evaluation.getOccurrence(areaQname).status>
-<#list regionalOccurrenceStatuses as status>
-<#if status.qname == areaStatus>
-${status.label.forLocale("fi")?html}
-<#break>
-</#if>
-</#list>
-<#if evaluation.getOccurrence(areaQname).threatened!false>
-(RT)
-</#if>
-</#if>",<#t>
+"<#if evaluation.hasOccurrence(areaQname)>${areaStatusesDownload[evaluation.getOccurrence(areaQname).status.toString()]!evaluation.getOccurrence(areaQname).status}<#if evaluation.getOccurrence(areaQname).threatened!false> (RT)</#if></#if>",<#t>
 </#list>
 "<@showValue "MKV.occurrenceRegionsNotes" evaluation />",<#t>
 "<@showValue "MKV.occurrenceRegionsPrivateNotes" evaluation />",<#t>
 "<#if evaluation.primaryHabitat??>
-<@showHabitatPairValue evaluation.primaryHabitat true />
+<@csvHabitatPairValue evaluation.primaryHabitat />
 </#if>",<#t>
 "<#list evaluation.secondaryHabitats as habitat>
-<@showHabitatPairValue habitat true />
+<@csvHabitatPairValue habitat /><#if habitat_has_next>; </#if>
 </#list>",<#t>
 "<@showValue "MKV.habitatNotes" evaluation />",<#t>
 "<@showValue "MKV.habitatGeneralNotes" evaluation />",<#t>
@@ -121,22 +109,21 @@ ${reason.endangerment?replace("MKV.endangermentReason","")}<#if reason_has_next>
 <#list ["A", "B", "C", "D", "E"] as criteria>
 "<@showValue "MKV.criteria"+criteria evaluation />",<#t>
 "<@showValue "MKV.criteria"+criteria+"Notes" evaluation />",<#t>
-"<@showValue "MKV.status"+criteria evaluation />",<#t>
+"${(evaluation.getValue("MKV.status"+criteria)!"")?replace("MX.iucn","")}",<#t>
 "<@showValue "MKV.status"+criteria+"Notes" evaluation />",<#t>
 </#list>
 "<@showValue "MKV.criteriaNotes" evaluation />",<#t>
-"<@showValue "MKV.redListStatus" evaluation />",<#t>
+"${(evaluation.getValue("MKV.redListStatus")!"")?replace("MX.iucn","")}<@csvExteralPopulationImpactOnRedListStatus evaluation />",<#t>
 "<@showValue "MKV.redListStatusNotes" evaluation />",<#t>
+"<@showValue "MKV.exteralPopulationImpactOnRedListStatusNotes" evaluation />",<#t>
 "<@showValue "MKV.criteriaForStatus" evaluation />",<#t>
 "<@showValue "MKV.criteriaForStatusNotes" evaluation />",<#t>
 "<@showValue "MKV.ddReason" evaluation />",<#t>
 "<@showValue "MKV.ddReasonNotes" evaluation />",<#t>
 "${(evaluation.getValue("MKV.redListStatusMin")!"")?replace("MX.iucn","")} - ${(evaluation.getValue("MKV.redListStatusMax")!"")?replace("MX.iucn","")}",<#t>
-"<@showValue "MKV.exteralPopulationImpactOnRedListStatus" evaluation />",<#t>
-"<@showValue "MKV.exteralPopulationImpactOnRedListStatusNotes" evaluation />",<#t>
 "<@showValue "MKV.reasonForStatusChange" evaluation />",<#t>
 "<@showValue "MKV.reasonForStatusChangeNotes" evaluation />",<#t>
-"<@showValue "MKV.possiblyRE" evaluation />",<#t>
+"${(evaluation.getValue("MKV.possiblyRE")!"")?replace("MX.iucn","")}",<#t>
 "<@showValue "MKV.possiblyRENotes" evaluation />",<#t>
 "<@showValue "MKV.lastSightingNotes" evaluation />",<#t>
 "<@showValue "MKV.redListStatusAccuracyNotes" evaluation />",<#t>

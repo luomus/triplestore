@@ -484,14 +484,30 @@
 	</div>
 </#macro>
 
-<#macro showHabitatPairValue habitatObject csv=false>
+<#macro showHabitatPairValue habitatObject>
 	${habitatObjectProperties.getProperty("MKV.habitat").range.getValueFor(habitatObject.habitat).label.forLocale("fi")?html}
-	<#if !csv><br /></#if>
+	<br />
 	<#list habitatObject.habitatSpecificTypes as type>
-		<#if !csv>&nbsp; &nbsp; </#if>${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
-		<#if type_has_next && !csv><br /></#if>
+		&nbsp; &nbsp; ${habitatObjectProperties.getProperty("MKV.habitatSpecificType").range.getValueFor(type).label.forLocale("fi")?html}
+		<#if type_has_next><br /></#if>
 	</#list>
-	<#if !csv><br /></#if>
+	<br />
+</#macro>
+
+<#macro csvHabitatPairValue habitatObject><@compress single_line=true>
+	${habitatObject.habitat?replace("MKV.habitat","")}
+	<#list habitatObject.habitatSpecificTypes as type>
+		${type?replace("MKV.habitatSpecificType","")?lower_case}
+	</#list>
+</@compress><#t></#macro>
+
+<#macro csvExteralPopulationImpactOnRedListStatus evaluation>
+	<#switch evaluation.getValue("MKV.exteralPopulationImpactOnRedListStatus")!"">
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus1">-1<#break>
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus2">-2<#break>
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus1">°<#break>
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus2">°°<#break>		
+	</#switch>
 </#macro>
 
 <#macro iucnPublications fieldName>
@@ -576,7 +592,7 @@
 	</#if>
 </#macro>
 
-<#macro showValue fieldName data="NONE" customRanges=[]>
+<#macro showValue fieldName data="NONE" customRanges=[]><@compress single_line=true>
 	<#if data != "NONE">
 		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
@@ -597,7 +613,7 @@
 			<#if value_has_next><br /><br /></#if>
 		</#list>
 	</#if>
-</#macro>
+</@compress><#t></#macro>
 
 <#macro showNotes notesFieldName data="NONE">
 	<#if data != "NONE" && notesFieldName != "NONE" && data.hasValue(notesFieldName)>
