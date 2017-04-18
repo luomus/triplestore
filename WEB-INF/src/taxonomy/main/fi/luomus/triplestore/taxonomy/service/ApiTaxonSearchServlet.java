@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
 import fi.luomus.commons.xml.Document;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonomy-search-content/*"})
 public class ApiTaxonSearchServlet extends ApiBaseServlet {
@@ -21,11 +21,10 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 		if (!given(searchword)) {
 			return responseData;
 		}
-		Qname checklist = req.getParameter("checklist") == null ? null : new Qname(req.getParameter("checklist"));
+		Qname checklist = PublicTaxonSearchApiServlet.parseChecklist(req);
 		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
 		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
 		searchword = searchword.trim();
-		
 		Document response =  getTaxonomyDAO().search(new TaxonSearch(searchword, 30, checklist).setOnlySpecies(onlySpecies).setOnlyFinnish(onlyFinnish));
 		responseData.setData("response", response);
 		responseData.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"));

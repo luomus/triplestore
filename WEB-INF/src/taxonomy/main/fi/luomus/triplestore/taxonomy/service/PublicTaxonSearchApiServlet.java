@@ -1,18 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.json.JSONObject;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.commons.xml.Document;
-import fi.luomus.commons.xml.Document.Node;
-import fi.luomus.commons.xml.XMLWriter;
-
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.XML;
+
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.json.JSONObject;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.utils.Cached;
+import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.commons.xml.Document;
+import fi.luomus.commons.xml.Document.Node;
+import fi.luomus.commons.xml.XMLWriter;
 
 @WebServlet(urlPatterns = {"/taxon-search/*", "/taxonomy-editor/api/taxon-search/*"})
 public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
@@ -236,7 +236,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		return set;
 	}
 
-	private Qname parseChecklist(HttpServletRequest req) {
+	public static Qname parseChecklist(HttpServletRequest req) {
 		String checklistParameter = req.getParameter(CHECKLIST);
 		if (!given(checklistParameter)) {
 			return MASTER_CHECKLIST;
