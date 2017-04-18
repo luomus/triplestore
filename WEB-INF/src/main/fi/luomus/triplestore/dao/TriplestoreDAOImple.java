@@ -850,15 +850,15 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+		storeOccurrencesAndSetIdToModel(givenData);
+		storeEndangermentObjectsAdnSetIdToModel(givenData);
+		storeHabitatObjectsAndSetIdsToModel(givenData);
+		this.store(givenData.getModel());
 		if (existingEvaluation != null) {
 			deleteOccurrences(existingEvaluation);
 			deleteEndangermentObjects(existingEvaluation);
 			deleteHabitatObjects(existingEvaluation);
 		}
-		storeOccurrencesAndSetIdToModel(givenData);
-		storeEndangermentObjectsAdnSetIdToModel(givenData);
-		storeHabitatObjectsAndSetIdsToModel(givenData);
-		this.store(givenData.getModel());
 	}
 	
 	private void storeEndangermentObjectsAdnSetIdToModel(IUCNEvaluation givenData) throws Exception {
