@@ -497,7 +497,10 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
 		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
-			evaluation.addOccurrence(getOccurrence(hasOccurrence.getObjectResource().getQname()));
+			Occurrence occurrence = getOccurrence(hasOccurrence.getObjectResource().getQname());
+			if (occurrence != null) {
+				evaluation.addOccurrence(occurrence);			
+			}
 		}
 	}
 
@@ -514,6 +517,10 @@ public class IucnDAOImple implements IucnDAO {
 
 	private Occurrence getOccurrence(String occurrenceId) throws Exception {
 		Model model = triplestoreDAO.get(occurrenceId);
+		if (model.isEmpty()) {
+			errorReporter.report("Could not find occurrence " + occurrenceId);
+			return null;
+		}
 		String areaQname = model.getStatements(MO_AREA).get(0).getObjectResource().getQname();
 		String statusQname = model.getStatements(MO_STATUS).get(0).getObjectResource().getQname();
 		Qname id = new Qname(model.getSubject().getQname());
