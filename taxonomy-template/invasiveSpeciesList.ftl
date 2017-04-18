@@ -3,7 +3,7 @@
 <h1>Vieraslajit</h1>
 
 <p>Tällä sivulla voidaan tarkastella ovatko kaikki historiallisesti vieraslajeiksi määritellyt 
-lajit yhtä "tallella" taksonomiassa ja lajien tietojen täydellisyyttä.</p>
+lajit yhä "tallella" taksonomiassa ja lajien tietojen täydellisyyttä.</p>
 
 <table id="invasiveSpecies">
 	<thread>
