@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Backcasting2000Sisaan {
 
@@ -110,12 +111,27 @@ public class Backcasting2000Sisaan {
 					taxonId = getTaxonId(group, sciname.replace("subsp.", "ssp."));
 				}
 			}
+			if (taxonId == null && group.equals("Butterflies")) {
+				taxonId = getWithFinnishName(sciname, "C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/2010/Perhoset_siirto.csv", group);
+			}
 			if (taxonId == null) {
 				System.out.println("Not found " + sciname + "  | " + group);
 			}
 			//Utils.debug(sciname, taxonId);
 		}
 
+	}
+
+	private static Qname getWithFinnishName(String sciname, String filename, String group) throws Exception {
+		for (String line : FileUtils.readLines(new File(filename))) {
+			String[] parts = line.split(Pattern.quote("|"));
+			String lineSciname = parts[1].trim();
+			if (sciname.trim().equalsIgnoreCase(lineSciname)) {
+				String fiName = parts[10];
+				return getTaxonId(group, fiName);
+			}
+		}
+		return null;
 	}
 
 	private static Qname getTaxonId(String group, String sciname) throws Exception {
