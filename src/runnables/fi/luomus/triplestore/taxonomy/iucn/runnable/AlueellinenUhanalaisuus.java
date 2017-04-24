@@ -14,7 +14,7 @@
 //import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 //import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 //import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-//import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+//import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 //
 //import java.io.File;
 //import java.util.Collection;

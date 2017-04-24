@@ -31,8 +31,8 @@ import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 

@@ -23,8 +23,8 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,8 +15,8 @@ import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 import java.io.File;
 import java.util.ArrayList;
