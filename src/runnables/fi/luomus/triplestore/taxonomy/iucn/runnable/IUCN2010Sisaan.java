@@ -1,20 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -32,7 +16,6 @@ import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
-import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
@@ -40,12 +23,28 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class IUCN2010Sisaan {
 
-	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
+	private static final String FILE_PATH = "C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010; // XXX
 	private static final String BLABLABLA = "blablabla blablabla blablabla blablabla blablabla";
@@ -145,24 +144,29 @@ public class IUCN2010Sisaan {
 		process(data, f, i, total);
 	}
 
-	private static Qname getFixedQnameForName(String scientificName) throws Exception {
+	public static Qname getFixedQnameForName(String scientificName) throws Exception {
 		Map<String, Qname> fixedNames = getFixedNames();
 		return fixedNames.get(scientificName);
 	}
 
 	private static Map<String, Qname> fixedNames =  null;
-	
+
 	private static Map<String, Qname> getFixedNames() throws Exception {
 		if (fixedNames == null) {
 			fixedNames = new HashMap<>();
 			File f= new File(FILE_PATH + "IUCN_aineistonsiirto_virheelliset_nimet.csv");
 			for (String line : FileUtils.readLines(f)) {
-				if (line.startsWith("Eliöryhmä")) continue;
-				if (line.isEmpty()) continue;
-				String[] parts = line.split(Pattern.quote("\t"));
-				String name = parts[1];
-				Qname qname = new Qname(parts[3]);
-				fixedNames.put(name, qname);
+				try {
+					if (line.startsWith("Eliöryhmä")) continue;
+					if (line.isEmpty()) continue;
+					String[] parts = line.split(Pattern.quote("\t"));
+					String name = parts[1];
+					Qname qname = new Qname(parts[3]);
+					fixedNames.put(name, qname);
+				} catch (Exception e) {
+					System.err.println(line);
+					throw e;
+				}
 			}
 		}
 		return fixedNames;

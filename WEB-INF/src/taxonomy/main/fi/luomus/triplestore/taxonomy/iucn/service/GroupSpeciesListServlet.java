@@ -24,8 +24,8 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {

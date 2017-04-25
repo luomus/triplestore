@@ -9,7 +9,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.triplestore.taxonomy.models.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 
 public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
