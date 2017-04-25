@@ -1,11 +1,11 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
-
-import java.util.Set;
 
 public class EditableTaxon extends Taxon {
 
@@ -90,6 +90,7 @@ public class EditableTaxon extends Taxon {
 	private boolean initHasCriticalData() {
 		if (this.hasChildren()) return true;
 		if (this.hasSecureLevel()) return true;
+		if (this.hasIUCNStatuses()) return true;
 		if (!this.getAdministrativeStatuses().isEmpty()) return true;
 		if (!this.getDescriptions().getContextsWithContentAndLocales().isEmpty()) return true;
 		if (!this.getInvasiveSpeciesMainGroups().isEmpty()) return true;
@@ -97,6 +98,10 @@ public class EditableTaxon extends Taxon {
 		if (!this.getExplicitlySetExperts().isEmpty()) return true;
 		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) return true;
 		return false;
+	}
+
+	private boolean hasIUCNStatuses() {
+		return getLatestRedListStatusFinland() != null;
 	}
 
 	public boolean hasExplicitlySetOriginalPublication(String qname) {
