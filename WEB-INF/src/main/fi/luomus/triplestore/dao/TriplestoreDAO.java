@@ -65,7 +65,7 @@ public interface TriplestoreDAO {
 	/**
 	 * Removes all existing [subject, predicate, context]-objects from the db and adds this new statement. 
 	 * If the statement already exists, nothing is done to that statement (but other [subject, predicate, context] -objects will be removed).
-	 * Do not use this for such models that can have multiple [subject, predicate, context]-objects and you don't want the possibly remove them all.
+	 * Do not use this operation for models that can have multiple [subject, predicate, context]-objects and you don't want to remove them all.
 	 * @param statement
 	 * @throws Exception
 	 */
