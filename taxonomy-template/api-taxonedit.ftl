@@ -51,7 +51,7 @@
 			<#if noPermissions??><#else>
 			<span id="scientificNameToolButtons">
 				<label>&nbsp;</label>
-				<button id="fixTypo">Fix a mistake</button> 
+				<button id="fixTypo">Fix name/author</button> 
 				OR 
 				<button id="alterScientificName">Change name and create synonym</button>
 			</span>
