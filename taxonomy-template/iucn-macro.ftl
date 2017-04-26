@@ -514,7 +514,7 @@
 	<tr>
 		<th>
 			<@iucnLabel fieldName />
-			<p class="info">(Huom: Samaan tietokantaan ei kannata viitata kovin monella eri latauspäivämäärällä; esimerkiksi yksi viittaus per arviointikausi riittänee.</p> 
+			<p class="info">(Huom: Samaan tietokantaan ei kannata viitata kovin monella eri latauspäivämäärällä; esimerkiksi yksi viittaus per arviointikausi riittänee.)</p> 
 		</th>
 		<td>
 			<@showPublications fieldName comparison />
