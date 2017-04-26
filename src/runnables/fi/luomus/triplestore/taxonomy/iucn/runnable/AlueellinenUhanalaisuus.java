@@ -6,7 +6,7 @@
 //import fi.luomus.commons.containers.rdf.Statement;
 //import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 //import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-//import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+//import fi.luomus.commons.taxonomy.TaxonSearch;
 //import fi.luomus.commons.utils.FileUtils;
 //import fi.luomus.triplestore.dao.DataSourceDefinition;
 //import fi.luomus.triplestore.dao.SearchParams;

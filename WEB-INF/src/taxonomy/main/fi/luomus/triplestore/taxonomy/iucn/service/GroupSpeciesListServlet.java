@@ -18,14 +18,14 @@ import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -238,7 +238,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private Set<String> getTaxons(String taxon) throws Exception {
-			TaxonSearchResponse result = getTaxonomyDAO().searchInternal(new TaxonSearch(taxon, 1000).onlyExact());
+			TaxonSearchResponse result = getTaxonomyDAO().search(new TaxonSearch(taxon, 1000).onlyExact());
 			Set<String> qnames = new HashSet<>();
 			for (Match exactmatch : result.getExactMatches()) {
 				qnames.add(exactmatch.getTaxon().getQname().toString());

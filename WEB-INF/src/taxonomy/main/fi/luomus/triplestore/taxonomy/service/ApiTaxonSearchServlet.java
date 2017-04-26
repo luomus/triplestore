@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.xml.Document;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonomy-search-content/*"})
@@ -25,10 +25,14 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
 		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
 		searchword = searchword.trim();
-		Document response =  getTaxonomyDAO().search(new TaxonSearch(searchword, 30, checklist).setOnlySpecies(onlySpecies).setOnlyFinnish(onlyFinnish));
+		Document response =  getTaxonomyDAO()
+				.search(new TaxonSearch(searchword, 30, checklist)
+						.setOnlySpecies(onlySpecies)
+						.setOnlyFinnish(onlyFinnish))
+				.getResultsAsDocument();
 		responseData.setData("response", response);
 		responseData.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"));
 		return responseData;
 	}
-	
+
 }

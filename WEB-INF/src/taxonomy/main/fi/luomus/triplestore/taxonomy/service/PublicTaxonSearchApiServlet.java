@@ -18,10 +18,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.Document.Node;
@@ -59,54 +56,11 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	private static final String INFORMAL_GROUPS = "informalGroups";
 	private static final int DEFAULT_LIMIT = Integer.MAX_VALUE;
 	private static final long serialVersionUID = -1055689074656680611L;
-	private static final int ONE_HOUR_IN_SECONDS = 60*60*1;
-	private static final long MAX_TAXON_SEARCH_CACHE_ITEM_COUNT = 20000;
-	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
 		return true;
 	}
-
-	private class SearchWrapper {
-		private final TaxonomyDAO dao;
-		private final TaxonSearch taxonSearch;
-		private final String toString;
-		public SearchWrapper(TaxonomyDAO dao, TaxonSearch taxonSearch) {
-			this.dao = dao;
-			this.taxonSearch = taxonSearch;
-			this.toString = taxonSearch.toString();
-		}
-		@Override
-		public int hashCode() {
-			return this.toString().hashCode();
-		}
-		@Override
-		public boolean equals(Object o) {
-			return this.toString().equals(o.toString());
-		}
-		@Override
-		public String toString() {
-			return toString;
-		}
-		public TaxonSearch getTaxonSearch() {
-			return taxonSearch;
-		}
-	}
-
-	private static CacheLoader<SearchWrapper, Document> loader = new CacheLoader<SearchWrapper, Document>() {
-
-		@Override
-		public Document load(SearchWrapper wrapper) {
-			try {
-				return wrapper.dao.search(wrapper.getTaxonSearch());
-			} catch (Exception e) {
-				throw new RuntimeException(wrapper.toString(), e);
-			}
-		}
-	};
-
-	private static Cached<SearchWrapper, Document> cachedSearches = new Cached<SearchWrapper, Document>(loader, ONE_HOUR_IN_SECONDS, MAX_TAXON_SEARCH_CACHE_ITEM_COUNT);
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -130,7 +84,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 
 		Format format = getFormat(req);
 
-		Document response = cachedSearches.get(new SearchWrapper(getTaxonomyDAO(), taxonSearch));
+		Document response = getTaxonomyDAO().search(taxonSearch).getResultsAsDocument();
 		if (response.getRootNode().hasAttribute(ERROR)) {
 			if (response.getRootNode().getAttribute(ERROR).startsWith("Search word")) {
 				res.setStatus(400);
@@ -239,7 +193,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	public static Qname parseChecklist(HttpServletRequest req) {
 		String checklistParameter = req.getParameter(CHECKLIST);
 		if (!given(checklistParameter)) {
-			return MASTER_CHECKLIST;
+			return TaxonSearch.MASTER_CHECKLIST;
 		} 
 		if (checklistParameter.equals(NULL)) {
 			return null;

@@ -1,31 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.config.Config;
-import fi.luomus.commons.config.ConfigReader;
-import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.DateUtils;
-import fi.luomus.commons.utils.FileUtils;
-import fi.luomus.commons.utils.LogUtils;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.dao.DataSourceDefinition;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.dao.TriplestoreDAOConst;
-import fi.luomus.triplestore.dao.TriplestoreDAOImple;
-import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -41,6 +14,33 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
+import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.FileUtils;
+import fi.luomus.commons.utils.LogUtils;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
 
@@ -177,23 +177,23 @@ public class IUCN2010Sisaan {
 			System.out.println(i + " / " + total + "\t" + data.getScientificName() + " " + data.getTaxonQname());
 			TaxonSearchResponse response = new TaxonSearchResponse();
 			if (given(data.getTaxonQname())) {
-				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getTaxonQname()).onlyExact());
+				response = taxonomyDAO.search(new TaxonSearch(data.getTaxonQname()).onlyExact());
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getScientificName())) {
-				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getScientificName()).onlyExact());
+				response = taxonomyDAO.search(new TaxonSearch(data.getScientificName()).onlyExact());
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getScientificName())) {
 				String cleanedSciName = cleanScientificName(data.getScientificName());
 				if (given(cleanedSciName)) {
-					response = taxonomyDAO.searchInternal(new TaxonSearch(cleanedSciName).onlyExact());
+					response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact());
 				}
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getFinnishName())) {
-				response = taxonomyDAO.searchInternal(new TaxonSearch(data.getFinnishName()).onlyExact());
+				response = taxonomyDAO.search(new TaxonSearch(data.getFinnishName()).onlyExact());
 			}
 			if (response.getExactMatches().isEmpty()) {
 				for (String altname : data.getAlternativeFinnishNames()) {
-					response = taxonomyDAO.searchInternal(new TaxonSearch(altname).onlyExact());
+					response = taxonomyDAO.search(new TaxonSearch(altname).onlyExact());
 					if (!response.getExactMatches().isEmpty()) break;
 				}
 			}

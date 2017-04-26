@@ -9,7 +9,6 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 
 public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 
@@ -35,8 +34,6 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public EditableTaxon createTaxon() throws Exception;
 
 	public Set<String> getInformalTaxonGroupRoots();
-
-	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception;
 	
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
 

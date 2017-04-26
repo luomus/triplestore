@@ -1,23 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.config.Config;
-import fi.luomus.commons.config.ConfigReader;
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
-import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
-import fi.luomus.commons.utils.FileUtils;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.dao.DataSourceDefinition;
-import fi.luomus.triplestore.dao.SearchParams;
-import fi.luomus.triplestore.dao.TriplestoreDAOConst;
-import fi.luomus.triplestore.dao.TriplestoreDAOImple;
-import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +7,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.config.Config;
+import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
+import fi.luomus.commons.utils.FileUtils;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.SearchParams;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 
 public class Backcasting2000Sisaan {
 
@@ -205,7 +205,7 @@ public class Backcasting2000Sisaan {
 	}
 
 	private static Collection<Taxon> getTaxons(String sciname) throws Exception {
-		TaxonSearchResponse res = taxonomyDAO.searchInternal(new TaxonSearch(sciname).onlyExact());
+		TaxonSearchResponse res = taxonomyDAO.search(new TaxonSearch(sciname).onlyExact());
 		List<Taxon> t = new ArrayList<>();
 		for (Match m : res.getExactMatches()) {
 			t.add(m.getTaxon());

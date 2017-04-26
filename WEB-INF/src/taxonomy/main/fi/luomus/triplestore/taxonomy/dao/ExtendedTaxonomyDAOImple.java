@@ -2,7 +2,6 @@ package fi.luomus.triplestore.taxonomy.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -10,6 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
@@ -22,69 +23,62 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearchDAOSQLQueryImple;
+import fi.luomus.commons.taxonomy.TaxonSearchDataSourceDefinition;
+import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
+import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.commons.xml.Document;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse;
-import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
-	private static final double JARO_WINKLER_DISTANCE = 0.88;
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
-
-	private static final String TAXON_SEARCH_LIKELY_MATCH_SQL = "" +
-			" SELECT   qname, name, utl_match.jaro_winkler(name, ?) match " +
-			" FROM     "+SCHEMA+".taxon_search_materialized   " +
-			" WHERE    utl_match.jaro_winkler(name, ?) > " + JARO_WINKLER_DISTANCE +
-			" AND      name != ? " + 
-			" AND      COALESCE(checklist, '.') = ? " + 
-			" ORDER BY match DESC, name  ";
-
-	private static final String TAXON_SEARCH_PARTIAL_MATCH_SQL = "" +
-			" SELECT   qname, name " +
-			" FROM     "+SCHEMA+".taxon_search_materialized   " +
-			" WHERE    name LIKE ? " +
-			" AND      name != ? " +
-			" AND      COALESCE(checklist, '.') = ? " + 
-			" ORDER BY name  ";
-
-	private static final String TAXON_SEARCH_EXACT_MATCH_SQL = "" +
-			" SELECT   qname, name " +
-			" FROM     "+SCHEMA+".taxon_search_materialized                     " +
-			" WHERE    (name = ? AND COALESCE(checklist, '.') = ? )              " +
-			" OR       qname = ?                                                 ";
 
 	private final TriplestoreDAO triplestoreDAO;
 	private final IucnDAOImple iucnDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
+	private final Cached<TaxonSearch, TaxonSearchResponse> cachedTaxonSearches;
+	private final DataSource dataSource;
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
-		super(config, 60 * 5, 20);
-		System.out.println("Creating " +  ExtendedTaxonomyDAOImple.class.getName());
-		this.triplestoreDAO = triplestoreDAO;
-		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
-		this.iucnDAO = new IucnDAOImple(config, config.developmentMode(), triplestoreDAO, this, errorReporter);
+		this(config, config.developmentMode(), triplestoreDAO, errorReporter);
 	}
 
 	public ExtendedTaxonomyDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		super(config, 60 * 5, 20);
 		System.out.println("Creating " +  ExtendedTaxonomyDAOImple.class.getName());
+		this.dataSource = TaxonSearchDataSourceDefinition.initDataSource(config.connectionDescription());
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
 		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, this, errorReporter);
+		this.cachedTaxonSearches = new Cached<TaxonSearch, TaxonSearchResponse>(
+				new TaxonSearchLoader(),
+				60*60*3, 50000);
 	}
-	
+
+	private class TaxonSearchLoader implements Cached.CacheLoader<TaxonSearch, TaxonSearchResponse> {
+		@Override
+		public TaxonSearchResponse load(TaxonSearch key) {
+			try {
+				return uncachedTaxonSearch(key);
+			} catch (Exception e) {
+				throw new RuntimeException("Taxon search with terms " + key.toString(), e);
+			}
+		}
+	}
+
 	public void close() {
 		if (iucnDAO != null) iucnDAO.close();
+		if (dataSource != null) dataSource.close();
 	}
-	
+
 	@Override
 	public void clearCaches() {
 		super.clearCaches();
@@ -95,7 +89,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public void clearTaxonConceptLinkings() {
 		taxonContainer.clearTaxonConceptLinkings();
 	}
-	
+
 	@Override
 	public EditableTaxon getTaxon(Qname qname) {
 		return taxonContainer.getTaxon(qname);
@@ -142,160 +136,14 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return new Qname(resource.getQname());
 	}
 
-	@Override
-	public Document search(TaxonSearch taxonSearch) throws Exception {
-		return searchInternal(taxonSearch).getResultsAsDocument();
+
+	private TaxonSearchResponse uncachedTaxonSearch(TaxonSearch taxonSearch) throws Exception {
+		return new TaxonSearchDAOSQLQueryImple(this, dataSource).search(taxonSearch);
 	}
 
 	@Override
-	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception {
-		TaxonSearchResponse response = new TaxonSearchResponse();
-		if (!given(taxonSearch.getSearchword())) {
-			response.setError("Search word must be given.");
-			return response;
-		}
-		String searchword = taxonSearch.getSearchword().trim().toUpperCase();
-		if (searchword.trim().length() <= 1) {
-			response.setError("Search word was too short.");
-			return response;
-		}
-		String checklist = ".";
-		if (taxonSearch.hasChecklist()) {
-			checklist = taxonSearch.getChecklist().toString().trim().toUpperCase();
-		}
-		int limit = taxonSearch.getLimit();
-		int addedCount = 0;
-		TransactionConnection con = null;
-		try {
-			con = triplestoreDAO.openConnection();
-
-			List<Match> exactMatches = exactMatches(searchword, checklist, limit, taxonSearch, con);
-			response.getExactMatches().addAll(exactMatches);
-			addedCount = exactMatches.size();
-			if (addedCount >= limit) return response;
-
-			if (taxonSearch.isOnlyExact() || searchword.length() <= 3) return response;
-
-			List<Match> likelyMatches = likelyMatches(searchword, checklist, limit - addedCount, taxonSearch, con);
-			response.getLikelyMatches().addAll(likelyMatches);
-			addedCount += likelyMatches.size();
-			if (addedCount >= limit) return response;
-
-			List<Match> partialMatches = partialMatches(searchword, checklist, limit - addedCount, taxonSearch, con);
-			response.getPartialMatches().addAll(partialMatches);
-		} catch (Exception e) {
-			e.printStackTrace();
-			String message = e.getMessage() == null ? "" : ": " + e.getMessage();
-			response.setError(e.getClass().getSimpleName() + message);
-		} finally {
-			Utils.close(con);
-		}
-		return response;
-	}
-
-	private boolean given(Object o) {
-		return o != null && o.toString().trim().length() > 0;
-	}
-
-	private List<Match> exactMatches(String searchword, String checklist, int limit, TaxonSearch taxonSearch, TransactionConnection con) throws SQLException {
-		List<Match> matches = new ArrayList<>();
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			p = con.prepareStatement(TAXON_SEARCH_EXACT_MATCH_SQL);
-			p.setString(1, searchword);
-			p.setString(2, checklist);
-			p.setString(3, searchword);
-			rs = p.executeQuery();
-			while (rs.next()) {
-				Match match = toMatch(rs, taxonSearch);
-				if (match == null) continue; 
-				if (limit-- < 1) break;
-				matches.add(match);
-			}
-		} finally {
-			Utils.close(p, rs);
-		}
-		return matches;
-	}
-
-	private List<Match> likelyMatches(String searchword, String checklist, int limit, TaxonSearch taxonSearch, TransactionConnection con) throws SQLException {
-		List<Match> matches = new ArrayList<>();
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			p = con.prepareStatement(TAXON_SEARCH_LIKELY_MATCH_SQL);
-			p.setString(1, searchword);
-			p.setString(2, searchword);
-			p.setString(3, searchword);
-			p.setString(4, checklist);
-			rs = p.executeQuery();
-			while (rs.next()) {
-				Match match = toMatch(rs, taxonSearch);
-				if (match == null) continue;
-				if (limit-- < 1) break;
-				match.setSimilarity(rs.getDouble(3));
-				matches.add(match);
-			}
-		} finally {
-			Utils.close(p, rs);
-		}
-		return matches;
-	}
-
-	private List<Match> partialMatches(String searchword, String checklist, int limit, TaxonSearch taxonSearch, TransactionConnection con) throws SQLException {
-		List<Match> matches = new ArrayList<>();
-		PreparedStatement p = null;
-		ResultSet rs = null;
-		try {
-			p = con.prepareStatement(TAXON_SEARCH_PARTIAL_MATCH_SQL);
-			p.setString(1, "%" + searchword.replace(" ", "%") + "%");
-			p.setString(2, searchword);
-			p.setString(3, checklist);
-			rs = p.executeQuery();
-			while (rs.next()) {
-				Match match = toMatch(rs, taxonSearch);
-				if (match == null) continue;
-				if (limit-- < 1) break;
-				matches.add(match);
-			}
-		} finally {
-			Utils.close(p, rs);
-		}
-		return matches;
-	}
-
-	private Match toMatch(ResultSet rs, TaxonSearch taxonSearch) throws SQLException {
-		Qname taxonId = new Qname(rs.getString(1));
-		if (!taxonContainer.hasTaxon(taxonId))  return null;
-		Taxon taxon = getTaxon(taxonId);
-		String name = rs.getString(2);
-		Match match = new Match(taxon, name);
-		if (taxonSearch.hasFilters()) {
-			if (!taxonMatchesFilters(taxonSearch, taxon)) return null;
-		}
-		for (Qname informalGroupQname : taxon.getInformalTaxonGroups()) {
-			InformalTaxonGroup informalGroup = getInformalTaxonGroups().get(informalGroupQname.toString());
-			if (informalGroup == null) continue;
-			match.getInformalGroups().add(informalGroup);
-		}
-		return match;
-	}
-
-	private boolean taxonMatchesFilters(TaxonSearch taxonSearch, Taxon taxon) {
-		if (taxonSearch.isOnlySpecies()) {
-			if (!taxon.isSpecies()) return false;
-		}
-		if (taxonSearch.isOnlyFinnish()) {
-			if (!taxon.isFinnish()) return false;
-		}
-		if (taxonSearch.getInformalTaxonGroups().isEmpty()) return true;
-		for (Qname required : taxonSearch.getInformalTaxonGroups()) {
-			if (taxon.getInformalTaxonGroups().contains(required)) {
-				return true;
-			}
-		}
-		return false;
+	public TaxonSearchResponse search(TaxonSearch taxonSearch) throws Exception {
+		return cachedTaxonSearches.get(taxonSearch);
 	}
 
 	@Override
@@ -350,6 +198,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return matches;
 	}
 
+	private boolean given(Object o) {
+		return o != null && o.toString().trim().length() > 0;
+	}
+
 	@Override
 	public EditableTaxon createTaxon() throws Exception {
 		Qname qname = triplestoreDAO.getSeqNextValAndAddResource("MX");
@@ -392,6 +244,5 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
 		return cachedBiogeographicalProvinces.get();
 	}
-
 
 }

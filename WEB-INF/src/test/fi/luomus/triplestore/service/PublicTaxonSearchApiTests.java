@@ -13,7 +13,7 @@ import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
-import fi.luomus.commons.taxonomy.TaxonomyDAO.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -44,7 +44,7 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_exact_match() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10)).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10)).getResultsAsDocument().getRootNode();
 		System.out.println(n);
 //		assertEquals(1, n.getChildNodes().size()); nyt ollaan taas silleen, että exact matchilla palautetaan muitankin osumia..
 		assertEquals(1, n.getNode("exactMatch").getChildNodes().size());
@@ -60,37 +60,19 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_exact_search_from_null_checklist() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, null)).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, null)).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
 
 	@Test
 	public void test_exact_search_from_null_checklist_2() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("teStI", 10, null)).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("teStI", 10, null)).getResultsAsDocument().getRootNode();
 		assertTrue(n.getNode("exactMatch").getChildNodes().size() > 0);
 	}
 
 	@Test
-	public void test_missing_searchword() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch(null, 10)).getRootNode();
-		assertEquals("Search word must be given.", n.getAttribute("error"));
-	}
-
-	@Test
-	public void test_too_short_searchword() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("a", 10)).getRootNode();
-		assertEquals("Search word was too short.", n.getAttribute("error"));
-
-		n = taxonomyDAO.search(new TaxonSearch("aa", 10)).getRootNode();
-		assertFalse(n.hasAttribute("error"));
-
-		n = taxonomyDAO.search(new TaxonSearch("aaaa", 10)).getRootNode();
-		assertFalse(n.hasAttribute("error"));
-	}
-
-	@Test
 	public void test_likely_match() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10)).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10)).getResultsAsDocument().getRootNode();
 		assertEquals(1, n.getChildNodes().size());
 		assertEquals(1, n.getNode("likelyMatches").getChildNodes().size());
 		Node match = n.getNode("likelyMatches").getChildNodes().get(0);
@@ -100,13 +82,13 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_only_exact_match() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10).onlyExact()).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10).onlyExact()).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
 	
 	@Test
 	public void test_partial_match_unlimited() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getResultsAsDocument().getRootNode();
 		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 3);
 		assertTrue(n.getNode("partialMatches").getChildNodes().size() > 30);
 	}
@@ -116,7 +98,7 @@ public class PublicTaxonSearchApiTests {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
 				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
-				).getRootNode();
+				).getResultsAsDocument().getRootNode();
 		
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
 		assertFalse(contains("kotkansiipi", n.getNode("partialMatches")));
@@ -126,7 +108,7 @@ public class PublicTaxonSearchApiTests {
 	public void test_filter_by_informal_groups_2() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
-				).getRootNode();
+				).getResultsAsDocument().getRootNode();
 		
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
@@ -138,7 +120,7 @@ public class PublicTaxonSearchApiTests {
 				new TaxonSearch("kotka", 10000)
 				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
 				.addInformalTaxonGroup(new Qname("MVL.21")) // Kasvit
-				).getRootNode();
+				).getResultsAsDocument().getRootNode();
 		
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
@@ -149,7 +131,7 @@ public class PublicTaxonSearchApiTests {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
 				.addInformalTaxonGroup(new Qname("MVL.21")) // Kasvit
-				).getRootNode();
+				).getResultsAsDocument().getRootNode();
 		
 		assertFalse(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));

@@ -1,5 +1,10 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.AdministrativeStatus;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.Checklist;
@@ -12,15 +17,10 @@ import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
+import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
-import fi.luomus.commons.xml.Document;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
@@ -127,12 +127,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public Document search(TaxonSearch arg0) throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void addOccurrences(EditableTaxon taxon) {
 		// Auto-generated method stub
 		
@@ -163,12 +157,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public TaxonSearchResponse searchInternal(TaxonSearch taxonSearch) throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
 		// Auto-generated method stub
 		return null;
@@ -177,6 +165,12 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	@Override
 	public void clearTaxonConceptLinkings() {
 		// Auto-generated method stub
+	}
+
+	@Override
+	public TaxonSearchResponse search(TaxonSearch arg0) throws Exception {
+		// Auto-generated method stub
+		return null;
 	}
 
 }
