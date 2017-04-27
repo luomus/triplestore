@@ -112,6 +112,15 @@ Here you can find instructions on how to use the Taxon Editor.
 	
 	<li>
 		<p><span class="qa">Q:</span> 
+			How do I remove a synonym?
+		</p>
+		<p><span class="qa">A:</span> 
+			You can detach the synonym and after that it is no longer a synonym of any names in any checklist. 
+		</p> 
+	</li>
+	
+	<li>
+		<p><span class="qa">Q:</span> 
 			How do I split a species to many species?
 		</p>
 		<p><span class="qa">A:</span> 
