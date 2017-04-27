@@ -68,11 +68,6 @@ function expandTaxon(e) {
 }
 
 function removeEmptyTaxonlevels() {
-	$(".taxonConceptLinkTargetContainer").each(function() {
-		if ($(this).children().length === 0) {
-			$(this).remove();
-		}
-	});
 	$(".taxonLevel").each(function() {
 		if ($(this).children().length === 0) {
 			$(this).remove();
@@ -90,12 +85,7 @@ function collapseTreeByTaxonQname(taxonQname) {
 	$("#"+childrenContainerId).find(".taxonWithTools").each(function() {
 		collapseTreeByTaxonQname($(this).attr('id'));
 	});
-	removeTaxonConnection(childrenContainerId);
-	$("#"+childrenContainerId).find(".taxonConceptLink").each(function() {
-		removeTaxonConceptConnection($(this).attr('id'));
-	});
 	$("#"+childrenContainerId).remove();
-	$(".taxonConceptLinkTarget").not("*[class*='taxonConceptLinkTargetOf']").remove();
 }
 
 function expandTree(e) {
@@ -725,72 +715,5 @@ $(function() {
 	$(".rootTaxon").find(".treePlusMinusSign").click();
 });
 
-var loadingTaxaOfConcept = [];
-
-function taxonConceptLink(fromConceptQname, toConceptQname, direction) {
-	var fromConcept = fromConceptQname.replace('.','');
-	var toConcept = toConceptQname.replace('.','');
-	if ($('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTarget').length < 1) {
-		$('#taxonTree').find('.taxonLevel').last().prepend($('<div class="taxonConceptLinkTargetContainer"></div>'));
-	}
-	var target = $('#taxonTree').find('.taxonLevel').last().find('.taxonConceptLinkTargetContainer').first();
-	if ($('#'+toConcept).length < 1) {
-		target.append($('<div id="'+toConcept+'Container" class="taxonConceptLinkTarget ui-widget ui-widget-content"> <span id="'+toConcept+'" class="taxonConcept" title="Taxon concept: '+toConceptQname+'">C</span>'));
-	}
-	addTaxonConceptConnection(fromConcept, toConcept, direction);
-	taxonTreeGraphs.repaintEverything();
-	if ($('#'+toConcept+'Container').find('.synonyms').length < 1 && !loadingTaxaOfConcept[toConceptQname]) {
-		loadingTaxaOfConcept[toConceptQname] = 1;
-		$.get('${baseURL}/api/taxaOfConcept/'+encodeURIComponent(toConceptQname), function(data) {
-			$('#'+toConcept+'Container').append(data);
-			taxonTreeGraphs.repaintEverything();
-			loadingTaxaOfConcept[toConceptQname] = 0;
-		});
-	}
-}
-
-function addTaxonConceptConnection(from, to, direction) {
-	$("#"+to+'Container').addClass('taxonConceptLinkTargetOf_'+from);
-	var overlaysDirection = [];
-	if (direction == 'includedIn') {
-		overlaysDirection = [
-				["Arrow", {
-					cssClass:"l1arrow",
-					location:1.0, width:15, length:30
-				}]
-			];
-	} else {
-		overlaysDirection = [
-				["Arrow", {
-					cssClass:"l1arrow",
-					direction: -1, location:0, width:15, length:30
-				}]
-			];
-	} 
-	try {
-		if (!connections[from]) {
-			connections[from] = [];
-		}
-		connections[from][connectionSeq++] = taxonTreeGraphs.connect({
-			source: from, 
-	   		target: to, 			   	
-			connector:["Bezier", { curviness:25 }],
-	   		endpoint:"Blank",
-	   		anchors:["Right", "Left"], 
-	   		paintStyle:{ 
-				lineWidth:3,
-				strokeStyle:"rgb(38, 164, 255)"
-			},			   
-	   		overlays : overlaysDirection
-		});
-	} catch(e) {
-		alert(e.message);
-	}
-}
-
-function removeTaxonConceptConnection(from) {
-	$(".taxonConceptLinkTargetOf_"+from).removeClass("taxonConceptLinkTargetOf_"+from);
-	removeTaxonConnection(from);
-}
 
 </script>

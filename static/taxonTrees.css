@@ -111,25 +111,47 @@ div.taxonChilds {
 .taxonInfo {
   cursor: pointer;
 }
+div.taxonWithTools:hover {
+	background-color: rgba(255,255,255,0.2);
+}
 div.taxonWithTools {
-	display: inline-block;
+	display: block;
 	margin: 2px;
+	border-bottom: 1px solid rgb(210, 210, 215);
+}
+div.taxonWithTools > * {
+	vertical-align: top;
 }
 div.synonyms {
 	display: inline-block;
-	padding: 2px;
-	padding-left: 5px;
-	padding-right: 5px;
 	margin-left: 15px;
-	border: 1px dotted grey;
 	font-weight: normal;
+	vertical-align: top;
 }
+div.synonyms > * {
+	vertical-align: top;
+}
+.addSynonymButton {
+	margin-top: 4px;
+}
+.synonyms .taxonWithTools {
+	display: inline-block;
+	border-bottom: none;
+}
+div.synonymSection {
+	display: inline-block;
+}
+
 div.taxonInfo {
 	display: inline-block;
-	padding: 3px;
-	border-radius: 3px;
 	vertical-align: middle;
 	min-width: 300px;
+}
+.taxaOfConcept div.taxonWithTools {
+	display: block;
+}
+.taxaOfConcept {
+	border: 1px dotted #A3D8FF;
 }
 div.taxonInfo .icons {
   float: right;
@@ -308,20 +330,7 @@ div.loading {
 }
 
 .taxonConcept {
-	padding: 5px;
-	border: 1px solid grey;
-	background-color: rgb(163, 216, 255);
-	font-size: 1em;
-	color: white;
-	height: 15px;
-	width: 15px;
-	border-radius: 15px;
-	display: inline-block;
-	vertical-align: middle;
-	text-align: center;
-}
-
-.taxonConceptLinkTargetContainer {
-	float: right;
+	font-size: 0.8em;
+	color: grey;
 }
 

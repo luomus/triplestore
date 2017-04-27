@@ -180,9 +180,6 @@ function afterTaxonEditSectionSubmit(section) {
    		var taxon = $("#"+qname.replace("MX.", "MX"));
    		var isSynonym = taxon.hasClass('synonym'); 
 		$.get("${baseURL}/api/singleTaxonInfo/"+qname+'?synonym='+isSynonym, function(data) {
-			taxon.find('.taxonConcept').each(function() {
-				removeTaxonConceptConnection($(this).attr('id'))
-			});
 			taxon.replaceWith(data);
 			taxon = $("#"+qname.replace("MX.", "MX"));
 			taxon.find('button, .button').button();

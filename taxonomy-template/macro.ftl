@@ -52,7 +52,7 @@
 <#macro printTaxon taxon additionalClass="" showSynonymsAndSynonymTools=true showChildrenTools=true>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
-			<span class="taxonRank">[<#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else></#if>]</span> 
+			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
 			
 			<@printScientificNameAndAuthor taxon />
 			<#list taxon.misappliedNames as misappliedName> 
@@ -102,26 +102,40 @@
 			</div>
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
-			<div class="synonyms ui-widget ui-widget-header" id="${taxon.qname?replace(".","")}Synonyms">
-				<#list taxon.synonyms as synonymTaxon>	 
-					<@printTaxon synonymTaxon "synonym" false false />
-				</#list>
-				<#if taxon.allowsAlterationsBy(user)><button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Add 1:1 synonym</button></#if>
-			</div>
-			<#if taxon.taxonConceptQname??>
-				<#assign taxonConcept = taxon.taxonConcept>
-				<#if taxonConcept.includedConcepts?has_content || taxonConcept.includingConcepts?has_content>
-					<span id="${taxon.taxonConceptQname?replace(".","")}" class="taxonConcept taxonConceptLink" title="Taxon concept: ${taxon.taxonConceptQname}">C</span>
-					<#list taxonConcept.includedConcepts as included>
-						<script>$(function() { taxonConceptLink('${taxon.taxonConceptQname}', '${included}', 'includes'); });</script>
-					</#list>
-					<#list taxonConcept.includingConcepts as including>
-						<script>$(function() { taxonConceptLink('${taxon.taxonConceptQname}', '${including}', 'includedIn'); });</script>
-					</#list>
+			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
+				<#if taxon.allowsAlterationsBy(user)>
+					<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Synonyms</button>
 				</#if>
-			</#if>			
+				<#if taxon.synonyms?has_content>
+					<div class="synonymSection">
+						<#list taxon.synonyms as synonymTaxon>	 
+							<@printTaxon synonymTaxon "synonym" false false />
+						</#list>
+					</div>
+				</#if>
+				<@listPartialSynonyms taxon.includedTaxa "Includes" />
+ 				<@listPartialSynonyms taxon.includingTaxa "Included in" />
+			</div>		
 		</#if>
 	</div>
+</#macro>
+
+<#macro listPartialSynonyms taxa label> 
+<#if taxa?has_content>
+	<div class="synonymSection">
+		<h3>${label}</h3>
+		<#assign prevConcept = ""> 
+		<#list taxa as i>
+			<#if i.taxonConceptQname.toString() != prevConcept>
+				<#if prevConcept != ""></div></#if>
+				<#assign prevConcept = i.taxonConceptQname.toString()>
+				<div class="taxaOfConcept"><span class="taxonConcept" title="${i.taxonConceptQname}">Concept</span>
+			</#if>
+			<@printTaxon i "synonym" false false />
+		</#list>
+	</div>
+</div>
+</#if>
 </#macro>
 
 <#macro loadingSpinner text="Loading..."><@compress single_line=true>
