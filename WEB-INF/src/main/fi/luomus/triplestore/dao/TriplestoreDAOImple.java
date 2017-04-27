@@ -331,13 +331,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public Publication storePublication(Publication publication) throws Exception {
 		if (!publication.getQname().isSet()) {
-			Collection<Model> existing = this.getSearchDAO().search(
-					new SearchParams(1, 0)
-					.type(MP_PUBLICATION)
-					.predicate(DC_BIBLIOGRAPHIC_CITATION)
-					.objectliteral(publication.getCitation()));
-			if (!existing.isEmpty()) {
-				publication.setQname(new Qname(existing.iterator().next().getSubject().getQname()));
+			Qname existingId = getExistingIdByCitation(publication);
+			if (existingId != null) {
+				publication.setQname(existingId);
 				return publication;
 			}
 			publication.setQname(this.getSeqNextValAndAddResource("MP"));
@@ -348,6 +344,19 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(DC_URI, publication.getURI(), null);
 		store(model);
 		return publication;
+	}
+
+	private Qname getExistingIdByCitation(Publication publication) throws Exception {
+		String citation = publication.getCitation();
+		if (citation == null) return null;
+		citation = citation.trim();
+		Collection<Model> existing = this.getSearchDAO().search(
+				new SearchParams(1, 0)
+				.type(MP_PUBLICATION)
+				.predicate(DC_BIBLIOGRAPHIC_CITATION)
+				.objectliteral(citation));
+		if (existing.isEmpty()) return null;
+		return new Qname(existing.iterator().next().getSubject().getQname());
 	}
 
 	@Override
