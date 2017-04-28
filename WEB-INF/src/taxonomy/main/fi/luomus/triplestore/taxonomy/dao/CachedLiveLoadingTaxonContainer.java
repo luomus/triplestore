@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -17,12 +23,6 @@ import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
@@ -49,8 +49,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public EditableTaxon load(Qname qname) {
 			try {
 				Model model = triplestoreDAO.get(qname);
-				if (model.isEmpty()) return null;
+				if (model.isEmpty()) throw new NoSuchTaxonException(qname);
 				return createTaxon(model);
+			} catch (NoSuchTaxonException e) {
+				throw e;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -183,14 +185,17 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	
 	@Override
 	public EditableTaxon getTaxon(Qname taxonId) throws NoSuchTaxonException {
-		EditableTaxon taxon = cachedTaxons.get(taxonId);
-		if (taxon == null) throw new NoSuchTaxonException(taxonId);
-		return taxon;
+		return cachedTaxons.get(taxonId);
 	}
 
 	@Override
 	public boolean hasTaxon(Qname taxonId) {
-		return cachedTaxons.get(taxonId) != null;
+		try {
+			cachedTaxons.get(taxonId);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
