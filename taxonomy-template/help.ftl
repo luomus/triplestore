@@ -72,7 +72,7 @@ Here you can find instructions on how to use the Taxon Editor.
 		<p><span class="qa">A:</span> 
 			Once a taxon has been created, you can only delete if for a short while (5 hours). Once the taxon has been publiced and MX-identifier code has been given,
 			the taxon should never be removed. However, if there is no reason to have that taxon on your checklist, you can detach it. It will become an orphan taxa
-			with no parent and does not belong to any checklist. Detaching can be considered a soft delete. Only taxons that do not have
+			with no parent and does not belong to any checklist. Detaching can be considered a soft delete. Only taxa that do not have
 			critical data can be detached or deleted.
 		</p> 
 	</li>
@@ -82,7 +82,7 @@ Here you can find instructions on how to use the Taxon Editor.
 			What is "critical data"?
 		</p>
 		<p><span class="qa">A:</span> 
-			Taxons that have critical data are marked with a "key icon" in the taxonomy tree. Taxons that have children, administrative properties, descriptions texts, invasive species
+			Taxa that have critical data are marked with a "key icon" in the taxonomy tree. Taxons that have children, administrative properties, descriptions texts, invasive species
 			attributes (etc) are considered critical. Before they can be removed from the checklist (detached, spitted or merged), the properties must be examined, removed and then moved
 			to some other taxa if applicable. 
 		</p> 
@@ -125,7 +125,7 @@ Here you can find instructions on how to use the Taxon Editor.
 		</p>
 		<p><span class="qa">A:</span> 
 			Click gear icon of the taxon in taxonomy tree and select "split". The taxon that is being splitted will be removed and you will provide the names of the replacing taxa.
-			Only taxons without critical data can be splitted. 
+			Only taxa without critical data can be splitted. 
 		</p> 
 	</li>
 	
@@ -135,7 +135,7 @@ Here you can find instructions on how to use the Taxon Editor.
 		</p>
 		<p><span class="qa">A:</span> 
 			Click gear icon of the taxon in taxonomy tree and select "merge". Select the other taxa that will be merged to the taxon. All merged taxe will be removed from the checklist
-			and you provide the name of the replacing taxon. Only taxons without critical data can be splitted. 
+			and you provide the name of the replacing taxon. Only taxa without critical data can be splitted. 
 		</p> 
 	</li>
 	
