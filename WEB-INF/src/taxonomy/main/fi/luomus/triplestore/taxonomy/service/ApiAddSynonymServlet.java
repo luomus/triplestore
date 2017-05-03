@@ -19,7 +19,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
@@ -57,12 +56,6 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		Collection<EditableTaxon> synonyms = getSynonyms(req, dao, taxonomyDAO);
 		if (synonyms.isEmpty()) {
 			return new ResponseData().setData("error", "Must give at least one new taxon or one existing taxon").setViewName("api-error");
-		}
-		
-		// TODO remove
-		Utils.debug(synonymParent.getQname(), synonymParent.getScientificName(), synonymParent.getTaxonConceptQname());
-		for (EditableTaxon t : synonyms) {
-			Utils.debug(t.getQname(), t.getScientificName(), t.getTaxonConceptQname());
 		}
 		
 		Qname synonymParentConceptId = synonymParent.getTaxonConceptQname();
