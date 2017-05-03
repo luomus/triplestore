@@ -568,7 +568,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			try {
 				List<RdfProperty> rangeValues = new ArrayList<RdfProperty>();
 				Collection<Model> persons = dao.getSearchDAO().search(
-						new SearchParams(1000, 0)
+						new SearchParams(Integer.MAX_VALUE, 0)
 						.type(MA_PERSON)
 						.predicates(PERSON_ROLE_PREDICATES)); 
 				for (Model m : persons) {
