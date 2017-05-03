@@ -1,12 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,8 +40,12 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
-		Collection<EditableTaxon> newTaxons = parseAndCreateNewTaxons(req, dao, taxonomyDAO, taxonToSplit);
-
+		Collection<EditableTaxon> newTaxons = parseAndCreateNewTaxons(req, dao, taxonomyDAO);
+		for (EditableTaxon t : newTaxons) {
+			t.setChecklist(taxonToSplit.getChecklist());
+			t.setParentQname(taxonToSplit.getParentQname());
+		}
+		
 		taxonToSplit.invalidate();
 		dao.delete(new Subject(taxonToSplitID), IS_PART_OF_PREDICATE);
 		dao.delete(new Subject(taxonToSplitID), NAME_ACCORDING_TO_PREDICATE);
@@ -77,43 +75,5 @@ public class TaxonSplitSubmitServlet extends TaxonomyEditorBaseServlet {
 		}
 		return redirectTo(getConfig().baseURL() + "/" + rootTaxonId, res);
 	}
-
-	private Collection<EditableTaxon> parseAndCreateNewTaxons(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxonToSplit) throws Exception {
-		List<EditableTaxon> taxons = new ArrayList<>();
-		Map<Integer, Map<String, String>> newTaxonValues = parseNewTaxonValues(req);
-		for (Map<String, String> taxonData : newTaxonValues.values()) {
-			EditableTaxon taxon = taxonomyDAO.createTaxon();
-			taxon.setScientificName(taxonData.get("scientificName"));
-			if (!given(taxon.getScientificName())) continue;
-			taxon.setScientificNameAuthorship(taxonData.get("authors"));
-			if (taxonData.containsKey("rank")) {
-				taxon.setTaxonRank(new Qname(taxonData.get("rank")));
-			}
-			taxon.setChecklist(taxonToSplit.getChecklist());
-			taxon.setParentQname(taxonToSplit.getParentQname());
-			taxon.setTaxonConceptQname(dao.addTaxonConcept());
-			dao.addTaxon(taxon);
-			taxons.add(taxon);
-		}
-		return taxons;
-	}
-
-	private Map<Integer, Map<String, String>> parseNewTaxonValues(HttpServletRequest req) {
-		Map<Integer, Map<String, String>> map = new HashMap<>();
-		Enumeration<String> e = req.getParameterNames();
-		while (e.hasMoreElements()) {
-			String parameter = e.nextElement();
-			if (!parameter.contains("___")) continue;
-			String value = req.getParameter(parameter);
-			if (!given(value)) continue;
-			String[] parts = parameter.split(Pattern.quote("___"));
-			int index = Integer.valueOf(parts[1]);
-			String field = parts[0];
-			if (!map.containsKey(index)) map.put(index, new HashMap<String, String>());
-			map.get(index).put(field, value);
-		}
-		return map;
-	}
-
 
 }

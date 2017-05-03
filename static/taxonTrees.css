@@ -12,9 +12,12 @@ body, html {
 #content-wrapper {
 	padding: 0;
 }
-h3 {
+h3, h4 {
 	margin: 0;
 	font-size: 100%;
+}
+h4 {
+	margin-top: 3px;
 }
 #taxonTree {
 	width: 100%;
@@ -143,9 +146,12 @@ div.synonyms > * {
 	vertical-align: top;
 }
 .addSynonymButton {
-	margin-top: 4px;
+	
 }
-
+div.synonymSection h3 {
+	display: inline-block;
+	margin-right: 1em;
+}
 div.synonymSection {
 	display: inline-block;
 }
@@ -155,7 +161,7 @@ div.taxonInfo {
 	vertical-align: middle;
 	min-width: 300px;
 }
-.taxaOfConcept div.taxonWithTools {
+div.synonymSection div.taxonWithTools {
 	display: block;
 }
 .taxaOfConcept {
@@ -333,7 +339,8 @@ div.loading {
 }
 
 #splitTaxonDialog input, 
-#mergeTaxonDialog input {
+#mergeTaxonDialog input,
+#addNewSynonymDialog input {
   width: 150px;
 }
 

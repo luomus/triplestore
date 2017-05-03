@@ -278,24 +278,6 @@
 		</table>
 	<@portletFooter />
 	
-	<@portletHeader "Misapplied scientific names" "" "multirowSection" />
-		<table>
-			<tr>
-				<th>Name</th> 
-			</tr>
-			<#list taxon.misappliedNames as misappliedName>
-			<tr>
-				<td><@input "MX.misappliedName" "off" misappliedName /></td>
-			</tr>
-			</#list>
-			<tr>
-				<td><@input "MX.misappliedName" "off" "" /></td>
-			</tr>
-		</table>
-		<@label "MX.misappliedNameNotes" "longtext" />
-		<@textarea "MX.misappliedNameNotes" />
-	<@portletFooter />	
-
 	<#if user.isAdmin()>
 	<@portletHeader "AKA names (Admin only)" "" "multirowSection" />
 		<table>

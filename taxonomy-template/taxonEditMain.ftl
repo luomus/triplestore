@@ -13,7 +13,7 @@
 					<option value=""></option>
 					<#list checklists?values as checklist>
 						<#if checklist.rootTaxon.set>
-							<option value="${checklist.qname}" <#if same(root.checklist, checklist.qname)> selected="selected" </#if> >
+							<option value="${checklist.qname}" <#if ((root.checklist.toString())!"X") == checklist.qname.toString()> selected="selected" </#if> >
 								${checklist.getFullname("en")}
 							</option>
 						</#if>
@@ -90,33 +90,76 @@
 		</form>
 	</div>
 	
-	<div id="addNewSynonymDialog" class="taxonDialog" title="Add new synonym">
+	<div id="addNewSynonymDialog" class="taxonDialog" title="Add synonyms">
 		<form id="addNewSynonymDialogForm" onsubmit="addNewSynonymDialogSubmit(); return false;">
 			<input type="hidden" name="synonymOfTaxon" id="synonymOfTaxon" />
 			<label>Synonym of</label>
 			<span id="synonymOfTaxonName">parent</span>
 			<br />
-			<label for="newSynonymScientificName">Scientific name</label>
-			<input type="text" id="newSynonymScientificName" name="newSynonymScientificName" /> 
+			<label for="synonymType">Type of relationship</label>
+			<select name="synonymType" id="synonymType">
+				<option value="SYNONYM" selected="selected">Synonym</option>
+				<option value="MISAPPLIED">Misapplied</option>
+				<option value="INCLUDES">Includes</option>
+				<option value="INCLUDED_IN">Included in</option>
+				<option value="UNCERTAIN">Uncertain</option>
+			</select>
 			<br />
-			<label for="newSynonymAuthor">Author</label>
-			<input type="text" id="newSynonymAuthor" name="newSynonymAuthor" />
 			<br />
-			<label for="newSynonymTaxonrank">Taxon rank</label>
-			<select id="newSynonymTaxonrank" name="newSynonymTaxonrank"> 
+			<h4>Create new orphan synonyms</h4>
+			<table>
+				<thead>
+					<tr>
+						<th>Scientific name</th>
+						<th>Authors</th>
+						<th>Rank</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><input name="scientificName___1" /></td>
+						<td><input name="authors___1" /></td>
+						<td>
+							<select name="rank___1" class="taxonRankSelect"> 
+								<option value=""></option>
+								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
+									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
+								</#list>
+							</select>
+					 	</td>
+					</tr>
+				</tbody>
+			</table>
+			<a class="addNewItem addNewSynonymRow">+ Add new</a>
+			<input type="submit" class="button addButton" value="Create synonyms"  />
+			<br /><br />
+			<h4>Or select existing taxa from other checklist</h4>
+			<label for="synonymChecklistSelector">Checklist</label>
+			<br />
+			<select id="synonymChecklistSelector">
 				<option value=""></option>
-				<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
-						<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
+				<#list checklists?values as checklist>
+					<#if checklist.public && ((root.checklist.toString())!"") != checklist.qname.toString()>
+						<option value="${checklist.qname}">${checklist.getFullname("en")}</option>
+					</#if>
 				</#list>
-			</select> 
+			</select>
 			<br />
-			<input type="submit" class="button addButton" value="Add"  />
-			<p class="info">
-				Use this feature to add a new scientific name for this taxon concept. The synonym name should have the same taxonomic circumscription than the name already in the checklist (1:1).
-			</p>
-			<p class="info">
-				To create synonyms where taxon concept is not the same, use the gear icon and select either 'split' (1:MANY) or 'merge' (MANY:1).
-			</p>
+			<label>Taxon</label>
+			<div class="synonymTaxonIdSelectorContainer">
+				<input type="hidden" name="synonymTaxonId" class="synonymTaxonId" />
+				<input type="text" class="synonymTaxonIdSelector" name="synonymTaxonIdSelector" /> <span class="synonymTaxonIdSelectorIdDisplay"></span><br />
+			</div>
+			<a class="addNewItem addNewSynonymId">+ Add new</a>
+			<input type="submit" class="button addButton" value="Add synonyms"  />
+			<br /><br />
+			<ul class="info">
+				<li><b>Synonym:</b> The synonym taxon and this taxon share the same taxonomic circumscription.</li>
+				<li><b>Misapplied:</b> The misapplied taxon (scientific name) has been erroneously used in Finland to report observations of this taxon. (They do not share the same circumscription.)</li>
+				<li><b>Includes:</b> This taxon concept includes the other taxas concepts.</li>
+				<li><b>Included in:</b> This taxon concept is included in the other taxas concepts.</li>
+				<li><b>Uncertain:</b> Same as synonym except it is not certain that the taxa share the same circumscription.</li>
+			</ul>
 		</form>
 	</div>
 	
@@ -139,8 +182,8 @@
 			<p class="info">
 				The normal way to move a taxon (for example from one genus to other genus) is to open the children of both genuses side-by-side, to enable taxon dragging mode
 				and to drag the desired species to the other genus. However, when you have to move taxa somewhere that is very 'far' in the taxonomy tree, it can take a lot of clicks
-				to get the children side-by-side. Alternative is to use this dialogue to send the taxon to a new parent. No synonyms will be created! To automatically create synonyms, 
-				use taxon dragging. 
+				to get the children side-by-side. The alternative approach is to use this dialogue to send the taxon to a new parent. No synonyms will be created! To automatically 
+				create synonyms, use taxon dragging. 
 			</p>
 			<p class="info">
 				After performing a send, if the new parent's children are visible, you must close and re-open the new parent's children to be able to see the sent taxon.
@@ -153,14 +196,14 @@
 
 	<div id="splitTaxonDialog" class="taxonDialog" title="Split taxon">
 		<form id="splitTaxonDialogForm" action="${baseURL}/split" method="POST">
-			<input type="hidden" name="rootTaxonId" id="rootTaxonId" value="${root.qname}" />
-			<input type="hidden" name="taxonToSplitID" id="taxonToSplitID" />
+			<input type="hidden" name="rootTaxonId" class="rootTaxonId" value="${root.qname}" />
+			<input type="hidden" name="taxonToSplitID" class="taxonToSplitID" />
 						
 			<label>Taxon to split</label>
 			<span id="taxonToSplitName">name</span>
 			<br />
 			
-			<label for="newParent">New taxons</label>
+			<label for="newParent">New taxa</label>
 			<table>
 				<thead>
 					<tr>
@@ -202,7 +245,7 @@
 			<input type="submit" class="button addButton" value="Split"  />
 			
 			<p class="info">
-				The taxon that is splitted is removed from the checklist. The new taxa are added to the checklist and their concepts are linked (MANY:1) with the concept of the splitted taxon.
+				The taxon that is splitted is removed from the checklist. The new taxa are added to the checklist and their concepts are linked with the concept of the splitted taxon.
 			</p>
 			<p class="info">
 				Note: Taxonomy tree view will be reloaded after the split has been completed to show updated data.
@@ -255,7 +298,7 @@
 			<input type="submit" class="button addButton" value="Merge"  />
 			
 			<p class="info">
-				All merged taxa are removed from the checklist. The new taxon is added to the checklist and its concept is linked (1:MANY) with the concepts of the merged taxa.
+				All merged taxa are removed from the checklist. The new taxon is added to the checklist and its concept is linked with the concepts of the merged taxa.
 			</p>
 			<p class="info">
 				Note: Taxonomy tree view will be reloaded after the merge has been completed to show updated data.

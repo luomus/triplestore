@@ -179,6 +179,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void store(Model model, TransactionConnection con) throws SQLException {
+		System.out.println(model.getRDF());
 		Subject subject =  model.getSubject();
 		Model existingModel = this.get(subject);
 

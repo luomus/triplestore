@@ -3,6 +3,8 @@ package fi.luomus.triplestore.dao;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.luomus.commons.containers.rdf.Qname;
+
 public class SearchParams {
 	private final Set<String> subjects = new HashSet<>();
 	private final Set<String> predicates = new HashSet<>();
@@ -12,6 +14,9 @@ public class SearchParams {
 	private String type;
 	private final int limit;
 	private final int offset;
+	public SearchParams() {
+		this(1000, 0);
+	}
 	public SearchParams(int limit, int offset) {
 		this.limit = limit;
 		this.offset = offset;
@@ -42,6 +47,10 @@ public class SearchParams {
 	}
 	public SearchParams objectresource(String qname) {
 		objectresources.add(qname);
+		return this;
+	}
+	public SearchParams objectresource(Qname qname) {
+		objectresource(qname.toString());
 		return this;
 	}
 	public SearchParams objectresources(Set<String> qnames) {

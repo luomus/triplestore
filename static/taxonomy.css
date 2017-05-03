@@ -14,7 +14,7 @@
 	white-space: nowrap;
 }
 
-.misappliedName {
+.misappliedSynonyms .scientificName {
   text-decoration: overline;
   color: red;
 }

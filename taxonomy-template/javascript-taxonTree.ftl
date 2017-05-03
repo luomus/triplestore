@@ -1,5 +1,9 @@
 <script>
 
+function startsWith(needle, haystack) {
+	return haystack.lastIndexOf(needle, 0) === 0;
+}
+
 var taxonTreeGraphs;
 var showSynonymsModeIsOn = true;
 var headerPositioned = false;
@@ -448,13 +452,15 @@ function addNewChild(e) {
 
 function addNewSynonym(e) {
 	var synonymOfID = $(e).closest('.taxonWithTools').attr('id');
-	$("#addNewSynonymDialog").find(":input").not(":input[type=submit]").val('');
+	$("#addNewSynonymDialog").find(":input").not(":input[type=submit], #synonymType").val('');
+	
 	$("#synonymOfTaxon").val(synonymOfID);
 	
 	var synonymOfName = $("#"+synonymOfID).find(".scientificName").first().text();
 	var synonymOfRank = $("#"+synonymOfID).find(".taxonRank").first().text().replace('[', '').replace(']','');
 	$("#synonymOfTaxonName").text(synonymOfName + " [" + synonymOfRank.replace('MX.','') + ']');
-	$("#newSynonymTaxonrank").val('MX.'+synonymOfRank);
+	$("#addNewSynonymDialog").find(".taxonRankSelect").val('MX.'+synonymOfRank);
+	$(".synonymTaxonIdSelectorIdDisplay").text('');
 	$("#addNewSynonymDialog").dialog("open");
 }
 
@@ -470,7 +476,7 @@ function sendTaxon(e) {
 } 
 
 function splitTaxon(e) {
-	$("#splitTaxonDialog").find(":input").not(":input[type=submit], #rootTaxonId").val('');
+	$("#splitTaxonDialog").find(":input").not(":input[type=submit], .rootTaxonId").val('');
 	$("#splitTaxonDialog").find("select").val('MX.species');
 	var taxonToSplitID = $(e).closest('.taxonWithTools').attr('id');
 	var taxonToSplitName = $("#"+taxonToSplitID).find(".scientificName").first().text();
@@ -480,11 +486,12 @@ function splitTaxon(e) {
 } 
 
 function mergeTaxon(e) {
-	$("#mergeTaxonDialog").find(":input").not(":input[type=submit], #rootTaxonId").val('');
+	$("#mergeTaxonDialog").find(":input").not(":input[type=submit], .rootTaxonId").val('');
 	var taxonToMergeID = $(e).closest('.taxonWithTools').attr('id');
 	var taxonToMergeName = $("#"+taxonToMergeID).find(".scientificName").first().text();
 	$("#initialTaxonToMergeId").val(taxonToMergeID);
 	$("#initialTaxonToMergeName").text(taxonToMergeName);
+	$(".taxonToMergeIdSelectorIdDisplay").text('');
 	$("#mergeTaxonDialog").dialog("open");
 }
 
@@ -493,9 +500,11 @@ $(function() {
 	$(document).on('click', '.taxonInfo', function() {
 		editTaxon($(this).closest('.taxonInfo'));
 	});
+	
 	$(document).on('click', '.taxonInfo .ui-icon', function(e) {
 		e.stopPropagation();
 	});
+	
 	$(document).on('click', '.taxonInfo .taxonToolButton', function(e) {
 		$("#menu").remove();
 		var menu = $('<ul id="menu"></ul>');
@@ -530,11 +539,13 @@ $(function() {
 		taxonTreeGraphs.repaintEverything();
 		return false;
 	});
+	
 	$(".taxonDialog").dialog({
  		autoOpen: false,
 		modal: true,
 		width: 550
 	});
+	
 	$("#addNewTaxonDialogForm").validate({
 		rules: {
 			newTaxonScientificName: { required: { depends: function(e) { return ($('#newTaxonAuthor').val() != ""); }} }
@@ -544,12 +555,7 @@ $(function() {
 		}
 	});
 	$("#addNewSynonymDialogForm").validate({
-		rules: {
-			newSynonymScientificName: { required: { depends: function(e) { return ($('#newSynonymAuthor').val() != ""); }} }
-		},
-		messages: {
-			newSynonymScientificName: "Scientific name must be given if author given."
-		}
+		// TODO joko qname tai yksi uusi nimi
 	});
 	$("#sendTaxonDialogForm").validate({
 		ignore: [], // do not ignore hidden elements
@@ -572,18 +578,19 @@ $(function() {
 		ignore: [], // do not ignore hidden elements
 	});
 	
-	$("#splitTaxonDialog .addNewItem").on('click', function() {
+	$("#splitTaxonDialog .addNewItem, #addNewSynonymDialog .addNewSynonymRow").on('click', function() {
 		var tableBody = $(this).parent().find('table tbody');
-		var clone =  tableBody.find('tr').last().clone();
+		var e = tableBody.find('tr').last();
+		var prevRank = e.find('select').first().val(); 
+		var clone =  e.clone();
 		clone.find(':input').each(function() {
 			var name = $(this).attr("name");
 			var field = name.split("___")[0];
 			var index =  parseInt(name.split("___")[1]) + 1;
 			$(this).attr('name', field + "___" + index);
 			$(this).removeAttr('required');
-			$(this).val('');
 		});
-		clone.find('select').val('MX.species');
+		clone.find('select').val(prevRank);
 		tableBody.append(clone);
 	});
 	
@@ -595,6 +602,15 @@ $(function() {
 		toClone.after(clone);
 		clone.find('.taxonToMergeIdSelector').rules("add", {required:true});
 	});
+	
+	$("#addNewSynonymDialog .addNewSynonymId").on('click', function() {
+		var toClone = $(this).parent().find('.synonymTaxonIdSelectorContainer').last();
+		var clone =  toClone.clone();
+		clone.find(':input').val('');
+		clone.find('.synonymTaxonIdSelector').autocomplete({ minLength: 3, source: synonymAutocompleteSourceFunction, select: synonymTaxonSelectedFunction });
+		toClone.after(clone);
+	});
+	
 	
 	var cache = {}
 	var autocompleteSourceFunction = function (request, response) {
@@ -608,6 +624,7 @@ $(function() {
 			});
 		}
     };
+    
     var newParentTaxonSelectedFunction = function (event, ui) {
 		var selectedName = ui.item.label;
 		var selectedId =  ui.item.value
@@ -627,8 +644,30 @@ $(function() {
 		return false;
 	};
 	
+	var synonymTaxonSelectedFunction = function (event, ui) {
+		var element = $(event.target).parent();
+		var selectedName = ui.item.label;
+		var selectedId =  ui.item.value
+		element.find('.synonymTaxonId').val(selectedId);
+		element.find('.synonymTaxonIdSelector').val(selectedName);
+		element.find('.synonymTaxonIdSelectorIdDisplay').text('('+selectedId+')');
+		return false;
+	};
+	
+	var synonymAutocompleteSourceFunction = function (request, response) {
+		var term = request.term;
+		if (term.startsWith('MX.')) return response([term]);
+		var checklist = $("#synonymChecklistSelector").val();
+		if (!checklist) return false;
+		$.getJSON('${baseURL}/api/taxon-search/?q='+encodeURIComponent(term)+'&checklist='+checklist+'&format=jsonp&callback=?&v=2', function (data) {
+			response(data.result);
+		});
+    };
+    
 	$("#newParentIDSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: newParentTaxonSelectedFunction });
 	$(".taxonToMergeIdSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: taxonToMergeSelectedFunction });
+	$(".synonymTaxonIdSelector").autocomplete({ minLength: 3, source: synonymAutocompleteSourceFunction, select: synonymTaxonSelectedFunction });
+	    
 });
 
 function addNewChildDialogSubmit() {
@@ -656,23 +695,44 @@ function addNewChildDialogSubmit() {
   	});
 }
 
-function addNewSynonymDialogSubmit() {
-	if (!$("#addNewSynonymDialogForm").valid()) return;
+function addNewSynonymDialogSubmit() { 
+	var form = $("#addNewSynonymDialogForm");
+	if (!form.valid()) return;
 	
-	var synonymOf = $('#synonymOfTaxon').val();
-	var scientificName = $('#newSynonymScientificName').val();
-	var author = $('#newSynonymAuthor').val();
-	var taxonRank = $('#newSynonymTaxonrank').val();
+	var synonymParentId = $('#synonymOfTaxon').val();
+	var synonymParent = $("#"+synonymParentId);
 	
-	var synonymContainer = $("#"+synonymOf+"Synonyms");
-	
-	$.post('${baseURL}/api/addsynonym?synonymOf='+encodeURIComponent(synonymOf)+'&scientificName='+encodeURIComponent(scientificName)+'&author='+encodeURIComponent(author)+'&taxonRank='+encodeURIComponent(taxonRank), function(data) {
-		var newSynonym = $('<div/>').html(data);
-		synonymContainer.prepend(newSynonym);
-		taxonTreeGraphs.repaintEverything();
-		$("#addNewSynonymDialog").dialog("close");
-		$(".addButton").show();
-  	});
+	$.ajax({ 
+		type: "POST", 
+		url: '${baseURL}/api/addsynonym',
+      	data: form.serialize(),
+      	success: function(data) {
+			$("#addNewSynonymDialog").dialog("close");
+			$(".addButton").show();
+      		if (data == "ok") {
+				collapseTaxon(synonymParent.find(".treePlusMinusSign"));
+				synonymParent.fadeOut(function() {
+					$.get("${baseURL}/api/singleTaxonInfo/"+synonymParentId, function(data) {
+						synonymParent.replaceWith(data);
+						synonymParent = $("#"+synonymParentId);
+						synonymParent.find('button, .button').button();
+						synonymParent.fadeIn(function() {
+							taxonTreeGraphs.repaintEverything();
+						});
+					});
+				});
+			} else {
+				var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
+				validationDialog.appendTo("body");
+				validationDialog.dialog({
+					modal: true, height: 'auto', width: 600, 
+					close: function() { 
+						$("#validationDialog").remove(); 
+					}
+				});
+			}
+      	}
+    });  	
 }
 
 function sendTaxonAsChildDialogSubmit() {

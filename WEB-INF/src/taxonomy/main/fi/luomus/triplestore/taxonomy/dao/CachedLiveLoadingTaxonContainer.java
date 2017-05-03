@@ -26,6 +26,14 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
+	private static final String MX_UNCERTAIN_CIRCUMSCRIPTION = "MX.uncertainCircumscription";
+
+	private static final String MX_MISAPPLIED_CIRCUMSCRIPTION = "MX.misappliedCircumscription";
+
+	private static final String MX_CIRCUMSCRIPTION = "MX.circumscription";
+
+	private static final String MX_IS_PART_OF = "MX.isPartOf";
+
 	private static final Object LOCK = new Object();
 
 	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
@@ -63,11 +71,16 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		Qname qname = q(model.getSubject());
 		EditableTaxon taxon = new EditableTaxon(qname, this);
 		for (Statement statement : model.getStatements()) {
-			if ("MX.isPartOf".equals(statement.getPredicate().getQname())) {
+			String predicate = statement.getPredicate().getQname();
+			if (MX_IS_PART_OF.equals(predicate)) {
 				Qname parentQname = q(statement.getObjectResource());
 				taxon.setParentQname(parentQname);
-			} else if ("MX.circumscription".equals(statement.getPredicate().getQname())) {
+			} else if (MX_CIRCUMSCRIPTION.equals(predicate)) {
 				taxon.setTaxonConceptQname(q(statement.getObjectResource()));
+			} else if (MX_MISAPPLIED_CIRCUMSCRIPTION.equals(predicate)) {
+				
+			} else if (MX_UNCERTAIN_CIRCUMSCRIPTION.equals(predicate)) {
+				
 			} else {
 				addPropertyToTaxon(taxon, statement);
 			}
@@ -107,7 +120,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public Set<Qname> load(Qname taxonQname) {
 			try {
 				Set<Qname> childTaxons = new HashSet<Qname>();
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search("MX.isPartOf", taxonQname.toString());
+				Collection<Model> models = triplestoreDAO.getSearchDAO().search(MX_IS_PART_OF, taxonQname.toString());
 				for (Model model : models) {
 					EditableTaxon child = createTaxon(model);
 					cachedTaxons.put(child.getQname(), child);
@@ -125,16 +138,28 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public TaxonConcept load(Qname conceptQname) {
 			try {
 				TaxonConcept taxonConcept = new TaxonConcept(conceptQname);
-				Collection<Model> models = triplestoreDAO.getSearchDAO().search(
-						new SearchParams(1000, 0)
-						.type("MX.taxon")
-						.predicate("MX.circumscription")
-						.objectresource(conceptQname.toString()));
+				
+				Collection<Model> models = getSynonymTaxonModels(conceptQname, MX_CIRCUMSCRIPTION);
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
 					taxonConcept.setTaxonToBePartOfConcept(taxon.getQname());
 				}
+				
+				models = getSynonymTaxonModels(conceptQname, MX_UNCERTAIN_CIRCUMSCRIPTION);
+				for (Model model : models) {
+					EditableTaxon taxon = createTaxon(model);
+					cachedTaxons.put(taxon.getQname(), taxon);
+					taxonConcept.setTaxonToBeUncertainlyPartOfConcept(taxon.getQname());
+				}
+				
+				models = getSynonymTaxonModels(conceptQname, MX_MISAPPLIED_CIRCUMSCRIPTION);
+				for (Model model : models) {
+					EditableTaxon taxon = createTaxon(model);
+					cachedTaxons.put(taxon.getQname(), taxon);
+					taxonConcept.setTaxonToBeUsedAsMisapplied(taxon.getQname());
+				}
+				
 				ConceptIncludes conceptIncludes = cachedTaxonConceptIncludes.get();
 				if (conceptIncludes.incudedIn.containsKey(conceptQname)) {
 					for (Qname including : conceptIncludes.incudedIn.get(conceptQname)) {
@@ -150,6 +175,15 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+		}
+
+		private Collection<Model> getSynonymTaxonModels(Qname conceptQname, String predicate) throws Exception {
+			Collection<Model> models = triplestoreDAO.getSearchDAO().search(
+					new SearchParams(Integer.MAX_VALUE, 0)
+					.type("MX.taxon")
+					.predicate(predicate)
+					.objectresource(conceptQname.toString()));
+			return models;
 		}
 	}
 

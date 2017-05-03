@@ -427,7 +427,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> search(String predicate, String objectresource) throws Exception {
-		return search(new SearchParams(1000, 0).predicate(predicate).objectresource(objectresource));
+		return search(new SearchParams().predicate(predicate).objectresource(objectresource));
 	}
 
 	@Override

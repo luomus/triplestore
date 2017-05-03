@@ -55,9 +55,6 @@
 			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
 			
 			<@printScientificNameAndAuthor taxon />
-			<#list taxon.misappliedNames as misappliedName> 
-				<span class="scientificName misappliedName <#if taxon.isSpecies()>speciesName</#if>">${misappliedName}</span>
-			</#list>
 			<div class="icons">
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
@@ -86,6 +83,12 @@
 						Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 					</div>
 				</#if>
+			<#else>
+				<#if taxon.checklist??>
+					<div class="checklistChangesMidTree">
+						Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
+					</div>
+				</#if>
 			</#if>
 			<#if taxon.hidden>
 				<div class="checklistChangesMidTree">
@@ -103,18 +106,35 @@
 		</#if>
 		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
-				<#if taxon.allowsAlterationsBy(user)>
-					<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">Synonyms</button>
-				</#if>
-				<#if taxon.synonyms?has_content>
-					<div class="synonymSection">
-						<#list taxon.synonyms as synonymTaxon>	 
+				<div class="synonymSection">
+					<#if taxon.synonyms?has_content><h3>Synonyms</h3></#if>
+					<#if taxon.allowsAlterationsBy(user)>
+						<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
+							<#if taxon.synonyms?has_content>Add<#else>Add synonyms</#if>
+						</button>
+					</#if>
+					<#list taxon.synonyms as synonymTaxon>	 
+						<@printTaxon synonymTaxon "synonym" false false />
+					</#list>
+				</div>
+				<#if taxon.misapplied?has_content>
+					<div class="synonymSection misappliedSynonyms">
+						<h3>Misapplied</h3>
+						<#list taxon.misapplied as synonymTaxon>	 
 							<@printTaxon synonymTaxon "synonym" false false />
 						</#list>
 					</div>
 				</#if>
 				<@listPartialSynonyms taxon.includedTaxa "Includes" />
  				<@listPartialSynonyms taxon.includingTaxa "Included in" />
+				<#if taxon.uncertainSynonyms?has_content>
+					<div class="synonymSection">
+						<h3>Uncertain synonyms</h3>
+						<#list taxon.uncertainSynonyms as synonymTaxon>	 
+							<@printTaxon synonymTaxon "synonym" false false />
+						</#list>
+					</div>
+				</#if>
 			</div>		
 		</#if>
 	</div>
