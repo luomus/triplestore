@@ -1,13 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -27,6 +18,16 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+@SuppressWarnings("unused")
 public class Backcasting2000Sisaan {
 
 	private static org.apache.tomcat.jdbc.pool.DataSource dataSource;
@@ -87,6 +88,7 @@ public class Backcasting2000Sisaan {
 		System.out.println("done");
 	}
 
+	
 	private static void doit() throws Exception {
 		File f = new File("C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/RLI/2000_AllData.csv");
 		int i = 0;
