@@ -1,20 +1,4 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -41,6 +25,22 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class IUCN2010Sisaan {
 
@@ -175,7 +175,7 @@ public class IUCN2010Sisaan {
 	private static void process(IUCNLineData data, File f, int i, int total) {
 		try {
 			System.out.println(i + " / " + total + "\t" + data.getScientificName() + " " + data.getTaxonQname());
-			TaxonSearchResponse response = new TaxonSearchResponse();
+			TaxonSearchResponse response = new TaxonSearchResponse(new TaxonSearch("foo"));
 			if (given(data.getTaxonQname())) {
 				response = taxonomyDAO.search(new TaxonSearch(data.getTaxonQname()).onlyExact());
 			}
