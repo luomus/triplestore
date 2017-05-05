@@ -371,6 +371,7 @@ li.remark pre {
 span.synonyms {
   display: block;
   font-size: 80%;
+  white-space: normal;
 }
 
 td.groupEditors {
