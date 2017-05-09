@@ -49,8 +49,8 @@
 	</#if>
 </@compress></#macro>
 
-<#macro printTaxon taxon additionalClass="" showSynonymsAndSynonymTools=true showChildrenTools=true>
-	<div class="taxonWithTools ${additionalClass} <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
+<#macro printTaxon taxon isSynonym=false additionalClass="">
+	<div class="taxonWithTools ${additionalClass} <#if isSynonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
 			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
 			
@@ -58,8 +58,17 @@
 			<div class="icons">
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
-				<#if showSynonymsAndSynonymTools && taxon.species>
+				<#if !isSynonym && taxon.species>
 					<span class="taxonToolButton ui-icon ui-icon-gear <#if taxon.allowsAlterationsBy(user)>allowsAlterationsByUser</#if>" title="Tools"></span>
+				</#if>
+				<#if isSynonym && taxon.allowsAlterationsBy(user)>
+					<#if additionalClass == "normalSynonym"> 
+						<a href=#" onclick="unlinkNormalSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
+					<#elseif additionalClass == "misappliedSynonym">
+						<a href=#" onclick="unlinkMisappliedSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied"></span></a>
+					<#elseif additionalClass == "uncertainSynonym">
+						<a href=#" onclick="unlinkUncertainSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
+					</#if>
 				</#if>
 			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
@@ -73,7 +82,7 @@
 					<@printEditorExpertSpecific taxon.explicitlySetEditors taxon.explicitlySetExperts false />
 				</div>
 			</#if>
-			<#if additionalClass != "synonym">
+			<#if !isSynonym>
 				<#if !taxon.checklist??>
 					<div class="checklistChangesMidTree">
 						Checklist: Orphan taxa
@@ -96,7 +105,7 @@
 				</div>
 			</#if>
 		</div>
-		<#if showChildrenTools>
+		<#if !isSynonym>
 			<div class="showChildrenTools">
 				<button class="treePlusMinusSign taxonToolButton" onclick="treePlusMinusSignClick(this);">
 					<span class="ui-icon ui-icon-plus"></span>
@@ -104,7 +113,7 @@
 				<span class="taxonChildCount">(${taxon.children?size})</span>
 			</div>
 		</#if>
-		<#if showSynonymsAndSynonymTools && synonymsMode == "show">
+		<#if !isSynonym && synonymsMode == "show">
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
 				<div class="synonymSection">
 					<#if taxon.synonyms?has_content><h3>Synonyms</h3></#if>
@@ -114,24 +123,24 @@
 						</button>
 					</#if>
 					<#list taxon.synonyms as synonymTaxon>	 
-						<@printTaxon synonymTaxon "synonym" false false />
+						<@printTaxon synonymTaxon true "normalSynonym" />
 					</#list>
 				</div>
 				<#if taxon.misapplied?has_content>
 					<div class="synonymSection misappliedSynonyms">
 						<h3>Misapplied</h3>
 						<#list taxon.misapplied as synonymTaxon>	 
-							<@printTaxon synonymTaxon "synonym" false false />
+							<@printTaxon synonymTaxon true "misappliedSynonym" />
 						</#list>
 					</div>
 				</#if>
-				<@listPartialSynonyms taxon.includedTaxa "Includes" />
- 				<@listPartialSynonyms taxon.includingTaxa "Included in" />
+				<@listPartialSynonyms taxon.includedTaxa "Includes" taxon.allowsAlterationsBy(user) />
+ 				<@listPartialSynonyms taxon.includingTaxa "Included in" taxon.allowsAlterationsBy(user) />
 				<#if taxon.uncertainSynonyms?has_content>
 					<div class="synonymSection">
 						<h3>Uncertain synonyms</h3>
 						<#list taxon.uncertainSynonyms as synonymTaxon>	 
-							<@printTaxon synonymTaxon "synonym" false false />
+							<@printTaxon synonymTaxon true "uncertainSynonym" />
 						</#list>
 					</div>
 				</#if>
@@ -140,18 +149,20 @@
 	</div>
 </#macro>
 
-<#macro listPartialSynonyms taxa label> 
+<#macro listPartialSynonyms taxa label permissionsToRemove> 
 <#if taxa?has_content>
 	<div class="synonymSection">
 		<h3>${label}</h3>
 		<#assign prevConcept = ""> 
-		<#list taxa as i>
-			<#if i.taxonConceptQname.toString() != prevConcept>
+		<#list taxa as partialSynonym>
+			<#if partialSynonym.taxonConceptQname.toString() != prevConcept>
 				<#if prevConcept != ""></div></#if>
-				<#assign prevConcept = i.taxonConceptQname.toString()>
-				<div class="taxaOfConcept"><span class="taxonConcept" title="${i.taxonConceptQname}">Concept</span>
+				<#assign prevConcept = partialSynonym.taxonConceptQname.toString()>
+				<div class="taxaOfConcept" id="${partialSynonym.taxonConceptQname?replace("MC.","MC")}">
+					<span class="taxonConcept" title="${partialSynonym.taxonConceptQname}">Concept</span>
+					<#if permissionsToRemove><a href=#" onclick="unlink${label?replace(" ","")}ConceptLink(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink taxon concept"></span></a></#if>
 			</#if>
-			<@printTaxon i "synonym" false false />
+			<@printTaxon partialSynonym true />
 		</#list>
 	</div>
 </div>

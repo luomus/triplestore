@@ -24,19 +24,19 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-@WebServlet(urlPatterns = {"/taxonomy-editor/api/addsynonym/*"})
+@WebServlet(urlPatterns = {"/taxonomy-editor/api/addSynonym/*"})
 public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = 7393608674235660598L;
-	private static final Predicate MISAPPLIED_CIRCUMSCRIPTION = new Predicate("MX.misappliedCircumscription");
-	private static final Predicate UNCERTAIN_CIRCUMSCRIPTION = new Predicate("MX.uncertainCircumscription");
-	private static final String MC_INCLUDED_IN = "MC.includedIn";
-	private static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
-	private static final Predicate CIRCUMSCRIPTION = new Predicate("MX.circumscription");
+	public static final Predicate MISAPPLIED_CIRCUMSCRIPTION = new Predicate("MX.misappliedCircumscription");
+	public static final Predicate UNCERTAIN_CIRCUMSCRIPTION = new Predicate("MX.uncertainCircumscription");
+	public static final Predicate INCLUDED_IN = new Predicate("MC.includedIn");
+	public static final Predicate CIRCUMSCRIPTION = new Predicate("MX.circumscription");
+	public static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
 	private static final String SYNONYM_TAXON_ID_PARAMETER = "synonymTaxonId";
 	private static final String SYNONYM_TYPE_PARAMETER = "synonymType";
 
-	private static enum SynonymType { SYNONYM, MISAPPLIED, INCLUDES, INCLUDED_IN, UNCERTAIN };
+	public static enum SynonymType { SYNONYM, MISAPPLIED, INCLUDES, INCLUDED_IN, UNCERTAIN };
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -96,7 +96,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	private void storeIncludedIn(TriplestoreDAO dao, Qname subject, Qname object) throws Exception {
 		Model model = dao.get(subject);
-		model.addStatement(new Statement(new Predicate(MC_INCLUDED_IN), new ObjectResource(object)));
+		model.addStatement(new Statement(INCLUDED_IN, new ObjectResource(object)));
 		dao.store(model);
 	}
 
@@ -150,7 +150,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	private void changeIncludedInStatementsToNewSynonymConcept(TriplestoreDAO dao, Model synonymParentConceptModel, Qname synonymConceptId) throws Exception {
 		Model model = dao.get(synonymConceptId);
-		for (Statement statement : model.getStatements(MC_INCLUDED_IN)) {
+		for (Statement statement : model.getStatements(INCLUDED_IN.getQname())) {
 			dao.deleteStatement(statement.getId());
 			synonymParentConceptModel.addStatement(statement);
 		}
@@ -160,7 +160,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		return statement.isResourceStatement() && statement.getObjectResource().getQname().equals(taxonConceptQname.toString());
 	}
 
-	private EditableTaxon getSynonymParent(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+	public static EditableTaxon getSynonymParent(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
 		Qname synonymParentQname = new Qname(req.getParameter(SYNONYM_OF_PARAMETER).replace("MX", "MX."));
 		EditableTaxon synonymParent = (EditableTaxon) taxonomyDAO.getTaxon(synonymParentQname);
 
@@ -204,7 +204,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		return qnames;
 	}
 
-	private SynonymType getSynonymType(HttpServletRequest req) {
+	public static SynonymType getSynonymType(HttpServletRequest req) {
 		String type = req.getParameter(SYNONYM_TYPE_PARAMETER);
 		if (type == null) throw new IllegalArgumentException();
 		return SynonymType.valueOf(type);

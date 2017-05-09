@@ -1,6 +1,6 @@
 <#include "macro.ftl">
 <#if isSynonym>
-	<@printTaxon taxon "synonym" false false />
+	<@printTaxon taxon true />
 <#else>
 	<@printTaxon taxon />
 </#if>

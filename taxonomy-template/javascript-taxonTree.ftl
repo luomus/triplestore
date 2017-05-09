@@ -372,6 +372,7 @@ function taxonDropHandler(event, ui) {
 	if (!confirmChangeOfParent(droppedTaxonId, newParentId)) return;
 	$.post('${baseURL}/api/changeparent?taxon='+encodeURIComponent(droppedTaxonId)+"&newParent="+encodeURIComponent(newParentId), function(data) {
 		if (data == "ok") {
+			reloadTaxon(droppedTaxon);
 			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
 			droppedTaxon.fadeOut(function() {
   				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
@@ -396,6 +397,7 @@ function taxonDropHandler(event, ui) {
 		}
 	});
 }
+
 function confirmChangeOfParent(droppedTaxonId, newParentId) {
 	var droppedTaxonName = $('#'+droppedTaxonId).find('.scientificName').first().text();
 	var newParentName = $('#'+newParentId).find('.scientificName').first().text();
@@ -495,8 +497,79 @@ function mergeTaxon(e) {
 	$("#mergeTaxonDialog").dialog("open");
 }
 
-$(function() {
+
+function confirmUnlink(e, text) {
+	var synonymScientificName = $(e).closest(".taxonWithTools").find(".scientificName").text();
+	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
+	return confirm('Are you sure you want to remove ' + synonymScientificName + text + synonymParentScientificName + '?');
+}
+
+function unlinkNormalSynonym(e) {
+	if (!confirmUnlink(e, ' as synonym of ')) return;
+	removeSynonym(e, "SYNONYM", e.closest('.taxonWithTools').attr('id'));
+}
+
+function unlinkMisappliedSynonym(e) {
+	if (!confirmUnlink(e, ' as misapplied name of ')) return;
+	removeSynonym(e, "MISAPPLIED", e.closest('.taxonWithTools').attr('id'));
 	
+}
+
+function unlinkUncertainSynonym(e) {
+	if (!confirmUnlink(e, ' as uncertain synonym of ')) return;
+	removeSynonym(e, "UNCERTAIN", e.closest('.taxonWithTools').attr('id'));
+}
+
+function unlinkIncludesConceptLink(e) {
+	if (!confirmConceptUnlink(e, 'including')) return;
+	removeSynonym(e, "INCLUDES", e.closest('.taxaOfConcept').attr('id'));
+	
+}
+
+function unlinkIncludedinConceptLink(e) {
+	if (!confirmConceptUnlink(e, 'included')) return;
+	removeSynonym(e, "INCLUDED_IN", e.closest('.taxaOfConcept').attr('id'));	
+}
+
+function confirmConceptUnlink(e, text) {
+	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
+	return confirm('Are you sure you want to unlink this '+text+' taxon concept from the concept of ' + synonymParentScientificName + '?');
+}
+
+function removeSynonym(e, synonymType, removedId) {
+	/* XXX
+	var synonymOfTaxon = "";  
+	$.post('${baseURL}/api/changeparent?taxon='+encodeURIComponent(droppedTaxonId)+"&newParent="+encodeURIComponent(newParentId), function(data) {
+		if (data == "ok") {
+			reloadTaxon(droppedTaxon);
+			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
+			droppedTaxon.fadeOut(function() {
+  				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
+				$.get("${baseURL}/api/singleTaxonInfo/"+droppedTaxonId, function(data) {
+					droppedTaxon.replaceWith(data);
+					droppedTaxon = $("#"+droppedTaxonId);
+					droppedTaxon.find('button, .button').button();
+					droppedTaxon.fadeIn(function() {
+						taxonTreeGraphs.repaintEverything();
+					});
+				});
+			});
+		} else {
+			var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
+			validationDialog.appendTo("body");
+			validationDialog.dialog({
+				modal: true, height: 'auto', width: 600, 
+				close: function() { 
+					$("#validationDialog").remove(); 
+				}
+			});
+		}
+	});
+	*/
+}
+
+$(function() {
+
 	$(document).on('click', '.taxonInfo', function() {
 		editTaxon($(this).closest('.taxonInfo'));
 	});
@@ -704,7 +777,7 @@ function addNewSynonymDialogSubmit() {
 	
 	$.ajax({ 
 		type: "POST", 
-		url: '${baseURL}/api/addsynonym',
+		url: '${baseURL}/api/addSynonym',
       	data: form.serialize(),
       	success: function(data) {
 			$("#addNewSynonymDialog").dialog("close");
