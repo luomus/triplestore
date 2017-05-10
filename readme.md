@@ -143,7 +143,7 @@ grant execute on luonto.addresource to ;
 grant execute on luonto.addstatement to ;
 grant execute on luonto.addstatementl to ;
 grant select,delete on luonto.rdf_statementview to ;
-grant delete on luonto.rdf_statement to ;
+grant select,delete on luonto.rdf_statement to ;
 grant select on luonto.rdf_resource to ;
 grant select on rdf_statement_history to ;
 
