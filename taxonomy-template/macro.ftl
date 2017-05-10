@@ -63,11 +63,11 @@
 				</#if>
 				<#if isSynonym && taxon.allowsAlterationsBy(user)>
 					<#if additionalClass == "normalSynonym"> 
-						<a href=#" onclick="unlinkNormalSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
+						<a href="#" onclick="unlinkNormalSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
 					<#elseif additionalClass == "misappliedSynonym">
-						<a href=#" onclick="unlinkMisappliedSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied"></span></a>
+						<a href="#" onclick="unlinkMisappliedSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied"></span></a>
 					<#elseif additionalClass == "uncertainSynonym">
-						<a href=#" onclick="unlinkUncertainSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
+						<a href="#" onclick="unlinkUncertainSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
 					</#if>
 				</#if>
 			</div>
@@ -160,7 +160,7 @@
 				<#assign prevConcept = partialSynonym.taxonConceptQname.toString()>
 				<div class="taxaOfConcept" id="${partialSynonym.taxonConceptQname?replace("MC.","MC")}">
 					<span class="taxonConcept" title="${partialSynonym.taxonConceptQname}">Concept</span>
-					<#if permissionsToRemove><a href=#" onclick="unlink${label?replace(" ","")}ConceptLink(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink taxon concept"></span></a></#if>
+					<#if permissionsToRemove><a href="#" onclick="unlink${label?replace(" ","")}ConceptLink(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink taxon concept"></span></a></#if>
 			</#if>
 			<@printTaxon partialSynonym true />
 		</#list>
