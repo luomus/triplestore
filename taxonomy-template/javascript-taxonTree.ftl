@@ -521,19 +521,19 @@ function unlinkUncertainSynonym(e) {
 }
 
 function unlinkIncludesConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'including')) return;
+	if (!confirmConceptUnlink(e, 'include')) return;
 	removeSynonym(e, "INCLUDES", e.closest('.taxaOfConcept').attr('id'));
 	
 }
 
 function unlinkIncludedinConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'included')) return;
+	if (!confirmConceptUnlink(e, 'be included in')) return;
 	removeSynonym(e, "INCLUDED_IN", e.closest('.taxaOfConcept').attr('id'));	
 }
 
 function confirmConceptUnlink(e, text) {
 	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
-	return confirm('Are you sure you want to unlink this '+text+' taxon concept from the concept of ' + synonymParentScientificName + '?');
+	return confirm('Are you sure: The taxon concept of ' + synonymParentScientificName + ' will no longer ' + text + ' the removed concept?');   
 }
 
 function removeSynonym(e, synonymType, removedId) {
