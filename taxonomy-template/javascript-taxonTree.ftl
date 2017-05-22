@@ -7,6 +7,7 @@ function startsWith(needle, haystack) {
 var taxonTreeGraphs;
 var showSynonymsModeIsOn = true;
 var headerPositioned = false;
+
 $(function() {
 		
 	taxonTreeGraphs = jsPlumb.getInstance();
