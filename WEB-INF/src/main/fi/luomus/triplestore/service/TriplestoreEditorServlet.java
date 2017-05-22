@@ -91,7 +91,8 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		try {
 			return saveAndRedirect(req, qname);
 		} catch (Exception e) {
-			getSession(req).setFlashError(LogUtils.buildStackTrace(e, 10));
+			getSession(req).setFlashError(LogUtils.buildStackTrace(e, 50));
+			getErrorReporter().report("Saving " + qname, e);
 			if (given(qname)) {
 				return redirectToGet(qname);
 			} else {

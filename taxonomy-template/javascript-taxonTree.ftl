@@ -373,7 +373,6 @@ function taxonDropHandler(event, ui) {
 	if (!confirmChangeOfParent(droppedTaxonId, newParentId)) return;
 	$.post('${baseURL}/api/changeparent?taxon='+encodeURIComponent(droppedTaxonId)+"&newParent="+encodeURIComponent(newParentId), function(data) {
 		if (data == "ok") {
-			reloadTaxon(droppedTaxon);
 			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
 			droppedTaxon.fadeOut(function() {
   				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
@@ -507,54 +506,53 @@ function confirmUnlink(e, text) {
 
 function unlinkNormalSynonym(e) {
 	if (!confirmUnlink(e, ' as synonym of ')) return;
-	removeSynonym(e, "SYNONYM", e.closest('.taxonWithTools').attr('id'));
+	removeSynonym(e, "SYNONYM", $(e).closest('.taxonWithTools').attr('id'));
 }
 
 function unlinkMisappliedSynonym(e) {
 	if (!confirmUnlink(e, ' as misapplied name of ')) return;
-	removeSynonym(e, "MISAPPLIED", e.closest('.taxonWithTools').attr('id'));
+	removeSynonym(e, "MISAPPLIED", $(e).closest('.taxonWithTools').attr('id'));
 	
 }
 
 function unlinkUncertainSynonym(e) {
 	if (!confirmUnlink(e, ' as uncertain synonym of ')) return;
-	removeSynonym(e, "UNCERTAIN", e.closest('.taxonWithTools').attr('id'));
+	removeSynonym(e, "UNCERTAIN", $(e).closest('.taxonWithTools').attr('id'));
 }
 
 function unlinkIncludesConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'including')) return;
-	removeSynonym(e, "INCLUDES", e.closest('.taxaOfConcept').attr('id'));
+	if (!confirmConceptUnlink(e, 'include')) return;
+	removeSynonym(e, "INCLUDES", $(e).closest('.taxaOfConcept').attr('id'));
 	
 }
 
 function unlinkIncludedinConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'included')) return;
-	removeSynonym(e, "INCLUDED_IN", e.closest('.taxaOfConcept').attr('id'));	
+	if (!confirmConceptUnlink(e, 'be included in')) return;
+	removeSynonym(e, "INCLUDED_IN", $(e).closest('.taxaOfConcept').attr('id'));	
 }
 
 function confirmConceptUnlink(e, text) {
 	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
-	return confirm('Are you sure you want to unlink this '+text+' taxon concept from the concept of ' + synonymParentScientificName + '?');
+	return confirm('Are you sure: The taxon concept of ' + synonymParentScientificName + ' will no longer ' + text + ' the removed concept?');   
 }
 
 function removeSynonym(e, synonymType, removedId) {
-	/* XXX
-	var synonymOfTaxon = "";  
-	$.post('${baseURL}/api/changeparent?taxon='+encodeURIComponent(droppedTaxonId)+"&newParent="+encodeURIComponent(newParentId), function(data) {
+	var synonymParent = $(e).closest(".synonyms").closest(".taxonWithTools");
+	var synonymParentId = synonymParent.attr("id");
+	var uri = '${baseURL}/api/removeSynonym?synonymType='+synonymType+'&removedId='+removedId+'&synonymOfTaxon='+synonymParentId;  
+	$.post(uri, function(data) {
 		if (data == "ok") {
-			reloadTaxon(droppedTaxon);
-			collapseTaxon(droppedTaxon.find(".treePlusMinusSign"));
-			droppedTaxon.fadeOut(function() {
-  				$('<li></li>').html(droppedTaxon).appendTo(newParentChildrenContainer.find('.childTaxonList'));
-				$.get("${baseURL}/api/singleTaxonInfo/"+droppedTaxonId, function(data) {
-					droppedTaxon.replaceWith(data);
-					droppedTaxon = $("#"+droppedTaxonId);
-					droppedTaxon.find('button, .button').button();
-					droppedTaxon.fadeIn(function() {
-						taxonTreeGraphs.repaintEverything();
+			collapseTaxon(synonymParent.find(".treePlusMinusSign"));
+			synonymParent.fadeOut(function() {
+					$.get("${baseURL}/api/singleTaxonInfo/"+synonymParentId, function(data) {
+						synonymParent.replaceWith(data);
+						synonymParent = $("#"+synonymParentId);
+						synonymParent.find('button, .button').button();
+						synonymParent.fadeIn(function() {
+							taxonTreeGraphs.repaintEverything();
+						});
 					});
 				});
-			});
 		} else {
 			var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
 			validationDialog.appendTo("body");
@@ -566,7 +564,6 @@ function removeSynonym(e, synonymType, removedId) {
 			});
 		}
 	});
-	*/
 }
 
 $(function() {

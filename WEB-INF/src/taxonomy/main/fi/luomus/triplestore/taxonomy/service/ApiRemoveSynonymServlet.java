@@ -1,11 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.Collection;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -19,6 +13,12 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
+
+import java.util.Collection;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/removeSynonym/*"})
 public class ApiRemoveSynonymServlet extends ApiBaseServlet {
@@ -94,16 +94,16 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 	}
 	
 	private void removeIncludedIn(TriplestoreDAO dao, EditableTaxon synonymParent, Qname removedConceptId) throws Exception {
-		Qname subject = removedConceptId;
+		Qname subject = synonymParent.getTaxonConceptQname();
 		Predicate predicate = ApiAddSynonymServlet.INCLUDED_IN;
-		Qname object = synonymParent.getTaxonConceptQname();
+		Qname object = removedConceptId;
 		deleteStatement(dao, subject, predicate, object);
 	}
 	
 	private void removeIncludes(TriplestoreDAO dao, EditableTaxon synonymParent, Qname removedConceptId) throws Exception {
-		Qname subject = synonymParent.getTaxonConceptQname();
+		Qname subject = removedConceptId;
 		Predicate predicate = ApiAddSynonymServlet.INCLUDED_IN;
-		Qname object = removedConceptId;
+		Qname object = synonymParent.getTaxonConceptQname();
 		deleteStatement(dao, subject, predicate, object);
 	}
 
