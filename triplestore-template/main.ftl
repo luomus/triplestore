@@ -53,11 +53,11 @@ function listResources(className) {
 	responseElement.hide();
 	$.ajax({
     	type: 'GET',
-    	url: '${baseURL}/search?predicate=rdf:type&object='+className+'&limit=800',
+    	url: '${baseURL}/search?predicate=rdf:type&object='+className+'&limit=2000',
     	dataType: 'xml',
     	success: function(xml) {
     	   	var count = 0;
-			$(xml).first().find(className.replace('.','\\.')).each(function() {
+			$(xml).find(":root").children().each(function() {
 				count++;
 				var instance = $('<div>');
 				var resourceURI = $(this).attr('rdf:about');

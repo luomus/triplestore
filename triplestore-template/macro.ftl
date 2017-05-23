@@ -72,7 +72,7 @@
 		Edit by Qname <input id="editByQname" type="text" name="search" placeholder="Qname" /> <button id="editByQnameButton">Go</button>
 	</li>
 	<li>
-		Search <input type="text" id="searchWord" placeholder="Object or literal" /> <button id="searchButton">Search</button>
+		Search <input type="text" id="searchWord" placeholder="Literal" /> <button id="searchButton">Search</button>
 	</li>
 	<li>
 		Create new 
@@ -88,6 +88,9 @@
 </ul>
 <div id="resourceListingResponse"></div>
 <script>
+function toQname(uri) {
+	return uri.replace('http://id.luomus.fi/', 'luomus:').replace('http://tun.fi/', '');
+}
 $(function() {
 	$.ajaxSetup({
   		headers: {
@@ -111,7 +114,7 @@ $(function() {
     			dataType: 'xml',
     			success: function(xml) {
 	    			var count = 0;
-					$(xml).find('rdf\\:RDF').first().children().each(function() {
+					$(xml).find(":root").children().each(function() {
 						count++;
 						var instance = $('<div>');
 						var resourceURI = $(this).attr('rdf:about');
@@ -161,8 +164,6 @@ $(function() {
 		document.location.href = '${baseURL}/editor/'+qname;
 	});
 });
-function toQname(uri) {
-	return uri.replace('http://id.luomus.fi/', 'luomus:').replace('http://tun.fi/', '');
-}
+
 </script>
 </#macro>
