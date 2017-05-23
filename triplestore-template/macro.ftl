@@ -72,7 +72,18 @@
 		Edit by Qname <input id="editByQname" type="text" name="search" placeholder="Qname" /> <button id="editByQnameButton">Go</button>
 	</li>
 	<li>
-		Search <input type="text" id="searchWord" placeholder="Literal" /> <button id="searchButton">Search</button>
+		Search
+		<select id="searchTypeSelect">
+			<option value="">Select type...</option>
+			<option value="MA.person">Person</option>
+			<#list resources as resource>
+				<#if (resource.count > 0) && resource.name != "MA.person">
+					<option value="${resource.name}">${resource.name}</option>
+				</#if>
+			</#list>
+		</select> 
+		<input type="text" id="searchWord" placeholder="Literal" /> 
+		<button id="searchButton">Search</button>
 	</li>
 	<li>
 		Create new 
@@ -108,9 +119,14 @@ $(function() {
 			responseElement.html('');
 			$("body").css("cursor", "progress");
 			responseElement.hide();
+			var searchType = $("#searchTypeSelect").val();
+			var queryURL = '${baseURL}/search?objectliteral=%25'+searchWord+'%25&limit=50';
+			if (searchType) {
+				queryURL += '&type='+searchType;
+			}
 			$.ajax({
     			type: 'GET',
-    			url: '${baseURL}/search?objectliteral=%25'+searchWord+'%25&limit=50',
+    			url: queryURL,
     			dataType: 'xml',
     			success: function(xml) {
 	    			var count = 0;
