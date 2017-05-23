@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -13,10 +17,6 @@ import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.LogUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.History;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/editor/*"})
 public class TriplestoreEditorServlet extends EditorBaseServlet {
@@ -300,6 +300,6 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 	}
 
 	protected ResponseData mainPage(ResponseData responseData) throws Exception {
-		return responseData.setViewName("main").setData("resources", getTriplestoreDAO().getResourceStats());
+		return responseData.setViewName("main");
 	}
 }

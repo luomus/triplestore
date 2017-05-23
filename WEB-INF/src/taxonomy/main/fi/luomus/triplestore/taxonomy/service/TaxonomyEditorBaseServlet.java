@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.session.SessionHandler;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
@@ -61,7 +62,18 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
-		ResponseData responseData = super.initResponseData(req).setViewName("help");
+		ResponseData responseData = new ResponseData().setDefaultLocale("en");
+		
+		SessionHandler session = getSession(req);
+		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
+			User user = getUser(session);
+			responseData.setData("user", user);
+			responseData.setData("flashMessage", session.getFlash());
+			responseData.setData("successMessage", session.getFlashSuccess());
+			responseData.setData("errorMessage", session.getFlashError());
+			responseData.setData("restartMessage", getRestartMessage(user));
+		}
+		
 		String synonymsMode = req.getParameter("synonymsMode"); 
 		if (given(synonymsMode)) {
 			responseData.setData("synonymsMode", synonymsMode);

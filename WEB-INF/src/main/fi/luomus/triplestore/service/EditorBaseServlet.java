@@ -125,6 +125,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 			responseData.setData("errorMessage", session.getFlashError());
 			responseData.setData("restartMessage", getRestartMessage(user));
 			responseData.setData("creatableResources", CREATABLE_RESOURCES);
+			responseData.setData("resources", getTriplestoreDAO().getResourceStats());
 			Config config = getConfig();
 			if (config.defines("TriplestoreSelf_Username")) {
 				responseData.setData("TriplestoreSelf_Username", config.get("TriplestoreSelf_Username"));
@@ -145,7 +146,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return getUser(getSession(req));
 	}
 
-	private User getUser(SessionHandler session) {
+	protected User getUser(SessionHandler session) {
 		User.Role role = User.Role.NORMAL_USER;
 		if ("admin".equals(session.get("role"))) {
 			role = User.Role.ADMIN;
