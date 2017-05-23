@@ -27,7 +27,7 @@
 				<#if (resource.count > 0)>
 					<tr>
 						<td>
-							<#if (resource.count < 800)>
+							<#if (resource.count < 2000)>
 								<a href="#" onclick="listResources('${resource.name}'); return false;">${resource.name}</a>
 							<#else>
 								${resource.name}
