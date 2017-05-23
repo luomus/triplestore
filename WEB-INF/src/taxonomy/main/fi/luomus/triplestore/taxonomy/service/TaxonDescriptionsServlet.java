@@ -60,14 +60,18 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
-		String taxonQname = getQname(req);
-		if (!given(taxonQname)) {
-			taxonQname = TaxonomyTreesEditorServlet.DEFAULT_ROOT_QNAME.toString();
-		} 
-
+		Qname taxonQname = new Qname(getQname(req));
+		if (!taxonQname.isSet()) {
+			taxonQname = TaxonomyTreesEditorServlet.DEFAULT_ROOT_QNAME;
+		}
+		
 		TriplestoreDAO dao = getTriplestoreDAO();
 		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
+		if (!taxonomyDAO.getTaxonContainer().hasTaxon(taxonQname)) {
+			return redirectTo404(res);
+		}
+		
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 
 		Map<String, List<RdfProperty>> descriptionGroupVariables = cachedDescriptionGroupVariables.get(dao);
 		Set<String> groupsWithContent = resolveGroupsWithContent(descriptionGroupVariables, taxon);
