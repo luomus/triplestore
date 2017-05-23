@@ -72,7 +72,11 @@
 								<#elseif property.hasRange() && property.range.qname.toString() == "MA.person">
 									<div class="hidden infofield">
 										<label>${property.label.forLocale("en")!property.qname}</label>
-										${property.range.getValueFor(statement.objectResource.qname).label.forLocale("en")}
+										<#if property.range.hasValue(statement.objectResource.qname)>
+											${property.range.getValueFor(statement.objectResource.qname).label.forLocale("en")}
+										<#else>
+											${statement.objectResource.qname}
+										</#if>
 									</div>
 								</#if>
 							</#if>
