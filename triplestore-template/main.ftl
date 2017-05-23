@@ -53,7 +53,7 @@ function listResources(className) {
 	responseElement.hide();
 	$.ajax({
     	type: 'GET',
-    	url: '${baseURL}/search?predicate=rdf:type&object='+className+'&limit=2000',
+    	url: '${baseURL}/search?type='+className+'&limit=2000',
     	dataType: 'xml',
     	success: function(xml) {
     	   	var count = 0;
