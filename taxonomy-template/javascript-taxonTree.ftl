@@ -90,6 +90,7 @@ function collapseTreeByTaxonQname(taxonQname) {
 	$("#"+childrenContainerId).find(".taxonWithTools").each(function() {
 		collapseTreeByTaxonQname($(this).attr('id'));
 	});
+	removeTaxonConnection(childrenContainerId);
 	$("#"+childrenContainerId).remove();
 }
 
