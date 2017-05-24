@@ -30,9 +30,9 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean allowsAlterationsBy(User user) {
-//		if (user.isAdmin()) {
-//			return true;
-//		}
+		if (user.isAdmin()) {
+			return true;
+		}
 
 		if (allowsAlterationForUserDirectly(user, this)) {
 			return true;
@@ -70,7 +70,7 @@ public class EditableTaxon extends Taxon {
 				return true; // User has permissions to the edit one of the synonyms of this taxon, allow to edit this
 			}
 		}
-		
+
 		return false;
 	}
 
