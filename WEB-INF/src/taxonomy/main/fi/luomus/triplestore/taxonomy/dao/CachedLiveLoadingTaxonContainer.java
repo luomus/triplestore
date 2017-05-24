@@ -78,9 +78,9 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			} else if (MX_CIRCUMSCRIPTION.equals(predicate)) {
 				taxon.setTaxonConceptQname(q(statement.getObjectResource()));
 			} else if (MX_MISAPPLIED_CIRCUMSCRIPTION.equals(predicate)) {
-				
+				taxon.addMisappliedInConcept(q(statement.getObjectResource()));
 			} else if (MX_UNCERTAIN_CIRCUMSCRIPTION.equals(predicate)) {
-				
+				taxon.addUncertainSynonymInConcept(q(statement.getObjectResource()));
 			} else {
 				addPropertyToTaxon(taxon, statement);
 			}
