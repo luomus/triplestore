@@ -138,7 +138,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 
 	private TaxonSearchResponse uncachedTaxonSearch(TaxonSearch taxonSearch) throws Exception {
-		return new TaxonSearchDAOSQLQueryImple(this, dataSource).search(taxonSearch);
+		return new TaxonSearchDAOSQLQueryImple(this, dataSource, TriplestoreDAOConst.SCHEMA).search(taxonSearch);
 	}
 
 	@Override
