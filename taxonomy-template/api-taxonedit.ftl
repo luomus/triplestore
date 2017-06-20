@@ -63,6 +63,7 @@
 		<div class="clear"></div>
 		
 		<label for="nameDecidedBy">Name decision by</label>  
+		<input type="hidden" name="MX.nameDecidedBy" value="" />
 		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQname>
@@ -96,6 +97,7 @@
 			</select>
 			<br /><br />
 		</#if>
+		<input type="hidden" name="MX.originalPublication" value="" />
 		<select id="originalPublicationSelector" name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
 			<option value=""></option>
 			<#list publications?keys as publicationQname>
@@ -173,6 +175,7 @@
 			</select>
 			<br /><br />
 		</#if>
+		<input type="hidden" name="MX.occurrenceInFinlandPublication" value="" />
 		<select id="occurrenceInFinlandPublicationSelector" name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list publications?keys as publicationQname>
@@ -201,6 +204,7 @@
 			<br/>
 		</#if>
 		
+		<input type="hidden" name="MX.isPartOfInformalTaxonGroup" value="" />
 		<select name="MX.isPartOfInformalTaxonGroup" data-placeholder="Select group" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list informalGroups?keys as groupQnameString>
@@ -376,6 +380,7 @@
 		<#elseif !taxon.explicitlySetExperts?has_content><span class="expert">Experts:[none]</span></#if>
 		
 		<p><label>Editors</label></p>
+		<input type="hidden" name="MX.taxonEditor" value="" />
 		<select name="MX.taxonEditor" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
@@ -384,6 +389,7 @@
 		</select>
 
 		<p><label>Experts</label></p>
+		<input type="hidden" name="MX.taxonExpert" value="" />
 		<select name="MX.taxonExpert" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
