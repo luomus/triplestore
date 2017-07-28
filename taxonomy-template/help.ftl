@@ -135,7 +135,7 @@ Here you can find instructions on how to use the Taxon Editor.
 		</p>
 		<p><span class="qa">A:</span> 
 			Click gear icon of the taxon in taxonomy tree and select "merge". Select the other taxa that will be merged to the taxon. All merged taxe will be removed from the checklist
-			and you provide the name of the replacing taxon. Only taxa without critical data can be splitted. 
+			and you provide the name of the replacing taxon. Only taxa without critical data can be merged. 
 		</p> 
 	</li>
 	
