@@ -125,6 +125,12 @@ To delete a literal statement, give empty resourceliteral ("") as parameter. Thi
 
 Returns HTTP 200 on success, HTTP 500 on failure.
 
+## GET /triplestore/uri/{namespace}
+
+Get sequence next value for namespace (for example "JA")
+
+Returns HTTP 200 on success, HTTP 500 on failure.
+
 
 ##Installation
 
