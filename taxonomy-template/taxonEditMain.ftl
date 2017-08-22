@@ -157,7 +157,7 @@
 				<li><b>Synonym:</b> The synonym taxon and this taxon share the same taxonomic circumscription.</li>
 				<li><b>Misapplied:</b> The misapplied taxon (scientific name) has been erroneously used in Finland to report observations of this taxon. (They do not share the same circumscription.)</li>
 				<li><b>Includes:</b> This taxon concept includes the other taxas concepts.</li>
-				<li><b>Included in:</b> This taxon concept is included in the other taxas concepts.</li>
+				<li><b>Included in:</b> This taxon concept is included in the other taxas concepts (pro parte synonym).</li>
 				<li><b>Uncertain:</b> Same as synonym except it is not certain that the taxa share the same circumscription.</li>
 			</ul>
 		</form>

@@ -116,7 +116,7 @@
 		<#if !isSynonym && synonymsMode == "show">
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
 				<div class="synonymSection">
-					<#if taxon.synonyms?has_content><h3>Synonyms</h3></#if>
+					<#if taxon.synonyms?has_content><h3>Full synonyms</h3></#if>
 					<#if taxon.allowsAlterationsBy(user)>
 						<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
 							<#if taxon.synonyms?has_content>Add<#else>Add synonyms</#if>
