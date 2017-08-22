@@ -98,7 +98,7 @@
 			<br />
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
-				<option value="SYNONYM" selected="selected">Synonym</option>
+				<option value="SYNONYM" selected="selected">Full synonym</option>
 				<option value="MISAPPLIED">Misapplied</option>
 				<option value="INCLUDES">Includes</option>
 				<option value="INCLUDED_IN">Included in</option>
