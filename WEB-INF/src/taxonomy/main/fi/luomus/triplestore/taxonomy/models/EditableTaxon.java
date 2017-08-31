@@ -3,9 +3,12 @@ package fi.luomus.triplestore.taxonomy.models;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import fi.luomus.commons.containers.Content;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
@@ -97,26 +100,53 @@ public class EditableTaxon extends Taxon {
 		taxonContainer.invalidateTaxon(this);
 	}
 
-	private Boolean hasCriticalData = null;
-
-	public boolean hasCriticalData() {
-		if (hasCriticalData == null) { 
-			hasCriticalData = initHasCriticalData();
+	private Collection<String> criticalDatas = null;
+	
+	public Collection<String> getCriticalData() {
+		if (criticalDatas == null) {
+			criticalDatas = initCriticalData();
 		}
-		return hasCriticalData;
+		return criticalDatas;
+	}
+	
+	public boolean hasCriticalData() {
+		return !getCriticalData().isEmpty();
 	}
 
-	private boolean initHasCriticalData() {
-		if (this.hasChildren()) return true;
-		if (this.hasSecureLevel()) return true;
-		if (this.hasIUCNStatuses()) return true;
-		if (!this.getAdministrativeStatuses().isEmpty()) return true;
-		if (!this.getDescriptions().getContextsWithContentAndLocales().isEmpty()) return true;
-		if (!this.getInvasiveSpeciesMainGroups().isEmpty()) return true;
-		if (!this.getExplicitlySetEditors().isEmpty()) return true;
-		if (!this.getExplicitlySetExperts().isEmpty()) return true;
-		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) return true;
-		return false;
+	private Collection<String> initCriticalData() {
+		Collection<String> criticals = new ArrayList<>();
+		if (this.hasChildren()) criticals.add("Taxon has children");
+		if (this.hasSecureLevel()) criticals.add("Taxon has observation secure level");
+		if (this.hasIUCNStatuses()) criticals.add("Taxon has an IUCN status");
+		if (!this.getAdministrativeStatuses().isEmpty()) criticals.add("Taxon has an administrative status");
+		if (!this.getDescriptions().getContextsWithContentAndLocales().isEmpty()) criticals.add("Taxon has description texts in " + contextNames(this.getDescriptions()));
+		if (!this.getInvasiveSpeciesMainGroups().isEmpty()) criticals.add("Taxon is invasive species");
+		if (!this.getExplicitlySetEditors().isEmpty()) criticals.add("Taxon is used to define editor permissions");
+		if (!this.getExplicitlySetExperts().isEmpty()) criticals.add("Taxon is used to define expertise");
+		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) criticals.add("Taxon is set to an informal group");
+		return criticals;
+	}
+
+	private String contextNames(Content descriptions) {
+		Set<String> names = new HashSet<>();
+		for (Qname context : descriptions.getContextsWithContentAndLocales().keySet()) {
+			if (context.toString().startsWith("LA.")) {
+				names.add("Pinkka");
+			} else if (Content.DEFAULT_DESCRIPTION_CONTEXT.equals(context)) {
+				names.add("FinBIF");
+			} else {
+				names.add(context.toURI());
+			}
+		}
+		Iterator<String> i = names.iterator();
+		StringBuilder b = new StringBuilder();
+		while (i.hasNext()) {
+			b.append(i.next());
+			if (i.hasNext()) {
+				b.append(", ");
+			}
+		}
+		return b.toString();
 	}
 
 	private boolean hasIUCNStatuses() {
