@@ -238,20 +238,24 @@ public class CriteriaFormatValidator {
 	}
 
 	public static List<MainCriteria> parseCriteria(String criteria) {
-		if (criteria == null) return Collections.emptyList();
-		criteria = Utils.removeWhitespace(criteria);
-		if (criteria.length() < 1) return Collections.emptyList();
-		if (!Character.isUpperCase(criteria.charAt(0))) return Collections.emptyList();
+		try {
+			if (criteria == null) return Collections.emptyList();
+			criteria = Utils.removeWhitespace(criteria);
+			if (criteria.length() < 1) return Collections.emptyList();
+			if (!Character.isUpperCase(criteria.charAt(0))) return Collections.emptyList();
 
-		List<MainCriteria> mainCriterias = new ArrayList<>();
-		if (criteria.contains(";")) {
-			for (String part : criteria.split(Pattern.quote(";"))) {
-				mainCriterias.addAll(parseCriteriaGroup(part));
+			List<MainCriteria> mainCriterias = new ArrayList<>();
+			if (criteria.contains(";")) {
+				for (String part : criteria.split(Pattern.quote(";"))) {
+					mainCriterias.addAll(parseCriteriaGroup(part));
+				}
+			} else {
+				mainCriterias.addAll(parseCriteriaGroup(criteria));
 			}
-		} else {
-			mainCriterias.addAll(parseCriteriaGroup(criteria));
+			return mainCriterias;
+		} catch (Exception e) {
+			throw new RuntimeException("Parsing criteria failed: '" + criteria + "'.", e);
 		}
-		return mainCriterias;
 	}
 
 	private static Collection<MainCriteria> parseCriteriaGroup(String criteria) {
