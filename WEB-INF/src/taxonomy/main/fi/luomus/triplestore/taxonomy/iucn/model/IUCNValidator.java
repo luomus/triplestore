@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperties;
@@ -11,12 +17,6 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.CriteriaValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCriteria;
-
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class IUCNValidator {
 
@@ -34,7 +34,7 @@ public class IUCNValidator {
 			tryToValidate(givenData, comparisonData, validationResult);
 		} catch (Exception e) {
 			validationResult.setError("Tarkistuksissa tapahtui odottamaton virhe. Ylläpitoa on tiedotettu asiasta. ", null);
-			errorReporter.report(e);
+			errorReporter.report("Validation error report (handled in UI)", e);
 		}
 		return validationResult;
 	}
