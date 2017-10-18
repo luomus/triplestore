@@ -229,7 +229,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 							try {
 								Map<String, Area> areas = new LinkedHashMap<>();
 								for (Area area : getAreas().values()) {
-									if (area.getType().equals(BIOGEOGRAPHICAL_PROVINCE)) {
+									if (BIOGEOGRAPHICAL_PROVINCE.equals(area.getType())) {
 										areas.put(area.getQname().toString(), area);
 									}
 								}
