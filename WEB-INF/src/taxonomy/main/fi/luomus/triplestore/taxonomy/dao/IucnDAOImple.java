@@ -559,7 +559,7 @@ public class IucnDAOImple implements IucnDAO {
 										ObjectLiteral literal = nameStatement.getObjectLiteral();
 										name.set(literal.getLangcode(), literal.getContent());
 									}
-									Area area = new Area(new Qname(id), name, null, EVALUATION_AREA_TYPE_QNAME);
+									Area area = new Area(new Qname(id), name, EVALUATION_AREA_TYPE_QNAME);
 									areas.put(id, area);
 								}
 							} catch (Exception e) {
