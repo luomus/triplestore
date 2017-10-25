@@ -81,6 +81,7 @@ function initTinyMCE() {
 	tinymce.init({
 		plugins: 'link code',
     	selector: '.tinymcenow',
+    	skin_url: '${staticURL}/tinymce/skins/lightgray',
     	menubar: false,
     	statusbar: false,
     	height: "210",
