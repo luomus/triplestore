@@ -162,11 +162,11 @@ public class TaxonValidator {
 			}
 		}
 		
-		if (SUBGENUS.equals(taxon.getTaxonRank()) || taxon.isSpecies() || taxon.getTaxonRank() == null) {
+		if (taxon.isCursiveName() || taxon.getTaxonRank() == null) {
 			name = allowParentheses(name);
 			name = allowSpace(name);
 		}
-		if (!taxon.isSpecies() && name.startsWith("\"") && name.endsWith("\"")) {
+		if (!taxon.isCursiveName() && name.startsWith("\"") && name.endsWith("\"")) {
 			name = allowQuotationMarks(name); 
 		}
 		for (char c : name.toCharArray()) {

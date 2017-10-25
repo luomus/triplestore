@@ -17,7 +17,7 @@
 	<#macro printTree taxon>
 		<div class="rootTreeNode">
 			<a href="${taxon.qname}" onclick="goToTaxon('${taxon.qname}'); return false;">
-				<span class="scientificName <#if taxon.isSpecies()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span>
+				<span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span>
 			</a>
 		</div>
 	</#macro>
