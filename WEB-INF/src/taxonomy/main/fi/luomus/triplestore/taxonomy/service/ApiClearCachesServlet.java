@@ -1,10 +1,10 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.services.ResponseData;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.services.ResponseData;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/clear-caches/*"})
 public class ApiClearCachesServlet extends ApiBaseServlet {
@@ -13,7 +13,7 @@ public class ApiClearCachesServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		if (!getUser(req).isAdmin()) throw new IllegalStateException();
+		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins");
 		getTaxonomyDAO().clearCaches();
 		getTriplestoreDAO(req).clearCaches();
 		return apiSuccessResponse(res);
