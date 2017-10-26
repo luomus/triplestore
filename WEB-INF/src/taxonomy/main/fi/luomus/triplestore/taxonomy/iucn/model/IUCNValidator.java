@@ -438,7 +438,7 @@ public class IUCNValidator {
 		return s != null && s.length() > 0;
 	}
 
-	private final Comparator<String> IUCN_RANGE_COMPARATOR = new Comparator<String>() {
+	private static final Comparator<String> IUCN_RANGE_COMPARATOR = new Comparator<String>() {
 		@Override
 		public int compare(String o1, String o2) {
 			Integer i1 = IUCN_COMPARATOR_VALUES.get(o1);
