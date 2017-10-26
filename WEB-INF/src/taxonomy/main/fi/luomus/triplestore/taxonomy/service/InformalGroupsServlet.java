@@ -1,15 +1,15 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*"})
 public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
@@ -25,6 +25,8 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			responseData.setData("roots", getTaxonomyDAO().getInformalTaxonGroupRoots());
 			return responseData.setViewName("informalGroups");
 		}
+		
+		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins");
 		
 		if (addNew(req)) {
 			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalTaxonGroup());

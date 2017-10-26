@@ -6,8 +6,10 @@
 
 <h1>Create and modify informal groups</h1>
 
+<#if user.admin>
 <p><a href="${baseURL}/informalGroups/add">&raquo; Create new group</a></p>
- 
+ </#if>
+
 <table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
@@ -30,10 +32,17 @@
 
 <#macro printGroup group indent evenOdd>
 	<tr class="indent_${indent} ${evenOdd}">
-		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("fi")!""}</a> </td>
-		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("en")!""}</a> </td>
-		<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("sv")!""}</a> </td>
-		<td><a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</a></td>
+		<#if user.admin>
+			<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("fi")!""}</a> </td>
+			<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("en")!""}</a> </td>
+			<td> <span class="indent">&mdash;</span> <a href="${baseURL}/informalGroups/${group.qname}"> ${group.getName("sv")!""}</a> </td>
+			<td> <a class="button" href="${baseURL}/informalGroups/${group.qname}">Modify</a> </td>
+		<#else>
+			<td> <span class="indent">&mdash;</span> <span title="${group.qname}"> ${group.getName("fi")!""} </span> </td>
+			<td> <span class="indent">&mdash;</span> <span title="${group.qname}"> ${group.getName("en")!""} </span> </td>
+			<td> <span class="indent">&mdash;</span> <span title="${group.qname}"> ${group.getName("sv")!""} </span> </td>
+			<td> &nbsp; </td>
+		</#if>
 	</tr>
 	<#list informalGroups?values as subGroupCandidate>
 		<#if group.hasSubGroup(subGroupCandidate.qname)>
