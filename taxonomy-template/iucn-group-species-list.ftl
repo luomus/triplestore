@@ -92,7 +92,7 @@
 
 <div id="download">
 	<button><img src="${staticURL}/img/CSV.png" alt="CSV"/>Lataa rajattujen lajien arvioinnit tiedostoon</button>
-	<a target="_blank" href="https://beta.laji.fi/about/1068">Lue kuinka viet tiedostot Exceliin</a>
+	<a target="_blank" href="https://laji.fi/about/1068">Lue kuinka viet tiedostot Exceliin</a>
 </div>
 <div class="clear"></div>
 
