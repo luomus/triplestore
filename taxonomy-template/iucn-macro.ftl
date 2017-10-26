@@ -389,6 +389,7 @@
 					</select>
 				</#if>
 				<button class="add">+ Lisää</button>
+				<@editableNotes notesFieldName />
 			<#else>
 				<#if evaluation??>
 					<#if fieldName = "MKV.hasEndangermentReason">
