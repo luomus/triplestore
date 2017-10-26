@@ -307,7 +307,6 @@
 	<@iucnTextarea "MKV.regionallyThreatenedNotes" "regionalThreatened" "MKV.regionallyThreatenedPrivateNotes" />
 
 	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span> &nbsp;&nbsp; <a href=\"${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf\" target=\"_staticmap\">&raquo; Elinympäristöluokkien tulkintaohje</a> " /> 
-	<p><a href="${staticURL}/" target="_blank">Lataa  </a></p>
 	
 	<@iucnHabitatFields />   
 	<@iucnTextarea "MKV.habitatGeneralNotes" />
