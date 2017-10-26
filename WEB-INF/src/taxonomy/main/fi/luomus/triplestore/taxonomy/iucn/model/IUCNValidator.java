@@ -511,22 +511,4 @@ public class IUCNValidator {
 		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
 	}
 
-	private static final Map<String, Set<String>> VALID_CRITERIA = new HashMap<>();
-	static {
-		Set<String> a = Utils.set(
-				"A1", "A1a", "A1b", "A1c", "A1d", "A1e", 
-				"A2", "A2a", "A2b", "A2c", "A2d", "A2e", 
-				"A3", "A3b", "A3c", "A3d", "A3e", 
-				"A4", "A4a", "A4b", "A4c", "A4d", "A4e");
-		Set<String> b = Utils.set(
-				"B1", "B1a", "B1b", "B1b(i)");
-		Set<String> c = Utils.set("");
-		Set<String> d = Utils.set("");
-		Set<String> e = Utils.set("");
-		VALID_CRITERIA.put("A", a);
-		VALID_CRITERIA.put("B", b);
-		VALID_CRITERIA.put("C", c);
-		VALID_CRITERIA.put("D", d);
-		VALID_CRITERIA.put("E", e);
-	}
 }
