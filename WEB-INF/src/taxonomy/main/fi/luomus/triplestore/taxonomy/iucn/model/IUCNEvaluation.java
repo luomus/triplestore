@@ -1,5 +1,13 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -9,14 +17,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class IUCNEvaluation {
 
@@ -53,6 +53,7 @@ public class IUCNEvaluation {
 	public static final String EVALUATED_TAXON = "MKV.evaluatedTaxon";
 	public static final String STATE = "MKV.state";
 	public static final String STATE_READY = "MKV.stateReady";
+	public static final String STATE_READY_FOR_COMMENTS = "MKV.stateReadyForComments";
 	public static final String STATE_STARTED = "MKV.stateStarted";
 	public static final String RED_LIST_STATUS = "MKV.redListStatus";
 	public static final String HABITAT_OBJECT_CLASS = "MKV.habitatObject";
@@ -222,6 +223,10 @@ public class IUCNEvaluation {
 
 	public boolean isStarted() {
 		return STATE_STARTED.equals(getState());
+	}
+	
+	public boolean isReadyForComments() {
+		return STATE_READY_FOR_COMMENTS.equals(getState());
 	}
 	
 	private String getState() {

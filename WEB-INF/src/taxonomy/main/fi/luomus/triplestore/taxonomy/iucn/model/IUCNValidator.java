@@ -42,7 +42,7 @@ public class IUCNValidator {
 	private void tryToValidate(IUCNEvaluation givenData, IUCNEvaluation comparisonData, IUCNValidationResult validationResult) throws Exception {
 		validateInternals(givenData, validationResult);
 		validateDataTypes(givenData, validationResult);
-		if (givenData.isReady()) {
+		if (givenData.isReady() || givenData.isReadyForComments()) {
 			validateRequiredFields(givenData, validationResult);
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);

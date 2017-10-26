@@ -56,6 +56,8 @@
 		<td>
 			<#if evaluation.ready>
 				<span class="state ready">Valmis</span>
+			<#elseif evaluation.readyForComments>
+				<span class="state started">Valmis kommentoitavaksi</span>
 			<#else>
 				<span class="state started">Aloitettu</span>
 			</#if>

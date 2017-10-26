@@ -47,6 +47,7 @@ public class IUCNYearlyGroupStat {
 			IUCNEvaluation evaluation = target.getEvaluation(year);
 			if (evaluation == null) continue;
 			if (evaluation.isStarted()) count++;
+			if (evaluation.isReadyForComments()) count++;
 		}
 		return count;
 	}

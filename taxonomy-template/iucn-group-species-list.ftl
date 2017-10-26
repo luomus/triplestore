@@ -28,6 +28,7 @@
 		<select name="state" multiple="multiple" class="chosen" data-placeholder="Valitse">
 			<option value=""></option>
 			<option value="ready" <#if states?? && states?seq_contains("ready")>selected="selected"</#if>>Valmiit</option>
+			<option value="readyForComments" <#if states?? && states?seq_contains("readyForComments")>selected="selected"</#if>>Valmiit kommentoitavaksi</option>
 			<option value="started" <#if states?? && states?seq_contains("started")>selected="selected"</#if>>Aloitetut</option>
 			<option value="notStarted" <#if states?? && states?seq_contains("notStarted")>selected="selected"</#if>>Aloittamattomat</option>
 		</select>

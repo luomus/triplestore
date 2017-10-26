@@ -212,8 +212,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				if (!given(state)) continue;
 				if (state.equals("ready")) {
 					if (evaluation != null && evaluation.isReady()) return true;
+				} else if (state.equals("readyForComments")) {
+					if (evaluation != null && evaluation.isReadyForComments()) return true;
 				} else if (state.equals("started")) {
-					if (evaluation != null && !evaluation.isReady()) return true;
+					if (evaluation != null && evaluation.isStarted()) return true;
 				} else if (state.equals("notStarted")) {
 					if (evaluation == null) return true;
 				} else {

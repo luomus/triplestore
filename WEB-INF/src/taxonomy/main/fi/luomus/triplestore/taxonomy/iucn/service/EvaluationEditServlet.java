@@ -203,7 +203,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private boolean invalidState(String state) {
-		return !IUCNEvaluation.STATE_READY.equals(state) && !IUCNEvaluation.STATE_STARTED.equals(state);
+		return !IUCNEvaluation.STATE_READY.equals(state) && !IUCNEvaluation.STATE_STARTED.equals(state) && !IUCNEvaluation.STATE_READY_FOR_COMMENTS.equals(state);
 	}
 
 	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -211,6 +211,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			getSession(req).setFlashSuccess("Kopioitu onnistuneesti!");
 		} else if (givenData.isReady()) {
 			getSession(req).setFlashSuccess("Tallennettu ja merkitty valmiiksi!");
+		} else if (givenData.isReadyForComments()) {
+			getSession(req).setFlashSuccess("Tallennettu ja valmis kommentoitavaksi!");
 		} else {
 			getSession(req).setFlashSuccess("Tallennettu onnistuneesti!");
 		}
@@ -298,7 +300,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void setEditNotes(IUCNEvaluation givenData) {
-		String notes = givenData.isReady() ? "Merkitty valmiiksi" : "Tallennettu";
+		String notes = givenData.isReady() ? "Merkitty valmiiksi" : givenData.isReadyForComments() ? "Valmis kommentoitavaksi" : "Tallennettu";
 		Model model = givenData.getModel();
 		if (model.hasStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname())) {
 			notes += ": " + model.getStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();

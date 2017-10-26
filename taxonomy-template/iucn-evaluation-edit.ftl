@@ -382,7 +382,8 @@
 	<div class="submitButtonContainer">
 		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes">${(editNotes!"")?html}</textarea>
 		<button id="saveButton">Tallenna</button>
-		<button id="readyButton" class="ready">Tallenna ja merkitse valmiiksi</button>
+		<button id="readyForCommentsButton">Valmis kommentoitavaksi</button>
+		<button id="readyButton" class="ready">Valmis</button>
 	</div>
 </form>
 </#if>
@@ -468,13 +469,18 @@ $(function() {
  	});
  	
  	$("#saveButton").on('click', function() {
- 		$("#saveButton, #readyButton").prop("disabled", 'disabled');
+ 		$("#saveButton, #readyButton, #readyForCommentsButton").prop("disabled", 'disabled');
  		$("#evaluationState").val("MKV.stateStarted");
  		document.getElementById("evaluationEditForm").submit();
  	});
  	$("#readyButton").on('click', function() {
- 		$("#saveButton, #readyButton").prop("disabled", 'disabled');
+ 		$("#saveButton, #readyButton, #readyForCommentsButton").prop("disabled", 'disabled');
  		$("#evaluationState").val("MKV.stateReady");
+ 		document.getElementById("evaluationEditForm").submit();
+ 	});
+ 	$("#readyForCommentsButton").on('click', function() {
+ 		$("#saveButton, #readyButton, #readyForCommentsButton").prop("disabled", 'disabled');
+ 		$("#evaluationState").val("MKV.stateReadyForComments");
  		document.getElementById("evaluationEditForm").submit();
  	});
  	

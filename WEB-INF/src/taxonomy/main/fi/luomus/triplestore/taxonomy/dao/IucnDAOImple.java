@@ -162,6 +162,7 @@ public class IucnDAOImple implements IucnDAO {
 					if (c++ % 5000 == 0) System.out.println(" ... syncing " + c);
 					for (IUCNEvaluation evaluation : target.getEvaluations()) {
 						Integer year = evaluation.getEvaluationYear();
+						if (!evaluation.isLocked()) continue;
 						if (!evaluation.isReady()) continue;
 						if (!evaluation.hasIucnStatus()) continue;
 						if (year == null || year > currentYear) continue;
