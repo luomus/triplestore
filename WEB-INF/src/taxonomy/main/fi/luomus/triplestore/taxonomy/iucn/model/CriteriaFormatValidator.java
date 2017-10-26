@@ -55,6 +55,7 @@ public class CriteriaFormatValidator {
 		c.getMainCriteria("C2").getSubCriteria('a').addSpecifications("i", "ii");
 
 		CriteriaFormatValidator d = new CriteriaFormatValidator();
+		d.addMainCriteria("D");
 		d.addMainCriteria("D1");
 		d.addMainCriteria("D2");
 
