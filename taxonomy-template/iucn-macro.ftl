@@ -500,14 +500,14 @@
 <#macro csvHabitatPairValue habitatObject><@compress single_line=true>
 	${habitatObject.habitat?replace("MKV.habitat","")}
 	<#list habitatObject.habitatSpecificTypes as type>
-		${type?replace("MKV.habitatSpecificType","")?lower_case}
+		${type?replace("MKV.habitatSpecificType","")?lower_case?replace("pak", "pa")?replace("vak", "va")}
 	</#list>
 </@compress><#t></#macro>
 
 <#macro csvExteralPopulationImpactOnRedListStatus evaluation>
 	<#switch evaluation.getValue("MKV.exteralPopulationImpactOnRedListStatus")!"">
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus1">-1<#break>
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus2">-2<#break>
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus1">(-1)<#break>
+		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus2">(-2)<#break>
 		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus1">°<#break>
 		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus2">°°<#break>		
 	</#switch>

@@ -13,10 +13,11 @@
 <#list ["A", "B", "C", "D", "E"] as criteria>
 "${criteria} kriteerit","..muistiinpanot","${criteria} luokka","..muistiinpanot",<#t>
 </#list>
-"Kommentit kriteereistä (julkinen)","Luokka","..muistiinpanot","Alentaminen tai korottaminen muistiinpanot","Kriteerit","..muistiinpanot","DD-syy","..muistiinpanot","Vaihteluväli","Muutoksen syy","..muistiinpanot",<#t>
-"Mahdollisesti hävinnyt","..muistiinpanot","Viimeisin havainto","Kommentit arvioinnin tarkkuudesta/luotettavuudesta (julkinen)","Ehd. LSA erityisesti suojeltavaksi","..muistiinpanot","Osuus globaalista pop.","..muistiinpanot",<#t>
+"Kommentit kriteereistä (julkinen)","Luokka","Kriteerit","Vaihteluväli","+/-","Muutoksen syy","DD-syy",<#t>
+"Mahd. hävinnyt","Viimeisin havainto","LSA ehd.",<#t>
+"Luokka muistiinpanot","Kriteerit muistiinpanot","+/- muistiinpanot","Muutoksen syy muistiinpanot","DD-syy muistiinpanot","Mahd. hävinnyt muistiinpanot",<#t>
+"Kommentit arv. tarkkuus/luotettavuus (julkinen)","LSA ehd. muistiinpanot","Osuus glob.pop.","..muistiinpanot",<#t>
 "Julkaisut","Muut lähteet"
-
 <#list targets as target><#if target.hasEvaluation(selectedYear)><#assign evaluation = target.getEvaluation(selectedYear)><@compress single_line=true>
 "${target.orderAndFamily}",<#t>
 "${target.scientificName!target.qname}",<#t>
@@ -113,21 +114,22 @@ ${reason.endangerment?replace("MKV.endangermentReason","")}<#if reason_has_next>
 "<@showValue "MKV.status"+criteria+"Notes" evaluation />",<#t>
 </#list>
 "<@showValue "MKV.criteriaNotes" evaluation />",<#t>
-"${(evaluation.getValue("MKV.redListStatus")!"")?replace("MX.iucn","")}<@csvExteralPopulationImpactOnRedListStatus evaluation />",<#t>
-"<@showValue "MKV.redListStatusNotes" evaluation />",<#t>
-"<@showValue "MKV.exteralPopulationImpactOnRedListStatusNotes" evaluation />",<#t>
+"${(evaluation.getValue("MKV.redListStatus")!"")?replace("MX.iucn","")} <@csvExteralPopulationImpactOnRedListStatus evaluation />",<#t>
 "<@showValue "MKV.criteriaForStatus" evaluation />",<#t>
-"<@showValue "MKV.criteriaForStatusNotes" evaluation />",<#t>
-"<@showValue "MKV.ddReason" evaluation />",<#t>
-"<@showValue "MKV.ddReasonNotes" evaluation />",<#t>
 "${(evaluation.getValue("MKV.redListStatusMin")!"")?replace("MX.iucn","")} - ${(evaluation.getValue("MKV.redListStatusMax")!"")?replace("MX.iucn","")}",<#t>
+"<@showValue "MKV.exteralPopulationImpactOnRedListStatus" evaluation />",<#t>
 "<@showValue "MKV.reasonForStatusChange" evaluation />",<#t>
-"<@showValue "MKV.reasonForStatusChangeNotes" evaluation />",<#t>
+"<@showValue "MKV.ddReason" evaluation />",<#t>
 "${(evaluation.getValue("MKV.possiblyRE")!"")?replace("MX.iucn","")}",<#t>
-"<@showValue "MKV.possiblyRENotes" evaluation />",<#t>
 "<@showValue "MKV.lastSightingNotes" evaluation />",<#t>
-"<@showValue "MKV.redListStatusAccuracyNotes" evaluation />",<#t>
 "<@showValue "MKV.lsaRecommendation" evaluation />",<#t>
+"<@showValue "MKV.redListStatusNotes" evaluation />",<#t>
+"<@showValue "MKV.criteriaForStatusNotes" evaluation />",<#t>
+"<@showValue "MKV.exteralPopulationImpactOnRedListStatusNotes" evaluation />",<#t>
+"<@showValue "MKV.reasonForStatusChangeNotes" evaluation />",<#t>
+"<@showValue "MKV.ddReasonNotes" evaluation />",<#t>
+"<@showValue "MKV.possiblyRENotes" evaluation />",<#t>
+"<@showValue "MKV.redListStatusAccuracyNotes" evaluation />",<#t>
 "<@showValue "MKV.lsaRecommendationNotes" evaluation />",<#t>
 "<@showValue "MKV.percentageOfGlobalPopulation" evaluation />",<#t>
 "<@showValue "MKV.percentageOfGlobalPopulationNotes" evaluation />",<#t>
