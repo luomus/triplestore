@@ -77,7 +77,7 @@ ${target.getEvaluation(selectedYear).remarks?replace("\n","")?replace("\r","")}
 <@csvHabitatPairValue evaluation.primaryHabitat />
 </#if>",<#t>
 "<#list evaluation.secondaryHabitats as habitat>
-<@csvHabitatPairValue habitat /><#if habitat_has_next>; </#if>
+<@csvHabitatPairValue habitat /><#if habitat_has_next>, </#if>
 </#list>",<#t>
 "<@showValue "MKV.habitatNotes" evaluation />",<#t>
 "<@showValue "MKV.habitatGeneralNotes" evaluation />",<#t>
