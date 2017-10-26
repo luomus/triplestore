@@ -162,7 +162,7 @@ public class TaxonValidator {
 			}
 		}
 		
-		if (taxon.isCursiveName() || taxon.getTaxonRank() == null) {
+		if ((taxon.isCursiveName() || taxon.getTaxonRank() == null) && !GENUS.equals(taxon.getTaxonRank())) {
 			name = allowParentheses(name);
 			name = allowSpace(name);
 		}
