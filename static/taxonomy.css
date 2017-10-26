@@ -93,9 +93,9 @@ label {
 }
 #editTaxonDescriptions label {
 	width: auto;
-	padding-right: 1em;
-	margin-top: 1em;
-	margin-bottom: 0.5em;
+	text-align: left;
+	padding: 0;
+	margin: 0;
 }
 select, input {
 	width: 185px;
@@ -252,16 +252,73 @@ tr.errorMessage td {
 }
 
 #editTaxonDescriptions .portlet {
-	width: 800px;
-	dislay: inline-block;
-	margin: 2em;
+	dislay: block;
+	margin: 0;
+	margin-bottom: 2em;
 } 
 
 #editTaxonDescriptions .portlet-header {
 	padding: 0.6em;
 	font-size: 1.2em;
 }
+#editTaxonDescriptions table {
+	border-collapse: separate;
+	width: 100%;
+}
+#editTaxonDescriptions table td {
+	width: 33%;
+	border: 3px solid rgb(240,240,240);
+	padding: 5px;
+	border-spacing: 10px;
+	vertical-align: top;
+}
+#editTaxonDescriptions .content { cursor: pointer; height: 100%; }
+#editTaxonDescriptions a,
+#editTaxonDescriptions a:hover,
+#editTaxonDescriptions a:visited {
+	color: blue;
+}
+#editTaxonDescriptions table td .info {
+	color: rgb(200,200,200);
+}
+.emptyContent {
+	margin: 0;
+	padding: 2em;
+	border: 1px solid rgb(220,220,220);
+	border-radius: 5px;
+}
+#editTaxonDescriptions .ui-widget-content {
+	background: none;
+	background-color: white;
+	font-family: Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+	font-size: 14px;
+}
+#editTaxonDescriptions .saveButton {
+	width: 100%;
+	padding: 2em;
+}
+.noscroll {
+	overflow: hidden;
+}
+.closeEditorButton {
+	height: 40px;
+	margin: 1em;
+}
+.closeEditorButton.doSave {
+	width: 500px;
+}
 
+#editTaxonDescriptions .textareaContainer {
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background-color: white;
+	z-index: 11;
+}
 .informalGroupsTable td {
 	max-width: 300px;
 	padding-bottom: 0px;

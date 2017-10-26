@@ -37,7 +37,8 @@
 	<link href="${staticURL}/jquery-switchButton/jquery.switchButton.css?${staticContentTimestamp}" rel="stylesheet" />
 	
 	<#if page == "taxonDescriptions">
-		<script src="${staticURL}/tinymce/tinymce.4.min.js"></script>
+		<script src="${staticURL}/tinymce-4.7.1/tinymce.min.js"></script>
+		<script src="${staticURL}/tinymce-4.7.1/jquery.tinymce.min.js"></script>
 	</#if>
 	
 	<link href="${staticURL}/luomus.css?${staticContentTimestamp}" rel="stylesheet" />

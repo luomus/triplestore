@@ -247,10 +247,6 @@
 	<@textarea field defaultValue/>
 </#macro>
 
-<#macro longText field defaultValue="taxonValue" permissions="requireEditorPermissions">
-	<@textarea field defaultValue "longtext" permissions />
-</#macro>
-
 <#macro input field autocomplete="off" defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<#if autocomplete != "on" && autocomplete != "off">INVALID autocomplete value given!</#if>
 	<#assign cleanedName = cleanName(field)>

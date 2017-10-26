@@ -26,8 +26,6 @@
 	${taxon.qname}
 </h5>
 
-<div id="loadsUglyBlocker">Loading... Please wait!</div>
-
 <#assign locales = ["fi","sv","en"] />
 
 <#list groups as group>
@@ -42,28 +40,34 @@
 </#list>
 
 <#macro printGroup group initiallyClosed index>
-	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("en") />
+	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("sv") + " &mdash; " + group.label.forLocale("en") />
 	<@portletHeader headerLabel initiallyClosed />
-		<div class="languageTabs">
-			<ul>
-				<#list locales as locale>
-					<li><a href="#group-${index}-${locale}">${locale?upper_case}</a></li>
-				</#list>
-			</ul>
-			<#list locales as locale>
-				<div id="group-${index}-${locale}">
-					<#list variables[group.qname.toString()] as descriptionVariable>
-						<#assign qname = descriptionVariable.qname.toString() />
+		<table>
+			<#list variables[group.qname.toString()] as descriptionVariable>
+				<#assign qname = descriptionVariable.qname.toString() />
+				<#assign property = properties.getProperty(qname)>
+				<tr>
+					<#list locales as locale>
 						<#assign existingValue = "" />
 						<#if taxon.descriptions.defaultContext??>
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
-						<@label qname "longtext" locale />
-						<@longText qname + "___" + locale existingValue />
+						<td>
+							<h2>${property.label.forLocale(locale)!field}</h2>
+							<div class="content">
+								<#if existingValue?has_content>
+									${existingValue}
+								<#else><p class="info emptyContent">Click to add content</p></#if>
+							</div>
+							<div class="textareaContainer hidden">
+								<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
+								<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
+							</div>
+						</td>
 					</#list>
-				</div>
+				</tr>
 			</#list>
-		</div>
+		</table>
 	<@portletFooter />
 </#macro>
 
@@ -79,39 +83,52 @@
 
 function initTinyMCE() {
 	tinymce.init({
-		plugins: 'link code',
-    	selector: '.tinymcenow',
-    	skin_url: '${staticURL}/tinymce/skins/lightgray',
-    	menubar: false,
-    	statusbar: false,
-    	height: "210",
-    	toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
-    	setup: function(editor) {
-    		editor.on('change', function(e) {
-      			editor.save();
-      			updateOriginal(editor.getElement());
-    		});
-  		}
+		
   	});
  }
 
 $(function() {
 	
-	$(document).ready(function() {
-		$("textarea:visible").addClass('tinymcenow');
-		initTinyMCE();
-		$(".initiallyClosed").on('click', function() {
-			$(this).next('.portlet-content').find('.ui-tabs-panel').first().find('textarea').addClass('tinymcenow');
-			initTinyMCE();
-		});
-		$("#loadsUglyBlocker").fadeOut('slow');
+	var originalContents = {};
+	
+	$('.content').on('click', function() {
+		$('body').addClass('noscroll');
+		var container = $(this).parent().find('.textareaContainer'); 
+		container.show();
+		
+		var textarea = container.find('textarea').first();
+		var id = textarea.attr('id');
+		if (!originalContents[id]) {
+			originalContents[id] = textarea.val();
+		}
+		textarea.tinymce({
+    		skin_url: '${staticURL}/tinymce-4.7.1/skins/lightgray',
+			plugins: 'link code',
+    		toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
+    		menubar: false,
+    		statusbar: false,
+    		height: "600"
+  		});
 	});
 	
-	$(".languageTabs").tabs({
-		activate: function(event, ui) {
-			ui.newPanel.find('textarea').addClass('tinymcenow');
-			initTinyMCE();
+	$('.closeEditorButton').on('click', function() {
+		var doSave = $(this).hasClass('doSave');
+		var container = $(this).closest('.textareaContainer');
+		var textarea = container.find('textarea').first();
+		var id = textarea.attr('id');
+		
+		if (doSave) {
+			originalContents[id] = textarea.val();
+			container.parent().find('.content').html(textarea.val());
+		} else {
+			textarea.val(originalContents[id]);
 		}
+		
+		container.hide();
+		$('body').removeClass('noscroll');
+		$(".saveButton").remove();
+		
+		return doSave;  
 	});
 	
 	$("#imagesButton").on('click', function() {
