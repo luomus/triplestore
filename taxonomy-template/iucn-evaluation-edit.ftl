@@ -235,14 +235,13 @@
 	</ul>
 </#if>
 
-<#if !permissions && draftYear == selectedYear && evaluation?? && evaluation.id??>
+<#if draftYear == selectedYear && evaluation?? && evaluation.id??>
 <form id="remarksEditForm" action="${baseURL}/iucn/remarks" method="post">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
 	<div class="widgetTools ui-widget ui-corner-all">
 		<div class="ui-widget-header">Kommentit</div>
 		<div class="ui-widget-content">
-			<p class="info">Tässä voivat ne henkilöt joilla ei ole arviointioikeutta tähän lajiin lisätä kommentteja arvioinnista arvioijien luettavaksi.</p>
-			<p class="info">Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
+			<p class="info">Tässä voi kommentoida arviointia. Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
 			<p><textarea id="remarksField" name="MKV.remarks"></textarea></p>
 			<p><input type="submit" value="Lisää" /></p>
 		</div>
