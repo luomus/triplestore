@@ -126,11 +126,11 @@ function initColumnsPortlets() {
 	.prepend("<span class='ui-icon ui-icon-minusthick'></span>")
 	.end().find(".portlet-content");
 	
-	$(".portlet-header .ui-icon").click(function() {
-		$(this).toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
-		$(this).parents(".portlet:first").find(".portlet-content").toggle();
-	});
-
+	$(".portlet-header").click(function() {
+		$(this).find(".ui-icon").toggleClass("ui-icon-minusthick").toggleClass("ui-icon-plusthick");
+		$(this).parent().find(".portlet-content").toggle();
+	}).disableSelection();
+	
 	$(".initiallyClosed").each(function() {
 		$(this).find("span")
 		.toggleClass("ui-icon-minusthick")
