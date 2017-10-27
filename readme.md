@@ -269,7 +269,7 @@ ErrorReporting_SMTP_Username =
 ErrorReporting_SMTP_Password =
 ErrorReporting_SMTP_SendTo =
 ErrorReporting_SMTP_SendFrom = 
-ErrorReporting_SMTP_Subject = Triplestore Taxonomy Editor Dev Error Report
+ErrorReporting_SMTP_Subject = Triplestore Taxon Editor Dev Error Report
 
 DBdriver = oracle.jdbc.OracleDriver
 DBurl = 

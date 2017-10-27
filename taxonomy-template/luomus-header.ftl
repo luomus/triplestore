@@ -118,7 +118,7 @@
 								<li role="menuitem"><a href="${baseURL}/help">Help</a></li>
 							</#if>
 						<#else>
-							<li role="menuitem"><a href="${baseURL}">Taxonomy editor</a></li>
+							<li role="menuitem"><a href="${baseURL}">Taxon Editor</a></li>
 						</#if>
 					</ul>
 				</nav>
