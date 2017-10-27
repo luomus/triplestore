@@ -1,12 +1,15 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.utils.LoginUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.utils.LoginUtil;
 
 @WebServlet(urlPatterns = {"/login/*"})
 public class LoginServlet extends EditorBaseServlet {
@@ -22,7 +25,7 @@ public class LoginServlet extends EditorBaseServlet {
 
 	private LoginUtil getLoginUtil() {
 		if (util == null) {
-			util = new LoginUtil(frontpage(), getConfig(), getErrorReporter(), Utils.set("MA.admin"));
+			util = new LoginUtil(frontpagesForRoles(), getConfig(), getErrorReporter(), Utils.set("MA.admin"));
 		}
 		return util; 
 	}
@@ -37,8 +40,10 @@ public class LoginServlet extends EditorBaseServlet {
 		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req));
 	}
 
-	private String frontpage() {
-		return getConfig().baseURL() + "/greet";
+	private Map<String, String> frontpagesForRoles() {
+		Map<String, String> frontpages = new HashMap<>();
+		frontpages.put("MA.admin", getConfig().baseURL() + "/greet");
+		return frontpages;
 	}
 
 }

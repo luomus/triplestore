@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,7 +18,9 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/taxon-descriptions/*"})
@@ -57,6 +60,13 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 						}
 					}, 10);
 
+	private static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
+	
+	@Override
+	protected Set<User.Role> allowedRoles() {
+		return ALLOWED;
+	}
+	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);

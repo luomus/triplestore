@@ -2,10 +2,12 @@ package fi.luomus.triplestore.taxonomy.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
 import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.models.User;
@@ -53,6 +56,18 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		}
 	}
 
+	private static final Set<User.Role> DEFAULT_ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER));
+	
+	protected Set<User.Role> allowedRoles() {
+		return DEFAULT_ALLOWED;
+	}
+	
+	@Override
+	protected boolean authorized(HttpServletRequest req) {
+		if (!super.authorized(req)) return false;
+		return allowedRoles().contains(getUser(req).getRole());
+	}
+	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		return initResponseData(req);

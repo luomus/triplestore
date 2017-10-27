@@ -1,12 +1,15 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.utils.LoginUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.utils.LoginUtil;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/login/*"})
 public class LoginServlet extends TaxonomyEditorBaseServlet {
@@ -22,9 +25,20 @@ public class LoginServlet extends TaxonomyEditorBaseServlet {
 
 	private LoginUtil getLoginUtil() {
 		if (util == null) {
-			util = new LoginUtil(frontpage(), getConfig(), getErrorReporter(), Utils.set("MA.admin", "MA.taxonEditorUser"));
+			util = new LoginUtil(
+					frontpages(), 
+					getConfig(), getErrorReporter(), 
+					Utils.set("MA.admin", "MA.taxonEditorUser", "MA.taxonEditorUserDescriptionWriterOnly"));
 		}
 		return util; 
+	}
+
+	private Map<String, String> frontpages() {
+		Map<String, String> frontPages = new HashMap<>();
+		frontPages.put("MA.admin", getConfig().baseURL());
+		frontPages.put("MA.taxonEditorUser", getConfig().baseURL());
+		frontPages.put("MA.taxonEditorUserDescriptionWriterOnly", getConfig().baseURL()+"/taxon-descriptions");
+		return frontPages;
 	}
 
 	@Override
@@ -35,10 +49,6 @@ public class LoginServlet extends TaxonomyEditorBaseServlet {
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req));
-	}
-
-	private String frontpage() {
-		return getConfig().baseURL();
 	}
 
 }

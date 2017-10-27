@@ -60,6 +60,8 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	@Override
 	protected ResponseData notAuthorizedRequest(HttpServletRequest req, HttpServletResponse res) {
 		log(req);
+		SessionHandler session = getSession(req, false);
+		if (session != null) session.invalidate();
 		URIBuilder uri = new URIBuilder(getConfig().get("LoginURL"));
 		String originalURL = getURL(req);
 		String next = originalURL.replace("/triplestore", "").replace("/taxonomy-editor", "");
@@ -147,11 +149,24 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected User getUser(SessionHandler session) {
-		User.Role role = User.Role.NORMAL_USER;
-		if ("admin".equals(session.get("role"))) {
-			role = User.Role.ADMIN;
-		}
+		User.Role role = getRole(session);
 		return new User(new Qname(session.get("user_qname")), session.get("person_token"), session.userName(), role);
+	}
+
+	private User.Role getRole(SessionHandler session) {
+		User.Role role = User.Role.NORMAL_USER;
+		Set<String> roles = getRoles(session);
+		if (roles.contains("MA.admin")) {
+			role = User.Role.ADMIN;
+		} else if (roles.contains("MA.taxonEditorUserDescriptionWriterOnly")) {
+			role = User.Role.DESCRIPTION_WRITER;
+		}
+		return role;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Set<String> getRoles(SessionHandler session) {
+		return (Set<String>) session.getObject("roles");
 	}
 
 	@Override

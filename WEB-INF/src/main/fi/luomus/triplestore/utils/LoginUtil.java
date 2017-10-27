@@ -2,6 +2,7 @@ package fi.luomus.triplestore.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +29,8 @@ public class LoginUtil  {
 		private String userFullname;
 		private String userQname;
 		private String personToken;
-		private boolean isAdmin = false;
 		private String next;
+		private Set<String> roles; 
 
 		public AuthenticationResult(boolean success) {
 			this.success = success;
@@ -55,10 +56,6 @@ public class LoginUtil  {
 			return userQname;
 		}
 
-		public boolean isForAdminUser() {
-			return isAdmin;
-		}
-
 		public AuthenticationResult setErrorMessage(String errorMessage) {
 			this.errorMessage = errorMessage;
 			return this;
@@ -74,10 +71,6 @@ public class LoginUtil  {
 
 		public void setUserQname(String userQname) {
 			this.userQname = userQname;
-		}
-
-		public void setAdmin(boolean isAdmin) {
-			this.isAdmin = isAdmin;
 		}
 
 		public String getNext() {
@@ -96,29 +89,43 @@ public class LoginUtil  {
 			this.personToken = personToken;
 		}
 
+		public Set<String> getRoles() {
+			return roles;
+		}
+
+		public void setRoles(Set<String> roles) {
+			this.roles = roles;
+		}
+
 	}
 
-	private final String frontPage;
+	private final Map<String, String> frontpageForRoles;
 	private final ErrorReporter errorReporter;
 	private final Config config;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 	private final Set<String> allowedRoles;
 
-	public LoginUtil(String frontpage, Config config, ErrorReporter errorReporter, Set<String> allowedRoles) {
+	public LoginUtil(Map<String, String> frontpageForRoles, Config config, ErrorReporter errorReporter, Set<String> allowedRoles) {
 		this.config = config;
-		this.frontPage = frontpage;
+		this.frontpageForRoles = frontpageForRoles;
 		this.errorReporter = errorReporter;
 		this.allowedRoles = allowedRoles;
 	}
 
 	public ResponseData processGet(HttpServletRequest req, SessionHandler session, ResponseData responseData) throws Exception {
 		if (session.isAuthenticatedFor("triplestore")) {
-			return responseData.setRedirectLocation(frontPage);
+			return responseData.setRedirectLocation(getFrontPage(session));
 		}
 		String next = req.getParameter("next");
 		if (next == null) next = "";
 		setLajiAuthLinks(next, responseData);
 		return responseData.setViewName("login");
+	}
+
+	private String getFrontPage(SessionHandler session) {
+		@SuppressWarnings("unchecked")
+		Set<String> roles = (Set<String>) session.getObject("roles");
+		return frontpageForRoles.get(roles.iterator().next());
 	}
 
 	private void setLajiAuthLinks(String next, ResponseData responseData) throws URISyntaxException {
@@ -142,10 +149,11 @@ public class LoginUtil  {
 		try {
 			if (authentication.successful()) {
 				authenticateSession(session, authentication);
-				if (given(authentication.getNext())) {
+				if (nextGiven(authentication)) {
 					return responseData.setRedirectLocation(config.baseURL() + authentication.getNext());
 				} else {
-					return responseData.setRedirectLocation(frontPage);
+					String frontpage = frontpageForRoles.get(authentication.getRoles().iterator().next());
+					return responseData.setRedirectLocation(frontpage);
 				}
 			} else {
 				responseData.setData("error", authentication.getErrorMessage());
@@ -158,15 +166,20 @@ public class LoginUtil  {
 		} 
 	}
 
+	private boolean nextGiven(AuthenticationResult authentication) {
+		String next = authentication.getNext();
+		if (!given(next)) return false;
+		if (next.equals("/")) return false;
+		return true;
+	}
+
 	private void authenticateSession(SessionHandler session, AuthenticationResult authentication) throws Exception {
 		session.authenticateFor("triplestore");
 		session.setUserId(authentication.getUserId());
 		session.setUserName(authentication.getUserFullname());
 		session.put("user_qname", authentication.getUserQname());
 		session.put("person_token", authentication.getPersonToken());
-		if (authentication.isForAdminUser()) {
-			session.put("role", "admin");
-		}
+		session.setObject("roles", authentication.getRoles());
 		session.setTimeout(60 * 42);
 	}
 
@@ -194,14 +207,17 @@ public class LoginUtil  {
 		AuthenticationResult authenticationResponse = new AuthenticationResult(true);
 		UserDetails userDetails = authenticationEvent.getUser();
 		if (!validForSystem( userDetails)) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");
-		
 		authenticationResponse.setPersonToken(token);
+		authenticationResponse.setRoles(userDetails.getRoles());
+		
+		// For easy testing of different roles
+		//Set<String> overridingRoles = Utils.set("MA.taxonEditorUserDescriptionWriterOnly");
+		//authenticationResponse.setRoles(overridingRoles);
+		
 		authenticationResponse.setUserId(userDetails.getEmail());
 		authenticationResponse.setUserQname(userDetails.getQname().get());
 		authenticationResponse.setUserFullname(userDetails.getName());
-		setAdminStatus(authenticationResponse, userDetails.getRoles());
 		authenticationResponse.setNext(authenticationEvent.getNext());
-
 		return authenticationResponse;
 	}
 
@@ -218,10 +234,6 @@ public class LoginUtil  {
 			}
 		}
 		return false;
-	}
-
-	private void setAdminStatus(AuthenticationResult authenticationResponse, Set<String> roles) {
-		authenticationResponse.setAdmin(roles.contains("MA.admin"));
 	}
 
 	private LajiAuthClient getLajiAuthClient() throws URISyntaxException {

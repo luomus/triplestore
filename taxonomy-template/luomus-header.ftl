@@ -77,7 +77,12 @@
 				<div id="userinfo">
 					<ul>
              			<li><a href="${baseURL}/logout" class="button">Logout</a></li>
-              			<#if user.admin><li style="color: green; font-weight: bold;">[ADMIN]</li></#if>
+             			<#if user.role == "DESCRIPTION_WRITER">
+              				<li style="color: rgb(150, 225, 230); font-weight: bold;">[Description writer]</li>
+              			</#if>
+              			<#if user.role == "ADMIN">
+              				<li style="color: green; font-weight: bold;">[Admin]</li>
+              			</#if>
               			<li>Logged in as <span class="name">${user.fullname}</span></li>
           			</ul>
 				</div>
@@ -99,14 +104,22 @@
 			<div id="navigation-wrap" role="navigation">
 				<nav id="mainmenu" role="navigation">
 					<ul class="nav-bar" role="menu">
-						<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
-						<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
-						<li role="menuitem"><a href="${baseURL}/iucn">IUCN</a></li>
-						<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
-						<li role="menuitem"><a href="${baseURL}/informalGroups">Informal groups</a></li>
-						<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
-						<li role="menuitem"><a href="${baseURL}/invasive">Invasive</a></li>
-						<li role="menuitem"><a href="${baseURL}/help">Help</a></li>
+						<#if user??>
+							<#if user.role == "DESCRIPTION_WRITER">
+								<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
+							<#else>
+								<li role="menuitem"><a href="${baseURL}">Taxonomy tree</a></li>
+								<li role="menuitem"><a href="${baseURL}/taxon-descriptions">Descriptions</a></li>
+								<li role="menuitem"><a href="${baseURL}/iucn">IUCN</a></li>
+								<li role="menuitem"><a href="${baseURL}/publications">Publications</a></li>
+								<li role="menuitem"><a href="${baseURL}/informalGroups">Informal groups</a></li>
+								<li role="menuitem"><a href="${baseURL}/checklists">Checklists</a></li>
+								<li role="menuitem"><a href="${baseURL}/invasive">Invasive</a></li>
+								<li role="menuitem"><a href="${baseURL}/help">Help</a></li>
+							</#if>
+						<#else>
+							<li role="menuitem"><a href="${baseURL}">Taxonomy editor</a></li>
+						</#if>
 					</ul>
 				</nav>
 		    </div>
