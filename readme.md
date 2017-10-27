@@ -216,7 +216,7 @@ Taxon Editor
 ===============
 
 Taxon editor responds from /triplestore/taxonomy-editor
-(Production in taxonomyeditor.luomus.fi)
+(Production in taxoneditor.laji.fi)
 
 ##Installation
 
