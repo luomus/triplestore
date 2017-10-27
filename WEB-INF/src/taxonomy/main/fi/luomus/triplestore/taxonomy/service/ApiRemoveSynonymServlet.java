@@ -1,5 +1,11 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.Collection;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -13,12 +19,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
-
-import java.util.Collection;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/removeSynonym/*"})
 public class ApiRemoveSynonymServlet extends ApiBaseServlet {
@@ -41,10 +41,14 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 			removeMisapplied(dao, taxonomyDAO, synonymParent, removedId);
 		} else if (synonymType == SynonymType.UNCERTAIN) {
 			removeUncertain(dao, taxonomyDAO, synonymParent, removedId);
+		} else if (synonymType == SynonymType.MISSPELLED) {
+			removeMisspelled(dao, taxonomyDAO, synonymParent, removedId);
 		} else if (synonymType == SynonymType.INCLUDES) {
 			removeIncludes(dao, synonymParent, removedId);
 		} else if (synonymType == SynonymType.INCLUDED_IN) {
 			removeIncludedIn(dao, synonymParent, removedId);
+		} else if (synonymType == SynonymType.BASIONYM) {
+			removeBasionym(dao, taxonomyDAO, synonymParent, removedId);
 		} else {
 			throw new UnsupportedOperationException("Unknown synonym type: "  + synonymType);
 		}
@@ -86,6 +90,26 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 	private void removeUncertain(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon synonymParent, Qname removedSynonymTaxonId) throws Exception {
 		Qname subject = removedSynonymTaxonId;
 		Predicate predicate = ApiAddSynonymServlet.UNCERTAIN_CIRCUMSCRIPTION;
+		Qname object = synonymParent.getTaxonConceptQname();
+		deleteStatement(dao, subject, predicate, object);
+
+		EditableTaxon removedTaxon = (EditableTaxon) taxonomyDAO.getTaxon(removedSynonymTaxonId);
+		removedTaxon.invalidate();
+	}
+	
+	private void removeBasionym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon synonymParent, Qname removedSynonymTaxonId) throws Exception {
+		Qname subject = removedSynonymTaxonId;
+		Predicate predicate = ApiAddSynonymServlet.BASIONYM_CIRCUMSCRIPTION;
+		Qname object = synonymParent.getTaxonConceptQname();
+		deleteStatement(dao, subject, predicate, object);
+
+		EditableTaxon removedTaxon = (EditableTaxon) taxonomyDAO.getTaxon(removedSynonymTaxonId);
+		removedTaxon.invalidate();
+	}
+	
+	private void removeMisspelled(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon synonymParent, Qname removedSynonymTaxonId) throws Exception {
+		Qname subject = removedSynonymTaxonId;
+		Predicate predicate = ApiAddSynonymServlet.MISSPELLED_CIRCUMSCRIPTION;
 		Qname object = synonymParent.getTaxonConceptQname();
 		deleteStatement(dao, subject, predicate, object);
 

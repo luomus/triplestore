@@ -26,12 +26,11 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
+	private static final String MX_BASIONYM_CIRCUMSCRIPTION = "MX.basionymCircumscription";
+	private static final String MX_MISSPELLED_CIRCUMSCRIPTION = "MX.misspelledCircumscription";
 	private static final String MX_UNCERTAIN_CIRCUMSCRIPTION = "MX.uncertainCircumscription";
-
 	private static final String MX_MISAPPLIED_CIRCUMSCRIPTION = "MX.misappliedCircumscription";
-
 	private static final String MX_CIRCUMSCRIPTION = "MX.circumscription";
-
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
 
 	private static final Object LOCK = new Object();
@@ -72,20 +71,31 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		EditableTaxon taxon = new EditableTaxon(qname, this);
 		for (Statement statement : model.getStatements()) {
 			String predicate = statement.getPredicate().getQname();
+			Qname object = q(statement);
 			if (MX_IS_PART_OF.equals(predicate)) {
-				Qname parentQname = q(statement.getObjectResource());
-				taxon.setParentQname(parentQname);
+				taxon.setParentQname(object);
 			} else if (MX_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.setTaxonConceptQname(q(statement.getObjectResource()));
+				taxon.setTaxonConceptQname(object);
 			} else if (MX_MISAPPLIED_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.addMisappliedInConcept(q(statement.getObjectResource()));
+				taxon.usedAsMisappliedInConcept(object);
 			} else if (MX_UNCERTAIN_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.addUncertainSynonymInConcept(q(statement.getObjectResource()));
+				taxon.usedAsUncertainSynonymInConcept(object);
+			} else if (MX_MISSPELLED_CIRCUMSCRIPTION.equals(predicate)) {
+				taxon.usedAsMisspelledInConcept(object);
+			} else if (MX_BASIONYM_CIRCUMSCRIPTION.equals(predicate)) {
+				taxon.usedAsBasionymInConcept(object);
 			} else {
 				addPropertyToTaxon(taxon, statement);
 			}
 		}
 		return taxon;
+	}
+
+	private Qname q(Statement statement) {
+		if (statement.isResourceStatement()) {
+			return q(statement.getObjectResource());
+		}
+		return null;
 	}
 
 	private Qname q(RdfResource resource) {
@@ -158,6 +168,20 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
 					taxonConcept.setTaxonToBeUsedAsMisapplied(taxon.getQname());
+				}
+				
+				models = getSynonymTaxonModels(conceptQname, MX_MISSPELLED_CIRCUMSCRIPTION);
+				for (Model model : models) {
+					EditableTaxon taxon = createTaxon(model);
+					cachedTaxons.put(taxon.getQname(), taxon);
+					taxonConcept.setTaxonToBeMisspelledNameOfConcept(taxon.getQname());
+				}
+				
+				models = getSynonymTaxonModels(conceptQname, MX_BASIONYM_CIRCUMSCRIPTION);
+				for (Model model : models) {
+					EditableTaxon taxon = createTaxon(model);
+					cachedTaxons.put(taxon.getQname(), taxon);
+					taxonConcept.setTaxonToBeBasionymNameOfConcept(taxon.getQname());
 				}
 				
 				ConceptIncludes conceptIncludes = cachedTaxonConceptIncludes.get();

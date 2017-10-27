@@ -513,12 +513,21 @@ function unlinkNormalSynonym(e) {
 function unlinkMisappliedSynonym(e) {
 	if (!confirmUnlink(e, ' as misapplied name of ')) return;
 	removeSynonym(e, "MISAPPLIED", $(e).closest('.taxonWithTools').attr('id'));
-	
+}
+
+function unlinkMisspelledSynonym(e) {
+	if (!confirmUnlink(e, ' as misspelled name of ')) return;
+	removeSynonym(e, "MISSPELLED", $(e).closest('.taxonWithTools').attr('id'));
 }
 
 function unlinkUncertainSynonym(e) {
 	if (!confirmUnlink(e, ' as uncertain synonym of ')) return;
 	removeSynonym(e, "UNCERTAIN", $(e).closest('.taxonWithTools').attr('id'));
+}
+
+function unlinkBasionymSynonym(e) {
+	if (!confirmUnlink(e, ' as basionym synonym of ')) return;
+	removeSynonym(e, "BASIONYM", $(e).closest('.taxonWithTools').attr('id'));
 }
 
 function unlinkIncludesConceptLink(e) {

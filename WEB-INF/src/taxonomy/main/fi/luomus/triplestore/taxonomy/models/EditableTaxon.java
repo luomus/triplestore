@@ -2,10 +2,8 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
@@ -55,7 +53,7 @@ public class EditableTaxon extends Taxon {
 			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
 		}
 
-		Collection<Taxon> allSynonymTypes = getAllSynonyms(this);
+		Collection<Taxon> allSynonymTypes = this.getAllSynonyms();
 
 		for (Taxon synonym : allSynonymTypes) {
 			if (MASTER_CHECKLIST.equals(synonym.getChecklist())) { // This taxon is used in the master checklist as a synonym
@@ -75,16 +73,6 @@ public class EditableTaxon extends Taxon {
 		}
 
 		return false;
-	}
-
-	private Collection<Taxon> getAllSynonyms(EditableTaxon editableTaxon) {
-		List<Taxon> all = new ArrayList<>();
-		all.addAll(editableTaxon.getSynonyms());
-		all.addAll(editableTaxon.getMisappliedParents());
-		all.addAll(editableTaxon.getUncertainSynonymParents());
-		all.addAll(editableTaxon.getIncludedTaxa());
-		all.addAll(editableTaxon.getIncludingTaxa());
-		return Collections.unmodifiableCollection(all);
 	}
 
 	private boolean allowsAlterationForUserDirectly(User user, Taxon taxon) {

@@ -68,6 +68,10 @@
 						<a href="#" onclick="unlinkMisappliedSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied"></span></a>
 					<#elseif additionalClass == "uncertainSynonym">
 						<a href="#" onclick="unlinkUncertainSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
+					<#elseif additionalClass == "misspelledSynonym">
+						<a href="#" onclick="unlinkMisspelledSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misspelled synonym"></span></a>
+					<#elseif additionalClass == "basionymSynonym">
+						<a href="#" onclick="unlinkBasionymSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink basionym synonym"></span></a>
 					</#if>
 				</#if>
 			</div>
@@ -126,6 +130,16 @@
 						<@printTaxon synonymTaxon true "normalSynonym" />
 					</#list>
 				</div>
+				<#if taxon.basionyms?has_content>
+					<div class="synonymSection">
+						<h3>Basionyms</h3>
+						<#list taxon.basionyms as synonymTaxon>	 
+							<@printTaxon synonymTaxon true "basionymSynonym" />
+						</#list>
+					</div>
+				</#if>
+ 				<@listPartialSynonyms taxon.includingTaxa "Included in (pro parte)" taxon.allowsAlterationsBy(user) />
+				<@listPartialSynonyms taxon.includedTaxa "Includes" taxon.allowsAlterationsBy(user) />
 				<#if taxon.misapplied?has_content>
 					<div class="synonymSection misappliedSynonyms">
 						<h3>Misapplied</h3>
@@ -134,13 +148,19 @@
 						</#list>
 					</div>
 				</#if>
-				<@listPartialSynonyms taxon.includedTaxa "Includes" taxon.allowsAlterationsBy(user) />
- 				<@listPartialSynonyms taxon.includingTaxa "Included in" taxon.allowsAlterationsBy(user) />
 				<#if taxon.uncertainSynonyms?has_content>
 					<div class="synonymSection">
 						<h3>Uncertain synonyms</h3>
 						<#list taxon.uncertainSynonyms as synonymTaxon>	 
 							<@printTaxon synonymTaxon true "uncertainSynonym" />
+						</#list>
+					</div>
+				</#if>
+				<#if taxon.misspelled?has_content>
+					<div class="synonymSection">
+						<h3>Misspelled names</h3>
+						<#list taxon.misspelled as synonymTaxon>	 
+							<@printTaxon synonymTaxon true "misspelledSynonym" />
 						</#list>
 					</div>
 				</#if>

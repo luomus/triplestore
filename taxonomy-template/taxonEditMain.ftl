@@ -99,10 +99,12 @@
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
 				<option value="SYNONYM" selected="selected">Full synonym</option>
-				<option value="MISAPPLIED">Misapplied</option>
+				<option value="BASIONYM">Basionym</option>
+				<option value="INCLUDED_IN">Included in (pro parte)</option>
 				<option value="INCLUDES">Includes</option>
-				<option value="INCLUDED_IN">Included in</option>
+				<option value="MISAPPLIED">Misapplied</option>
 				<option value="UNCERTAIN">Uncertain</option>
+				<option value="MISSPELLED">Misspelled</option>
 			</select>
 			<br />
 			<br />
@@ -154,11 +156,13 @@
 			<input type="submit" class="button addButton" value="Add synonyms"  />
 			<br /><br />
 			<ul class="info">
-				<li><b>Synonym:</b> The synonym taxon and this taxon share the same taxonomic circumscription.</li>
-				<li><b>Misapplied:</b> The misapplied taxon (scientific name) has been erroneously used in Finland to report observations of this taxon. (They do not share the same circumscription.)</li>
-				<li><b>Includes:</b> This taxon concept includes the other taxon concepts.</li>
+				<li><b>Synonym:</b> The synonym taxon and present taxon share the same circumscription.</li>
+				<li><b>Basionym:</b> The first name under which this circumscription was described.</li>
 				<li><b>Included in:</b> This taxon concept is included in the other taxon concepts (pro parte synonym).</li>
+				<li><b>Includes:</b> This taxon concept includes the other taxon concepts.</li>
+				<li><b>Misapplied:</b> The name has erroneously been used to report observations from Finland.</li>
 				<li><b>Uncertain:</b> Same as synonym except it is not certain that the taxa share the same circumscription.</li>
+				<li><b>Misspelled:</b> The name is a (common) misspelling for this circumscription.</li>
 			</ul>
 		</form>
 	</div>

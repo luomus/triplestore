@@ -28,15 +28,17 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = 7393608674235660598L;
+	public static final Predicate BASIONYM_CIRCUMSCRIPTION = new Predicate("MX.basionymCircumscription");
 	public static final Predicate MISAPPLIED_CIRCUMSCRIPTION = new Predicate("MX.misappliedCircumscription");
 	public static final Predicate UNCERTAIN_CIRCUMSCRIPTION = new Predicate("MX.uncertainCircumscription");
+	public static final Predicate MISSPELLED_CIRCUMSCRIPTION = new Predicate("MX.misspelledCircumscription");
 	public static final Predicate INCLUDED_IN = new Predicate("MC.includedIn");
 	public static final Predicate CIRCUMSCRIPTION = new Predicate("MX.circumscription");
 	public static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
 	private static final String SYNONYM_TAXON_ID_PARAMETER = "synonymTaxonId";
 	private static final String SYNONYM_TYPE_PARAMETER = "synonymType";
 
-	public static enum SynonymType { SYNONYM, MISAPPLIED, INCLUDES, INCLUDED_IN, UNCERTAIN };
+	public static enum SynonymType { SYNONYM, MISAPPLIED, INCLUDES, INCLUDED_IN, UNCERTAIN, MISSPELLED, BASIONYM };
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -52,20 +54,24 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 			return new ResponseData().setData("error", noAccess.getMessage()).setViewName("api-error");
 
 		}
-		
+
 		Collection<EditableTaxon> synonyms = getSynonyms(req, dao, taxonomyDAO);
 		if (synonyms.isEmpty()) {
 			return new ResponseData().setData("error", "Must give at least one new taxon or one existing taxon").setViewName("api-error");
 		}
-		
+
 		Qname synonymParentConceptId = synonymParent.getTaxonConceptQname();
 
 		if (synonymType == SynonymType.SYNONYM) {
 			synonym(dao, synonyms, synonymParentConceptId);
+		} else if (synonymType == SynonymType.BASIONYM) {
+			basionym(dao, synonyms, synonymParentConceptId);
 		} else if (synonymType == SynonymType.MISAPPLIED) {
 			misapplied(dao, synonyms, synonymParentConceptId);
 		} else if (synonymType == SynonymType.UNCERTAIN) {
 			uncertain(dao, synonyms, synonymParentConceptId);
+		} else if (synonymType == SynonymType.MISSPELLED) {
+			misspelled(dao, synonyms, synonymParentConceptId);
 		} else if (synonymType == SynonymType.INCLUDES) {
 			includes(dao, synonyms, synonymParentConceptId);
 		} else if (synonymType == SynonymType.INCLUDED_IN) {
@@ -104,10 +110,18 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		storeCircumscriptionType(dao, synonyms, synonymParentConceptId, UNCERTAIN_CIRCUMSCRIPTION);
 	}
 
+	private void misspelled(TriplestoreDAO dao, Collection<EditableTaxon> synonyms, Qname synonymParentConceptId) throws Exception {
+		storeCircumscriptionType(dao, synonyms, synonymParentConceptId, MISSPELLED_CIRCUMSCRIPTION);
+	}
+
 	private void misapplied(TriplestoreDAO dao, Collection<EditableTaxon> synonyms, Qname synonymParentConceptId) throws Exception {
 		storeCircumscriptionType(dao, synonyms, synonymParentConceptId, MISAPPLIED_CIRCUMSCRIPTION);
 	}
 
+	private void basionym(TriplestoreDAO dao, Collection<EditableTaxon> synonyms, Qname synonymParentConceptId) throws Exception {
+		storeCircumscriptionType(dao, synonyms, synonymParentConceptId, BASIONYM_CIRCUMSCRIPTION);
+	}
+	
 	private void storeCircumscriptionType(TriplestoreDAO dao, Collection<EditableTaxon> synonyms, Qname synonymParentConceptId, Predicate type) throws Exception {
 		for (EditableTaxon synonym : synonyms) {
 			Model model = dao.get(synonym.getQname());
