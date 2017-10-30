@@ -20,7 +20,7 @@ public class DataSourceDefinition {
 		p.setMaxIdle(8);
 		p.setMinIdle(2);
 		p.setInitialSize(2);
-		p.setRemoveAbandonedTimeout(25); // 25 sec -- the longest allowed query
+		p.setRemoveAbandonedTimeout(60); // 60 sec -- the longest allowed query
 		p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1 FROM DUAL");
 		p.setValidationInterval(60 * 1000); // 60 seconds
