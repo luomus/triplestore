@@ -1,7 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.Collection;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,19 +56,17 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 
 	private void removeSynonym(TriplestoreDAO dao, TaxonomyDAO taxonomyDAO, Qname removedSynonymTaxonId) throws Exception {
 		TaxonConcept oldConcept = taxonomyDAO.getTaxon(removedSynonymTaxonId).getTaxonConcept();
-		Collection<Qname> includingConcepts = oldConcept.getIncludingConcepts();
-		Collection<Qname> includedConcepts = oldConcept.getIncludedConcepts();
 		
 		Qname newConcept = dao.addTaxonConcept();
 		dao.store(new Subject(removedSynonymTaxonId), new Statement(ApiAddSynonymServlet.CIRCUMSCRIPTION, new ObjectResource(newConcept)));
 		
-		for (Qname includedIn : includingConcepts) {
+		for (Qname includedIn : oldConcept.getIncludedIn()) {
 			Model model = dao.get(newConcept);
 			model.addStatement(new Statement(ApiAddSynonymServlet.INCLUDED_IN, new ObjectResource(includedIn)));
 			dao.store(model);
 		}
 		
-		for (Qname included : includedConcepts) {
+		for (Qname included : oldConcept.getIncludes()) {
 			Model model = dao.get(included);
 			model.addStatement(new Statement(ApiAddSynonymServlet.INCLUDED_IN, new ObjectResource(newConcept)));
 			dao.store(model);

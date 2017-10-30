@@ -77,13 +77,13 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			} else if (MX_CIRCUMSCRIPTION.equals(predicate)) {
 				taxon.setTaxonConceptQname(object);
 			} else if (MX_MISAPPLIED_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.usedAsMisappliedInConcept(object);
+				taxon.usedAsMisappliedSynonymInConcept(object);
 			} else if (MX_UNCERTAIN_CIRCUMSCRIPTION.equals(predicate)) {
 				taxon.usedAsUncertainSynonymInConcept(object);
 			} else if (MX_MISSPELLED_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.usedAsMisspelledInConcept(object);
+				taxon.usedAsMisspelledSynonymInConcept(object);
 			} else if (MX_BASIONYM_CIRCUMSCRIPTION.equals(predicate)) {
-				taxon.usedAsBasionymInConcept(object);
+				taxon.usedAsBasionymSynonymInConcept(object);
 			} else {
 				addPropertyToTaxon(taxon, statement);
 			}
@@ -153,46 +153,46 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBePartOfConcept(taxon.getQname());
+					taxonConcept.setPartOfConcept(taxon.getQname());
 				}
 				
 				models = getSynonymTaxonModels(conceptQname, MX_UNCERTAIN_CIRCUMSCRIPTION);
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBeUncertainlyPartOfConcept(taxon.getQname());
+					taxonConcept.setUncertain(taxon.getQname());
 				}
 				
 				models = getSynonymTaxonModels(conceptQname, MX_MISAPPLIED_CIRCUMSCRIPTION);
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBeUsedAsMisapplied(taxon.getQname());
+					taxonConcept.setMisapplied(taxon.getQname());
 				}
 				
 				models = getSynonymTaxonModels(conceptQname, MX_MISSPELLED_CIRCUMSCRIPTION);
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBeMisspelledNameOfConcept(taxon.getQname());
+					taxonConcept.setMisspelled(taxon.getQname());
 				}
 				
 				models = getSynonymTaxonModels(conceptQname, MX_BASIONYM_CIRCUMSCRIPTION);
 				for (Model model : models) {
 					EditableTaxon taxon = createTaxon(model);
 					cachedTaxons.put(taxon.getQname(), taxon);
-					taxonConcept.setTaxonToBeBasionymNameOfConcept(taxon.getQname());
+					taxonConcept.setBasionym(taxon.getQname());
 				}
 				
 				ConceptIncludes conceptIncludes = cachedTaxonConceptIncludes.get();
 				if (conceptIncludes.incudedIn.containsKey(conceptQname)) {
-					for (Qname including : conceptIncludes.incudedIn.get(conceptQname)) {
-						taxonConcept.setToBeIncludedIn(including);
+					for (Qname includedIn : conceptIncludes.incudedIn.get(conceptQname)) {
+						taxonConcept.setIncludedIn(includedIn);
 					}
 				}
 				if (conceptIncludes.incudes.containsKey(conceptQname)) {
-					for (Qname included : conceptIncludes.incudes.get(conceptQname)) {
-						taxonConcept.setToInclude(included);
+					for (Qname includes : conceptIncludes.incudes.get(conceptQname)) {
+						taxonConcept.setIncludes(includes);
 					}
 				}
 				return taxonConcept;

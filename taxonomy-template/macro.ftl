@@ -50,6 +50,7 @@
 </@compress></#macro>
 
 <#macro printTaxon taxon isSynonym=false additionalClass="">
+	<#assign allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
 	<div class="taxonWithTools ${additionalClass} <#if isSynonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
 			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
@@ -59,9 +60,9 @@
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
 				<#if !isSynonym && taxon.species>
-					<span class="taxonToolButton ui-icon ui-icon-gear <#if taxon.allowsAlterationsBy(user)>allowsAlterationsByUser</#if>" title="Tools"></span>
+					<span class="taxonToolButton ui-icon ui-icon-gear <#if allowsAlterationsByUserOnThis>allowsAlterationsByUser</#if>" title="Tools"></span>
 				</#if>
-				<#if isSynonym && taxon.allowsAlterationsBy(user)>
+				<#if isSynonym && allowsAlterationsByUserOnThis>
 					<#if additionalClass == "normalSynonym"> 
 						<a href="#" onclick="unlinkNormalSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
 					<#elseif additionalClass == "misappliedSynonym">
@@ -121,7 +122,7 @@
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
 				<div class="synonymSection">
 					<#if taxon.synonyms?has_content><h3>Full synonyms</h3></#if>
-					<#if taxon.allowsAlterationsBy(user)>
+					<#if allowsAlterationsByUserOnThis>
 						<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
 							<#if taxon.synonyms?has_content>Add<#else>Add synonyms</#if>
 						</button>
@@ -130,20 +131,20 @@
 						<@printTaxon synonymTaxon true "normalSynonym" />
 					</#list>
 				</div>
-				<#if taxon.basionyms?has_content>
+				<#if taxon.basionymSynonyms?has_content>
 					<div class="synonymSection">
 						<h3>Basionyms</h3>
-						<#list taxon.basionyms as synonymTaxon>	 
+						<#list taxon.basionymSynonyms as synonymTaxon>	 
 							<@printTaxon synonymTaxon true "basionymSynonym" />
 						</#list>
 					</div>
 				</#if>
- 				<@listPartialSynonyms taxon.includingTaxa "Included in (pro parte)" taxon.allowsAlterationsBy(user) />
-				<@listPartialSynonyms taxon.includedTaxa "Includes" taxon.allowsAlterationsBy(user) />
-				<#if taxon.misapplied?has_content>
+ 				<@listPartialSynonyms taxon.includedIn "Included in (pro parte)" allowsAlterationsByUserOnThis />
+				<@listPartialSynonyms taxon.includes "Includes" allowsAlterationsByUserOnThis />
+				<#if taxon.misappliedSynonyms?has_content>
 					<div class="synonymSection misappliedSynonyms">
 						<h3>Misapplied</h3>
-						<#list taxon.misapplied as synonymTaxon>	 
+						<#list taxon.misappliedSynonyms as synonymTaxon>	 
 							<@printTaxon synonymTaxon true "misappliedSynonym" />
 						</#list>
 					</div>
@@ -156,10 +157,10 @@
 						</#list>
 					</div>
 				</#if>
-				<#if taxon.misspelled?has_content>
+				<#if taxon.misspelledSynonyms?has_content>
 					<div class="synonymSection">
 						<h3>Misspelled names</h3>
-						<#list taxon.misspelled as synonymTaxon>	 
+						<#list taxon.misspelledSynonyms as synonymTaxon>	 
 							<@printTaxon synonymTaxon true "misspelledSynonym" />
 						</#list>
 					</div>
