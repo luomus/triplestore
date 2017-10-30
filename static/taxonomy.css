@@ -318,6 +318,8 @@ tr.errorMessage td {
 	left: 0;
 	background-color: white;
 	z-index: 11;
+	overflow-y: auto !important;
+	overflow-x: hidden;
 }
 .informalGroupsTable td {
 	max-width: 300px;

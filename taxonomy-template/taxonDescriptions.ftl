@@ -107,7 +107,7 @@ $(function() {
     		toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
     		menubar: false,
     		statusbar: false,
-    		height: "600"
+    		height: "360"
   		});
 	});
 	
