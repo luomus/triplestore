@@ -15,12 +15,12 @@ public class DataSourceDefinition {
 		p.setPassword(desc.password());
 		
 		p.setDefaultAutoCommit(true); // non-transaction mode: connection will be set to transaction mode if updates are done
-		p.setMaxActive(40);
-		p.setMaxWait(120 * 1000); // 2 minutes
+		p.setMaxActive(80);
+		p.setMaxWait(15 * 1000); // 15 sec to wait for free connection before failing
 		p.setMaxIdle(8);
 		p.setMinIdle(2);
 		p.setInitialSize(2);
-		p.setRemoveAbandonedTimeout(5*60); // 5 minutes -- the longest possible query
+		p.setRemoveAbandonedTimeout(25); // 25 sec -- the longest allowed query
 		p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1 FROM DUAL");
 		p.setValidationInterval(60 * 1000); // 60 seconds
