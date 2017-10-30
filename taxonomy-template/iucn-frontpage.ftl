@@ -3,14 +3,30 @@
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
-<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a> (13.2. - 11.4. muutokset vielä päivittämättä)</p>
+<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Lataa käyttöohje</a> (13.2.2017 jälkeiset muutokset vielä päivittämättä)</p>
 <p><a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Lataa elinympöristöluokkien tulkintaohje </a></p>
 <p><a href="https://laji.fi/map" target="_blank">Karttatyökaluun</a> (arviointialueiden rajat, koordinaattien selvitys, pinta-alan selvitys)</p>
 
 <@toolbox/>		
 
+<p style="max-width: 800px;"><b>Pahoittelut viikonloppuna 28.-29.10.2017 esiintyineistä ongelmista! Tietokannan vikatilasta johtuen jouduimme estämään tämän palvelun käytön hiukan tökerösti estämällä
+sisäänkirjautumisen. IUCN palvelu on nyt taas käytössä.</b></p>
+
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 6.-13.4.2016</h6>
+	<h6>Uudistuksia 30.10.2017</h6>
+	<ul>
+		<li>Nyt myös arvioijat voivat jättää kommentteja arvioinnin yläosasta löytyvän kommentointitoiminnon avulla.</li>
+		<li>Lisätty uusi tila arvioinnille: "Valmis kommentoitavaksi". Tallennusosiossa on nyt kolme nappia: "Tallenna", "Valmis kommentoitavaksi" ja "Valmis". 
+		Kaikki napit edelleenkin tietenkin tekevät myös tallennuksen. "Tallenna" -nappi siirtää arivoinnin tilaan "Aloitettu".</li>
+		<li>B- ja D-kriteereiden ja populaation pirstoutumisen ohjeistusta on tarkennettu.</li>
+		<li>CSV-download kenttien järjestystä on muutettu toivomusten mukaiseksi</li>
+		<li>Tunnettu ongelma: Toistaiseksi tuntematon kriteeriyhdistelmä (siis esim D2bvc(i-xx) tai vastaavaa) aiheuttaa automaattisten tarkistusten kaatumisen.
+			Järjestelmän lähettämää virheviestiä on parannettu, joten seuraavan kerran kun ongelma tapahtuu pääsemme paremmin syyn jäljille. 
+		</li>
+	</ul>
+</div>
+<div style="border: 1px dotted green; font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 6.-13.4.2017</h6>
 	<ul>
 		<li>Elinympäristöjen tulkintaohje on saatavilla arviointilomakkeelta elinympäristöjen ilmoittamisen ohesta ja tämän sivun yläosasta.</li>
 		<li>Lajiluettelosta on mahdollista ladata CSV-muodossa arviointien tiedot.</li>
@@ -20,7 +36,7 @@
 		<li>Lajiluettelon rajaus edellisen arvioinnin luokan mukaan. (Vinkki: Kätevä tapa saada esille vain NE,NA tai LC lajit "alta pois" läpi käytäväksi.)</li>
 	</ul>
 	
-	<h6>Uudistuksia 20.3.2016</h6>
+	<h6>Uudistuksia 20.3.2017</h6>
 	<p>Linkki karttatyökaluun lisätty.</p>
 	
 	<h6>Uudistuksia 13.2.2017</h6>
