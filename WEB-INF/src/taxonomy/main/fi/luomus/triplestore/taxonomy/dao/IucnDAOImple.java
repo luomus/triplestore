@@ -501,6 +501,8 @@ public class IucnDAOImple implements IucnDAO {
 			Occurrence occurrence = getOccurrence(hasOccurrence.getObjectResource().getQname());
 			if (occurrence != null) {
 				evaluation.addOccurrence(occurrence);			
+			} else {
+				errorReporter.report("Could not find occurrence " + hasOccurrence.getObjectResource().getQname() + " for evaluation " + evaluation.getId() + " of " + evaluation.getSpeciesQname());
 			}
 		}
 	}
@@ -519,7 +521,6 @@ public class IucnDAOImple implements IucnDAO {
 	private Occurrence getOccurrence(String occurrenceId) throws Exception {
 		Model model = triplestoreDAO.get(occurrenceId);
 		if (model.isEmpty()) {
-			errorReporter.report("Could not find occurrence " + occurrenceId);
 			return null;
 		}
 		String areaQname = model.getStatements(MO_AREA).get(0).getObjectResource().getQname();
