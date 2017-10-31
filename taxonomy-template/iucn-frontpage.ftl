@@ -9,9 +9,6 @@
 
 <@toolbox/>		
 
-<p style="max-width: 800px;"><b>Pahoittelut viikonloppuna 28.-29.10.2017 esiintyineistä ongelmista! Tietokannan vikatilasta johtuen jouduimme estämään tämän palvelun käytön hiukan tökerösti estämällä
-sisäänkirjautumisen. IUCN palvelu on nyt taas käytössä.</b></p>
-
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 30.10.2017</h6>
 	<ul>
