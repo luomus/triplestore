@@ -21,6 +21,7 @@ public class DataSourceDefinition {
 		p.setMinIdle(2);
 		p.setInitialSize(2);
 		p.setRemoveAbandonedTimeout(60); // 60 sec -- the longest allowed query
+		p.setAbandonWhenPercentageFull(50); // only abandon if 50% of connections are in use
 		p.setTestOnBorrow(true);
 		p.setValidationQuery("SELECT 1 FROM DUAL");
 		p.setValidationInterval(60 * 1000); // 60 seconds
