@@ -10,8 +10,9 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 30.10.2017</h6>
+	<h6>Uudistuksia 30.10. ja 1.11.2017</h6>
 	<ul>
+		<li><b>Korjattu bugi jossa arviointien kommentit katosivat</b> arvioinnin tallennuksen yhteydessä. tästä syystä kadonneet 17 kommenttia on palautettu historiasta.</li>
 		<li>Nyt myös arvioijat voivat jättää kommentteja arvioinnin yläosasta löytyvän kommentointitoiminnon avulla.</li>
 		<li>Lisätty uusi tila arvioinnille: "Valmis kommentoitavaksi". Tallennusosiossa on nyt kolme nappia: "Tallenna", "Valmis kommentoitavaksi" ja "Valmis". 
 		Kaikki napit edelleenkin tietenkin tekevät myös tallennuksen. "Tallenna" -nappi siirtää arivoinnin tilaan "Aloitettu".</li>
