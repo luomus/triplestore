@@ -165,6 +165,14 @@ public class CriteriaFormatValidatorTests {
 	}
 	
 	@Test
+	public void parsing_criterias_13() {
+		List<MainCriteria> mainCriterias = CriteriaFormatValidator.parseCriteria("A1(ii,i))");
+		assertEquals(1, mainCriterias.size());
+		assertEquals("A1", mainCriterias.get(0).getMainCriteria());
+		assertEquals(0, mainCriterias.get(0).getSubCriterias().size());
+	}
+	
+	@Test
 	public void to_criteria_string() {
 		MainCriteria mc1 = new MainCriteria("A1").addSubCriterias('a', 'b');
 		mc1.getSubCriteria('b').addSpecifications("i", "iv");
@@ -239,6 +247,9 @@ public class CriteriaFormatValidatorTests {
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1a+b)").isValid());
 		
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B2a+1a").isValid());
+		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A1(ii,i)").isValid());
+		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A1(i)").isValid());
+		assertEquals(false, CriteriaFormatValidator.forCriteria("A").validate("A1a(i)").isValid());
 	}
 	
 	@Test

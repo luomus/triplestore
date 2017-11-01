@@ -311,6 +311,7 @@ public class CriteriaFormatValidator {
 			if (specificationsOpen) {
 				if (c == ',') {
 					if (specification.length() > 0) {
+						if (subCriteria == null) continue; // specification without subcriteria
 						subCriteria.addSpecification(specification);
 					}
 					specification = "";
