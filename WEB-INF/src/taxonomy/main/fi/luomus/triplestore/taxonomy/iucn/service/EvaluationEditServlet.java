@@ -204,6 +204,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private void setRemarks(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) {
+		if (existingEvaluation == null) return;
 		for (Statement s : existingEvaluation.getRemarkSatements()) {
 			givenData.getModel().addStatement(s);
 		}
