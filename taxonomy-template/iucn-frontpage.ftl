@@ -9,15 +9,34 @@
 
 <@toolbox/>		
 
-<div style="border: 1px dotted red;  font-size: 15px; margin: 1em; padding: 0.3em;">
-IUCN EDITOR ON SULJETTU! Palvelusta löytyi vakava ongelma ja korjauksen ajaksi editor on poissa käytöstä. 
-Ongelma liittyy kommenttien tekoon ja elinympäristötiedon katoamiseen. Dataa ei tulla menettämään vaan kaikki palautetaan historiasta.
+<div style="border: 1px dotted red; background-color: #eee; font-size: 12px; margin: 1em; padding: 0.3em;">
+	1.11.2017 huomattiin vika järjestelmässä joka johti elinympäristöjen, levinneisyyksien ja uhkien tietojen katoamiseen arvioinnista kun arviointia kommentoitiin yleisellä komenttivälineellä. 
+       Tiedot eivät kuitenkaan hävinneet tietokannasta, vaan ainoastaan näkyviltä arviointilomakkeella.
+	   Kuitenkin jos saman päivän aikana on käyty muokkaamassa arviointia, jossa arviointilomakkeella ei enää ollut elinympäristöjä (yms), tiedot päivittyivät poistuneeksi myös tietokannasta. 
+	  (Ellei arvioija huomannut tietojen puuttuvan ja on syöttänyt ne uudestaan.)
+	<p>Seuraaville viidelle lajille tiedot tallennettiin kadonneina ja on PALAUTETTU tietokannan historiaversiosta. Olkaa hyvä ja tarkistakaa tiedot:</p>
+	<ul>
+		<li> Apatania forsslundi	</li> 
+		<li> Xylophagus ater	 </li>
+		<li> Xylomya czekanovskii	 </li>
+		<li> Nemotelus nigrinus	 </li>
+		<li> Nemotelus uliginosus	 </li>
+	</ul>
+	<p>Seuraaville lajeille historiatiedossa oli joitakin tietoja, mutta kaikki tiedot eivät puuttuneet nykyisestä versiosta. Näitä tietoja EI OLE PALAUTETTU. Olkaa hyvä ja tarkistakaa tiedot:
+	<ul>
+		<li>Cephaloziella integerrima	</li>
+		<li>Xylophagus cinctus	</li>
+		<li>Xylophagus kowarzi	</li>
+	</ul>
+	<p>Pahoittelut ongelmasta ja sen aiheuttamasta ylimääräisestä työstä!</p>
+	<p>IUCN -tallennustyökalu oli tämän ongelman havaitsemisen ja korjauksen välisen ajan poissa päältä 1.11. klo 11-14. <b>Työkalua voi nyt taas käyttää.</b></p>
 </div>
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 30.10. ja 1.11.2017</h6>
 	<ul>
-		<li><b>Korjattu bugi jossa arviointien kommentit katosivat</b> arvioinnin tallennuksen yhteydessä. Tästä syystä kadonneet 17 kommenttia on palautettu historiasta.</li>
+		<li><b>Korjattu vika jossa kommentoitaessa elinympäristöt, levinneisyydet, uhat katosivat</b>. Tästä syystä tietoja katosi 5 arvioinnista ja on palautettu. Kolmen osalta pyydetty tarkistamaan tiedot.</li>
+		<li><b>Korjattu vika jossa arviointien kommentit katosivat</b> arvioinnin tallennuksen yhteydessä. Tästä syystä kadonneet 17 kommenttia on palautettu historiasta.</li>
 		<li>Nyt myös arvioijat voivat jättää kommentteja arvioinnin yläosasta löytyvän kommentointitoiminnon avulla.</li>
 		<li>Lisätty uusi tila arvioinnille: "Valmis kommentoitavaksi". Tallennusosiossa on nyt kolme nappia: "Tallenna", "Valmis kommentoitavaksi" ja "Valmis". 
 		Kaikki napit edelleenkin tietenkin tekevät myös tallennuksen. "Tallenna" -nappi siirtää arivoinnin tilaan "Aloitettu".</li>
@@ -28,6 +47,7 @@ Ongelma liittyy kommenttien tekoon ja elinympäristötiedon katoamiseen. Dataa e
 		</li>
 	</ul>
 </div>
+<#--
 <div style="border: 1px dotted green; font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 6.-13.4.2017</h6>
 	<ul>
@@ -51,6 +71,7 @@ Ongelma liittyy kommenttien tekoon ja elinympäristötiedon katoamiseen. Dataa e
 	<li>Uusi kenttä: Osuus globaalista populaatiosta.</li>
 	</ul>
 </div>
+-->
 
 <table class="resourceListTable informalGroupsTable">
 	<thead>
