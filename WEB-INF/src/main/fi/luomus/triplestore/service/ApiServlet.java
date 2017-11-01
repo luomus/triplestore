@@ -1,5 +1,19 @@
 package fi.luomus.triplestore.service;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+import org.json.XML;
+
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.InternalModelToJenaModelConverter;
 import fi.luomus.commons.containers.rdf.JenaUtils;
@@ -15,24 +29,19 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONObject;
-import org.json.XML;
+import fi.luomus.triplestore.utils.ConnectionLimiter;
+import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
 
 @WebServlet(urlPatterns = {"/*"})
 public class ApiServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = -1697198692074454503L;
+
+	private static final ConnectionLimiter limiter = new ConnectionLimiter(10);
+
+	protected ConnectionLimiter getConnectionLimiter() {
+		return limiter;
+	}
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
@@ -45,6 +54,16 @@ public class ApiServlet extends EditorBaseServlet {
 		if (qnames.isEmpty()) {
 			return redirectTo404(res);
 		}
+
+		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		try {
+			return processGetWithAccess(req, res, qnames);
+		} finally {
+			access.release();
+		}
+	}
+
+	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, List<Qname> qnames) throws Exception, IOException {
 		Format format = getFormat(req);
 		ResultType resultType = getResultType(req);
 		TriplestoreDAO dao = getTriplestoreDAO();

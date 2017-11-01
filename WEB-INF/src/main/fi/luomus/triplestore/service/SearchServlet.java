@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.service;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +19,7 @@ import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.XMLWriter;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
 
 @WebServlet(urlPatterns = {"/search/*"})
 public class SearchServlet extends ApiServlet {
@@ -35,7 +37,6 @@ public class SearchServlet extends ApiServlet {
 		Set<String> objectliterals = getMultiParam("objectliteral", req);
 		String type = req.getParameter("type");
 
-		TriplestoreDAO dao = getTriplestoreDAO();
 		Format format = getFormat(req);
 		int limit = getLimit(req);
 		int offset = getOffset(req);
@@ -47,6 +48,17 @@ public class SearchServlet extends ApiServlet {
 				.subjects(subjects).predicates(predicates).objects(objects)
 				.objectresources(objectresources).objectliterals(objectliterals)
 				.type(type);
+
+		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		try {
+			return processGetWithAccess(req, res, format, searchParams);
+		} finally {
+			access.release();
+		}
+	}
+
+	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, Format format, SearchParams searchParams) throws Exception, IOException {
+		TriplestoreDAO dao = getTriplestoreDAO();
 
 		String response = null;
 		if (countQuery(req)) {
@@ -78,7 +90,7 @@ public class SearchServlet extends ApiServlet {
 		if (fields.isEmpty()) return null;
 		return fields;
 	}
-	
+
 	private String count(SearchParams searchParams, Format format, TriplestoreDAO dao) throws Exception {
 		int count = dao.getSearchDAO().count(searchParams);
 		if (format == Format.JSON) {
