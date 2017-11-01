@@ -390,6 +390,7 @@ public class IUCNEvaluation {
 	public boolean hasRemarks() {
 		return getValue(REMARKS) != null;
 	}
+	
 	public String getRemarks() {
 		StringBuilder b = new StringBuilder();
 		for (String s : getValues(REMARKS)) {
