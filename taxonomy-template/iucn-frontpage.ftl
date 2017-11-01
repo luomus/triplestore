@@ -51,7 +51,7 @@ Ongelma liittyy kommenttien tekoon ja elinympäristötiedon katoamiseen. Dataa e
 	<li>Uusi kenttä: Osuus globaalista populaatiosta.</li>
 	</ul>
 </div>
-<#--
+
 <table class="resourceListTable informalGroupsTable">
 	<thead>
 		<tr>
@@ -71,7 +71,7 @@ Ongelma liittyy kommenttien tekoon ja elinympäristötiedon katoamiseen. Dataa e
 		</#list>
 	</tbody>
 </table>
--->
+
 
 <#macro printGroup taxonGroup indent evenOdd>
 	<tr class="indent_${indent} ${evenOdd}">

@@ -75,6 +75,7 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		model.addStatement(lastModifiedStatement);
 		model.addStatement(lastModifiedByStatement);
 		
+		evaluation.setIncompletelyLoaded(true);
 		container.setEvaluation(evaluation);
 		
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");

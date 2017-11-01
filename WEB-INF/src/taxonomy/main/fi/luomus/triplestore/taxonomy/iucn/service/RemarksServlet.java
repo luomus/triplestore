@@ -24,7 +24,6 @@ public class RemarksServlet extends EvaluationEditServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		if ("true".equals("true")) throw new Exception("Suljettu");
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());
@@ -46,6 +45,11 @@ public class RemarksServlet extends EvaluationEditServlet {
 			Subject subject = new Subject(evaluationId);
 			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
 			dao.insert(subject, statement);
+
+			model = dao.get(evaluationId); // must get model again for added statement to have a statement id
+			evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+			evaluation.setIncompletelyLoaded(true);
+			container.setEvaluation(evaluation);
 			container.addRemark(target, evaluation);
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
 		} else if (given(deleteStatementId)) {
@@ -55,6 +59,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			if (found) {
 				// important not to delete statements that are not found from the model.. they could be any statements
 				dao.deleteStatement(id);
+				evaluation.setIncompletelyLoaded(true);
 				container.setEvaluation(evaluation);
 				container.removeRemark(target, id);
 				getSession(req).setFlashSuccess("Kommentti poistettu!");

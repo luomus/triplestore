@@ -43,7 +43,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		if ("true".equals("true")) throw new Exception("Suljettu");
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return redirectTo404(res);
 
@@ -127,7 +126,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		if ("true".equals("true")) throw new Exception("Suljettu");
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) throw new IllegalArgumentException("Species qname not given.");
 
