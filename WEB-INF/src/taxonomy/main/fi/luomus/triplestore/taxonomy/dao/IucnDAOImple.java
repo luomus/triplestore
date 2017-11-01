@@ -509,6 +509,10 @@ public class IucnDAOImple implements IucnDAO {
 
 	private IUCNHabitatObject getHabitatObject(Qname habitatObjectId) throws Exception {
 		Model model = triplestoreDAO.get(habitatObjectId);
+		if (model.isEmpty()) {
+			errorReporter.report("Could not find habitat object " + habitatObjectId);
+			return null;
+		}
 		String habitat = model.getStatements(IUCNEvaluation.HABITAT).get(0).getObjectResource().getQname();
 		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
 		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, new Qname(habitat), order);

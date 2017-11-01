@@ -131,10 +131,12 @@ public class IUCNEvaluation {
 	}
 
 	public void setPrimaryHabitat(IUCNHabitatObject habitat) {
+		if (habitat == null) return;
 		primaryHabitat = habitat;
 	}
 
 	public void addSecondaryHabitat(IUCNHabitatObject habitat) {
+		if (habitat == null) return;
 		if (secondaryHabitats == null) secondaryHabitats = new ArrayList<>();
 		if (secondaryHabitats.contains(habitat)) return;
 		secondaryHabitats.add(habitat);
