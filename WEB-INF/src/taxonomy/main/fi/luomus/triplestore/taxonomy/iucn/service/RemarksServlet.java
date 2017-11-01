@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -12,10 +16,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
 public class RemarksServlet extends EvaluationEditServlet {
 
@@ -24,6 +24,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		if ("true".equals("true")) throw new Exception("Suljettu");
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());
@@ -45,10 +46,6 @@ public class RemarksServlet extends EvaluationEditServlet {
 			Subject subject = new Subject(evaluationId);
 			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
 			dao.insert(subject, statement);
-
-			model = dao.get(evaluationId); // must get model again for added statement to have a statement id
-			evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-			container.setEvaluation(evaluation);
 			container.addRemark(target, evaluation);
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
 		} else if (given(deleteStatementId)) {
