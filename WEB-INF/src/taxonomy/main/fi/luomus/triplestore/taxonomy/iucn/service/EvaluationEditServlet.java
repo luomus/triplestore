@@ -193,6 +193,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 
 		setEditNotes(givenData);
+		setRemarks(givenData, existingEvaluation);
 		
 		dao.store(givenData, existingEvaluation);
 		
@@ -200,6 +201,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		setFlashMessage(req, givenData, validationResult);
 		return redirectTo(getConfig().baseURL() + "/iucn/species/" + speciesQname + "/" + year , res);
+	}
+
+	private void setRemarks(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) {
+		for (Statement s : existingEvaluation.getRemarkSatements()) {
+			givenData.getModel().addStatement(s);
+		}
 	}
 
 	private boolean invalidState(String state) {
