@@ -52,7 +52,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	public ExtendedTaxonomyDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
-		super(config, 60 * 5, 20);
+		super(config, 3* 60 * 60, 10 * 60);
 		System.out.println("Creating " +  ExtendedTaxonomyDAOImple.class.getName());
 		this.dataSource = TaxonSearchDataSourceDefinition.initDataSource(config.connectionDescription());
 		this.triplestoreDAO = triplestoreDAO;
