@@ -40,7 +40,7 @@ public class ConnectionLimiterTests {
 					try {
 						Access access = limiter.delayAccessIfNecessary("a");
 						System.out.println("T1 got access " + i++);
-						try { Thread.sleep(2000); } catch (InterruptedException e) {}
+						try { Thread.sleep(3000); } catch (InterruptedException e) {}
 						access.release();
 					} catch (AccessNotGrantedTooManyPendingRequests e1) {
 						System.out.println("T1 " + e1);
@@ -57,7 +57,7 @@ public class ConnectionLimiterTests {
 					try {
 						Access access = limiter.delayAccessIfNecessary("a");
 						System.out.println("T2 got access " + i++);
-						try { Thread.sleep(500); } catch (InterruptedException e) {}
+						try { Thread.sleep(8000); } catch (InterruptedException e) {}
 						access.release();
 					} catch (AccessNotGrantedTooManyPendingRequests e1) {
 						System.out.println("T2 " + e1);

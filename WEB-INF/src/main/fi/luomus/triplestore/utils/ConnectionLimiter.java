@@ -44,19 +44,20 @@ public class ConnectionLimiter {
 
 	private final Map<String, Set<Access>> open = new ConcurrentHashMap<>();
 	private final int maxPerUser;
-	
+
 	public ConnectionLimiter(int maxPerUser) {
 		this.maxPerUser = maxPerUser;
 	}
-	
+
 	public Access delayAccessIfNecessary(String remoteUser) throws AccessNotGrantedTooManyPendingRequests {
 		if (remoteUser == null) remoteUser = "NULL";
 		Set<Access> opened = getAccesses(remoteUser);
-		if (opened.size() >= maxPerUser) {
-			sleep();
-		}
-		if (opened.size() >= maxPerUser) {
+		int i = 0;
+		while (opened.size() >= maxPerUser) {
+			if (i++ > 3) {
 				throw new AccessNotGrantedTooManyPendingRequests(opened.size(), maxPerUser, remoteUser);
+			}
+			sleep();
 		}
 		Access access = new Access(this, remoteUser); 
 		opened.add(access);
@@ -65,7 +66,7 @@ public class ConnectionLimiter {
 
 	private void sleep() {
 		try {
-			Thread.sleep(500);
+			Thread.sleep(200);
 		} catch (InterruptedException e) {
 		}
 	}

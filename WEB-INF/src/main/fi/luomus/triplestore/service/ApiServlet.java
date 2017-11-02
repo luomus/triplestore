@@ -37,7 +37,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = -1697198692074454503L;
 
-	private static final ConnectionLimiter limiter = new ConnectionLimiter(10);
+	private static final ConnectionLimiter limiter = new ConnectionLimiter(30);
 
 	protected ConnectionLimiter getConnectionLimiter() {
 		return limiter;
