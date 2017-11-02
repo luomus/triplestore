@@ -8,6 +8,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities.EscapeMode;
 import org.jsoup.safety.Whitelist;
 
+import fi.luomus.commons.utils.Utils;
+
 public class StringUtils {
 
 	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
@@ -29,6 +31,8 @@ public class StringUtils {
 	}
 	
 	public static String sanitizeLiteral(String content) {
+		if (!given(content)) return "";
+		content = Utils.removeWhitespaceAround(content);
 		if (!given(content)) return "";
 		if (content.length() >= 1000) {
 			content = StringUtils.trimToByteLength(content, 4000);

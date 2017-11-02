@@ -514,8 +514,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
-		String expected = "&#xa0; Foo &#xa0; &#xa0;";
-		assertEquals(expected, storedLiteral);
+		assertEquals("Foo", storedLiteral);
 	}
 	
 }
