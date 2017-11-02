@@ -495,12 +495,26 @@ public class ApiServiceTests {
 	
 	@Test
 	public void sanitizeLiterals_6() throws Exception {
-		String givenLiteral = "Foo <p>bar</a>";
+		String givenLiteral = "Foo <p>bar</a> ";
 		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
 		String expected = "Foo <p>bar</p>";
+		assertEquals(expected, storedLiteral);
+	}
+	
+	@Test
+	public void whitespace_nonbreaking() throws Exception {
+		String nonBreakingChar = String.valueOf(Character.toChars(Character.codePointAt("\u00A0", 0))); 
+		String givenLiteral = nonBreakingChar + " Foo " + nonBreakingChar + " " + nonBreakingChar;
+		
+		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
+		
+		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
+		Node n = new XMLReader().parse(response).getRootNode();
+		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
+		String expected = "&#xa0; Foo &#xa0; &#xa0;";
 		assertEquals(expected, storedLiteral);
 	}
 	
