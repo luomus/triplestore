@@ -4,6 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -21,11 +26,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class IUCNValidatorTests {
 
@@ -334,7 +334,6 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals("" +
 				"[Esiintymisalueet on täytettävä luokille NT-CR, "+
-				"Ensisijainen elinympäristö on täytettävä luokille LC-CR, "+
 				"Uhanalaisuuden syyt on täytettävä luokille NT-RE, "+
 				"Uhkatekijät on täytettävä luokille NT-CR, "+
 				"Luokkaan johtaneet kriteerit on täytettävä luokille NT-CR]",
