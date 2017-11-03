@@ -347,11 +347,11 @@
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	
 	<#assign vulnerableClass = "vulnerableRow hidden">
-	<#if evaluation?? && evaluation.vulnerable>
+	<#if evaluation?? && (evaluation.vulnerable || evaluation.dd)>
 		<#assign vulnerableClass = "">
 	</#if>
 
-	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass />
+	<@iucnInput "MKV.possiblyRE" "MKV.possiblyRENotes" vulnerableClass+" possiblyRERow" />
 	<@iucnTextarea "MKV.lastSightingNotes" vulnerableClass />
 	<@iucnTextarea "MKV.redListStatusAccuracyNotes" />
 	
@@ -555,6 +555,7 @@ $(function() {
     	var status = $(this).val(); 
     	if (status == 'MX.iucnDD') {
     		$(".ddReasonRow").show().find('select').chosen({ allow_single_deselect:true });
+    		$(".possiblyRERow").show().find('select').chosen({ allow_single_deselect:true });
     	}
     	var statusOrder = statusComparator[status];
     	if (statusOrder && statusOrder >= 3) {

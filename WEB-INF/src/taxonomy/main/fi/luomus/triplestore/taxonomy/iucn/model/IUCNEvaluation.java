@@ -293,6 +293,10 @@ public class IUCNEvaluation {
 		return index >= 2;
 	}
 
+	public boolean isDd() {
+		return "MX.iucnDD".equals(getIucnStatus());
+	}
+	
 	public List<IUCNEndangermentObject> getEndangermentReasons() {
 		if (endangermentReasons == null) return Collections.emptyList();
 		return endangermentReasons;
