@@ -383,6 +383,7 @@
 		<button id="saveButton">Tallenna</button>
 		<button id="readyForCommentsButton">Valmis kommentoitavaksi</button>
 		<button id="readyButton" class="ready">Valmis</button>
+		<button id="cancelButton">Peruuta kaikki muutokset</button>
 	</div>
 </form>
 </#if>
@@ -394,8 +395,32 @@ function startsWith(needle, haystack) {
 	return haystack.lastIndexOf(needle, 0) === 0;
 }
 
+function cancelComment() {
+	$("#makingComment").remove();
+	$("#evaluationEditForm :input").prop('disabled', false);
+	$("#evaluationEditForm").fadeTo(0, 1);
+	$("#remarksField").val('');
+	makingComment = false;
+}
+
+var makingComment = false;
+var commentingStillPossible = true;
+
 $(function() {
-	
+	$("#evaluationEditForm :input").on('change', function() {
+		if (!commentingStillPossible) return;
+		$("#remarksEditForm :input").prop('disabled', true);
+		$("#remarksEditForm").fadeTo(0, 0.5);
+		commentingStillPossible = false;
+	});
+	$("#remarksField").on('focus', function() {
+		if (makingComment) return;
+		$("#evaluationEditForm :input").prop('disabled', true);
+		$("#evaluationEditForm").before('<p id="makingComment" class="info">Olet tekemässä kommenttia. Muutoksia arvioinnin tietoihin ei voi tallentaa yhtä aikaa. <button onclick="cancelComment();">Peruuta</button></p>');
+		$("#evaluationEditForm").fadeTo(0, 0.5);
+		makingComment = true;
+	});
+		
 	$("select").each(function() {
 		var name = $(this).attr('name');
 		if (!name) return;
@@ -481,6 +506,11 @@ $(function() {
  		$("#saveButton, #readyButton, #readyForCommentsButton").prop("disabled", 'disabled');
  		$("#evaluationState").val("MKV.stateReadyForComments");
  		document.getElementById("evaluationEditForm").submit();
+ 	});
+ 	$("#cancelButton").on('click', function() {
+ 		if (confirm("Peruuta muutokset?")) {
+ 			location.href = location.href;
+ 		}
  	});
  	
  	$(".integerProperty").on('change', function() {
