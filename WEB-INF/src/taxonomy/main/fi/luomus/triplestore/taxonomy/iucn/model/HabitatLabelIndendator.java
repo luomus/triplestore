@@ -25,6 +25,8 @@ public class HabitatLabelIndendator {
 	private String doIndent(RdfProperty p) {
 		int indent = indents.get(p.getQname());
 		String label = p.getLabel().forLocale("fi");
+		if (indent == 0) return label;
+		label = " " + label;
 		for (int i = indent; i>0; i--) {
 			label = INDENT + label;
 		}

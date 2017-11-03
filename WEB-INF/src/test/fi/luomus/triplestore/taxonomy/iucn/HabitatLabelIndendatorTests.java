@@ -55,8 +55,8 @@ public class HabitatLabelIndendatorTests {
 		assertEquals(1, indentator.indentCount(new Qname("17")));
 		
 		assertEquals("A - xxx", indentator.indent(new Qname("1")));
-		assertEquals("&nbsp;&nbsp;C1 - xxx", indentator.indent(new Qname("4")));
-		assertEquals("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C4Ba1", indentator.indent(new Qname("15")));
+		assertEquals("&nbsp;&nbsp; C1 - xxx", indentator.indent(new Qname("4")));
+		assertEquals("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C4Ba1", indentator.indent(new Qname("15")));
 	}
 	
 }

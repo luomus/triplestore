@@ -38,7 +38,8 @@
 		<li>Estetty arvioijaa tekemästä lajin arviointilomakkeella samalla kertaa muutoksia arviointiin ja jättämään yleiskommentin, koska vain toinen näistä tallentui.
 			(Jos painetaan "Tallenna kommentti", tallentuu vain kommentti. Jos talletaan arvio, mahdollisesti syötetty kommentti ei tallennu.)
 		</li>
-		<li>DD-luokalle on nyt mahdollista ilmoittaa "Mahdollisesti hävinnyt" -tieto</li>
+		<li>DD-luokalle on nyt mahdollista ilmoittaa "Mahdollisesti hävinnyt" -tieto.</li>
+		<li>Parannettu elinympäristöjen valitsemista kirjoittamalla ympäristön koodi.</li>
 	</ul>
 </div>
 
