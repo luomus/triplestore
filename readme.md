@@ -131,6 +131,10 @@ Get sequence next value for namespace (for example "JA")
 
 Returns HTTP 200 on success, HTTP 500 on failure.
 
+## GET /triplestore/properties/
+
+Returns all properties (type=rdf:Property) and their ranges ("deep search") in JSON_RDFXML format, HTTP 500 on failure.
+
 
 ##Installation
 
