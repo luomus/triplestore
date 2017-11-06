@@ -47,7 +47,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> search(SearchParams searchParams) throws SQLException {
-		Set<String> results = new HashSet<String>();
+		Set<Qname> results = new HashSet<>();
 
 		List<String> values = new ArrayList<String>();
 		String sql = buildSearchSQLAndSetValues(searchParams, values);
@@ -67,7 +67,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			rs = p.executeQuery(); 
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				results.add(rs.getString(1));
+				results.add(new Qname(rs.getString(1)));
 			}
 		} finally {
 			Utils.close(p, rs, con);
@@ -190,20 +190,24 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	@Override
-	public Collection<Model> get(List<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception {
+	public Collection<Model> get(Set<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception {
+		return get(qnames, resultType, new HashSet<Qname>());
+	}
+
+	private Collection<Model> get(Set<Qname> qnames, ResultType resultType, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
 		List<Model> models = new ArrayList<Model>();
 		for (Qname qname : qnames) {
 			Model model = dao.get(qname);
 			if (!model.isEmpty()) {
 				models.add(model);
-				addResultTypeModels(resultType, models, qname, model);
+				addResultTypeModels(resultType, models, qname, model, alreadyIncludedSubjects);
 			}
 		}
 		return models;
 	}
 
-	private void addResultTypeModels(ResultType resultType, List<Model> models, Qname qname, Model model) throws SQLException, TooManyResultsException {
-		Set<String> subjectsToInclude = Collections.emptySet();
+	private void addResultTypeModels(ResultType resultType, List<Model> models, Qname qname, Model model, Set<Qname> alreadyIncludedSubjects) throws Exception {
+		Set<Qname> subjectsToInclude = Collections.emptySet();
 
 		if (resultType == ResultType.CHAIN) {
 			subjectsToInclude = fetchTaxonChain(qname);
@@ -212,7 +216,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		} else if (resultType == ResultType.TREE) {
 			models.addAll(fetchTree(model));
 		} else if (resultType == ResultType.DEEP) {
-			models.addAll(deep(model));
+			models.addAll(deep(model, alreadyIncludedSubjects));
 		} else {
 			throw new UnsupportedOperationException("Not impleted for " + resultType);
 		}
@@ -222,15 +226,20 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		}
 	}
 
-	private Collection<Model> deep(Model model) throws SQLException {
+	private Collection<Model> deep(Model model, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
+		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
 		List<Model> models = new ArrayList<Model>();
-		Set<String> objects = new HashSet<>();
+		Set<Qname> objects = new HashSet<>();
 		for (Statement s : model) {
 			if (s.isResourceStatement()) {
-				objects.add(s.getObjectResource().getQname());
+				Qname object = new Qname(s.getObjectResource().getQname());
+				if (!alreadyIncludedSubjects.contains(object)) {
+					objects.add(object);
+					alreadyIncludedSubjects.add(object);
+				}
 			}
 		}
-		models.addAll(get(objects));
+		models.addAll(get(objects, ResultType.DEEP));
 		return models;
 	}
 
@@ -239,7 +248,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		Predicate hasPart = new Predicate("MZ.hasPart");
 		Qname parentQname = qnameOf(parent);
 
-		Set<String> immediateChildren = fetchImmediateChildren(parentQname);
+		Set<Qname> immediateChildren = fetchImmediateChildren(parentQname);
 		if (immediateChildren.isEmpty()) return models;
 
 		Collection<Model> immediateChildModels = get(immediateChildren);
@@ -269,7 +278,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return new Qname(parent.getSubject().getQname());
 	}
 
-	private Collection<Model> get(Set<String> subjects) throws SQLException {
+	private Collection<Model> get(Set<Qname> subjects) throws SQLException {
 		List<Model> models = new ArrayList<Model>();
 		if (subjects.isEmpty()) return models;
 
@@ -304,13 +313,13 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return models;
 	}
 
-	private String constructSelectQuery(Set<String> results) throws SQLException {
+	private String constructSelectQuery(Set<Qname> results) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid, subjectname "); 
 		sql.append(" FROM    "+SCHEMA+".rdf_statementview ");
 		sql.append(" WHERE   ( subjectname IN ( ");
 		int c = 0;
-		Iterator<String> i = results.iterator();
+		Iterator<Qname> i = results.iterator();
 		while (i.hasNext()) {
 			sql.append("'").append(i.next()).append("'");
 			if (i.hasNext()) {
@@ -327,11 +336,11 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return sql.toString();
 	}
 
-	private Set<String> fetchTaxonChain(Qname qname) throws SQLException {
-		Set<String> resultSet = new HashSet<String>();
-		Set<String> searchForThese = new HashSet<String>();
+	private Set<Qname> fetchTaxonChain(Qname qname) throws SQLException {
+		Set<Qname> resultSet = new HashSet<>();
+		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(qname.toString());
+		searchForThese.add(qname);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -339,7 +348,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			con = dao.openConnection(); 
 			p = con.prepareStatement(FETCH_TAXON_CHAIN_SQL);
 			while (!searchForThese.isEmpty()) {
-				String searchedFor = fetchTaxonChain(resultSet, searchForThese, p);
+				Qname searchedFor = fetchTaxonChain(resultSet, searchForThese, p);
 				searchForThese.remove(searchedFor);
 			}
 		} finally {
@@ -348,15 +357,15 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return resultSet;
 	}
 
-	private String fetchTaxonChain(Set<String> resultSet, Set<String> searchForThese, PreparedStatement p) throws SQLException {
+	private Qname fetchTaxonChain(Set<Qname> resultSet, Set<Qname> searchForThese, PreparedStatement p) throws SQLException {
 		ResultSet rs = null;
-		String searchForQname = searchForThese.iterator().next();
-		p.setString(1, searchForQname);
+		Qname searchForQname = searchForThese.iterator().next();
+		p.setString(1, searchForQname.toString());
 		try {
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				String result = rs.getString(1);
+				Qname result = new Qname(rs.getString(1));
 				if (resultSet.contains(result)) {
 					throw new IllegalStateException("Taxon loop! " + result + " " + searchForQname);
 				}
@@ -369,19 +378,19 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return searchForQname;
 	}
 
-	private Set<String> fetchAllChildren(Qname qname) throws TooManyResultsException, SQLException {
+	private Set<Qname> fetchAllChildren(Qname qname) throws TooManyResultsException, SQLException {
 		return fetchChildren(qname, true);
 	}
 
-	private Set<String> fetchImmediateChildren(Qname qname) throws TooManyResultsException, SQLException {
+	private Set<Qname> fetchImmediateChildren(Qname qname) throws TooManyResultsException, SQLException {
 		return fetchChildren(qname, false);
 	}
 
-	private Set<String> fetchChildren(Qname qname, boolean all) throws TooManyResultsException, SQLException {
-		Set<String> resultSet = new HashSet<String>();
-		Set<String> searchForThese = new HashSet<String>();
+	private Set<Qname> fetchChildren(Qname qname, boolean all) throws TooManyResultsException, SQLException {
+		Set<Qname> resultSet = new HashSet<>();
+		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(qname.toString());
+		searchForThese.add(qname);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -389,7 +398,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			con = dao.openConnection();
 			p = con.prepareStatement(FETCH_CHILDREN_SQL);
 			while (!searchForThese.isEmpty()) {
-				String searchedFor = fetchChildren(resultSet, searchForThese, p);
+				Qname searchedFor = fetchChildren(resultSet, searchForThese, p);
 				searchForThese.remove(searchedFor);
 				if (!all) {
 					searchForThese.clear();
@@ -401,15 +410,15 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return resultSet;
 	}
 
-	private String fetchChildren(Set<String> resultSet, Set<String> searchForThese, PreparedStatement p) throws SQLException, TooManyResultsException {
+	private Qname fetchChildren(Set<Qname> resultSet, Set<Qname> searchForThese, PreparedStatement p) throws SQLException, TooManyResultsException {
 		ResultSet rs = null;
-		String searchForQname = searchForThese.iterator().next();
-		p.setString(1, searchForQname);
+		Qname searchForQname = searchForThese.iterator().next();
+		p.setString(1, searchForQname.toString());
 		try {
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				String result = rs.getString(1);
+				Qname result = new Qname(rs.getString(1));
 				if (resultSet.contains(result)) {
 					throw new IllegalStateException("Child loop! " + result + " " + searchForQname);
 				}

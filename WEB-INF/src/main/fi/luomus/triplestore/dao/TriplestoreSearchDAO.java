@@ -1,11 +1,11 @@
 package fi.luomus.triplestore.dao;
 
+import java.util.Collection;
+import java.util.Set;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-
-import java.util.Collection;
-import java.util.List;
 
 public interface TriplestoreSearchDAO {
 
@@ -34,7 +34,7 @@ public interface TriplestoreSearchDAO {
 	 * @throws Exception unknown condition
 	 * @throws TooManyResultsException if using result type on this resource provides too many results
 	 */
-	public Collection<Model> get(List<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception;
+	public Collection<Model> get(Set<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception;
 
 	/**
 	 * Return count of models ignoring limit/offset

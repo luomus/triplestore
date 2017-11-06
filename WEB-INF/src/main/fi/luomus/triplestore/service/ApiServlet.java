@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +52,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		List<Qname> qnames = getQnames(req);
+		Set<Qname> qnames = new HashSet<>(getQnames(req));
 		if (qnames.isEmpty()) {
 			return redirectTo404(res);
 		}
@@ -63,7 +65,7 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 	}
 
-	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, List<Qname> qnames) throws Exception, IOException {
+	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, Set<Qname> qnames) throws Exception, IOException {
 		Format format = getFormat(req);
 		ResultType resultType = getResultType(req);
 		TriplestoreDAO dao = getTriplestoreDAO();
@@ -90,10 +92,10 @@ public class ApiServlet extends EditorBaseServlet {
 		if (qname == null || !qname.isSet()) {
 			return null;
 		}
-		return get(Utils.list(qname), resultType, format, dao);
+		return get(Utils.set(qname), resultType, format, dao);
 	}
 
-	public static String get(List<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws Exception {
+	public static String get(Set<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws Exception {
 		if (qnames.isEmpty()) {
 			return null;
 		}
@@ -118,7 +120,7 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 	}
 
-	private static String specialResultTypeRDF(List<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws TooManyResultsException, Exception {
+	private static String specialResultTypeRDF(Set<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws TooManyResultsException, Exception {
 		Collection<Model> models = dao.getSearchDAO().get(qnames, resultType);
 		if (models.isEmpty()) {
 			return null;
@@ -126,7 +128,7 @@ public class ApiServlet extends EditorBaseServlet {
 		return generateRdf(models, format);
 	}
 
-	private static String normalResultTypeRDF(List<Qname> qnames, Format format, TriplestoreDAO dao) throws Exception {
+	private static String normalResultTypeRDF(Set<Qname> qnames, Format format, TriplestoreDAO dao) throws Exception {
 		List<Model> models = new ArrayList<Model>();
 		for (Qname qname : qnames) {
 			Model model = dao.get(qname);

@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -16,12 +16,14 @@ import org.junit.Test;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
@@ -413,7 +415,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test__get_several_qnames() throws Exception {
-		List<Qname> qnames = Utils.list(new Qname("MX.1"), new Qname("MX.2"), new Qname("MX.3"));
+		Set<Qname> qnames = Utils.set(new Qname("MX.1"), new Qname("MX.2"), new Qname("MX.3"));
 		String response = ApiServlet.get(qnames, ResultType.NORMAL, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
@@ -515,6 +517,24 @@ public class ApiServiceTests {
 		Node n = new XMLReader().parse(response).getRootNode();
 		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
 		assertEquals("Foo", storedLiteral);
+	}
+	
+	@Test
+	public void testget_deep() throws TooManyResultsException, Exception {
+		Set<Qname> properties = Utils.set(
+				new Qname("MA.roleKotka"),
+				new Qname("MA.emailAddress")
+				);
+		Collection<Model> models = dao.getSearchDAO().get(properties, ResultType.DEEP);
+		Set<String> qnames = new HashSet<>();
+		for (Model m : models) {
+			qnames.add(m.getSubject().getQname());
+		}
+		assertEquals(true, qnames.contains("MA.roleKotka"));
+		assertEquals(true, qnames.contains("MA.emailAddress"));
+		assertEquals(true, qnames.contains("MA.roleKotkaEnum"));
+		assertEquals(true, qnames.contains("MA.person"));
+		assertEquals(true, qnames.contains("MA.advanced"));			
 	}
 	
 }
