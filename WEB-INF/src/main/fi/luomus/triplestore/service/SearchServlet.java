@@ -158,4 +158,19 @@ public class SearchServlet extends ApiServlet {
 		return value != null && value.length() > 0;
 	}
 
+	@Override
+	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		throw new UnsupportedOperationException();
+	}
+	
 }
