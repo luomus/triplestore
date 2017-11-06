@@ -207,12 +207,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private void addResultTypeModels(ResultType resultType, List<Model> models, Qname qname, Model model, Set<Qname> alreadyIncludedSubjects) throws Exception {
-		Set<Qname> subjectsToInclude = Collections.emptySet();
-
 		if (resultType == ResultType.CHAIN) {
-			subjectsToInclude = fetchTaxonChain(qname);
+			models.addAll(get(fetchTaxonChain(qname)));
 		} else if (resultType == ResultType.CHILDREN) {
-			subjectsToInclude = fetchAllChildren(qname);
+			models.addAll(get(fetchAllChildren(qname)));
 		} else if (resultType == ResultType.TREE) {
 			models.addAll(fetchTree(model));
 		} else if (resultType == ResultType.DEEP) {
@@ -220,13 +218,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		} else {
 			throw new UnsupportedOperationException("Not impleted for " + resultType);
 		}
-
-		if (!subjectsToInclude.isEmpty()) {
-			models.addAll(get(subjectsToInclude));
-		}
 	}
 
 	private Collection<Model> deep(Model model, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
+		if (model.getType() != null && !model.getType().equals("rdf:Alt") && !model.getType().equals("rdf:Property")) return Collections.emptyList();
 		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
 		List<Model> models = new ArrayList<Model>();
 		Set<Qname> objects = new HashSet<>();

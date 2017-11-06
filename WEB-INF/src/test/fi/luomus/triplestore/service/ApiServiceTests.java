@@ -23,6 +23,7 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
@@ -520,21 +521,24 @@ public class ApiServiceTests {
 	}
 	
 	@Test
-	public void testget_deep() throws TooManyResultsException, Exception {
-		Set<Qname> properties = Utils.set(
-				new Qname("MA.roleKotka"),
-				new Qname("MA.emailAddress")
-				);
-		Collection<Model> models = dao.getSearchDAO().get(properties, ResultType.DEEP);
+	public void testget_properties() throws TooManyResultsException, Exception {
+		Collection<Model> properties = dao.getSearchDAO().search(new SearchParams().type("rdf:Property"));
+		Set<Qname> propertyQnames = new HashSet<>();
+		for (Model m : properties) {
+			propertyQnames.add(new Qname(m.getSubject().getQname()));
+		}
+		
+		Collection<Model> models = dao.getSearchDAO().get(propertyQnames, ResultType.DEEP);
 		Set<String> qnames = new HashSet<>();
 		for (Model m : models) {
 			qnames.add(m.getSubject().getQname());
 		}
+		
 		assertEquals(true, qnames.contains("MA.roleKotka"));
 		assertEquals(true, qnames.contains("MA.emailAddress"));
 		assertEquals(true, qnames.contains("MA.roleKotkaEnum"));
 		assertEquals(true, qnames.contains("MA.person"));
-		assertEquals(true, qnames.contains("MA.advanced"));			
+		assertEquals(true, qnames.contains("MA.advanced"));
 	}
 	
 }
