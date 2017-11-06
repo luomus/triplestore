@@ -34,13 +34,14 @@ public class PropertiesServlet extends ApiServlet {
 
 	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
-		Set<Qname> propertyQnames = getPropertyQnames(dao);
+		Set<Qname> propertyQnames = getQnamesOfType(dao, "rdf:Property");
+		propertyQnames.addAll(getQnamesOfType(dao, "rdf:Alt"));
 		String response = get(propertyQnames, ResultType.DEEP, Format.JSON_RDFXML, dao);
 		return jsonResponse(response, res);
 	}
 
-	private Set<Qname> getPropertyQnames(TriplestoreDAO dao) throws Exception {
-		Collection<Model> properties = dao.getSearchDAO().search(new SearchParams().type("rdf:Property"));
+	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
+		Collection<Model> properties = dao.getSearchDAO().search(new SearchParams().type(type));
 		Set<Qname> propertyQnames = new HashSet<>();
 		for (Model m : properties) {
 			propertyQnames.add(new Qname(m.getSubject().getQname()));
