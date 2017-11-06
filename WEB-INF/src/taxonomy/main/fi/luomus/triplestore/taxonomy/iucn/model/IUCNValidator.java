@@ -238,6 +238,7 @@ public class IUCNValidator {
 		for (String criteriaPostfix : IUCNEvaluation.CRITERIAS) {
 			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
 			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
+			if ("MX.iucnLC".equals(criteriaStatus)) return;
 			if (given(criteria) || given(criteriaStatus)) {
 				if (!given(criteria) || !given(criteriaStatus)) {
 					validationResult.setError("Kriteeri " + criteriaPostfix + " ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan", "MKV.status"+criteriaPostfix);
