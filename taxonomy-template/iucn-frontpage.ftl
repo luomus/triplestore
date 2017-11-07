@@ -9,29 +9,6 @@
 
 <@toolbox/>		
 
-<div style="border: 1px dotted red; background-color: #eee; font-size: 12px; margin: 1em; padding: 0.3em;">
-	1.11.2017 huomattiin vika järjestelmässä joka johti elinympäristöjen, levinneisyyksien ja uhkien tietojen katoamiseen arvioinnista kun arviointia kommentoitiin yleisellä komenttivälineellä. 
-       Tiedot eivät kuitenkaan hävinneet tietokannasta, vaan ainoastaan näkyviltä arviointilomakkeella.
-	   Kuitenkin jos saman päivän aikana on käyty muokkaamassa arviointia, jossa arviointilomakkeella ei enää ollut elinympäristöjä (yms), tiedot päivittyivät poistuneeksi myös tietokannasta. 
-	  (Ellei arvioija huomannut tietojen puuttuvan ja on syöttänyt ne uudestaan.)
-	<p>Seuraaville viidelle lajille tiedot tallennettiin kadonneina ja on PALAUTETTU tietokannan historiaversiosta. Olkaa hyvä ja tarkistakaa tiedot:</p>
-	<ul>
-		<li> Apatania forsslundi	</li> 
-		<li> Xylophagus ater	 </li>
-		<li> Xylomya czekanovskii	 </li>
-		<li> Nemotelus nigrinus	 </li>
-		<li> Nemotelus uliginosus	 </li>
-	</ul>
-	<p>Seuraaville lajeille historiatiedossa oli joitakin tietoja, mutta kaikki tiedot eivät puuttuneet nykyisestä versiosta. Näitä tietoja EI OLE PALAUTETTU. Olkaa hyvä ja tarkistakaa tiedot:
-	<ul>
-		<li>Cephaloziella integerrima	</li>
-		<li>Xylophagus cinctus	</li>
-		<li>Xylophagus kowarzi	</li>
-	</ul>
-	<p>Pahoittelut ongelmasta ja sen aiheuttamasta ylimääräisestä työstä!</p>
-	<p>IUCN -tallennustyökalu oli tämän ongelman havaitsemisen ja korjauksen välisen ajan poissa päältä 1.11. klo 11-14. <b>Työkalua voi nyt taas käyttää.</b></p>
-</div>
-
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
 	<h6>Uudistuksia 3.11.2017</h6>
 	<ul>
