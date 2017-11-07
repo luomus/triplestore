@@ -10,13 +10,14 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 3.11.2017</h6>
+	<h6>Uudistuksia 3.11. ja 8.11.2017</h6>
 	<ul>
 		<li>Estetty arvioijaa tekemästä lajin arviointilomakkeella samalla kertaa muutoksia arviointiin ja jättämään yleiskommentin, koska vain toinen näistä tallentui.
 			(Jos painetaan "Tallenna kommentti", tallentuu vain kommentti. Jos talletaan arvio, mahdollisesti syötetty kommentti ei tallennu.)
 		</li>
 		<li>DD-luokalle on nyt mahdollista ilmoittaa "Mahdollisesti hävinnyt" -tieto.</li>
 		<li>Parannettu elinympäristöjen valitsemista kirjoittamalla ympäristön koodi.</li>
+		<li>8.11.: On nyt mahdollista ilmoittaa kriteerin luokaksi LC ilman että kriteeri-kentässä lukee mitään.</li>
 	</ul>
 </div>
 
