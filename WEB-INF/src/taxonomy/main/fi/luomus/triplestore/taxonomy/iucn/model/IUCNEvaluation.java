@@ -75,6 +75,7 @@ public class IUCNEvaluation {
 	public static final String NA_MARK_NOTES = "Merkitty NA-luokkaan pikatoiminnolla.";
 	public static final String LC_MARK_NOTES = "Merkitty LC-luokkaan pikatoiminnolla.";
 	public static final String INDEX_CHANGE_NOTES = "Punaisen kirjan indeksiä (RLI) muutettu.";
+	public static final String INDEX_REMOVE_NOTES = "Punaisen kirjan indeksi (RLI) on tyjennetty.";
 	public static final String ENDANGERMENT_OBJECT_CLASS = "MKV.endangermentObject"; 
 	public static final String CRITERIA_FOR_STATUS = "MKV.criteriaForStatus";
 	public static final String CRITERIA_A = "MKV.criteriaA";

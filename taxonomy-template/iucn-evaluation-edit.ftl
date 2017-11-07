@@ -214,7 +214,7 @@
 			</p>
 			<p>
 				<label>Muistiinpanot</label>
-				<textarea name="MKV.redListIndexCorrectionNotes">${(evaluation.getValue("MKV.redListIndexCorrectionNotes")!"")?html}</textarea>
+				<textarea name="MKV.redListIndexCorrectionNotes" id="RLINotes">${(evaluation.getValue("MKV.redListIndexCorrectionNotes")!"")?html}</textarea>
 			</p>
 			<p>
 				<label>&nbsp;</label>

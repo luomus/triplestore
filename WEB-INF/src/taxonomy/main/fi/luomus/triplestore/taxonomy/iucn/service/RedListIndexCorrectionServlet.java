@@ -34,53 +34,68 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		String evaluationId = req.getParameter("evaluationId");
 		String redListIndexCorrection = req.getParameter(INDEX_PREDICATE.getQname());
 		String redListIndexCorrectionNotes = req.getParameter(NOTES_PREDICATE.getQname());
-		
+
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
-		
+
 		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
 		String speciesQname = evaluation.getSpeciesQname();
 		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
 		IUCNEvaluationTarget target = container.getTarget(speciesQname);
-		
+
 		if (!permissions(req, target, null)) {
 			throw new IllegalAccessException();
 		}
-				
-		String editNotes = IUCNEvaluation.INDEX_CHANGE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
+
+		boolean indexAdded = given(redListIndexCorrection);
+
+		String editNotes = editNotes(indexAdded);
 		Qname editor = getUser(req).getQname();
+
 		
 		Subject subject = new Subject(evaluationId);
-		Statement indexStatement = new Statement(INDEX_PREDICATE, new ObjectResource(redListIndexCorrection));
+		Statement indexStatement = indexAdded ? new Statement(INDEX_PREDICATE, new ObjectResource(redListIndexCorrection)) : null;
 		Statement notesStatement = new Statement(NOTES_PREDICATE, new ObjectLiteral(redListIndexCorrectionNotes)); 
 		Statement editNotesStatement = new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(editNotes));
 		Statement lastModifiedStatement = new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate()));
 		Statement lastModifiedByStatement = new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(editor));
 		
-		dao.store(subject, indexStatement);
+		if (indexAdded) {
+			dao.store(subject, indexStatement);
+		} else {
+			dao.delete(subject, INDEX_PREDICATE);
+		}
 		dao.store(subject, notesStatement);
 		dao.store(subject, editNotesStatement);
 		dao.store(subject, lastModifiedStatement);
 		dao.store(subject, lastModifiedByStatement);
-		
+
 		model.removeAll(INDEX_PREDICATE);
 		model.removeAll(NOTES_PREDICATE);
 		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
 		model.removeAll(LAST_MODIFIED_PREDICATE);
 		model.removeAll(LAST_MODIFIED_BY_PREDICATE);
 		
-		model.addStatement(indexStatement);
+		if (indexAdded) {
+			model.addStatement(indexStatement);
+		}
 		model.addStatement(notesStatement);
 		model.addStatement(editNotesStatement);
 		model.addStatement(lastModifiedStatement);
 		model.addStatement(lastModifiedByStatement);
-		
+
 		evaluation.setIncompletelyLoaded(true);
 		container.setEvaluation(evaluation);
-		
+
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");
-		
+
 		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
+	}
+
+	private String editNotes(boolean indexAdded) {
+		return indexAdded ? 
+				IUCNEvaluation.INDEX_CHANGE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy") : 
+					IUCNEvaluation.INDEX_REMOVE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 	}
 
 }

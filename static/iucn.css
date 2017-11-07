@@ -351,6 +351,10 @@ tr.criteriaStatusRow > td {
   height: 10em;
   width: 80em;
 }
+#RLINotes {
+	height: 5em;
+	width: 50em;
+}
 li.remark {
   display: block;
   border: 1px solid rgb(221,221,221);
