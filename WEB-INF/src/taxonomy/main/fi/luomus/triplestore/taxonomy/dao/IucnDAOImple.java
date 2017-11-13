@@ -171,14 +171,13 @@ public class IucnDAOImple implements IucnDAO {
 						Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
 						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
 						Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
-						Set<Qname> taxonsTypeOfOccurrenceInFinland = taxon.getTypesOfOccurrenceInFinland();
 
 						if (taxonRedListStatus == null || !taxonRedListStatus.equals(status)) {
 							updateRedListStatus(taxon, year, status);
 							modifiedTaxon = true;
 						}
-						if (given(typeOfOccurrenceInFinland) && !taxonsTypeOfOccurrenceInFinland.contains(typeOfOccurrenceInFinland)) {
-							Set<Qname> types = new HashSet<>(taxonsTypeOfOccurrenceInFinland);
+						if (given(typeOfOccurrenceInFinland) && taxon.getTypesOfOccurrenceInFinland().isEmpty()) {
+							Set<Qname> types = new HashSet<>();
 							types.add(typeOfOccurrenceInFinland);
 							updateTypesOfOccurrenceInFinland(taxon, types);
 							modifiedTaxon = true;
