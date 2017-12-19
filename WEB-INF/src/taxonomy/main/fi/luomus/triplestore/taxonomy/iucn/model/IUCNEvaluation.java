@@ -3,10 +3,12 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -102,6 +104,7 @@ public class IUCNEvaluation {
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
+
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>();
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEX", 5);
@@ -116,6 +119,28 @@ public class IUCNEvaluation {
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNA", null);
 		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNE", null); 
 	}
+
+	private static final Comparator<Statement> REMARK_SORTER = new Comparator<Statement>() {
+		@Override
+		public int compare(Statement o1, Statement o2) {
+			String s1 = o1.getObjectLiteral().getContent();
+			String s2 = o2.getObjectLiteral().getContent();
+			Date d1 = date(s1);
+			Date d2 = date(s2);
+			return d2.compareTo(d1);
+		}
+
+		private Date date(String remark) {
+			try {
+				String[] parts = remark.split(Pattern.quote("\n"));
+				parts = parts[0].split(Pattern.quote(" "));
+				String date = parts[parts.length-1].replace(":", "");
+				return DateUtils.convertToDate(date, "dd.MM.yyyy");
+			} catch (Exception e) {
+				return new Date();
+			}
+		}
+	};
 
 	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
@@ -227,11 +252,11 @@ public class IUCNEvaluation {
 	public boolean isStarted() {
 		return STATE_STARTED.equals(getState());
 	}
-	
+
 	public boolean isReadyForComments() {
 		return STATE_READY_FOR_COMMENTS.equals(getState());
 	}
-	
+
 	private String getState() {
 		return getValue(STATE);
 	}
@@ -297,7 +322,7 @@ public class IUCNEvaluation {
 	public boolean isDd() {
 		return "MX.iucnDD".equals(getIucnStatus());
 	}
-	
+
 	public List<IUCNEndangermentObject> getEndangermentReasons() {
 		if (endangermentReasons == null) return Collections.emptyList();
 		return endangermentReasons;
@@ -397,17 +422,19 @@ public class IUCNEvaluation {
 	public boolean hasRemarks() {
 		return getValue(REMARKS) != null;
 	}
-	
+
 	public String getRemarks() {
 		StringBuilder b = new StringBuilder();
-		for (String s : getValues(REMARKS)) {
-			b.append(s).append("\n");
+		for (Statement s : getRemarkSatements()) {
+			b.append(s.getObjectLiteral().getContent()).append("\n\n");
 		}
 		return b.toString();
 	}
 
 	public List<Statement> getRemarkSatements() {
-		return evaluation.getStatements(REMARKS);
+		List<Statement> remarks = evaluation.getStatements(REMARKS);
+		Collections.sort(remarks, REMARK_SORTER);
+		return remarks;
 	}
 
 	public boolean isIncompletelyLoaded() {
