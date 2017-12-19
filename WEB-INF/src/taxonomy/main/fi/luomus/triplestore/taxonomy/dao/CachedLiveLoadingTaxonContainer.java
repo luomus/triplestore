@@ -335,5 +335,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
+	@Override
+	public int getNumberOfTaxons() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
 }
 

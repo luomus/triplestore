@@ -65,4 +65,10 @@ public class TaxonContainerStub implements TaxonContainer {
 		return false;
 	}
 
+	@Override
+	public int getNumberOfTaxons() throws UnsupportedOperationException {
+		// Auto-generated method stub
+		return 0;
+	}
+
 }
