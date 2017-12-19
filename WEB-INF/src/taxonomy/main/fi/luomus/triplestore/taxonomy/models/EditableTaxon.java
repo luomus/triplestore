@@ -8,6 +8,7 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.PublicInformation;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
@@ -160,5 +161,11 @@ public class EditableTaxon extends Taxon {
 	public boolean hasExplicitlySetInformalTaxonGroup(String qname) {
 		return getExplicitlySetInformalTaxonGroups().contains(new Qname(qname));
 	}
-
+	
+	@Override
+	@PublicInformation
+	public boolean isFinnish() {
+		return this.isMarkedAsFinnishTaxon();
+	}
+	
 }
