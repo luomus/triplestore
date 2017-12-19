@@ -18,7 +18,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 public class IUCNLineData {
 
 	public enum Mode {
-		V2010, SAMMALLEET2019
+		V2010, SAMMALLEET2019, V2000
 
 	}
 	private static final Qname OCC_EX = new Qname("MX.typeOfOccurrenceExtirpated");
@@ -72,6 +72,7 @@ public class IUCNLineData {
 	public String groundsForEvaluationNotes;
 	public String redListStatus;
 	public String criteriaForStatus;
+	public String exteralPopulationImpactOnRedListStatus;
 	public String reasonForStatusChange;
 	public String redListStatusRange;
 	public String possiblyRE;
@@ -90,6 +91,9 @@ public class IUCNLineData {
 		}
 		if (mode == Mode.SAMMALLEET2019) {
 			sammaleet2019();
+		}
+		if (mode == Mode.V2000) {
+			v2000();
 		}
 	}
 
@@ -152,6 +156,21 @@ public class IUCNLineData {
 		legacyPublications = s(68);
 	}
 
+	private void v2000() {
+		String sciNameField = s(2);
+		if (sciNameField.startsWith("MX.")) {
+			taxonQname = sciNameField;
+		} else {
+			scientificName = sciNameField;
+		}
+		primaryHabitat = s(6);
+		endangermentReasons = s(7);
+		threats = s(8);
+		redListStatus = s(3);
+		criteriaForStatus = s(4);
+		exteralPopulationImpactOnRedListStatus = s(5);
+		
+	}
 	
 	private void sammaleet2019() {
 		taxonQname = s(0);
@@ -573,6 +592,7 @@ public class IUCNLineData {
 	}
 
 	private Boolean bVal(String s) {
+		if (!given(s)) return null;
 		s = s.replace("?", "").toLowerCase();
 		if (!given(s)) return null;
 		if (s.equals("kyllä") || s.equals("x") || s.equals("on") || s.equals("+") || s.equals("(x)")) return true;
@@ -682,15 +702,18 @@ public class IUCNLineData {
 	}
 
 	public Qname getRedListStatusMin() {
+		if (redListStatusRange == null) return null;
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[0]);
 	}
 
 	public Qname getRedListStatusMax() {
+		if (redListStatusRange == null) return null;
 		if (!redListStatusRange.contains("-")) return getRedListStatusMin();
 		return RED_LIST_STATUSES.get(redListStatusRange.split("-")[1]);
 	}
 
 	public Qname getPossiblyRE() {
+		if (possiblyRE == null) return null;
 		String s = possiblyRE.toLowerCase();
 		if (s.equals("re") || s.equals("kyllä") || s.equals("x")) return new Qname("MX.iucnRE");
 		if (validInteger(s)) return new Qname("MX.iucnRE");
@@ -706,6 +729,7 @@ public class IUCNLineData {
 	}
 
 	public Boolean getLsaRecommendation() {
+		if (lsaRecommendation == null) return null;
 		String s = lsaRecommendation.toLowerCase();
 		if (s.equals("e") || s.equals("e*")) return true;
 		return null;
@@ -749,6 +773,7 @@ public class IUCNLineData {
 	}
 
 	private String cleanMinmax(String s) {
+		if (s == null) return "";
 		return s.toLowerCase().replace("±2", "").replace("n.", "").replace("km²", "").replace("km2", "").replace(".", "").replace(" ", "").replace("noin", "").replace("arv.", "").replace("selvästi", "").replace("yli", ">").replace("?", "").replace("tunnettu", "").replace("alle","<").replace("ehkä", "").trim();
 	}
 

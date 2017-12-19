@@ -46,8 +46,7 @@ public class IUCN2010Sisaan {
 
 	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
-	private static final int EVALUATION_YEAR = 2010; // XXX
-	private static final String BLABLABLA = "blablabla blablabla blablabla blablabla blablabla";
+	private static final int EVALUATION_YEAR = 2000; // XXX change year here
 	private static final String OCCURRENCES = "occurrences";
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
@@ -87,6 +86,12 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(new Qname("MVL.37")));
 		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
 		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
+		
+		Set<Qname> all = new HashSet<>();
+		for (Set<Qname> s : FILE_TO_INFORMAL_GROUP.values()) {
+			all.addAll(s);
+		}
+		FILE_TO_INFORMAL_GROUP.put("yhdistetty.csv", all);
 	}
 
 	private static TriplestoreDAO triplestoreDAO;
@@ -99,7 +104,8 @@ public class IUCN2010Sisaan {
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); // XXX MUST USE PROD MODE WHEN LOADING DATA 
+			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
 			process();
 			taxonomyDAO.close();
 		} catch (Exception e) {
@@ -115,7 +121,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX
+			//if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -132,13 +138,14 @@ public class IUCN2010Sisaan {
 			line = line.trim();
 			if (line.isEmpty()) continue;
 			process(line, f, i, lines.size());
+			if (i > 5) break;
 		}
 	}
 
 	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		//IUCNLineData data = new IUCNLineData(parts);
-		IUCNLineData data = new IUCNLineData(Mode.V2010, parts); // XXX
+		IUCNLineData data = new IUCNLineData(Mode.V2000, parts); // XXX change parse mode here
 		dump(data);
 		Qname fixedQnameForName = getFixedQnameForName(data.scientificName);
 		if (fixedQnameForName != null) data.taxonQname = fixedQnameForName.toString();
@@ -293,7 +300,8 @@ public class IUCN2010Sisaan {
 			return; // Already loaded
 		}
 		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
-		triplestoreDAO.store(evaluation, null); 
+		triplestoreDAO.store(evaluation, null); // XXX disable loading here
+		//System.out.println(evaluation.getModel().getRDF() + " " + evaluation.getPrimaryHabitat() + " " + evaluation.getThreats() + " " + evaluation.getEndangermentReasons());
 		iucnDAO.getIUCNContainer().setEvaluation(evaluation); 
 	}
 
@@ -374,6 +382,7 @@ public class IUCN2010Sisaan {
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
 		model.addStatementIfObjectGiven("MKV.redListStatusAccuracyNotes", data.redListStatusAccuracyNotes);
+		model.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, data.exteralPopulationImpactOnRedListStatus);
 		String editNotes = "Ladattu tiedostosta";
 		if (data.editNotes != null) editNotes = data.editNotes;
 		model.addStatementIfObjectGiven(IUCNEvaluation.EDIT_NOTES, editNotes);
@@ -462,7 +471,7 @@ public class IUCN2010Sisaan {
 			Object o = field.get(data);
 			if (o == null || o instanceof String) {
 				String value = o == null ? "" : (String) o;
-				if (value.length() > 30) value = BLABLABLA;
+				if (value.length() > 30) value = "long text";
 				if (!dumps.get(fieldname).containsKey(value)) {
 					dumps.get(fieldname).put(value, 1);
 				} else {

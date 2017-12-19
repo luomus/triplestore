@@ -48,4 +48,9 @@ public class IUCNEndangermentObject implements Comparable<IUCNEndangermentObject
 		return this.endangerment.equals(other.endangerment);
 	}
 	
+	@Override
+	public String toString() {
+		return this.endangerment.toString();
+	}
+	
 }
