@@ -75,6 +75,7 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Nivelkärsäiset_siirto.csv", Utils.set(new Qname("MVL.34")));
 		FILE_TO_INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(new Qname("MVL.241")));
 		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto.csv", Utils.set(new Qname("MVL.31")));
+		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto2.csv", Utils.set(new Qname("MVL.31")));
 		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
 		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
@@ -114,7 +115,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Jäkälät_siirto.csv")) continue; // XXX
+			if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -292,7 +293,7 @@ public class IUCN2010Sisaan {
 			return; // Already loaded
 		}
 		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
-		triplestoreDAO.store(evaluation, null);
+		triplestoreDAO.store(evaluation, null); 
 		iucnDAO.getIUCNContainer().setEvaluation(evaluation); 
 	}
 
