@@ -2,6 +2,7 @@ package fi.luomus.triplestore.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -188,9 +189,10 @@ public interface TriplestoreDAO {
 	 * Updates occurrence information, making the neccessary deletions, updates and inserts.
 	 * @param existingOccurrences
 	 * @param newOccurrences
+	 * @param supportedAreas all existing occurrences for these areas are deleted
 	 * @throws Exception
 	 */
-	public void store(Occurrences existingOccurrences, Occurrences newOccurrences) throws Exception;
+	public void store(Occurrences existingOccurrences, Occurrences newOccurrences, Set<Qname> supportedAreas) throws Exception;
 
 	/**
 	 * Insert or update occurrence. ID of occurrence may or may not be set for insert; if not given it will be generated and set to object.

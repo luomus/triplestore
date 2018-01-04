@@ -3,6 +3,7 @@ package fi.luomus.triplestore.taxonomy.models;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -161,12 +162,6 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(Occurrences existingOccurrences, Occurrences newOccurrences) throws Exception {
-		// Auto-generated method stub
-		
-	}
-
-	@Override
 	public void store(Qname taxonQname, Occurrence occurrence) throws Exception {
 		// Auto-generated method stub
 		
@@ -216,6 +211,12 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 
 	@Override
 	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+		// Auto-generated method stub
+		
+	}
+
+	@Override
+	public void store(Occurrences existingOccurrences, Occurrences newOccurrences, Set<Qname> supportedAreas) throws Exception {
 		// Auto-generated method stub
 		
 	}

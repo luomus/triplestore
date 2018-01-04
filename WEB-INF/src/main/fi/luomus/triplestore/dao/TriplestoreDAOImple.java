@@ -742,25 +742,14 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(Occurrences existingOccurrences, Occurrences alteredOccurrences) throws Exception {
-		for (Occurrence o : alteredOccurrences.getOccurrences()) {
-			Qname area = o.getArea();
-			Occurrence existing = existingOccurrences.getOccurrence(area);
-			if (existing == null) {
-				// insert
-				store(alteredOccurrences.getTaxonQname(), o);
-			} else if (!existing.equals(o)) {
-				// update
-				o.setId(existing.getId());
-				store(alteredOccurrences.getTaxonQname(), o);
+	public void store(Occurrences existingOccurrences, Occurrences alteredOccurrences, Set<Qname> supportedAreas) throws Exception {
+		for (Occurrence existing : existingOccurrences) {
+			if (supportedAreas.contains(existing.getArea())) {
+				delete(new Subject(existing.getId()));
 			}
 		}
-		for (Occurrence o : existingOccurrences.getOccurrences()) {
-			Qname area = o.getArea();
-			if (alteredOccurrences.getOccurrence(area) == null) {
-				// delete
-				this.delete(new Subject(o.getId()));
-			}
+		for (Occurrence o : alteredOccurrences.getOccurrences()) {
+			store(alteredOccurrences.getTaxonQname(), o);
 		}
 	}
 
