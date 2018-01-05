@@ -86,11 +86,12 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(new Qname("MVL.37")));
 		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
 		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
-		
+
 		Set<Qname> all = new HashSet<>();
 		for (Set<Qname> s : FILE_TO_INFORMAL_GROUP.values()) {
 			all.addAll(s);
 		}
+		all.add(new Qname("MVL.40"));
 		FILE_TO_INFORMAL_GROUP.put("yhdistetty.csv", all);
 	}
 
@@ -138,7 +139,7 @@ public class IUCN2010Sisaan {
 			line = line.trim();
 			if (line.isEmpty()) continue;
 			process(line, f, i, lines.size());
-			if (i > 5) break;
+			//if (i > 5) break; // XXX
 		}
 	}
 
@@ -169,7 +170,7 @@ public class IUCN2010Sisaan {
 					if (line.isEmpty()) continue;
 					String[] parts = line.split(Pattern.quote("\t"));
 					String name = parts[1];
-					Qname qname = new Qname(parts[3]);
+					Qname qname = new Qname(parts[3].trim());
 					fixedNames.put(name, qname);
 				} catch (Exception e) {
 					System.err.println(line);
@@ -301,7 +302,7 @@ public class IUCN2010Sisaan {
 		}
 		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
 		triplestoreDAO.store(evaluation, null); // XXX disable loading here
-		//System.out.println(evaluation.getModel().getRDF() + " " + evaluation.getPrimaryHabitat() + " " + evaluation.getThreats() + " " + evaluation.getEndangermentReasons());
+		//System.out.println(evaluation.getModel().getRDF() + " / " + evaluation.getPrimaryHabitat() + " / " + evaluation.getThreats() + " / " + evaluation.getEndangermentReasons());
 		iucnDAO.getIUCNContainer().setEvaluation(evaluation); 
 	}
 
@@ -382,7 +383,7 @@ public class IUCN2010Sisaan {
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
 		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
 		model.addStatementIfObjectGiven("MKV.redListStatusAccuracyNotes", data.redListStatusAccuracyNotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, data.exteralPopulationImpactOnRedListStatus);
+		model.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, data.getExteralPopulationImpactOnRedListStatus());
 		String editNotes = "Ladattu tiedostosta";
 		if (data.editNotes != null) editNotes = data.editNotes;
 		model.addStatementIfObjectGiven(IUCNEvaluation.EDIT_NOTES, editNotes);

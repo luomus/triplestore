@@ -171,7 +171,7 @@ public class IUCNLineData {
 		exteralPopulationImpactOnRedListStatus = s(5);
 		
 	}
-	
+
 	private void sammaleet2019() {
 		taxonQname = s(0);
 		taxonomicNotes = s(1);
@@ -689,7 +689,7 @@ public class IUCNLineData {
 	}
 
 	public Qname getRedListStatus() {
-		String s = redListStatus.replace(".", "").replace("*", "").replace("∙", "").trim();
+		String s = redListStatus.replace(".", "").replace("*", "").replace("∙", "").trim().toUpperCase();
 		if (s.contains("(")) {
 			s = s.split(Pattern.quote("("))[0].trim();
 		}
@@ -780,7 +780,7 @@ public class IUCNLineData {
 	private static final Map<String, Qname> HABITAS;
 	static {
 		HABITAS = new HashMap<>();
-		for (String s : "Mk,Mkk,Mkt,Ml,Mlt,Mlk,S,Sl,Sla,Slr,Slk,Sn,Snk,Snr,Sr,Srk,Srr,Sk,Skk,Skr,V,Vi,Vs,Vsk,Vsr,Va,Vj,Vp,Vk,Vl,R,Ri,Rih,Ris,Rit,Rj,Rjh,Rjs,Rjt,Kl,T,Tk,Tl,Tn,I,In,Ih,Io,Iv,Ip,Ir".split(",")) {
+		for (String s : "M,Mk,Mkk,Mkt,Ml,Mlt,Mlk,S,Sl,Sla,Slr,Slk,Sn,Snk,Snr,Sr,Srk,Srr,Sk,Skk,Skr,V,Vi,Vs,Vsk,Vsr,Va,Vj,Vp,Vk,Vl,R,Ri,Rih,Ris,Rit,Rj,Rjh,Rjs,Rjt,K,Kl,T,Tk,Tl,Tn,I,In,Ih,Io,Iv,Ip,Ir".split(",")) {
 			HABITAS.put(s, new Qname("MKV.habitat"+s));
 		}
 	}
@@ -851,4 +851,16 @@ public class IUCNLineData {
 		if (taxonQname == null) return "";
 		return taxonQname;
 	}
+
+	public Qname getExteralPopulationImpactOnRedListStatus() {
+		if (!given(exteralPopulationImpactOnRedListStatus)) {
+			return null;
+		}
+		if (exteralPopulationImpactOnRedListStatus.equals("-1")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1");
+		if (exteralPopulationImpactOnRedListStatus.equals("-2")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus2");
+		if (exteralPopulationImpactOnRedListStatus.equals("1")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1");
+		if (exteralPopulationImpactOnRedListStatus.equals("2")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2");
+		return null;
+	}
+	
 }
