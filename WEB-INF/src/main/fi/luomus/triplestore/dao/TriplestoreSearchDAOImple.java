@@ -124,16 +124,21 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		query.append(" ) \n");
 	}
 
-	private void objectresources(Set<String> resources, List<String> values, StringBuilder query) {
-		if (resources.isEmpty()) return;
+	private void objectresources(Set<String> resourceIds, List<String> values, StringBuilder query) {
+		if (resourceIds.isEmpty()) return;
 		query.append(" AND ( 1=2 ");
-		for (String qname : resources) {
-			if (qname.contains("%")) {
-				query.append(" OR UPPER(objectname) LIKE ? ");
-				values.add(qname.toUpperCase());
+		for (String resourceId : resourceIds) {
+			if (resourceId.startsWith("http:")) {
+				query.append(" OR objecturi = ? ");
+				values.add(resourceId);
 			} else {
-				query.append(" OR objectname = ? ");
-				values.add(qname);
+				if (resourceId.contains("%")) {
+					query.append(" OR UPPER(objectname) LIKE ? ");
+					values.add(resourceId.toUpperCase());
+				} else {
+					query.append(" OR objectname = ? ");
+					values.add(resourceId);
+				}
 			}
 		}
 		query.append(" ) \n");
