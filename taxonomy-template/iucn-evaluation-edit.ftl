@@ -47,9 +47,9 @@
 
 <div class="taxonInfo">
 	<h6>Synonyymit</h6>
-	<#if taxon.synonyms?has_content>
+	<#if taxon.allSynonyms?has_content>
 	<ul>
-		<#list taxon.synonyms as synonym>
+		<#list taxon.allSynonyms as synonym>
 			<li><@printScientificNameAndAuthor synonym /></li>
 		</#list>
 	</ul>

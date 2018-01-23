@@ -448,10 +448,10 @@ public class IUCNEvaluation {
 	private static final Map<String, String> EXTERNAL_QNAME_TO_VALUE;
 	static {
 		EXTERNAL_QNAME_TO_VALUE = new HashMap<>();
-		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1", "(-1)");
-		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus2", "(-2)");
-		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1", "(+1)");
-		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2", "(+2)");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1", "-1");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumMinus2", "-2");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1", "+1");
+		EXTERNAL_QNAME_TO_VALUE.put("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2", "+2");
 	}
 
 	public String getExternalImpact() {

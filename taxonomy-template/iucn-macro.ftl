@@ -36,6 +36,39 @@
 	</#if>
 </#macro>
 
+<#macro iucnStatus evaluation>
+	<#if evaluation.hasIucnStatus()>
+		${evaluation.iucnStatus?replace("MX.iucn", "")}<@iucnExternalImpact evaluation />
+	<#else>
+	 -
+	</#if>
+</#macro>
+
+<#macro iucnExternalImpact evaluation><@compress single_line=true><#t>
+	<#if evaluation.externalImpact??><#t>
+		<span class="externalImpact"><#t>
+		<#if evaluation.externalImpact == '-2'>&deg;&deg;<#t>
+		<#elseif evaluation.externalImpact == '-1'>&deg;<#t>
+		<#elseif evaluation.externalImpact == '+1'>&#x271D;<#t>
+		<#elseif evaluation.externalImpact == '+2'>&#x271D;&#x271D;<#t>
+		</#if>
+		</span><#t>
+	</#if>
+</@compress>
+</#macro>
+
+<#macro iucnIndexCorrectedStatus evaluation>
+	<#if evaluation.hasIucnStatus()>
+		<#if evaluation.hasCorrectedStatusForRedListIndex()>
+			${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")} <span class="correctedIndex">[KORJATTU]</span>
+		<#else>
+			<@iucnStatus evaluation />
+		</#if>
+	<#else>
+		-
+	</#if>
+</#macro>
+
 <#macro speciesRow target year>
 	<td>
 		${target.orderAndFamily}
@@ -71,22 +104,10 @@
 			</#if>
 		</td>
 		<td>
-			<#if evaluation.hasIucnStatus()>
-				${statusProperty.range.getValueFor(evaluation.iucnStatus).label.forLocale("fi")} ${evaluation.externalImpact}
-		    <#else>
-		    	-
-		    </#if>
+			<@iucnStatus evaluation />
 		</td>
 		<td class="redListIndexTableField">
-			<#if evaluation.hasIucnStatus()>
-				<#if evaluation.hasCorrectedStatusForRedListIndex()>
-					${evaluation.calculatedCorrectedRedListIndex!""} (${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")}) <span class="correctedIndex">[KORJATTU]</span>
-				<#else>
-					${evaluation.calculatedRedListIndex!"-"} (${evaluation.iucnStatus?replace("MX.iucn", "")})
-				</#if>
-			<#else>
-				-
-			</#if>
+			<@iucnIndexCorrectedStatus evaluation />
 		</td>
 	<#else>
 		<td>
@@ -112,12 +133,8 @@
 	<td>
 		<#if target.hasPreviousEvaluation(year)>
 			<#assign prevEvaluation = target.getPreviousEvaluation(year)>
-			<#if prevEvaluation.hasIucnStatus()>
-				${prevEvaluation.iucnStatus?replace("MX.iucn", "")}  ${prevEvaluation.externalImpact}
-				(${prevEvaluation.evaluationYear})
-			<#else>
-				-
-			</#if>
+			<@iucnIndexCorrectedStatus prevEvaluation />
+			(${prevEvaluation.evaluationYear})
 		<#else>
 			-
 		</#if>

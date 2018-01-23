@@ -426,3 +426,7 @@ select.regionalOccurrence {
 	margin: 1em;
 	max-width: 220px;
 }
+
+.externalImpact {
+	color: red;
+}
