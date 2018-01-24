@@ -14,6 +14,7 @@ import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonSearch;
+import fi.luomus.commons.taxonomy.TaxonSearch.MatchType;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -60,7 +61,7 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_exact_search_from_null_checklist() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, null)).getResultsAsDocument().getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, null).setMatchTypes(MatchType.EXACT)).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
 
