@@ -46,7 +46,7 @@ public class IUCNEvaluationTarget {
 	
 	public String getSynonymNames() {
 		StringBuilder b = new StringBuilder();
-		Iterator<Taxon> i = taxon.getSynonyms().iterator();
+		Iterator<Taxon> i = taxon.getAllSynonyms().iterator();
 		while (i.hasNext()) {
 			Taxon synonym = i.next();
 			if (given(synonym.getScientificName())) {

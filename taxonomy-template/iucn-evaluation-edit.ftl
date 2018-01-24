@@ -142,7 +142,7 @@
 		<tr>
 			<th>Vuosi</th>
 			<th>Luokka</th>
-			<th>Indeksi</th>
+			<th>RLI</th>
 		</tr>
 		<#list evaluationYears as year>
 			<#if target.hasEvaluation(year)>
@@ -150,22 +150,10 @@
 				<tr>
 					<td><a href="${baseURL}/iucn/species/${target.qname}/${year}">${year}</a></td>
 					<td>
-						<#if yearEval.hasIucnStatus()>
-							${statusProperty.range.getValueFor(yearEval.iucnStatus).label.forLocale("fi")} ${yearEval.externalImpact}
-		    			<#else>
-		    				-
-		    			</#if>
+						<@iucnStatus yearEval />
 		    		</td>
 					<td>
-						<#if yearEval.hasIucnStatus()>
-							<#if yearEval.hasCorrectedStatusForRedListIndex()>
-								${yearEval.calculatedCorrectedRedListIndex!""} (${yearEval.correctedStatusForRedListIndex?replace("MX.iucn", "")}) <span class="correctedIndex">[KORJATTU]</span>
-							<#else>
-								${yearEval.calculatedRedListIndex!"-"} (${yearEval.iucnStatus?replace("MX.iucn", "")})
-							</#if>
-						<#else>
-							-
-						</#if>
+						<@iucnIndexCorrectedStatus yearEval />
 					</td>
 				</tr>
 			<#else>

@@ -10,9 +10,10 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 19.12.2017</h6>
+	<h6>Uudistuksia 24.1.2018</h6>
 	<ul>
-		<li>Kommentit näytettiin satunnaisessa järjestyksessä. Ne näytetään nyt aikajärjestyksessä. (Tosin saman päivän sisällä valitettavasti yhä satunnaisessa järjestykessä.)</li>
+		<li>Muutettu luokkien esittämistä lajiluettelossa, lajin arviointisivulla ja tiedostolatauksessa: Otetaan huomioon luokan ylentäminen ja alentaminen.</li>
+		<li>Näyetään kaikentyyppiset synonyymit lajin tietojen ohessa luettelossa, arviointisivulla ja tiedostolatauksessa (aiemmin näytettiin vain aidot synonyymit).</li>
 	</ul>
 </div>
 

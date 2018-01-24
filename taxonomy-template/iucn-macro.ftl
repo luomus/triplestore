@@ -36,37 +36,39 @@
 	</#if>
 </#macro>
 
-<#macro iucnStatus evaluation>
-	<#if evaluation.hasIucnStatus()>
-		${evaluation.iucnStatus?replace("MX.iucn", "")}<@iucnExternalImpact evaluation />
-	<#else>
-	 -
-	</#if>
+<#macro iucnStatus evaluation html=true><@compress single_line=true><#t>
+	<#if evaluation.hasIucnStatus()><#t>
+		${evaluation.iucnStatus?replace("MX.iucn", "")}<@iucnExternalImpact evaluation html /><#t>
+	<#else><#t>
+	 -<#t>
+	</#if><#t>
+</@compress>
 </#macro>
 
-<#macro iucnExternalImpact evaluation><@compress single_line=true><#t>
+<#macro iucnExternalImpact evaluation html=true><@compress single_line=true><#t>
 	<#if evaluation.externalImpact??><#t>
-		<span class="externalImpact"><#t>
-		<#if evaluation.externalImpact == '-2'>&deg;&deg;<#t>
-		<#elseif evaluation.externalImpact == '-1'>&deg;<#t>
-		<#elseif evaluation.externalImpact == '+1'>&#x271D;<#t>
-		<#elseif evaluation.externalImpact == '+2'>&#x271D;&#x271D;<#t>
+		<#if html><span class="externalImpact"><#t></#if>
+		<#if evaluation.externalImpact == '-2'>°°<#t>
+		<#elseif evaluation.externalImpact == '-1'>°<#t>
+		<#elseif evaluation.externalImpact == '+1'>✝<#t>
+		<#elseif evaluation.externalImpact == '+2'>✝✝<#t>
 		</#if>
-		</span><#t>
+		<#if html></span><#t></#if>
 	</#if>
 </@compress>
 </#macro>
 
-<#macro iucnIndexCorrectedStatus evaluation>
-	<#if evaluation.hasIucnStatus()>
-		<#if evaluation.hasCorrectedStatusForRedListIndex()>
-			${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")} <span class="correctedIndex">[KORJATTU]</span>
-		<#else>
-			<@iucnStatus evaluation />
-		</#if>
-	<#else>
-		-
-	</#if>
+<#macro iucnIndexCorrectedStatus evaluation html=true><@compress single_line=true><#t>
+	<#if evaluation.hasIucnStatus()><#t>
+		<#if evaluation.hasCorrectedStatusForRedListIndex()><#t>
+			${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")}<#if html> <span class="correctedIndex">[KORJATTU]</span></#if><#t>
+		<#else><#t>
+			<@iucnStatus evaluation html /><#t>
+		</#if><#t>
+	<#else><#t>
+		-<#t>
+	</#if><#t>
+</@compress>
 </#macro>
 
 <#macro speciesRow target year>
@@ -520,15 +522,6 @@
 		${type?replace("MKV.habitatSpecificType","")?lower_case?replace("pak", "pa")?replace("vak", "va")}
 	</#list>
 </@compress><#t></#macro>
-
-<#macro csvExteralPopulationImpactOnRedListStatus evaluation>
-	<#switch evaluation.getValue("MKV.exteralPopulationImpactOnRedListStatus")!"">
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus1">(-1)<#break>
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumMinus2">(-2)<#break>
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus1">°<#break>
-		<#case "MKV.exteralPopulationImpactOnRedListStatusEnumPlus2">°°<#break>		
-	</#switch>
-</#macro>
 
 <#macro iucnPublications fieldName>
 	<tr>

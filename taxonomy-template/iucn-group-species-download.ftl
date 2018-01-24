@@ -1,6 +1,6 @@
 <#include "iucn-macro.ftl"><@compress single_line=true>
 "Lahko, Heimo","Tieteellinen nimi","Synonyymit","Kansankieliset nimet","Taksonomiatietokannan kommentit","Arvioinnin kommentit taksonomiasta","Hallinnollinen asema","Arvioinnin tila","Muokattu","Muokkaaja",<#t>
-"Luokka","RLI","Edellinen luokka","Kommentit arviosta","ARVIOINNIN TIEDOT ALKAVAT",<#t>
+"Luokka","RLI","Edellinen luokka","Edell. RLI","Kommentit arviosta","ARVIOINNIN TIEDOT ALKAVAT",<#t>
 "Vakinaisuus","Levinneisuusalueen koko","..muistiinpanot","Esiinymisalueen koko","..muistiinpanot","Kommentit esiintymisestä",<#t>
 <#list areas?keys as areaQname>
 "${areas[areaQname].name.forLocale("fi")}",<#t>
@@ -36,30 +36,18 @@ ${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).lab
 "<#if evaluation.ready>Valmis<#else>Kesken</#if>",<#t>
 "${(evaluation.lastModified?string("d.M.yyyy"))!"--"}",<#t>
 "<#if evaluation.lastModifiedBy??>${persons[evaluation.lastModifiedBy].fullname}<#else>--</#if>",<#t>
-"<#if evaluation.hasIucnStatus()>${evaluation.iucnStatus?replace("MX.iucn","")} ${evaluation.externalImpact}<#else>--</#if>",<#t>
-"<#if evaluation.hasIucnStatus()>
-<#if evaluation.hasCorrectedStatusForRedListIndex()>
-${evaluation.calculatedCorrectedRedListIndex!""} (${evaluation.correctedStatusForRedListIndex?replace("MX.iucn", "")}) [KORJATTU]
-<#else>
-${evaluation.calculatedRedListIndex!"-"}
-</#if>
-<#else>
---
-</#if>",<#t>
-"<#if target.hasPreviousEvaluation(selectedYear)>
+"<@iucnStatus evaluation false />",<#t>
+"<@iucnIndexCorrectedStatus evaluation false />",<#t>
+<#if target.hasPreviousEvaluation(selectedYear)>
 <#assign prevEvaluation = target.getPreviousEvaluation(selectedYear)>
-<#if prevEvaluation.hasIucnStatus()>
-${prevEvaluation.iucnStatus?replace("MX.iucn", "")}  ${prevEvaluation.externalImpact}
-(${prevEvaluation.evaluationYear})
+"<@iucnStatus prevEvaluation false /> (${prevEvaluation.evaluationYear})",<#t>
+"<@iucnIndexCorrectedStatus prevEvaluation false /> (${prevEvaluation.evaluationYear})",<#t>
 <#else>
---
+"--","--",<#t>
 </#if>
-<#else>
---
-</#if>",<#t>
 "<#if target.hasEvaluation(selectedYear)>
 <#if target.getEvaluation(selectedYear).hasRemarks()>
-${target.getEvaluation(selectedYear).remarks?replace("\n","")?replace("\r","")}
+${target.getEvaluation(selectedYear).remarks?replace("\n"," ")?replace("\r","")}
 </#if> 
 </#if>",<#t>
 " -> ",<#t>
@@ -114,7 +102,7 @@ ${reason.endangerment?replace("MKV.endangermentReason","")}<#if reason_has_next>
 "<@showValue "MKV.status"+criteria+"Notes" evaluation />",<#t>
 </#list>
 "<@showValue "MKV.criteriaNotes" evaluation />",<#t>
-"${(evaluation.getValue("MKV.redListStatus")!"")?replace("MX.iucn","")} <@csvExteralPopulationImpactOnRedListStatus evaluation />",<#t>
+"<@iucnStatus evaluation false />",<#t>
 "<@showValue "MKV.criteriaForStatus" evaluation />",<#t>
 "${(evaluation.getValue("MKV.redListStatusMin")!"")?replace("MX.iucn","")} - ${(evaluation.getValue("MKV.redListStatusMax")!"")?replace("MX.iucn","")}",<#t>
 "<@showValue "MKV.exteralPopulationImpactOnRedListStatus" evaluation />",<#t>
