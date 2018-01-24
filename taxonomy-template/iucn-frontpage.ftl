@@ -14,6 +14,7 @@
 	<ul>
 		<li>Muutettu luokkien esittämistä lajiluettelossa, lajin arviointisivulla ja tiedostolatauksessa: Otetaan huomioon luokan ylentäminen ja alentaminen.</li>
 		<li>Näyetään kaikentyyppiset synonyymit lajin tietojen ohessa luettelossa, arviointisivulla ja tiedostolatauksessa (aiemmin näytettiin vain aidot synonyymit).</li>
+		<li>Korjattu virhe jonka vuoksi uhanalaisuuden syy/uhkatekijät järjestys meni sekaisin. Tämä tapahtui jos muokattiin arviointia jossa oli jo ennestään useampi kuin yksi syy. Lajeja joita tämä koskee on 91.</li>
 	</ul>
 </div>
 
