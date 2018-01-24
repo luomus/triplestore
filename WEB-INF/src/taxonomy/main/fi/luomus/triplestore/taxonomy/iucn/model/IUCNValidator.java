@@ -55,6 +55,7 @@ public class IUCNValidator {
 			validateThreathsForStatus(givenData, validationResult);
 			validateLsaForStatus(givenData, validationResult);
 			validateCriteriaForStatusForStatus(givenData, validationResult);
+			validateExternalImpactAndStatus(givenData, validationResult);
 		}
 
 		validateHabitat(givenData.getPrimaryHabitat(), validationResult);
@@ -118,7 +119,16 @@ public class IUCNValidator {
 	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
 	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
-
+	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set("MX.iucnEX", "MX.iucnEW", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
+	
+	private void validateExternalImpactAndStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (given(givenData.getExternalImpact())) {
+			if (EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES.contains(givenData.getIucnStatus())) {
+				validationResult.setError("Luokan alennusta/korotusta ei saa käyttää luokille DD, NA, NE, RE, EW, EX", IUCNEvaluation.EXTERNAL_IMPACT);
+			}
+		}
+	}
+	
 	private void validateLsaForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String lsaRec = givenData.getValue(IUCNEvaluation.LSA_RECOMMENDATION);
 		if (!"true".equals(lsaRec)) return;

@@ -433,7 +433,8 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_A, new Qname("MX.iucnDD"));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, new Qname("MX.iucnNA"));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_C, new Qname("MX.iucnNE"));
-
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1"));
+		
 		// Silence some other validations
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A, "A1a");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
@@ -442,7 +443,8 @@ public class IUCNValidatorTests {
 
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertEquals(""+
-				"[Arvoa \"DD - Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
+				"[Luokan alennusta/korotusta ei saa käyttää luokille DD, NA, NE, RE, EW, EX, " +
+				"Arvoa \"DD - Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
 				"Luokkaa \"DD - Puuttellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
 				"Luokkaa \"NA - Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
 				"Luokkaa \"NE - Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
