@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.regex.Pattern;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import fi.luomus.commons.containers.rdf.Qname;
@@ -86,6 +87,7 @@ public class IUCNLineDataTests {
 	}
 
 	@Test
+	@Ignore // 2000 datan latausta varten taisin sallia K:n, ... ei järkeä ylläpitää näitä testejä enää 
 	public void test_habitats_3() {
 		IUCNLineData data = new IUCNLineData(new String[] {});
 		data.primaryHabitat = "Kpa"; // K is not mapped
