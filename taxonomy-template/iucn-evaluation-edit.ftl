@@ -440,10 +440,10 @@ $(function() {
 	});
  	
  	$("button.add").on('click', function() {
- 		var countOfExisting = $(this).parent().find(':input').size();
- 		var input = $(this).prevAll(":input").first();
+ 		var countOfExisting = $(this).parent().find('select').size();
+ 		var input = $(this).prevAll("select").last();
  		var clone = input.clone().val('').show().removeAttr('display');
- 		var newNameAttribute = clone.attr('name').replace('___0', '___'+(countOfExisting+1));
+ 		var newNameAttribute = clone.attr('name').replace('___0', '___'+countOfExisting);
 		clone.attr('name', newNameAttribute);  
  		$(this).before('<br />').before(clone);
  		clone.chosen({ allow_single_deselect:true });
