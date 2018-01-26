@@ -323,8 +323,10 @@
 	<@iucnSection "Uhanalaisuus" />	
 	<@iucnInput "MKV.redListStatus" "MKV.redListStatusNotes" />
 
-	<#assign ddReasonClass = "ddReasonRow">
-	<#if !evaluation?? || !evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow hidden"></#if>
+	<#assign ddReasonClass = "ddReasonRow hidden">
+	<#if evaluation??>
+		<#if evaluation.dd || evaluation.hasValue("MKV.ddReason")><#assign ddReasonClass = "ddReasonRow"></#if>
+	</#if>
 	<@iucnInput "MKV.ddReason" "MKV.ddReasonNotes" ddReasonClass />
 
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
