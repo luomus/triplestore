@@ -44,9 +44,9 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
 
-	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
+	private static final String FILE_PATH = "C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
-	private static final int EVALUATION_YEAR = 2000; // XXX change year here
+	private static final int EVALUATION_YEAR = 2010; // XXX change year here
 	private static final String OCCURRENCES = "occurrences";
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
@@ -105,8 +105,13 @@ public class IUCN2010Sisaan {
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); // XXX MUST USE PROD MODE WHEN LOADING DATA 
+			
+			// prod mode
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); // XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
+			
+			// dev mode
 			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+			
 			process();
 			taxonomyDAO.close();
 		} catch (Exception e) {
@@ -122,7 +127,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			//if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -146,7 +151,7 @@ public class IUCN2010Sisaan {
 	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		//IUCNLineData data = new IUCNLineData(parts);
-		IUCNLineData data = new IUCNLineData(Mode.V2000, parts); // XXX change parse mode here
+		IUCNLineData data = new IUCNLineData(Mode.V2010, parts); // XXX change parse mode here
 		dump(data);
 		Qname fixedQnameForName = getFixedQnameForName(data.scientificName);
 		if (fixedQnameForName != null) data.taxonQname = fixedQnameForName.toString();
@@ -211,7 +216,7 @@ public class IUCN2010Sisaan {
 				return;
 			}
 			Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
-			Set<Qname> matchingQnames = qnames(response.getExactMatches(), allowedInformalGroups);
+			Set<Qname> matchingQnames = matchTaxonQnamesInAllowedInformalGroups(response.getExactMatches(), allowedInformalGroups);
 			if (matchingQnames.size() == 1) {
 				process(data, matchingQnames.iterator().next(), f);
 				return;
@@ -422,7 +427,7 @@ public class IUCN2010Sisaan {
 		return i.toString();
 	}
 
-	private static Set<Qname> qnames(List<Match> exactMatches, Set<Qname> allowedInformalGroups) {
+	private static Set<Qname> matchTaxonQnamesInAllowedInformalGroups(List<Match> exactMatches, Set<Qname> allowedInformalGroups) {
 		Set<Qname> set = new HashSet<>();
 		for (Match m : exactMatches) {
 			for (InformalTaxonGroup i : m.getInformalGroups()) {
