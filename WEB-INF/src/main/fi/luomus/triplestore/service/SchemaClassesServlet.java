@@ -21,7 +21,7 @@ import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
 @WebServlet(urlPatterns = {"/schema/class/*"})
 public class SchemaClassesServlet extends ApiServlet {
 
-	private static final long serialVersionUID = -4739626887383257765L;
+	private static final long serialVersionUID = 4677047722583381696L;
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -33,26 +33,26 @@ public class SchemaClassesServlet extends ApiServlet {
 		}
 	}
 
-//	[
-//
-//	    {
-//	        "class": "GX.dataset",
-//	        "label": {
-//	            "en": "Dataset",
-//	            "fi": "",
-//	            "sv": ""
-//	        },
-//	        "shortName": "dataset"
-//	    },
+	//	[
+	//
+	//	    {
+	//	        "class": "GX.dataset",
+	//	        "label": {
+	//	            "en": "Dataset",
+	//	            "fi": "",
+	//	            "sv": ""
+	//	        },
+	//	        "shortName": "dataset"
+	//	    },
 
-	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> classQnames = getQnamesOfType(dao, "rdfs:Class");
 		Collection<Model> models = dao.getSearchDAO().get(classQnames, ResultType.NORMAL);
 		return jsonResponse(new JSONObject(), res);
 	}
 
-	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
+	protected Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
 		Collection<Model> properties = dao.getSearchDAO().search(new SearchParams().type(type));
 		Set<Qname> propertyQnames = new HashSet<>();
 		for (Model m : properties) {
