@@ -11,14 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
 
-@WebServlet(urlPatterns = {"/properties/*"})
-public class PropertiesServlet extends ApiServlet {
+@WebServlet(urlPatterns = {"/schema/property/*"})
+public class SchemaPropertiesServlet extends ApiServlet {
 
 	private static final long serialVersionUID = -4739626887383257765L;
 
@@ -32,12 +33,40 @@ public class PropertiesServlet extends ApiServlet {
 		}
 	}
 
+	//	[
+	//
+	//	    {
+	//	        "property": "MX.invasiveCitizenActionsText",
+	//	        "label": {
+	//	            "en": "What can I do?",
+	//	            "fi": "Mitä minä voin tehdä?",
+	//	            "sv": "Vad kan jag göra?"
+	//	        },
+	//	        "domain": [
+	//	            "MX.taxon"
+	//	        ],
+	//	        "range": [
+	//	            "xsd:string"
+	//	        ],
+	//	        "minOccurs": "0",
+	//	        "maxOccurs": "1",
+	//	        "required": false,
+	//	        "hasMany": false,
+	//	        "sortOrder": -1,
+	//	        "isEmbeddable": false,
+	//	        "shortName": "invasiveCitizenActionsText"
+	//	    },
+
+	//			"required": minOccurs !== '0' (tyhjä required true)
+	//			"hasMany": maxOccurs on > 1
+	//			"sortOrder": sortorder-arvo tai -1 jos tyhjä
+	//			"isEmbeddable": MZ.embeddable -arvo jos annettu, false jos tyhjä
+
 	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> propertyQnames = getQnamesOfType(dao, "rdf:Property");
-		propertyQnames.addAll(getQnamesOfType(dao, "rdf:Alt"));
-		String response = get(propertyQnames, ResultType.DEEP, Format.JSON_RDFXML, dao);
-		return jsonResponse(response, res);
+		Collection<Model> models = dao.getSearchDAO().get(propertyQnames, ResultType.NORMAL);
+		return jsonResponse(new JSONObject(), res);
 	}
 
 	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
