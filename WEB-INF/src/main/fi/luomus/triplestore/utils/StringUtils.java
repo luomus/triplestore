@@ -15,7 +15,7 @@ public class StringUtils {
 	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
 	private static final Whitelist WHITELIST;
 	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false).escapeMode(EscapeMode.xhtml);
-	
+
 	static {
 		WHITELIST = Whitelist.none()
 				.addAttributes("p", "style")
@@ -25,11 +25,11 @@ public class StringUtils {
 			WHITELIST.addTags(tag);
 		}
 	}
-	
+
 	public static int countOfUTF8Bytes(String s) {
 		return toUTF8Bytes(s).length;
 	}
-	
+
 	public static String sanitizeLiteral(String content) {
 		if (!given(content)) return "";
 		content = Utils.removeWhitespaceAround(content);
@@ -47,7 +47,7 @@ public class StringUtils {
 		}
 		return content.trim();
 	}
-	
+
 	private static boolean given(String s) {
 		return s != null && s.trim().length() > 0;
 	}
@@ -69,5 +69,20 @@ public class StringUtils {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	public static String shortName(String qname) {
+		if (qname == null) return null;
+		if (!qname.contains(".")) return qname;
+		String[] parts = qname.split(Pattern.quote("."));
+		if (parts.length == 2) {
+			return parts[1];
+		}
+		String shortName = "";
+		for (int i = 1; i<parts.length; i++) {
+			shortName += parts[i];
+			if (i < parts.length-1) shortName += ".";
+		}
+		return shortName;
+	}
+
 }

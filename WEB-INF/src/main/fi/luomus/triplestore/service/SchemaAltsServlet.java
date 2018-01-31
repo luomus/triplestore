@@ -29,7 +29,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
 		JSONObject response = parseAltsResponse(models); 
-		return jsonResponse(new JSONObject(), res);
+		return jsonResponse(response, res);
 	}
 
 	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {

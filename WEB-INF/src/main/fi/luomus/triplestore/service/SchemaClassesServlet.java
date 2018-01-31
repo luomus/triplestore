@@ -8,11 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.json.JSONArray;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
+import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/schema/class/*"})
 public class SchemaClassesServlet extends ApiServlet {
@@ -48,8 +51,35 @@ public class SchemaClassesServlet extends ApiServlet {
 	//	        "shortName": "dataset"
 	//	    },
 	private JSONArray parseClassResponse(Collection<Model> models) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONArray response = new JSONArray();
+		for (Model model : models) {
+			JSONObject classJson = new JSONObject();
+			classJson.setString("class", model.getSubject().getQname());
+			labels(classJson, model);
+			shortName(classJson, model);
+			response.appendObject(classJson);
+		}
+		return response;
+	}
+
+	protected void shortName(JSONObject json, Model model) {
+		json.setString("shortName", shortName(model));
+	}
+
+	private String shortName(Model model) {
+		return shortName(model.getSubject().getQname());
+	}
+
+	private String shortName(String qname) {
+		return StringUtils.shortName(qname);
+	}
+
+	protected void labels(JSONObject json, Model model) {
+		JSONObject labelJson = new JSONObject();
+		for (Statement label : model.getStatements("rdfs:label")) {
+			labelJson.setString(label.getObjectLiteral().getLangcode(), label.getObjectLiteral().getContent());
+		}
+		json.setObject("label", labelJson);
 	}
 
 	@Override
