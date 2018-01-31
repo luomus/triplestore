@@ -79,13 +79,17 @@ public class SchemaClassesServlet extends ApiServlet {
 	}
 
 	protected void labels(JSONObject json, Model model) {
+		json.setObject("label", labels(model));
+	}
+
+	protected JSONObject labels(Model model) {
 		JSONObject labelJson = new JSONObject();
 		for (Statement label : model.getStatements("rdfs:label")) {
 			if (label.isLiteralStatement()) {
 				labelJson.setString(label.getObjectLiteral().getLangcode(), label.getObjectLiteral().getContent());
 			}
 		}
-		json.setObject("label", labelJson);
+		return labelJson;
 	}
 
 	@Override

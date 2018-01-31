@@ -111,7 +111,7 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 	}
 
 	private JSONArray ranges(Model model) {
-		
+
 		return qnames(model, "rdfs:range");
 	}
 
