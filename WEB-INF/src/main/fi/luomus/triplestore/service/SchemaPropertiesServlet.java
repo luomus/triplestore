@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.json.JSONArray;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -43,21 +45,88 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 	//	        ],
 	//	        "minOccurs": "0",
 	//	        "maxOccurs": "1",
-	//	        "required": false,
-	//	        "hasMany": false,
-	//	        "sortOrder": -1,
-	//	        "isEmbeddable": false,
+	//	        "required": false, // minOccurs !== '0' (tyhjä required true)
+	//	        "hasMany": false, //  maxOccurs on > 1
+	//	        "sortOrder": -1, // sortorder-arvo tai -1 jos tyhjä
+	//	        "isEmbeddable": false, // MZ.embeddable -arvo jos annettu, false jos tyhjä
 	//	        "shortName": "invasiveCitizenActionsText"
 	//	    },
-
-	//			"required": minOccurs !== '0' (tyhjä required true)
-	//			"hasMany": maxOccurs on > 1
-	//			"sortOrder": sortorder-arvo tai -1 jos tyhjä
-	//			"isEmbeddable": MZ.embeddable -arvo jos annettu, false jos tyhjä
-
 	private JSONArray parsePropertiesResponse(Collection<Model> models) {
-		// TODO Auto-generated method stub
-		return null;
+		JSONArray response = new JSONArray();
+		for (Model model : models) {
+			parsePropertiesResponse(response, model);
+		}
+		return response;
+	}
+
+	private void parsePropertiesResponse(JSONArray response, Model model) {
+		JSONObject propertyJson = new JSONObject();
+		propertyJson.setString("property", model.getSubject().getQname());
+		labels(propertyJson, model);
+		propertyJson.setArray("domain", domains(model));
+		propertyJson.setArray("range", ranges(model));
+		String minOccurs = occurs(model, "xsd:minOccurs");
+		String maxOccurs = occurs(model, "xsd:maxOccurs");
+		propertyJson.setString("minOccurs", minOccurs);
+		propertyJson.setString("maxOccurs", maxOccurs);
+		propertyJson.setBoolean("required", !minOccurs.equals("0"));
+		propertyJson.setBoolean("hasMany", !maxOccurs.equals("1"));
+		propertyJson.setInteger("sortOrder", sortOrder(model));
+		propertyJson.setBoolean("isEmbeddable", embeddable(model));
+		shortName(propertyJson, model);
+		response.appendObject(propertyJson);
+	}
+
+	private boolean embeddable(Model model) {
+		if (!model.hasStatements("MZ.embeddable")) return false;
+		Statement s = model.getStatements("MZ.embeddable").get(0);
+		if (s.isLiteralStatement()) {
+			return "true".equals(s.getObjectLiteral().getContent());
+		}
+		return false;
+	}
+
+	private int sortOrder(Model model) {
+		if (!model.hasStatements("sortOrder")) return -1;
+		Statement s = model.getStatements("sortOrder").get(0);
+		if (s.isLiteralStatement()) {
+			try {
+				return Integer.valueOf(s.getObjectLiteral().getContent());
+			} catch (NumberFormatException e) {
+				return -1;
+			}
+		}
+		return -1;
+	}
+
+	private String occurs(Model model, String predicate) {
+		if (!model.hasStatements(predicate)) return "1";
+		Statement statement = model.getStatements(predicate).get(0);
+		String occurs = "1";
+		if (statement.isLiteralStatement()) {
+			occurs = statement.getObjectLiteral().getContent(); 
+		}
+		if (!given(occurs)) return "1";
+		return occurs;
+	}
+
+	private JSONArray ranges(Model model) {
+		
+		return qnames(model, "rdfs:range");
+	}
+
+	private JSONArray qnames(Model model, String predicate) {
+		JSONArray json = new JSONArray();
+		for (Statement statement : model.getStatements(predicate)) {
+			if (statement.isResourceStatement()) {
+				json.appendString(statement.getObjectResource().getQname());
+			}
+		}
+		return json;
+	}
+
+	private JSONArray domains(Model model) {
+		return qnames(model, "rdfs:domain");
 	}
 
 }

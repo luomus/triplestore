@@ -53,13 +53,17 @@ public class SchemaClassesServlet extends ApiServlet {
 	private JSONArray parseClassResponse(Collection<Model> models) {
 		JSONArray response = new JSONArray();
 		for (Model model : models) {
-			JSONObject classJson = new JSONObject();
-			classJson.setString("class", model.getSubject().getQname());
-			labels(classJson, model);
-			shortName(classJson, model);
-			response.appendObject(classJson);
+			parseClassResponse(response, model);
 		}
 		return response;
+	}
+
+	private void parseClassResponse(JSONArray response, Model model) {
+		JSONObject classJson = new JSONObject();
+		classJson.setString("class", model.getSubject().getQname());
+		labels(classJson, model);
+		shortName(classJson, model);
+		response.appendObject(classJson);
 	}
 
 	protected void shortName(JSONObject json, Model model) {
@@ -77,7 +81,9 @@ public class SchemaClassesServlet extends ApiServlet {
 	protected void labels(JSONObject json, Model model) {
 		JSONObject labelJson = new JSONObject();
 		for (Statement label : model.getStatements("rdfs:label")) {
-			labelJson.setString(label.getObjectLiteral().getLangcode(), label.getObjectLiteral().getContent());
+			if (label.isLiteralStatement()) {
+				labelJson.setString(label.getObjectLiteral().getLangcode(), label.getObjectLiteral().getContent());
+			}
 		}
 		json.setObject("label", labelJson);
 	}
