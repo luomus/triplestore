@@ -1,7 +1,6 @@
 package fi.luomus.triplestore.service;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	public static enum Format { RDFXMLABBREV, RDFXML, JSON, XML, JSONP, JSON_RDFXMLABBREV, JSON_RDFXML }
 	public static final Format DEFAULT_FORMAT = Format.RDFXMLABBREV;
 	private static final Object LOCK = new Object();
-	
+
 	@Override
 	protected String configFileName() {
 		return "triplestore-v2.properties";
@@ -95,7 +94,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	private static final Date restartDate = new Date();
 	private static final Date lastRestartNofity = initLastRestartNofify();
 	private static final Set<Qname> restartNotified = new HashSet<>();
-	
+
 	public static String getRestartMessage(User user) {
 		if (user == null) return null;
 		if (user.getQname() == null || !user.getQname().isSet()) return null;
@@ -104,7 +103,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		if (!restartedLately()) return null;
 		return "Käynnistetty uudelleen / editor was restarted at " + DateUtils.format(restartDate, "dd.MM.yyyy HH:mm") + ". Pahoittelut häiriöstä! Apologies for the for the inconvenience!";
 	}
-	
+
 	private static Date initLastRestartNofify() {
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, 30);
@@ -227,7 +226,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	protected static boolean given(Qname qname) {
 		return qname != null && qname.isSet();
 	}
-	
+
 	protected static boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
@@ -245,21 +244,8 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return sessionHandler;
 	}
 
-	protected ResponseData jsonResponse(String json, HttpServletResponse res) throws Exception {
-		res.setContentType("application/json; charset=utf-8");
-		res.setHeader("Access-Control-Allow-Origin", "*");
-		PrintWriter out = res.getWriter();
-		out.write(json);
-		out.flush();
-		return new ResponseData().setOutputAlreadyPrinted();
-	}
-
 	protected ResponseData rdfResponse(String xml, HttpServletResponse res) throws IOException {
-		res.setContentType("application/rdf+xml; charset=utf-8");
-		PrintWriter out = res.getWriter();
-		out.write(xml);
-		out.flush();
-		return new ResponseData().setOutputAlreadyPrinted();
+		return response(xml, "application/rdf+xml", res);
 	}
 
 	protected static boolean jsonRequest(Format format) {

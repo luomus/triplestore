@@ -2,6 +2,7 @@ package fi.luomus.triplestore.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 
@@ -19,6 +21,25 @@ import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 public class SchemaAltsServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = -7921975069788844624L;
+
+
+	@Override
+	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+		TriplestoreDAO dao = getTriplestoreDAO();
+		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
+		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
+		JSONObject response = parseAltsResponse(models); 
+		return jsonResponse(new JSONObject(), res);
+	}
+
+	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
+		Collection<Model> models = dao.getSearchDAO().search(new SearchParams().type(type));
+		Set<Qname> propertyQnames = new HashSet<>();
+		for (Model m : models) {
+			propertyQnames.add(new Qname(m.getSubject().getQname()));
+		}
+		return propertyQnames;
+	}
 
 	//	{
 	//	    "HRA.sentTypes": [
@@ -30,13 +51,9 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 	//	                "sv": ""
 	//	            }
 	//	        },
-
-	@Override
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
-		TriplestoreDAO dao = getTriplestoreDAO();
-		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
-		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
-		return jsonResponse(new JSONObject(), res);
+	private JSONObject parseAltsResponse(Collection<Model> models) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
