@@ -73,13 +73,22 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 		propertyJson.setBoolean("hasMany", !maxOccurs.equals("1"));
 		propertyJson.setInteger("sortOrder", sortOrder(model));
 		propertyJson.setBoolean("isEmbeddable", embeddable(model));
+		propertyJson.setBoolean("multiLanguage", multiLanguage(model));
 		shortName(propertyJson, model);
 		response.appendObject(propertyJson);
 	}
 
+	private boolean multiLanguage(Model model) {
+		return getBoolean(model, "MZ.multiLanguage");
+	}
+
 	private boolean embeddable(Model model) {
-		if (!model.hasStatements("MZ.embeddable")) return false;
-		Statement s = model.getStatements("MZ.embeddable").get(0);
+		return getBoolean(model, "MZ.embeddable");
+	}
+
+	private boolean getBoolean(Model model, String field) {
+		if (!model.hasStatements(field)) return false;
+		Statement s = model.getStatements(field).get(0);
 		if (s.isLiteralStatement()) {
 			return "true".equals(s.getObjectLiteral().getContent());
 		}
