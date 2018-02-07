@@ -12,6 +12,7 @@ import fi.luomus.commons.utils.Utils;
 
 public class StringUtils {
 
+	private static final String SHORTNAME_SEPARATOR_REGEX = Pattern.quote(".")+"|"+Pattern.quote(":");
 	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
 	private static final Whitelist WHITELIST;
 	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false).escapeMode(EscapeMode.xhtml);
@@ -72,17 +73,9 @@ public class StringUtils {
 
 	public static String shortName(String qname) {
 		if (qname == null) return null;
-		if (!qname.contains(".")) return qname;
-		String[] parts = qname.split(Pattern.quote("."));
-		if (parts.length == 2) {
-			return parts[1];
-		}
-		String shortName = "";
-		for (int i = 1; i<parts.length; i++) {
-			shortName += parts[i];
-			if (i < parts.length-1) shortName += ".";
-		}
-		return shortName;
+		if (!qname.contains(".") && !qname.contains(":")) return qname;
+		String[] parts = qname.split(SHORTNAME_SEPARATOR_REGEX);
+		return parts[1];
 	}
 
 }
