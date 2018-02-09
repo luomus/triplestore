@@ -70,12 +70,9 @@
 
 <div class="taxonInfo">
 	<h6>Huomioita taksonomiasta</h6>
-	<#if taxon.notes?has_content || taxon.privateNotes?has_content>
+	<#if taxon.notes?has_content>
 		<#if taxon.notes?has_content>
 			<p class="info">${taxon.notes?html}</p>
-		</#if>
-		<#if taxon.privateNotes?has_content>
-			<p class="info">${taxon.privateNotes?html}</p>
 		</#if>
 	<#else>
 		<span class="info">Ei huomioita</span>
@@ -102,6 +99,19 @@
 		<ul>
 			<#list taxon.administrativeStatuses as adminStatus>
 				<li>${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}</li>				
+			</#list>
+		</ul>
+	<#else>
+		<span class="info">Ei hallinnollista asemaa</span>
+	</#if>
+</div>
+
+<div class="taxonInfo">
+	<h6>Asema Suomessa</h6>
+	<#if taxon.typesOfOccurrenceInFinland?has_content>
+		<ul>
+			<#list taxon.typesOfOccurrenceInFinland as typeOfOcc>
+				<li>${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(typeOfOcc).label.forLocale("fi")}</li>				
 			</#list>
 		</ul>
 	<#else>
