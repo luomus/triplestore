@@ -59,9 +59,9 @@ public class StringUtilsTests {
 		assertEquals("", StringUtils.shortName(""));
 		assertEquals("sortOrder", StringUtils.shortName("sortOrder"));
 		assertEquals("dataset", StringUtils.shortName("GX.dataset"));
-		assertEquals("dataset", StringUtils.shortName("GX.dataset.subitem"));
-		assertEquals("dataset", StringUtils.shortName("GX.dataset.subitem:sub"));
-		assertEquals("bibliographicCitation", StringUtils.shortName("dc:bibliographicCitation"));
+		assertEquals("dataset.subitem", StringUtils.shortName("GX.dataset.subitem"));
+		assertEquals("dataset.subitem:sub", StringUtils.shortName("GX.dataset.subitem:sub"));
+		assertEquals("dc:bibliographicCitation", StringUtils.shortName("dc:bibliographicCitation"));
 	}
 
 }
