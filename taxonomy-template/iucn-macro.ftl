@@ -393,7 +393,7 @@
 						<#if reason_has_next><br /></#if>
 					</#list>
 					<br />
-					<select name ="${fieldName}___0" data-placeholder="...">
+					<select name ="${fieldName}___${givenReasons?size}" data-placeholder="...">
 						<option value="" label=".."></option>
 						<#list endangermentObjectProperties.getProperty("MKV.endangerment").range.values as value>
 							<option value="${value.qname}">${value.label.forLocale("fi")?html}</option>
