@@ -12,7 +12,6 @@ import fi.luomus.commons.utils.Utils;
 
 public class StringUtils {
 
-	private static final String SHORTNAME_SEPARATOR_REGEX = Pattern.quote(".")+"|"+Pattern.quote(":");
 	public static final String ALLOWED_TAGS = "p, a, b, strong, i, em, ul, li";
 	private static final Whitelist WHITELIST;
 	private static final Document.OutputSettings OUTPUT_SETTINGS = new Document.OutputSettings().prettyPrint(false).escapeMode(EscapeMode.xhtml);
