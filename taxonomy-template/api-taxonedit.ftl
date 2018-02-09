@@ -442,6 +442,7 @@
 	<@portletFooter />
 	
 	<@portletHeader "Invasive species (Admin only)" "initiallyClosed" />
+		<@labeledSelect "MX.invasiveSpeciesEarlyWarning" "taxonValue" "requireAdminPermissions" />
 		<@labeledSelect "MX.invasiveSpeciesCategory" "taxonValue" "requireAdminPermissions" />
 		<@labeledSelect "MX.invasiveSpeciesEstablishment" "taxonValue" "requireAdminPermissions" />
 		<#list taxon.invasiveSpeciesMainGroups as mainGroup>
