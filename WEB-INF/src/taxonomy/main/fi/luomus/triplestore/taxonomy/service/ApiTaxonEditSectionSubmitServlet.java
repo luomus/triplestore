@@ -38,6 +38,7 @@ import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
+import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
@@ -129,20 +130,15 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	public static void createAndStoreSynonym(TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, EditableTaxon taxon) throws Exception {
-		if (!given(taxon.getTaxonConceptQname())) { // shouldn't be any
-			Qname taxonConcept = dao.addTaxonConcept();
-			dao.store(new Subject(taxon.getQname()), new Statement(new Predicate("MX.circumscription"), new ObjectResource(taxonConcept)));
-			taxon.setTaxonConceptQname(taxonConcept);
-			taxon.invalidate();
-		}
 		EditableTaxon synonym = taxonomyDAO.createTaxon();
 		synonym.setScientificName(taxon.getScientificName());
 		synonym.setScientificNameAuthorship(taxon.getScientificNameAuthorship());
-		synonym.setTaxonConceptQname(taxon.getTaxonConceptQname());
 		if (given(taxon.getTaxonRank())) {
 			synonym.setTaxonRank(taxon.getTaxonRank());
 		}
 		dao.addTaxon(synonym);
+		dao.insert(new Subject(taxon.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(SynonymType.SYNONYM), new ObjectResource(synonym.getQname())));
+		taxon.invalidate();
 	}
 
 	private void setNewScientificNameAndAuthor(String alteredScientificName, String alteredAuthor, UsedAndGivenStatements usedAndGivenStatements) {

@@ -150,12 +150,6 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public Qname addTaxonConcept() throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void clearCaches() {
 		// Auto-generated method stub
 		

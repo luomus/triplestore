@@ -148,7 +148,7 @@ div.synonyms > * {
 	vertical-align: top;
 }
 .addSynonymButton {
-	
+	float: right;
 }
 div.synonymSection h3 {
 	display: inline-block;

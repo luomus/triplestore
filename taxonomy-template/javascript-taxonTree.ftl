@@ -478,72 +478,15 @@ function sendTaxon(e) {
 	$("#sendTaxonDialog").dialog("open");
 } 
 
-function splitTaxon(e) {
-	$("#splitTaxonDialog").find(":input").not(":input[type=submit], .rootTaxonId").val('');
-	$("#splitTaxonDialog").find("select").val('MX.species');
-	var taxonToSplitID = $(e).closest('.taxonWithTools').attr('id');
-	var taxonToSplitName = $("#"+taxonToSplitID).find(".scientificName").first().text();
-	$("#taxonToSplitID").val(taxonToSplitID);
-	$("#taxonToSplitName").text(taxonToSplitName);
-	$("#splitTaxonDialog").dialog("open");
-} 
-
-function mergeTaxon(e) {
-	$("#mergeTaxonDialog").find(":input").not(":input[type=submit], .rootTaxonId").val('');
-	var taxonToMergeID = $(e).closest('.taxonWithTools').attr('id');
-	var taxonToMergeName = $("#"+taxonToMergeID).find(".scientificName").first().text();
-	$("#initialTaxonToMergeId").val(taxonToMergeID);
-	$("#initialTaxonToMergeName").text(taxonToMergeName);
-	$(".taxonToMergeIdSelectorIdDisplay").text('');
-	$("#mergeTaxonDialog").dialog("open");
+function unlinkSynonym(e, type, confirmText) {
+	if (!confirmUnlink(e, confirmText)) return;
+	removeSynonym(e, type, $(e).closest('.taxonWithTools').attr('id'));
 }
-
 
 function confirmUnlink(e, text) {
 	var synonymScientificName = $(e).closest(".taxonWithTools").find(".scientificName").text();
 	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
 	return confirm('Are you sure you want to remove ' + synonymScientificName + text + synonymParentScientificName + '?');
-}
-
-function unlinkNormalSynonym(e) {
-	if (!confirmUnlink(e, ' as synonym of ')) return;
-	removeSynonym(e, "SYNONYM", $(e).closest('.taxonWithTools').attr('id'));
-}
-
-function unlinkMisappliedSynonym(e) {
-	if (!confirmUnlink(e, ' as misapplied name of ')) return;
-	removeSynonym(e, "MISAPPLIED", $(e).closest('.taxonWithTools').attr('id'));
-}
-
-function unlinkMisspelledSynonym(e) {
-	if (!confirmUnlink(e, ' as misspelled name of ')) return;
-	removeSynonym(e, "MISSPELLED", $(e).closest('.taxonWithTools').attr('id'));
-}
-
-function unlinkUncertainSynonym(e) {
-	if (!confirmUnlink(e, ' as uncertain synonym of ')) return;
-	removeSynonym(e, "UNCERTAIN", $(e).closest('.taxonWithTools').attr('id'));
-}
-
-function unlinkBasionymSynonym(e) {
-	if (!confirmUnlink(e, ' as basionym synonym of ')) return;
-	removeSynonym(e, "BASIONYM", $(e).closest('.taxonWithTools').attr('id'));
-}
-
-function unlinkIncludesConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'include')) return;
-	removeSynonym(e, "INCLUDES", $(e).closest('.taxaOfConcept').attr('id'));
-	
-}
-
-function unlinkIncludedinConceptLink(e) {
-	if (!confirmConceptUnlink(e, 'be included in')) return;
-	removeSynonym(e, "INCLUDED_IN", $(e).closest('.taxaOfConcept').attr('id'));	
-}
-
-function confirmConceptUnlink(e, text) {
-	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
-	return confirm('Are you sure: The taxon concept of ' + synonymParentScientificName + ' will no longer ' + text + ' the removed concept?');   
 }
 
 function removeSynonym(e, synonymType, removedId) {
@@ -599,21 +542,14 @@ $(function() {
 		var hasCriticalData = $(this).closest('.taxonInfo').find('.criticalData').length > 0;
 		var allowsAlterationsByUser = $(this).hasClass('allowsAlterationsByUser');
 		if (!hasCriticalData && allowsAlterationsByUser) {
-			var menuSplit = $('<li>Split</li>');
-			menuSplit.on('click', function() {
-				splitTaxon(this);
+			var menuSome = $('<li>Some action</li>');
+			menuSome.on('click', function() {
+				//toit(this);
 				return false;
 			});
-			menu.append(menuSplit);
-			var menuMerge = $('<li>Merge</li>');
-			menuMerge.on('click', function() {
-				mergeTaxon(this);
-				return false;
-			});
-			menu.append(menuMerge);
+			menu.append(menuSome);
 		} else {
-			menu.append('<li id="menuSplit" class="ui-state-disabled">Split</li>');
-			menu.append('<li id="menuMerge" class="ui-state-disabled">Merge</li>');
+			menu.append('<li id="menuSome" class="ui-state-disabled">Some action</li>');
 		}
 		menu.menu();
 		$(this).after(menu);
@@ -636,7 +572,7 @@ $(function() {
 		}
 	});
 	$("#addNewSynonymDialogForm").validate({
-		// TODO joko qname tai yksi uusi nimi
+		// TODO jvähintään yksi uusi nimi
 	});
 	$("#sendTaxonDialogForm").validate({
 		ignore: [], // do not ignore hidden elements
@@ -647,19 +583,8 @@ $(function() {
 			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
 		}
 	});
-	$("#splitTaxonDialogForm").validate({
-		rules: {
-			newParentID: { required: true }
-		},
-		messages: {
-			newParentID: "New parent must be selected. Type the name or part of the name and select a taxon."
-		}
-	});
-	$("#mergeTaxonDialogForm").validate({
-		ignore: [], // do not ignore hidden elements
-	});
 	
-	$("#splitTaxonDialog .addNewItem, #addNewSynonymDialog .addNewSynonymRow").on('click', function() {
+	$("#addNewSynonymDialog .addNewSynonymRow").on('click', function() {
 		var tableBody = $(this).parent().find('table tbody');
 		var e = tableBody.find('tr').last();
 		var prevRank = e.find('select').first().val(); 
@@ -674,24 +599,6 @@ $(function() {
 		clone.find('select').val(prevRank);
 		tableBody.append(clone);
 	});
-	
-	$("#mergeTaxonDialog .addNewItem").on('click', function() {
-		var toClone = $(this).parent().find('.taxonToMergeIdSelectorContainer').last();
-		var clone =  toClone.clone();
-		clone.find(':input').val('');
-		clone.find('.taxonToMergeIdSelector').autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: taxonToMergeSelectedFunction });
-		toClone.after(clone);
-		clone.find('.taxonToMergeIdSelector').rules("add", {required:true});
-	});
-	
-	$("#addNewSynonymDialog .addNewSynonymId").on('click', function() {
-		var toClone = $(this).parent().find('.synonymTaxonIdSelectorContainer').last();
-		var clone =  toClone.clone();
-		clone.find(':input').val('');
-		clone.find('.synonymTaxonIdSelector').autocomplete({ minLength: 3, source: synonymAutocompleteSourceFunction, select: synonymTaxonSelectedFunction });
-		toClone.after(clone);
-	});
-	
 	
 	var cache = {}
 	var autocompleteSourceFunction = function (request, response) {
@@ -714,41 +621,9 @@ $(function() {
 		$("#newParentIdDisplay").text('('+selectedId+')');
 		return false;
 	};
-	
-	var taxonToMergeSelectedFunction = function (event, ui) {
-		var element = $(event.target).parent();
-		var selectedName = ui.item.label;
-		var selectedId =  ui.item.value
-		element.find('.taxonToMergeId').val(selectedId);
-		element.find('.taxonToMergeIdSelector').val(selectedName);
-		element.find('.taxonToMergeIdSelectorIdDisplay').text('('+selectedId+')');
-		return false;
-	};
-	
-	var synonymTaxonSelectedFunction = function (event, ui) {
-		var element = $(event.target).parent();
-		var selectedName = ui.item.label;
-		var selectedId =  ui.item.value
-		element.find('.synonymTaxonId').val(selectedId);
-		element.find('.synonymTaxonIdSelector').val(selectedName);
-		element.find('.synonymTaxonIdSelectorIdDisplay').text('('+selectedId+')');
-		return false;
-	};
-	
-	var synonymAutocompleteSourceFunction = function (request, response) {
-		var term = request.term;
-		if (term.startsWith('MX.')) return response([term]);
-		var checklist = $("#synonymChecklistSelector").val();
-		if (!checklist) return false;
-		$.getJSON('${baseURL}/api/taxon-search/?q='+encodeURIComponent(term)+'&checklist='+checklist+'&format=jsonp&callback=?&v=2', function (data) {
-			response(data.result);
-		});
-    };
     
 	$("#newParentIDSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: newParentTaxonSelectedFunction });
-	$(".taxonToMergeIdSelector").autocomplete({ minLength: 3, source: autocompleteSourceFunction, select: taxonToMergeSelectedFunction });
-	$(".synonymTaxonIdSelector").autocomplete({ minLength: 3, source: synonymAutocompleteSourceFunction, select: synonymTaxonSelectedFunction });
-	    
+   
 });
 
 function addNewChildDialogSubmit() {

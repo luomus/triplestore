@@ -98,17 +98,21 @@
 			<br />
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
-				<option value="SYNONYM" selected="selected">Full synonym</option>
+				<option value=""></option>
 				<option value="BASIONYM">Basionym</option>
-				<option value="INCLUDED_IN">Included in (pro parte)</option>
-				<option value="INCLUDES">Includes</option>
-				<option value="MISAPPLIED">Misapplied</option>
-				<option value="UNCERTAIN">Uncertain</option>
-				<option value="MISSPELLED">Misspelled</option>
+				<option value="OBJECTIVE">Objective synonym</option>
+				<option value="SUBJECTIVE">Subjective synonym</option>
+				<option value="HOMOTYPIC">Homotypic synonym</option>
+				<option value="HETEROTYPIC">Heterotypic synonym</option>
+				<option value="SYNONYM">Synonym</option>
+				<option value="MISSPELLED">Misspelled name</option>
+				<option value="ORTOGRAPHIC">Ortographic synonym</option>
+				<option value="UNCERTAIN">Uncertain synonym</option>
+				<option value="MISAPPLIED">Misapplied name</option>
 			</select>
 			<br />
 			<br />
-			<h4>Create new orphan synonyms</h4>
+			<h4>Create new synonyms</h4>
 			<table>
 				<thead>
 					<tr>
@@ -135,34 +139,14 @@
 			<a class="addNewItem addNewSynonymRow">+ Add new</a>
 			<input type="submit" class="button addButton" value="Create synonyms"  />
 			<br /><br />
-			<h4>Or select existing taxa from other checklist</h4>
-			<label for="synonymChecklistSelector">Checklist</label>
-			<br />
-			<select id="synonymChecklistSelector">
-				<option value=""></option>
-				<#list checklists?values as checklist>
-					<#if checklist.public && ((root.checklist.toString())!"") != checklist.qname.toString()>
-						<option value="${checklist.qname}">${checklist.getFullname("en")}</option>
-					</#if>
-				</#list>
-			</select>
-			<br />
-			<label>Taxon</label>
-			<div class="synonymTaxonIdSelectorContainer">
-				<input type="hidden" name="synonymTaxonId" class="synonymTaxonId" />
-				<input type="text" class="synonymTaxonIdSelector" name="synonymTaxonIdSelector" /> <span class="synonymTaxonIdSelectorIdDisplay"></span><br />
-			</div>
-			<a class="addNewItem addNewSynonymId">+ Add new</a>
-			<input type="submit" class="button addButton" value="Add synonyms"  />
-			<br /><br />
 			<ul class="info">
-				<li><b>Synonym:</b> The synonym taxon and present taxon share the same circumscription.</li>
-				<li><b>Basionym:</b> The first name under which this circumscription was described.</li>
-				<li><b>Included in:</b> This taxon concept is included in the other taxon concepts (pro parte synonym).</li>
-				<li><b>Includes:</b> This taxon concept includes the other taxon concepts.</li>
-				<li><b>Misapplied:</b> The name has erroneously been used to report observations from Finland.</li>
-				<li><b>Uncertain:</b> Same as synonym except it is not certain that the taxa share the same circumscription.</li>
-				<li><b>Misspelled:</b> The name is a (common) misspelling for this circumscription.</li>
+				<li><b>Basionym:</b> The first name under which this taxon was described.</li>
+				<li><b>Objective/Homotypic:</b> Name based on same type specimen.</li>
+				<li><b>Subjective/Heterotypic:</b> Name not based on same type specimen.</li>
+				<li><b>Synonym:</b> Alternative name for taxon.</li>
+				<li><b>Misspelled/Ortographic:</b> The name is a (common) misspelling for the taxon.</li>
+				<li><b>Uncertain:</b> Possible alternative name.</li>
+				<li><b>Misapplied:</b> This name has been wrongly used to refer this taxon (in Finland).</li>
 			</ul>
 		</form>
 	</div>
@@ -194,118 +178,6 @@
 			</p>
 			<p class="info">
 				You must have permissions to the taxon being send OR to the new parent.
-			</p>
-		</form>
-	</div>
-
-	<div id="splitTaxonDialog" class="taxonDialog" title="Split taxon">
-		<form id="splitTaxonDialogForm" action="${baseURL}/split" method="POST">
-			<input type="hidden" name="rootTaxonId" class="rootTaxonId" value="${root.qname}" />
-			<input type="hidden" name="taxonToSplitID" class="taxonToSplitID" />
-						
-			<label>Taxon to split</label>
-			<span id="taxonToSplitName">name</span>
-			<br />
-			
-			<label for="newParent">New taxa</label>
-			<table>
-				<thead>
-					<tr>
-						<th>Scientific name</th>
-						<th>Authors</th>
-						<th>Rank</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><input name="scientificName___1" required /></td>
-						<td><input name="authors___1" /></td>
-						<td>
-							<select name="rank___1"> 
-								<option value=""></option>
-								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
-									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
-								</#list>
-							</select>
-					 	</td>
-					</tr>
-					<tr>
-						<td><input name="scientificName___2" required /></td>
-						<td><input name="authors___2" /></td>
-						<td>
-							<select name="rank___2"> 
-								<option value=""></option>
-								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
-									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
-								</#list>
-							</select>
-					 	</td>
-					</tr>
-				</tbody>
-			</table>
-			<a class="addNewItem">+ Add new</a>
-			<br />
-			
-			<input type="submit" class="button addButton" value="Split"  />
-			
-			<p class="info">
-				The taxon that is splitted is removed from the checklist. The new taxa are added to the checklist and their concepts are linked with the concept of the splitted taxon.
-			</p>
-			<p class="info">
-				Note: Taxonomy tree view will be reloaded after the split has been completed to show updated data.
-			</p>
-		</form>
-	</div>
-
-	<div id="mergeTaxonDialog" class="taxonDialog" title="Merge taxa">
-		<form id="mergeTaxonDialogForm" action="${baseURL}/merge" method="POST">
-			<input type="hidden" name="rootTaxonId" id="rootTaxonId" value="${root.qname}" />
-			<input type="hidden" name="taxonToMergeId" id="initialTaxonToMergeId" required />
-						
-			<label>Taxon to merge</label>
-			<span id="initialTaxonToMergeName">name</span>
-			<br />
-			
-			<label>Merge with taxa</label>
-			(type name or part of name and select taxon)
-			<div class="taxonToMergeIdSelectorContainer">
-				<input type="hidden" name="taxonToMergeId" class="taxonToMergeId" required />
-				<input type="text" class="taxonToMergeIdSelector" name="taxonToMergeIdSelector" /> <span class="taxonToMergeIdSelectorIdDisplay"></span><br />
-			</div>
-			<a class="addNewItem">+ Add new</a>
-			
-			<label for="newParent">New taxon</label>
-			<table>
-				<thead>
-					<tr>
-						<th>Scientific name</th>
-						<th>Authors</th>
-						<th>Rank</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td><input name="newTaxonScientificName" required /></td>
-						<td><input name="newTaxonAuthors" /></td>
-						<td>
-							<select name="newTaxonRank"> 
-								<option value=""></option>
-								<#list properties.getProperty("MX.taxonRank").range.values as taxonRank>
-									<option value="${taxonRank.qname}">${(taxonRank.label.forLocale("en"))!taxonRank.qname}</option>
-								</#list>
-							</select>
-					 	</td>
-					</tr>
-				</tbody>
-			</table>
-			
-			<input type="submit" class="button addButton" value="Merge"  />
-			
-			<p class="info">
-				All merged taxa are removed from the checklist. The new taxon is added to the checklist and its concept is linked with the concepts of the merged taxa.
-			</p>
-			<p class="info">
-				Note: Taxonomy tree view will be reloaded after the merge has been completed to show updated data.
 			</p>
 		</form>
 	</div>

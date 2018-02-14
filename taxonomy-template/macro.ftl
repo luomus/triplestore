@@ -63,16 +63,26 @@
 					<span class="taxonToolButton ui-icon ui-icon-gear <#if allowsAlterationsByUserOnThis>allowsAlterationsByUser</#if>" title="Tools"></span>
 				</#if>
 				<#if isSynonym && allowsAlterationsByUserOnThis>
-					<#if additionalClass == "normalSynonym"> 
-						<a href="#" onclick="unlinkNormalSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
-					<#elseif additionalClass == "misappliedSynonym">
-						<a href="#" onclick="unlinkMisappliedSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied"></span></a>
-					<#elseif additionalClass == "uncertainSynonym">
-						<a href="#" onclick="unlinkUncertainSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
-					<#elseif additionalClass == "misspelledSynonym">
-						<a href="#" onclick="unlinkMisspelledSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misspelled synonym"></span></a>
-					<#elseif additionalClass == "basionymSynonym">
-						<a href="#" onclick="unlinkBasionymSynonym(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink basionym synonym"></span></a>
+					<#if additionalClass == "BASIONYM">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as basionym synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink basionym"></span></a>
+					<#elseif additionalClass == "OBJECTIVE">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as objective synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink objective synonym"></span></a>
+					<#elseif additionalClass == "SUBJECTIVE">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as subjective synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink subjective synonym"></span></a>
+					<#elseif additionalClass == "HOMOTYPIC">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as homotypic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink homotypic synonym"></span></a>
+					<#elseif additionalClass == "HETEROTYPIC">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as heterotypic synonym of'); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink heterotypic synonym"></span></a>
+					<#elseif additionalClass == "SYNONYM">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as synonym of'); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
+					<#elseif additionalClass == "MISSPELLED">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as misspelled name of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misspelled name"></span></a>
+					<#elseif additionalClass == "ORTOGRAPHIC">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as ortographic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink ortographic synonym"></span></a>
+					<#elseif additionalClass == "UNCERTAIN">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as uncertain synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
+					<#elseif additionalClass == "MISAPPLIED">
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as misapplied name of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied name"></span></a>
 					</#if>
 				</#if>
 			</div>
@@ -120,74 +130,33 @@
 		</#if>
 		<#if !isSynonym && synonymsMode == "show">
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
-				<div class="synonymSection">
-					<#if taxon.synonyms?has_content><h3>Full synonyms</h3></#if>
-					<#if allowsAlterationsByUserOnThis>
-						<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
-							<#if taxon.synonyms?has_content>Add<#else>Add synonyms</#if>
-						</button>
-					</#if>
-					<#list taxon.synonyms as synonymTaxon>	 
-						<@printTaxon synonymTaxon true "normalSynonym" />
-					</#list>
-				</div>
-				<#if taxon.basionymSynonyms?has_content>
-					<div class="synonymSection">
-						<h3>Basionyms</h3>
-						<#list taxon.basionymSynonyms as synonymTaxon>	 
-							<@printTaxon synonymTaxon true "basionymSynonym" />
-						</#list>
-					</div>
-				</#if>
- 				<@listPartialSynonyms taxon.includedIn "Included in (pro parte)" allowsAlterationsByUserOnThis />
-				<@listPartialSynonyms taxon.includes "Includes" allowsAlterationsByUserOnThis />
-				<#if taxon.misappliedSynonyms?has_content>
-					<div class="synonymSection misappliedSynonyms">
-						<h3>Misapplied</h3>
-						<#list taxon.misappliedSynonyms as synonymTaxon>	 
-							<@printTaxon synonymTaxon true "misappliedSynonym" />
-						</#list>
-					</div>
-				</#if>
-				<#if taxon.uncertainSynonyms?has_content>
-					<div class="synonymSection">
-						<h3>Uncertain synonyms</h3>
-						<#list taxon.uncertainSynonyms as synonymTaxon>	 
-							<@printTaxon synonymTaxon true "uncertainSynonym" />
-						</#list>
-					</div>
-				</#if>
-				<#if taxon.misspelledSynonyms?has_content>
-					<div class="synonymSection">
-						<h3>Misspelled names</h3>
-						<#list taxon.misspelledSynonyms as synonymTaxon>	 
-							<@printTaxon synonymTaxon true "misspelledSynonym" />
-						</#list>
-					</div>
-				</#if>
+				<@printSynonyms taxon.basionyms "Basionyms" "BASIONYM" /> 
+				<@printSynonyms taxon.objectiveSynonyms "Objective synonyms" "OBJECTIVE" />
+				<@printSynonyms taxon.subjectiveSynonyms "Subjective synonyms" "SUBJECTIVE" />
+				<@printSynonyms taxon.homotypicSynonyms "Homotypic synonyms" "HOMOTYPIC" />
+				<@printSynonyms taxon.heterotypicSynonyms "Heterotypic synonyms" "HETEROTYPIC" />
+				<@printSynonyms taxon.synonyms "Synonyms" "SYNONYM" />
+				<@printSynonyms taxon.misspelledNames "Misspelled names" "MISSPELLED" />
+				<@printSynonyms taxon.ortographicVariants "Ortographical variants" "ORTOGRAPHIC" />
+				<@printSynonyms taxon.uncertainSynonyms "Uncertain synonyms" "UNCERTAIN" />
+ 				<@printSynonyms taxon.misappliedNames "Misapplied names" "MISAPPLIED" />
 			</div>		
+			<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
+				Add synonyms
+			</button>
 		</#if>
 	</div>
 </#macro>
 
-<#macro listPartialSynonyms taxa label permissionsToRemove> 
-<#if taxa?has_content>
-	<div class="synonymSection">
-		<h3>${label}</h3>
-		<#assign prevConcept = ""> 
-		<#list taxa as partialSynonym>
-			<#if partialSynonym.taxonConceptQname.toString() != prevConcept>
-				<#if prevConcept != ""></div></#if>
-				<#assign prevConcept = partialSynonym.taxonConceptQname.toString()>
-				<div class="taxaOfConcept" id="${partialSynonym.taxonConceptQname?replace("MC.","MC")}">
-					<span class="taxonConcept" title="${partialSynonym.taxonConceptQname}">Concept</span>
-					<#if permissionsToRemove><a href="#" onclick="unlink${label?replace(" ","")}ConceptLink(this); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink taxon concept"></span></a></#if>
-			</#if>
-			<@printTaxon partialSynonym true />
-		</#list>
-	</div>
-</div>
-</#if>
+<#macro printSynonyms synonyms label type>
+	<#if synonyms?has_content>
+		<div class="synonymSection">
+			<h3>${label}</h3>
+			<#list synonyms as synonym>	 
+				<@printTaxon synonym true type />
+			</#list>
+		</div>
+	</#if>
 </#macro>
 
 <#macro loadingSpinner text="Loading..."><@compress single_line=true>
@@ -240,21 +209,27 @@
 <#macro select field defaultValue="taxonValue" permissions="requireEditorPermissions">
 	<#assign property = properties.getProperty(field)>
 	<#if !property.hasRange()>NO RANGE!<#else>
-	<#assign cleanedName = cleanName(field)>
-	<#if defaultValue == "taxonValue">
-		<#if taxon[cleanedName]??> <#assign value = taxon[cleanedName]> <#else> <#assign value = ""> </#if>
-	<#else>
-		<#assign value = defaultValue>
-	</#if>
-	<#if property.isBooleanProperty()>
-		NO SUPPORT FOR BOOLEANS
-	</#if>
-	<select class="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
-		<option value=""></option>
-		<#list property.range.values as optionValue>
-			<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
-		</#list>
-	</select>
+		<#assign cleanedName = cleanName(field)>
+		<#if defaultValue == "taxonValue">
+			<#if taxon[cleanedName]??> <#assign value = taxon[cleanedName]> <#else> <#assign value = ""> </#if>
+		<#else>
+			<#assign value = defaultValue>
+		</#if>
+		<#if property.isBooleanProperty()>
+			<select class="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
+				<option value=""></option>
+				<#list property.range.values as optionValue>
+					<option value="${optionValue.qname}" <#if value?string == optionValue.qname>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+				</#list>
+			</select>
+		<#else>
+			<select class="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
+				<option value=""></option>
+				<#list property.range.values as optionValue>
+					<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+				</#list>
+			</select>
+		</#if>
 	</#if>
 </#macro>
 

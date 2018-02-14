@@ -36,7 +36,5 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public Set<String> getInformalTaxonGroupRoots();
 	
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
-
-	public void clearTaxonConceptLinkings();
 	
 }

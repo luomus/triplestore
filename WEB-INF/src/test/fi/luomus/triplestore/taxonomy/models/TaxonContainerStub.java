@@ -6,7 +6,6 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Filter;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonConcept;
 import fi.luomus.commons.taxonomy.TaxonContainer;
 
 public class TaxonContainerStub implements TaxonContainer {
@@ -48,12 +47,6 @@ public class TaxonContainerStub implements TaxonContainer {
 	}
 
 	@Override
-	public TaxonConcept getTaxonConcept(Qname arg0) {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Filter getTypesOfOccurrenceFilter() {
 		// Auto-generated method stub
 		return null;
@@ -69,6 +62,24 @@ public class TaxonContainerStub implements TaxonContainer {
 	public int getNumberOfTaxons() throws UnsupportedOperationException {
 		// Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public Set<Qname> getHasDescriptionsFilter() {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Qname> getHasMediaFilter() throws UnsupportedOperationException {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Qname> getInvasiveSpeciesEarlyWarningFilter() {
+		// TAuto-generated method stub
+		return null;
 	}
 
 }

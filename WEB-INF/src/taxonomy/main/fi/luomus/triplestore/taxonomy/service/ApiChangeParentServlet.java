@@ -25,7 +25,6 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 	private static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate("sortOrder");
 	private static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
-	private static final Predicate CIRCUMSCRIPTION_PREDICATE = new Predicate("MX.circumscription");
 	private static final Predicate SCIENTITIF_NAME_PREDICATE = new Predicate("MX.scientificName");
 	private static final Qname GENUS = new Qname("MX.genus");
 
@@ -66,8 +65,6 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 		dao.store(new Subject(taxonQname), new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(LAST_IN_ORDER)));
 		if (taxon.getChecklist() == null) {
 			dao.store(new Subject(taxonQname), new Statement(NAME_ACCORDING_TO_PREDICATE, new ObjectResource(newParent.getChecklist())));
-			Qname newTaxonConcept = dao.addTaxonConcept();
-			dao.store(new Subject(taxonQname), new Statement(CIRCUMSCRIPTION_PREDICATE, new ObjectResource(newTaxonConcept)));
 		}
 		if (taxon.isSpecies()) {
 			changeScientificNameAndCreateSynonymOfOldName(taxon, newParent, taxonomyDAO, dao);

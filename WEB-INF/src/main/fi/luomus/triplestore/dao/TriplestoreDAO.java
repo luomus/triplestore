@@ -79,7 +79,7 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public void insert(Subject subject, Statement statement) throws Exception;
-	
+
 	/**
 	 * Reads information of all properties that are used in contect of the given class (rdf:type == className)
 	 * @param className
@@ -140,7 +140,7 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public void deleteStatement(int id) throws Exception;
-	
+
 	/**
 	 * Deletes single predicates of the given resource from default context with no language
 	 * @param subject
@@ -174,13 +174,6 @@ public interface TriplestoreDAO {
 	public Publication storePublication(Publication publication) throws Exception;
 
 	/**
-	 * Gets taxon concept qname from sequence and adds the resource.
-	 * @return
-	 * @throws Exception
-	 */
-	public Qname addTaxonConcept() throws Exception;
-
-	/**
 	 * Clears for example Properties cache
 	 */
 	public void clearCaches();
@@ -201,7 +194,7 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public void store(Qname taxonQname, Occurrence occurrence) throws Exception;
-	
+
 	/**
 	 * Get search dao
 	 * @return
@@ -255,5 +248,5 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
-	
+
 }

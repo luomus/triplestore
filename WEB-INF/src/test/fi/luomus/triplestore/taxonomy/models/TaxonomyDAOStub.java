@@ -163,11 +163,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public void clearTaxonConceptLinkings() {
-		// Auto-generated method stub
-	}
-
-	@Override
 	public TaxonSearchResponse search(TaxonSearch arg0) throws Exception {
 		// Auto-generated method stub
 		return null;

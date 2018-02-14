@@ -75,9 +75,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String XSD_MIN_OCCURS = "xsd:minOccurs";
 	private static final String SORT_ORDER2 = "sortOrder";
 	private static final String RDFS_RANGE = "rdfs:range";
-	private static final String MC_TAXON_CONCEPT = "MC.taxonConcept";
 	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
-	private static final String MX_CIRCUMSCRIPTION = "MX.circumscription";
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
 	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
@@ -372,11 +370,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
 		model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
 
-		if (!given(taxon.getTaxonConceptQname())) {
-			taxon.setTaxonConceptQname(this.addTaxonConcept());
-		}
-		model.addStatement(new Statement(new Predicate(MX_CIRCUMSCRIPTION), new ObjectResource(taxon.getTaxonConceptQname())));
-
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
@@ -386,15 +379,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private boolean given(Object value) {
 		return value != null && value.toString().length() > 0;
-	}
-
-	@Override
-	public Qname addTaxonConcept() throws SQLException {
-		Qname id = getSeqNextValAndAddResource("MC");
-		Model model = new Model(id);
-		model.setType(MC_TAXON_CONCEPT);
-		store(model);
-		return id;
 	}
 
 	@Override

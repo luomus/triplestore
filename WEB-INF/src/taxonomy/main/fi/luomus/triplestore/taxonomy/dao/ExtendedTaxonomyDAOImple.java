@@ -86,11 +86,6 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public void clearTaxonConceptLinkings() {
-		taxonContainer.clearTaxonConceptLinkings();
-	}
-
-	@Override
 	public EditableTaxon getTaxon(Qname qname) {
 		return taxonContainer.getTaxon(qname);
 	}
