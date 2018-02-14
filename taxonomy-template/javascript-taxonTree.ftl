@@ -573,6 +573,7 @@ $(function() {
 	});
 	$("#addNewSynonymDialogForm").validate({
 		// TODO jvähintään yksi uusi nimi
+		// pitää olla valittu tyyppi
 	});
 	$("#sendTaxonDialogForm").validate({
 		ignore: [], // do not ignore hidden elements

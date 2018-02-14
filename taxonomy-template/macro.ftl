@@ -72,9 +72,9 @@
 					<#elseif additionalClass == "HOMOTYPIC">
 						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as homotypic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink homotypic synonym"></span></a>
 					<#elseif additionalClass == "HETEROTYPIC">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as heterotypic synonym of'); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink heterotypic synonym"></span></a>
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as heterotypic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink heterotypic synonym"></span></a>
 					<#elseif additionalClass == "SYNONYM">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as synonym of'); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
+						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
 					<#elseif additionalClass == "MISSPELLED">
 						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as misspelled name of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misspelled name"></span></a>
 					<#elseif additionalClass == "ORTOGRAPHIC">

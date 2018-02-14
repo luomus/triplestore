@@ -98,13 +98,12 @@
 			<br />
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
-				<option value=""></option>
 				<option value="BASIONYM">Basionym</option>
 				<option value="OBJECTIVE">Objective synonym</option>
 				<option value="SUBJECTIVE">Subjective synonym</option>
 				<option value="HOMOTYPIC">Homotypic synonym</option>
 				<option value="HETEROTYPIC">Heterotypic synonym</option>
-				<option value="SYNONYM">Synonym</option>
+				<option value="SYNONYM" selected="selected">Synonym</option>
 				<option value="MISSPELLED">Misspelled name</option>
 				<option value="ORTOGRAPHIC">Ortographic synonym</option>
 				<option value="UNCERTAIN">Uncertain synonym</option>
