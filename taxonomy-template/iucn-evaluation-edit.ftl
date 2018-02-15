@@ -292,6 +292,20 @@
 	<@iucnTextarea "MKV.taxonomicNotes" />
 	
 	<@iucnSection "Esiintymistä koskevat tiedot" />
+	<tr>
+		<th><label>Asema Suomessa taksonomisesta tietokannasta</label></th>
+		<td colspan="2">
+			<#if taxon.typesOfOccurrenceInFinland?has_content>
+				<ul>
+					<#list taxon.typesOfOccurrenceInFinland as typeOfOcc>
+						<li>${properties.getProperty("MX.typeOfOccurrenceInFinland").range.getValueFor(typeOfOcc).label.forLocale("fi")}</li>				
+					</#list>
+				</ul>
+			<#else>
+				<span class="info">Ei hallinnollista asemaa</span>
+			</#if>	
+		</td>
+	</tr>
 	<@typeOfOccurrenceInFinland />
 	<@iucnMinMax "Levinneisyysalueen koko" "MKV.distributionAreaMin" "MKV.distributionAreaMax" "MKV.distributionAreaNotes" />
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />

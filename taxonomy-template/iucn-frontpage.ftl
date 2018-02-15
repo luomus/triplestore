@@ -13,6 +13,7 @@
 	<h6>Uudistuksia 15.2.2018</h6>
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
+		<li>Taksonomisen tietokannasta tieto siellä määritellystä lajin asemasta/vakiintumisesta Suomessa näkyville tallennuslomakkeella.</li>
 	</ul>
 	<h6>Uudistuksia 24.1.2018</h6>
 	<ul>
