@@ -30,7 +30,13 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 
 		dao.addOccurrences(taxon);
 		
-		return responseData.setData("taxon", taxon);
+		boolean isChecklistTaxon = isChecklistTaxon(taxon);
+		boolean fullView = isChecklistTaxon || getUser(req).isAdmin();
+		return responseData.setData("taxon", taxon).setData("fullView", fullView).setData("isChecklistTaxon", isChecklistTaxon);
+	}
+
+	private boolean isChecklistTaxon(EditableTaxon taxon) {
+		return given(taxon.getChecklist());
 	}
 
 }

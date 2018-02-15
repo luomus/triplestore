@@ -4,8 +4,10 @@
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon /> &nbsp; 
 	<@printEditorExpert taxon />
-	<a class="button" id="descriptionTextButton" href="${baseURL}/taxon-descriptions/${taxon.qname}">Description texts</a>
-	<button id="imagesButton">Images</button>
+	<#if fullView>
+		<a class="button" id="descriptionTextButton" href="${baseURL}/taxon-descriptions/${taxon.qname}">Description texts</a>
+		<button id="imagesButton">Images</button>
+	</#if>
 </h5>
 
 <#if noPermissions??>
@@ -52,8 +54,10 @@
 			<span id="scientificNameToolButtons">
 				<label>&nbsp;</label>
 				<button id="fixTypo">Fix name/author</button> 
-				OR 
-				<button id="alterScientificName">Change name and create synonym</button>
+				<#if isChecklistTaxon> 
+					OR
+					<button id="alterScientificName">Change name and create synonym</button>
+				</#if>
 			</span>
 			</#if>
 			<div class="clear"></div>
@@ -117,6 +121,7 @@
 	
 </div>
 
+<#if fullView>
 <div class="column">
 	
 	<@portletHeader "Primary vernacular names" "" "primaryVernacularNameSection" />
@@ -216,7 +221,9 @@
 	<@portletFooter />				
 
 </div>
+</#if>
 
+<#if fullView>
 <div class="column">
 
 	<@portletHeader "Other vernacular names" "" "multirowSection" />
@@ -308,8 +315,9 @@
 </div>
 
 <div class="clear"></div>
+</#if>
 
-
+<#if fullView>
 <div class="column">
 
   <#if taxon.occurrences.hasOccurrences()>
@@ -351,7 +359,9 @@
 	<@portletFooter />
 	
 </div>
+</#if>
 
+<#if fullView>
 <div class="column">
   <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
 	<@portletHeader "Editors and Experts" />
@@ -403,7 +413,9 @@
 		
 	<@portletFooter />	
 </div>
+</#if>
 
+<#if fullView>
 <div class="column">
 	
 	<@portletHeader "Red List Finland" />
@@ -471,7 +483,7 @@
 		<@portletFooter />
 	</#if>
 </div>
-
+</#if>
 
 <div class="taxonDeleteContainer">
 <#if !taxon.hasCriticalData()>

@@ -16,6 +16,7 @@ import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 public class EditableTaxon extends Taxon {
 
 	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
+	@SuppressWarnings("unused")
 	private static final Qname MASTER_CHECKLIST = new Qname("MR.1");
 
 
@@ -47,33 +48,39 @@ public class EditableTaxon extends Taxon {
 			}
 		}
 
-		// We start checking if user would have permissions to alter this taxon because this taxon is a synonym of something, that the editor has permissions to edit
-
-		// First some preconditions
-		if (this.getChecklist() != null) {
-			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
+		// for now allow everybody to edit synonyms
+		if (this.getChecklist() == null) {
+			return true;  
 		}
-
-		Collection<Taxon> allSynonymTypes = this.getAllSynonyms();
-
-		for (Taxon synonym : allSynonymTypes) {
-			if (MASTER_CHECKLIST.equals(synonym.getChecklist())) { // This taxon is used in the master checklist as a synonym
-				if (allowsAlterationForUserDirectly(user, synonym)) {
-					return true; // User has permissions to the master checklist taxon, so allow to edit this taxon
-				}
-				return false; // Do not allow to edit this taxon, because this is used in the master checklist as a synonym
-			}
-		}
-
-		// This taxon is not from any checklist and not used in the master checklist as a synonym: 
-		// If this user has edit permissions to one of the taxons that are a synonym of this taxon, allow to edit this taxon
-		for (Taxon synonym : allSynonymTypes) {
-			if (allowsAlterationForUserDirectly(user, synonym)) {
-				return true; // User has permissions to the edit one of the synonyms of this taxon, allow to edit this
-			}
-		}
-
 		return false;
+		
+//		// We start checking if user would have permissions to alter this taxon because this taxon is a synonym of something, that the editor has permissions to edit
+//
+//		// First some preconditions
+//		if (this.getChecklist() != null) {
+//			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
+//		}
+//
+//		Collection<Taxon> allSynonymTypes = this.getAllSynonyms();
+//
+//		for (Taxon synonym : allSynonymTypes) {
+//			if (MASTER_CHECKLIST.equals(synonym.getChecklist())) { // This taxon is used in the master checklist as a synonym
+//				if (allowsAlterationForUserDirectly(user, synonym)) {
+//					return true; // User has permissions to the master checklist taxon, so allow to edit this taxon
+//				}
+//				return false; // Do not allow to edit this taxon, because this is used in the master checklist as a synonym
+//			}
+//		}
+//
+//		// This taxon is not from any checklist and not used in the master checklist as a synonym: 
+//		// If this user has edit permissions to one of the taxons that are a synonym of this taxon, allow to edit this taxon
+//		for (Taxon synonym : allSynonymTypes) {
+//			if (allowsAlterationForUserDirectly(user, synonym)) {
+//				return true; // User has permissions to the edit one of the synonyms of this taxon, allow to edit this
+//			}
+//		}
+//
+//		return false;
 	}
 
 	private boolean allowsAlterationForUserDirectly(User user, Taxon taxon) {
