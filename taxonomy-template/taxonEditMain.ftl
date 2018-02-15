@@ -1,10 +1,8 @@
 <#include "luomus-header.ftl">
 
-	<div class="ui-widget-content">
-	
-		<div id="toolbox" class="ui-widget ui-corner-all">
-			<div class="ui-widget-header noselect" id="toolboxToggle">Tools <span style="float: right;" class="ui-icon ui-icon-carat-1-s"></span></div>
-			<div id="toolBoxContent" class="ui-widget-content">
+	<div id="toolbox" class="ui-widget ui-corner-all">
+		<div class="ui-widget-header noselect" id="toolboxToggle">Tools <span style="float: right;" class="ui-icon ui-icon-carat-1-s"></span></div>
+		<div id="toolBoxContent" class="ui-widget-content">
 			<#if user.admin>
 				<p><button id="clearCaches" onclick="clearCaches(); return false;">Clear all caches (Admin only)</button></p>
 				<div id="checklistSelectorTool">
@@ -36,27 +34,18 @@
 					<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 				</form>
 			</div>
-			
-			</div>
 		</div>
-		
-		<div id="taxonTree">
-			<#include "taxonTreeContent.ftl">
-		</div>
-		
-		<div class="clear"></div>
-		
 	</div>
-	
-	<div class="clear"></div>
-	
-	<div id="editTaxon" class="ui-widget-content">
-			<h3 class="ui-widget-header ui-state-active">Edit taxon</h3>
-			<div id="editTaxonContent">
-				<#include "api-taxonedit.ftl" />
+		
+	<div id="taxonTree">
+		<#include "taxonTreeContent.ftl">
+	</div>
+
+	<div id="editTaxon" class="ui-widget-content" title="Edit taxon">
+			<div id="editTaxonContent">	
 			</div>
 	</div>
-	
+
 	<div id="addNewTaxonDialog" class="taxonDialog" title="Add new taxon">
 		<form id="addNewTaxonDialogForm" onsubmit="addNewChildDialogSubmit(); return false;">
 			<input type="hidden" name="newTaxonParent" id="newTaxonParent" />

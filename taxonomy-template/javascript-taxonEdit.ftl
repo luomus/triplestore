@@ -35,13 +35,10 @@ function editTaxon(e) {
 		return;
 	}
 	$("#editTaxonContent").html('<div class="loading">Loading...</div>');
+	$("#editTaxon").dialog("open");
 	$.get("${baseURL}/api/taxonToEdit/"+taxon, function(data) {
-		$("html").animate({
-        	scrollTop: $("#editTaxon").offset().top
-    	}, 200, "swing", function() {
-    		$("#editTaxonContent").html(data);
-			initColumnsPortlets();
-    	});
+		$("#editTaxonContent").html(data);
+		initColumnsPortlets();
   	});
 }
 

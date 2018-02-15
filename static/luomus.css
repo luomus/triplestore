@@ -280,15 +280,13 @@ fieldset legend {
 /* 3. LUOMUS layout styling */
 
 body {
-    background: none repeat scroll 0% 0% rgb(197, 199, 197);
+    background-color: white;
 }
 #masthead-inner {
 	background: url('img/header-background.png');
 	text-align: center;
 }
-#main-area {
-	background-color: white;
-}
+
 #content-wrapper {
 	padding: 10px;
 	padding-bottom: 150px;

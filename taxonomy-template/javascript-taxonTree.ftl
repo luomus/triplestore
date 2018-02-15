@@ -6,13 +6,18 @@ function startsWith(needle, haystack) {
 
 var taxonTreeGraphs;
 var headerPositioned = false;
-
+var windowHeight = $(window).height();
+var dialogHeight = windowHeight * 0.9;
+    
 $(function() {
 		
 	taxonTreeGraphs = jsPlumb.getInstance();
 	
 	$(window).resize(function(){
 		taxonTreeGraphs.repaintEverything();
+		windowHeight = $(window).height();
+    	dialogHeight = windowHeight * 0.9;
+    	$("#editTaxon").dialog('option', 'height', dialogHeight);
   	});
 	
 	$(window).on('scroll', function() {
@@ -527,6 +532,14 @@ $(function() {
  		autoOpen: false,
 		modal: true,
 		width: 550
+	});
+        
+	$("#editTaxon").dialog({
+ 		autoOpen: false,
+		resizable: false,
+		height: dialogHeight,
+      	width: "95%",
+      	modal: true
 	});
 	
 	$("#addNewTaxonDialogForm").validate({

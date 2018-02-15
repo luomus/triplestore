@@ -516,7 +516,6 @@ $(function() {
 			collapseTaxon(closeButton);
 			taxon.hide('slow', function() {
 				$(this).remove();
-				$("html").animate({ scrollTop: $("#editTaxon").offset().top - 300 }, 200, "swing");
 			});
   		});
   		
@@ -532,7 +531,6 @@ $(function() {
 			$("#editTaxonContent").html('<p class="successMessage">Detached!</p>');
 			$("#"+taxonToDetachQname.replace("MX.", "MX")).hide('slow', function() {
 				$(this).remove();
-				$("html").animate({ scrollTop: $("#editTaxon").offset().top - 300 }, 200, "swing");
 			});
   		});
 	});

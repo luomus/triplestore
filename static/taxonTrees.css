@@ -26,11 +26,6 @@ h4 {
 	position: relative;
 }
 
-#editTaxon {
-	border-top: 3px double grey;
-	width: 99.9%;
-	border-bottom-style:none;
-}
 #editTaxonContent {
 	margin-left: 10px;
 	margin-right: 10px;
@@ -361,8 +356,6 @@ div.loading {
 	content: "»";
 }
 
-#splitTaxonDialog input, 
-#mergeTaxonDialog input,
 #addNewSynonymDialog input {
   width: 150px;
 }
