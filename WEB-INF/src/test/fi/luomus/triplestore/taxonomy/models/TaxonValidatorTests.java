@@ -2,6 +2,12 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -15,12 +21,6 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class TaxonValidatorTests {
 
@@ -252,6 +252,21 @@ public class TaxonValidatorTests {
 		assertEquals("[]", result.getWarnings().toString());
 	}
 	
+	@Test
+	public void test_vernacularName_7() {
+		taxon.addVernacularName("fi", "viiksi'vallu");
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[Vernacular name : Name must not contain the character ''']", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void test_vernacularName_8() {
+		taxon.addVernacularName("en", "viiksi'vallu");
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
 	
 	@Test
 	public void test_description_fields_1() {

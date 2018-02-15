@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -97,14 +98,19 @@ public class TaxonValidator {
 	}
 
 	private void validateVernacularName(String fieldName, LocalizedText localizedText, Taxon taxon) {
-		for (String name : localizedText.getAllTexts().values()) {
-			validateVernacularName(fieldName, name, taxon);
+		for (Map.Entry<String, String> e : localizedText.getAllTexts().entrySet()) {
+			String locale = e.getKey();
+			String name = e.getValue();
+			validateVernacularName(fieldName, name, locale, taxon);
 		}
 	}
 
 	private void validateVernacularName(String fieldName, LocalizedTexts names, Taxon taxon) {
-		for (String name : names.getAllValues()) {
-			validateVernacularName(fieldName, name, taxon);
+		for (Entry<String, List<String>> e : names.getAllTexts().entrySet()) {
+			String locale = e.getKey();
+			for (String name : e.getValue()) {
+				validateVernacularName(fieldName, name, locale, taxon);
+			}
 		}
 	}
 
@@ -114,7 +120,7 @@ public class TaxonValidator {
 
 	private static final Set<Character> VERNACULAR_ALLOWED = Utils.set('-', ' ');
 
-	private void validateVernacularName(String fieldName, String name, Taxon taxon) {
+	private void validateVernacularName(String fieldName, String name, String locale, Taxon taxon) {
 		if (name == null) return;
 		name = name.trim().toLowerCase();
 		if (name.isEmpty()) return;
@@ -130,6 +136,7 @@ public class TaxonValidator {
 			name = allowParentheses(name);
 		}
 		for (char c : name.toCharArray()) {
+			if (c == '\'' && "en".equals(locale)) continue;
 			if (!ALPHAS.contains(c) && !VERNACULAR_ALLOWED.contains(c)) {
 				setError(fieldName, "Name must not contain the character '" + c+"'");
 				return;
