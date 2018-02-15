@@ -25,20 +25,14 @@
 			</#if>
 			<table>
 				<tr>
-					<td>Synonyms:</td>
-					<td>
-						<div id="synonymModeSelectorTool" class="switchContainer"><input type="checkbox" id="synonymMode" name="synonymMode" onchange="changeSynonymMode();" /></div>
-					</td>
-				</tr>
-				<tr>
-					<td>Taxon dragging:</td> 
+					<td>Drag taxa: &nbsp;</td> 
 					<td><div id="taxonDragModeSelectorTool" class="switchContainer"><input type="checkbox" id="taxonDragMode" name="taxonDragMode" onchange="changeTaxonDragMode();"/></div></td>
 				</tr>
 			</table>
 			<div id="taxonSearch">
-				Search taxon:
+				Search:
 				<form onsubmit="searchTaxon(this); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="taxonTree">
-					<input type="text" placeholder="Type name of a taxon"/> <input type="submit" value="Search" />
+					<input type="text" placeholder="Type name or MX code"/> <input type="submit" value="Search" />
 					<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 				</form>
 			</div>

@@ -128,7 +128,7 @@
 				<span class="taxonChildCount">(${taxon.children?size})</span>
 			</div>
 		</#if>
-		<#if !isSynonym && synonymsMode == "show">
+		<#if !isSynonym>
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
 				<@printSynonyms taxon.basionyms "Basionyms" "BASIONYM" /> 
 				<@printSynonyms taxon.objectiveSynonyms "Objective synonyms" "OBJECTIVE" />

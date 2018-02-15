@@ -50,17 +50,17 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	private static final Set<User.Role> DEFAULT_ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER));
-	
+
 	protected Set<User.Role> allowedRoles() {
 		return DEFAULT_ALLOWED;
 	}
-	
+
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
 		if (!super.authorized(req)) return false;
 		return allowedRoles().contains(getUser(req).getRole());
 	}
-	
+
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		return initResponseData(req);
@@ -71,7 +71,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	@Override
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
-		
+
 		SessionHandler session = getSession(req);
 		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
 			User user = getUser(session);
@@ -81,13 +81,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("errorMessage", session.getFlashError());
 			responseData.setData("restartMessage", getRestartMessage(user));
 		}
-		
-		String synonymsMode = req.getParameter("synonymsMode"); 
-		if (given(synonymsMode)) {
-			responseData.setData("synonymsMode", synonymsMode);
-		} else {
-			responseData.setData("synonymsMode", "show");
-		}
+
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		TriplestoreDAO dao = getTriplestoreDAO();
 
@@ -175,5 +169,5 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter iucn group " + groupQname);
 		}
 	}
-	
+
 }

@@ -5,7 +5,6 @@ function startsWith(needle, haystack) {
 }
 
 var taxonTreeGraphs;
-var showSynonymsModeIsOn = true;
 var headerPositioned = false;
 
 $(function() {
@@ -30,14 +29,6 @@ $(function() {
  			}
  		}
  	});
- 	
-	var synonymCheckedInitially = <#if synonymsMode == "show">true<#else>false</#if>;
-	showSynonymsModeIsOn = synonymCheckedInitially; 
-	$("#synonymModeSelectorTool :checkbox").switchButton({
- 		on_label: 'Shown',
-  		off_label: 'Hidden',
-  		checked: synonymCheckedInitially
-	});
 	
 	$("#taxonDragModeSelectorTool :checkbox").switchButton({
  		on_label: 'Enabled',
@@ -144,9 +135,6 @@ function expandTree(e) {
 	addTaxonConnection(taxonQnameOfClicked, taxonQnameOfClicked+'Children');
 	taxonTreeGraphs.repaintEverything();
 	var url = '${baseURL}/api/children/'+encodeURIComponent(taxonQnameOfClicked);
-	if (!showSynonymsModeIsOn) {
-		url += '?synonymsMode=disable';
-	}
 	$.get(url, function(data) {
 		taxaOfTaxonContainerToAddChildrenOfClicked.html(data);
 		taxaOfTaxonContainerToAddChildrenOfClicked.find('button, .button').button();
@@ -287,35 +275,13 @@ function endDisableOfTools() {
 	$("#greyOutElement").hide();
 	$('.hiddenWhenDisablingTools').show();
 }
-function changeSynonymMode() {
-	var sliderPositionOn = $("#synonymMode").prop('checked');
-	if (showSynonymsModeIsOn && sliderPositionOn === false) {
-		disableShowSynonymsMode();
-	}
-	if (!showSynonymsModeIsOn && sliderPositionOn === true) {
-		changeToShowSynonymsMode();
-	}
-}
-function disableShowSynonymsMode() {
-	showSynonymsModeIsOn = false;
-	$(".synonyms").fadeOut('slow', function() {taxonTreeGraphs.repaintEverything();});
-}
-function changeToShowSynonymsMode() {
-	var url = location.href.split("?")[0] + "?synonymsMode=show";
-	document.location.href = url;
-}
+
 function goToTaxon(id) {
 		var url = "${baseURL}/"+id;
-		if (!showSynonymsModeIsOn) {
-			url += "?synonymsMode=disable";
-		}
 		document.location.href = url;
 }
 function changeRoot(e, url) {
 	if(confirmChangeOfRoot(e)) {
-		if (!showSynonymsModeIsOn) {
-			url += "?synonymsMode=disable";
-		}
 		document.location.href = url;
 	}
 }
