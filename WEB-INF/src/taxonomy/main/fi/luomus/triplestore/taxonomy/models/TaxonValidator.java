@@ -73,7 +73,7 @@ public class TaxonValidator {
 
 		validateScientificName(taxon);
 		validateVernacularName("Vernacular name", taxon.getVernacularName(), taxon);
-		validateVernacularName("Alternative vernacular name", taxon.getAlternativeVernacularNames(), taxon);
+		validateVernacularName("Other vernacular name", taxon.getAlternativeVernacularNames(), taxon);
 		validateVernacularName("Obsolete vernacular name", taxon.getObsoleteVernacularNames(), taxon);
 		validateVernacularName("Trade name", taxon.getTradeNames(), taxon);
 
@@ -92,7 +92,7 @@ public class TaxonValidator {
 		for (String alternativeVernacularName : taxon.getAlternativeVernacularNames().getAllValues()) {
 			List<Taxon> matches = taxonomyDAO.taxonNameExistsInChecklistForOtherTaxon(alternativeVernacularName, taxon.getChecklist(), taxon.getQname());
 			for (Taxon match : matches) {
-				setWarning("Alternative vernacular name", "Name " + alternativeVernacularName + " already used in this checklist for taxon: " + debug(match));
+				setWarning("Other vernacular name", "Name " + alternativeVernacularName + " already used in this checklist for taxon: " + debug(match));
 			}
 		}
 	}
