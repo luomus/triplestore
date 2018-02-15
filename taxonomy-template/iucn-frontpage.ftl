@@ -10,6 +10,10 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 15.2.2018</h6>
+	<ul>
+		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
+	</ul>
 	<h6>Uudistuksia 24.1.2018</h6>
 	<ul>
 		<li>Muutettu luokkien esittämistä lajiluettelossa, lajin arviointisivulla ja tiedostolatauksessa: Otetaan huomioon luokan ylentäminen ja alentaminen.</li>

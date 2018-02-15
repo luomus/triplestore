@@ -391,6 +391,24 @@
 <@propertyCommentsScript />
 
 <script>
+
+var warnBeforeUnload = false;
+
+$(function() {
+	$(":input").on('change', function() { warnBeforeUnload = true; } ); 
+});
+
+$(document).submit(function(){
+    warnBeforeUnload = false;
+})
+
+$(window).on('beforeunload', function() {
+	if (warnBeforeUnload) {
+		return "foo";
+	}
+	return undefined;
+});
+
 function startsWith(needle, haystack) {
 	return haystack.lastIndexOf(needle, 0) === 0;
 }
