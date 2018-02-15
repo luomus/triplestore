@@ -539,9 +539,15 @@ $(function() {
 		resizable: false,
 		height: dialogHeight,
       	width: "95%",
-      	modal: true
+      	modal: true,
+      	beforeClose: function() {
+      		if ($(".saveButton").length > 0) {
+				return confirm('This taxon has unsaved changes. Are you sure you want to close without saving?');
+			}
+			return true;
+      	}
 	});
-	
+		
 	$("#addNewTaxonDialogForm").validate({
 		rules: {
 			newTaxonScientificName: { required: { depends: function(e) { return ($('#newTaxonAuthor').val() != ""); }} }

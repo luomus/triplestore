@@ -24,9 +24,6 @@ $(function() {
 });
 	
 function editTaxon(e) {
-	if ($(".saveButton").length > 0) {
-		if (!confirm('This taxon has unsaved changes. Are you sure you want to change to a different taxon?')) return;
-	}
 	if ($("#taxonDragMode").prop('checked') === true) return;
 	if (toolsDisabled) return;
 	var taxon = $(e).closest(".taxonWithTools").attr('id');
@@ -113,8 +110,12 @@ function initColumnsPortlets() {
 	function addSaveButtonTo(e) {
 		var section = $(e).closest(".taxonEditSection"); 
 		if (section.find(".saveButton").length === 0) {
-			section.append('<input type="submit" class="saveButton" value="Save changes" />');
+			section.append('<input type="submit" class="saveButton" value="Save" />');
+			section.append('<input type="submit" class="saveButton saveAndClose" value="Save and close" />');
 			section.find(".saveButton").button().hide().fadeIn('slow');
+			section.find(".saveButton").on('click', function() {
+				$(this).addClass('clickedSaveButton');
+			});
 		}
 	}
 	
@@ -137,13 +138,15 @@ function initColumnsPortlets() {
 	
 	$(".taxonEditSection").submit(function() {
 		if (!$(this).valid()) return false;
+		var clickedButton = $(this).find('.clickedSaveButton');
+		var closeAfter = clickedButton.hasClass('saveAndClose');
 		$(this).find(".saveButton").remove();
-		submitTaxonEditSection(this);
+		submitTaxonEditSection(this, closeAfter);
 		return false;
 	});
 }
 
-function submitTaxonEditSection(section) {
+function submitTaxonEditSection(section, closeAfter) {
 	var values = $(section).serialize();
 	$.ajax({
         url: "${baseURL}/api/taxonEditSectionSubmit",
@@ -151,12 +154,12 @@ function submitTaxonEditSection(section) {
         data: values,
         success: function(data) {
         	showSuccess(section, data);
-        	afterTaxonEditSectionSubmit(section);
+        	afterTaxonEditSectionSubmit(section, closeAfter);
         }
     });
 }
 
-function afterTaxonEditSectionSubmit(section) {
+function afterTaxonEditSectionSubmit(section, closeAfter) {
 	var section = $(section);
 	if (section.hasClass("scientificNameSection")) {
 		var qname = section.find("input.taxonQname").first().val();
@@ -188,6 +191,9 @@ function afterTaxonEditSectionSubmit(section) {
 		var finnishName = section.find(".vernacularName___fi").first().val();
 		updateFinnishNameToTree(qname, finnishName);
     }
+    if (closeAfter) {
+		$("#editTaxon").dialog("close");
+	}
 }
 
 function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {

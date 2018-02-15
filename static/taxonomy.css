@@ -139,14 +139,14 @@ form ul li {
 	padding-right: 0;
 	font-size: 80%;
 }
-#editTaxonContent .saveButton .ui-button-text {
-	font-size: 100%;
-	padding: 5px;
-}
+
 #editTaxonContent .saveButton {
+	padding: 10px;
+	font-size: 120%;
 	margin-top: 2px;
 	margin-left: 10px;
 	display: block;
+	border: 8px groove green;
 }
 
 #vernacularNameTable label {
