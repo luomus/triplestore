@@ -2,7 +2,7 @@
 <#include "macro.ftl">
 
 <h5 id="taxonEditHeader">
-	<@printScientificNameAndAuthor taxon /> | 
+	<@printScientificNameAndAuthor taxon /> &nbsp; 
 	<@printEditorExpert taxon />
 	<a class="button" id="descriptionTextButton" href="${baseURL}/taxon-descriptions/${taxon.qname}">Description texts</a>
 	<button id="imagesButton">Images</button>

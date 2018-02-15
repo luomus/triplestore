@@ -4,7 +4,7 @@
 
 <#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
-<#macro printEditorExpert taxon><@printEditorExpertSpecific taxon.editors taxon.experts /></#macro>
+<#macro printEditorExpert taxon><#if taxon.checklist?has_content><@printEditorExpertSpecific taxon.editors taxon.experts /></#if></#macro>
 
 <#macro printEditorExpertSpecific editors experts printNoValue=true><@compress single_line=true>
 	<#if editors?has_content>
