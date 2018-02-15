@@ -43,6 +43,7 @@ h4 {
 
 .kingdom			{ background-color: rgb(201, 255, 253) }
 .subkingdom			{ background-color: rgb(201, 255, 253) }
+.infrakingdom
 .superphylum		{ background-color: rgb(201, 255, 253) }
 .superdivision		{ background-color: rgb(201, 255, 253) }
 
@@ -56,11 +57,13 @@ h4 {
 .class				{ background-color: rgb(202, 255, 201) }
 .subclass			{ background-color: rgb(202, 255, 201) }
 .infraclass			{ background-color: rgb(202, 255, 201) }
+.parvclass          { background-color: rgb(202, 255, 201) }
 
 .superorder			{ background-color: rgb(229, 255, 201) }
 .order				{ background-color: rgb(229, 255, 201) }
 .suborder			{ background-color: rgb(229, 255, 201) }
 .infraorder			{ background-color: rgb(229, 255, 201) }
+.parvorder          { background-color: rgb(229, 255, 201) }
 
 .superfamily		{ background-color: rgb(255, 254, 201) }
 .family				{ background-color: rgb(255, 254, 201) }
@@ -70,16 +73,34 @@ h4 {
 
 .supergenus			{ background-color: rgb(255, 227, 201) }
 .genus				{ background-color: rgb(255, 227, 201) }
+.nothogenus         { background-color: rgb(255, 227, 201) }
 .subgenus			{ background-color: rgb(255, 227, 201) }
+.section            { background-color: rgb(255, 227, 201) }
+.subsection         { background-color: rgb(255, 227, 201) }
+.series             { background-color: rgb(255, 227, 201) }
+.subseries          { background-color: rgb(255, 227, 201) }
+.infragenericTaxon  { background-color: rgb(255, 227, 201) }
 .aggregate 			{ background-color: rgb(255, 227, 201) }
+.group              { background-color: rgb(255, 227, 201) }
+.speciesAggregate   { background-color: rgb(255, 227, 201) }
 
 .species			{ background-color: rgb(255, 238, 216) }
 
+.nothospecies       { background-color: rgb(252, 241, 227) }
+.infraspecificTaxon { background-color: rgb(252, 241, 227) }
+.subspecificAggregate { background-color: rgb(252, 241, 227) }
 .subspecies			{ background-color: rgb(252, 241, 227) }
+.nothosubspecies    { background-color: rgb(252, 241, 227) }
 .variety			{ background-color: rgb(252, 241, 227) }
+.subvariety         { background-color: rgb(252, 241, 227) }
 .form				{ background-color: rgb(252, 241, 227) }
+.subform            { background-color: rgb(252, 241, 227) }
 .anamorph           { background-color: rgb(252, 241, 227) }
 .hybrid             { background-color: rgb(252, 241, 227) }
+.ecotype            { background-color: rgb(252, 241, 227) }
+.intergenericHybrid { background-color: rgb(252, 241, 227) }
+.infragenericHybrid { background-color: rgb(252, 241, 227) }
+.cultivar           { background-color: rgb(252, 241, 227) }
 
 .unranked			{ background-color: rgb(255, 214, 214) }
 
