@@ -165,7 +165,12 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	@SuppressWarnings("unchecked")
 	private Set<String> getRoles(SessionHandler session) {
-		return (Set<String>) session.getObject("roles");
+		Set<String> roles =  (Set<String>) session.getObject("roles");
+		if (roles == null || roles.isEmpty()) {
+			session.invalidate();
+			throw new IllegalStateException();
+		}
+		return roles ;
 	}
 
 	@Override

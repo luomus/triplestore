@@ -2,6 +2,7 @@ package fi.luomus.triplestore.utils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -94,6 +95,7 @@ public class LoginUtil  {
 		}
 
 		public void setRoles(Set<String> roles) {
+			if (roles == null) roles = Collections.emptySet();
 			this.roles = roles;
 		}
 
@@ -125,6 +127,10 @@ public class LoginUtil  {
 	private String getFrontPage(SessionHandler session) {
 		@SuppressWarnings("unchecked")
 		Set<String> roles = (Set<String>) session.getObject("roles");
+		if (roles == null || roles.isEmpty()) {
+			session.invalidate();
+			throw new IllegalStateException();
+		}
 		return frontpageForRoles.get(roles.iterator().next());
 	}
 
