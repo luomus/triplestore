@@ -313,9 +313,9 @@
 <div class="column">
 
   <#if taxon.occurrences.hasOccurrences()>
-	<@portletHeader "Biogeographical province occurrences" />
+	<@portletHeader "Biogeographical province occurrences" "" "biogeographicalProvinceOccurrences"/>
   <#else>
-	<@portletHeader "Biogeographical province occurrences" "initiallyClosed" />
+	<@portletHeader "Biogeographical province occurrences" "initiallyClosed" "biogeographicalProvinceOccurrences"/>
   </#if>
 		<table id="biogeographicalProvinceTable">
 			<tr>

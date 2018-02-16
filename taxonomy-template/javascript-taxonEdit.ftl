@@ -148,8 +148,9 @@ function initColumnsPortlets() {
 
 function submitTaxonEditSection(section) {
 	var values = $(section).serialize();
+	var classes = $(section).attr("class").toString();
 	$.ajax({
-        url: "${baseURL}/api/taxonEditSectionSubmit",
+        url: "${baseURL}/api/taxonEditSectionSubmit?classes="+classes,
         type: "post",
         data: values,
         success: function(data) {

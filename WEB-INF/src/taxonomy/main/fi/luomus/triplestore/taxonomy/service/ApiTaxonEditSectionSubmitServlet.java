@@ -29,7 +29,6 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
@@ -69,7 +68,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
 		String alteredScientificName = req.getParameter("alteredScientificName");
 		String alteredAuthor = req.getParameter("alteredAuthor");
-		
+		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
@@ -94,15 +94,18 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		}
 
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
-		taxonomyDAO.addOccurrences(taxon);
-		
+
 		if (given(alteredScientificName)) {
 			setNewScientificNameAndAuthor(alteredScientificName, alteredAuthor, usedAndGivenStatements);
 			createAndStoreSynonym(dao, taxonomyDAO, taxon);
 		}
-		storeOccurrences(req, dao, taxon, getSupportedAreas(taxonomyDAO));
-		dao.store(new Subject(taxonQname), usedAndGivenStatements);
 		
+		if (storeBiogeographicalProvinceOccurrences) {
+			storeOccurrences(req, dao, taxon, taxonomyDAO);
+		} else {
+			dao.store(new Subject(taxonQname), usedAndGivenStatements);
+		}
+
 		taxon.invalidate();
 		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 		ValidationData validationData;
@@ -115,8 +118,14 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return responseData.setData(VALIDATION_RESULTS, validationData);
 	}
 
+	private boolean storeBiogeographicalProvinceOccurrences(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return false;
+		return classes.contains("biogeographicalProvinceOccurrences");
+	}
+
 	private static Set<Qname> supportedAreas = null;
-	
+
 	private Set<Qname> getSupportedAreas(ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
 		if (supportedAreas == null) {
 			Set<Qname> areas = new HashSet<>();
@@ -210,7 +219,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return fieldQnames;
 	}
 
-	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, Taxon taxon, Set<Qname> supportedAreas) throws Exception {
+	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		Set<Qname> supportedAreas = getSupportedAreas(taxonomyDAO);
 		Occurrences occurrences = new Occurrences(taxon.getQname());
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
@@ -220,6 +230,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!given(value)) continue;
 			parseOccurrence(parameterName, value, occurrences);
 		}
+
+		taxonomyDAO.addOccurrences(taxon);
 		dao.store(taxon.getOccurrences(), occurrences, supportedAreas);
 	}
 
