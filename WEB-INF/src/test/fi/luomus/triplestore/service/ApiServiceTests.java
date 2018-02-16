@@ -52,7 +52,7 @@ public class ApiServiceTests {
 
 	@AfterClass
 	public static void afterClass() throws Exception {
-		//dao.delete(TEST_RESOURCE);
+		dao.delete(TEST_RESOURCE);
 		dataSource.close();
 	}
 
