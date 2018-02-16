@@ -1,5 +1,8 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -9,9 +12,7 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
+import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-applicable/*"})
 public class ApiMarkNotApplicableServler extends ApiMarkNotEvaluatedServler {
@@ -30,7 +31,7 @@ public class ApiMarkNotApplicableServler extends ApiMarkNotEvaluatedServler {
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.RED_LIST_STATUS), new ObjectResource("MX.iucnNA")));
 		
 		String notes = IUCNEvaluation.NA_MARK_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
-		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EDIT_NOTES), new ObjectLiteral(notes)));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EDIT_NOTES), new ObjectLiteral(StringUtils.sanitizeLiteral(notes))));
 		
 		String typeOfOccurrenceInFinland = req.getParameter("typeOfOccurrenceInFinland");
 		model.addStatementIfObjectGiven(new Predicate(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND), new Qname(typeOfOccurrenceInFinland));

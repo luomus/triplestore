@@ -15,6 +15,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
 public class RemarksServlet extends EvaluationEditServlet {
@@ -43,7 +44,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			remarks = userFullname + " " + date + ":\n" + remarks;
 			
 			Subject subject = new Subject(evaluationId);
-			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
+			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(StringUtils.sanitizeLiteral(remarks))); 
 			dao.insert(subject, statement);
 
 			model = dao.get(evaluationId); // must get model again for added statement to have a statement id

@@ -46,7 +46,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
-import fi.luomus.triplestore.utils.StringUtils;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
@@ -241,7 +240,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		int i = 2;
 		addStatement.setString(i++, statement.getPredicate().getQname());
 		if (statement.isLiteralStatement()) {
-			String content = StringUtils.sanitizeLiteral(statement.getObjectLiteral().getContent());
+			String content = statement.getObjectLiteral().getContent();
 			if (!given(content)) return;
 			addStatement.setString(i++, content);
 			addStatement.setString(i++, statement.getObjectLiteral().getLangcode());

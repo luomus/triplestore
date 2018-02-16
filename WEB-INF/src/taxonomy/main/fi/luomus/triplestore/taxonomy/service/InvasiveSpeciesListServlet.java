@@ -25,6 +25,7 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/invasive/*"})
 public class InvasiveSpeciesListServlet extends TaxonomyEditorBaseServlet {
@@ -73,7 +74,7 @@ public class InvasiveSpeciesListServlet extends TaxonomyEditorBaseServlet {
 			if (i.hasNext()) b.append(",");
 		}
 		Model model = new Model(LIST_RESOURCE);
-		model.addStatement(new Statement(new Predicate(LIST_RESOURCE), new ObjectLiteral(b.toString())));
+		model.addStatement(new Statement(new Predicate(LIST_RESOURCE), new ObjectLiteral(StringUtils.sanitizeLiteral(b.toString()))));
 		getTriplestoreDAO().store(model);
 	}
 
