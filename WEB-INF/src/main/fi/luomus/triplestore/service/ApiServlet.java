@@ -33,6 +33,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
 import fi.luomus.triplestore.utils.ConnectionLimiter;
 import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
+import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/*"})
 public class ApiServlet extends EditorBaseServlet {
@@ -263,6 +264,7 @@ public class ApiServlet extends EditorBaseServlet {
 		if (objectResource != null) {
 			statement = new Statement(predicate, new ObjectResource(objectResource), context);
 		} else if (objectLiteral != null) {
+			objectLiteral = StringUtils.sanitizeLiteral(objectLiteral);
 			statement = new Statement(predicate, new ObjectLiteral(objectLiteral, langCode), context);
 		} else {
 			throw new IllegalArgumentException("You must give objectliteral or objectresource parameter.");

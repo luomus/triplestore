@@ -45,6 +45,9 @@ public class StringUtils {
 		if (content.endsWith("\n")) {
 			content = content.substring(0, content.length()-1);
 		}
+		if (content.length() >= 1000) {
+			content = StringUtils.trimToByteLength(content, 4000);
+		}
 		return content.trim();
 	}
 
