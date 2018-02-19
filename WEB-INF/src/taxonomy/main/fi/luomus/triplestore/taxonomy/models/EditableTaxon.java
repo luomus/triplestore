@@ -186,8 +186,4 @@ public class EditableTaxon extends Taxon {
 		return !hasCriticalData();
 	}
 
-	public boolean hasSynonyms() {
-		return !getAllSynonyms().isEmpty();
-	}
-
 }
