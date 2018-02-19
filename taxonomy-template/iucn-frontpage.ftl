@@ -20,6 +20,7 @@
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
 		<li>Taksonomisen tietokannasta tieto siellä määritellystä lajin asemasta/vakiintumisesta Suomessa näkyville tallennuslomakkeella.</li>
+		<li>Korjattu lajiluettelon rajausta: Jos lajille on kopioitu vuoden 2010 tiedot mutta ei tehty muita tallennuksia, arvioinnille ei asettunut tilaksi "Aloitettu" joten lajiluettelossa rajaus aloitetuilla ei näyttänyt näitä arviointeja.</li>
 	</ul>
 	<h6>Uudistuksia 24.1.2018</h6>
 	<ul>

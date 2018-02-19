@@ -67,6 +67,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			setYear(year, model);
 			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
+			model.addStatement(new Statement(new Predicate(IUCNEvaluation.STATE), new ObjectResource(IUCNEvaluation.STATE_STARTED)));
 			
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
 		}
