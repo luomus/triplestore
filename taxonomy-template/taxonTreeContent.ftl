@@ -38,7 +38,7 @@
 		
 	<div class="taxonChilds rootTaxonChilds" <#if root.hasParent()>id="${root.parent.qname?replace(".","")}Children"<#else>id="rootTaxonContainer"</#if>>
 		<ul class="childTaxonList">
-			<li><@printTaxon root true "rootTaxon" /></li>
+			<li><@printTaxon root "rootTaxon" /></li>
 		</ul>			
 	</div>
 </div>

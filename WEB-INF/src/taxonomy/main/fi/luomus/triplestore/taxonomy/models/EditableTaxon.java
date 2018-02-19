@@ -185,5 +185,9 @@ public class EditableTaxon extends Taxon {
 		if (this.getCreatedAtTimestamp() < lastAllowed) return false;
 		return !hasCriticalData();
 	}
-	
+
+	public boolean hasSynonyms() {
+		return !getAllSynonyms().isEmpty();
+	}
+
 }

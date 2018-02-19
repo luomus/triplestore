@@ -49,7 +49,7 @@
 	</#if>
 </@compress></#macro>
 
-<#macro printTaxon taxon showSynonyms=true additionalClass="">
+<#macro printTaxon taxon additionalClass="">
 	<#assign allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
@@ -96,7 +96,7 @@
 				</div>
 			</#if>
 		</div>
-		<#if !taxon.synonym && showSynonyms>
+		<#if !taxon.synonym>
 			<div class="showChildrenTools">
 				<button class="treePlusMinusSign taxonToolButton" onclick="treePlusMinusSignClick(this);">
 					<span class="ui-icon ui-icon-plus"></span>
@@ -126,8 +126,19 @@
 	<#if synonyms?has_content>
 		<div class="synonymSection">
 			<h3>${label}</h3>
-			<#list synonyms as synonym>	 
-				<@printTaxon synonym false type />
+			<#list synonyms as synonym>
+				<#if synonym.isSynonym() && !synonym.hasSynonyms()>
+					<@printTaxon synonym type />
+				<#else>
+					<div>
+						<span class="error">ERROR
+						<#if !synonym.isSynonym()>[From checklist]</#if>
+						<#if synonym.hasSynonyms()>[Synonym has synonyms]</#if>
+						</span>
+						<@printScientificNameAndAuthor synonym /> 
+						${synonym.qname}
+					</div>
+				</#if>
 			</#list>
 		</div>
 	</#if>
