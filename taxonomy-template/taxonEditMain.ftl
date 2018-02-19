@@ -23,7 +23,7 @@
 			</#if>
 			<table>
 				<tr>
-					<td>Drag taxa: &nbsp;</td> 
+					<td>Move taxa: &nbsp;</td> 
 					<td><div id="taxonDragModeSelectorTool" class="switchContainer"><input type="checkbox" id="taxonDragMode" name="taxonDragMode" onchange="changeTaxonDragMode();"/></div></td>
 				</tr>
 			</table>
