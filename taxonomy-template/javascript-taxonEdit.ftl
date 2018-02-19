@@ -24,6 +24,9 @@ $(function() {
 });
 	
 function editTaxon(e) {
+	editTaxon(e, false);
+}
+function editTaxon(e, fullEditMode) {
 	if ($("#taxonDragMode").prop('checked') === true) return;
 	if (toolsDisabled) return;
 	var taxon = $(e).closest(".taxonWithTools").attr('id');
@@ -33,7 +36,7 @@ function editTaxon(e) {
 	}
 	$("#editTaxonContent").html('<div class="loading">Loading...</div>');
 	$("#editTaxon").dialog("open");
-	$.get("${baseURL}/api/taxonToEdit/"+taxon, function(data) {
+	$.get("${baseURL}/api/taxonToEdit/"+taxon+"?fullEditMode="+fullEditMode, function(data) {
 		$("#editTaxonContent").html(data);
 		initColumnsPortlets();
   	});
@@ -179,8 +182,7 @@ function afterTaxonEditSectionSubmit(section, closeAfter) {
        	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
         	
    		var taxon = $("#"+qname.replace("MX.", "MX"));
-   		var isSynonym = taxon.hasClass('synonym'); 
-		$.get("${baseURL}/api/singleTaxonInfo/"+qname+'?synonym='+isSynonym, function(data) {
+		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
 			taxon.replaceWith(data);
 			taxon = $("#"+qname.replace("MX.", "MX"));
 			taxon.find('button, .button').button();

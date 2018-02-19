@@ -92,7 +92,6 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("properties", dao.getProperties("MX.taxon"));
 		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
 		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
-		responseData.setData("lastAllowedTaxonDeleteTimestamp", getLastAllowedTaxonDeleteTimestamp());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
 		responseData.setData("evaluationYears", taxonomyDAO.getIucnDAO().getEvaluationYears());

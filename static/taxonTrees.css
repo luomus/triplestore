@@ -20,9 +20,7 @@ h4 {
 	margin-top: 3px;
 }
 #taxonTree {
-	width: 100%;
 	min-height: 250px;
-	padding-top: 50px;
 	position: relative;
 }
 
@@ -30,7 +28,6 @@ h4 {
 	margin-left: 10px;
 	margin-right: 10px;
 	padding-bottom: 30px;
-	min-height: 1000px;	
 }
 
 .superdomain		{ background-color: rgb(201, 231, 255) } 
@@ -188,6 +185,9 @@ div.synonymSection div.taxonWithTools {
 div.taxonInfo .icons {
   float: right;
 }
+div.taxonInfo .icons > * {
+	float: right;
+}
 .synonym > div.taxonInfo {
   min-width: 1px;
 }
@@ -312,13 +312,6 @@ div.taxonDropArea.ui-droppable.ui-state-active {
 .portlet-content table { border-collapse: collapse; }
 .portlet-content textarea { height: 5em; width: 100%; }
 
-.checklistHeader {
-	position: absolute;
-	top: 58px;
-	left: 15px;
-}
-
-
 .checklistChangesMidTree {
 	color: red;
 }
@@ -339,8 +332,6 @@ div.loading {
 }
 
 #rootTree {
-    position: absolute;
-    top: 10px;
 	max-width: 500px;
 }
 .rootTreeNode a {
@@ -365,3 +356,12 @@ div.loading {
 	color: grey;
 }
 
+#menu {
+	background-color: white;
+	border: 1px solid #eee;
+	border-radius: 3px;
+	padding: 2px;
+}
+#menu li {
+	margin-bottom: 5px;
+}

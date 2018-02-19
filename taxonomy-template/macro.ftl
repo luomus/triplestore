@@ -49,41 +49,17 @@
 	</#if>
 </@compress></#macro>
 
-<#macro printTaxon taxon isSynonym=false additionalClass="">
+<#macro printTaxon taxon showSynonyms=true additionalClass="">
 	<#assign allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
-	<div class="taxonWithTools ${additionalClass} <#if isSynonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
+	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
 			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
 			
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
 				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
-				<#if taxon.hasCriticalData()><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span></#if>
-				<#if !isSynonym && taxon.species>
-					<span class="taxonToolButton ui-icon ui-icon-gear <#if allowsAlterationsByUserOnThis>allowsAlterationsByUser</#if>" title="Tools"></span>
-				</#if>
-				<#if isSynonym && allowsAlterationsByUserOnThis>
-					<#if additionalClass == "BASIONYM">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as basionym synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink basionym"></span></a>
-					<#elseif additionalClass == "OBJECTIVE">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as objective synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink objective synonym"></span></a>
-					<#elseif additionalClass == "SUBJECTIVE">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as subjective synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink subjective synonym"></span></a>
-					<#elseif additionalClass == "HOMOTYPIC">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as homotypic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink homotypic synonym"></span></a>
-					<#elseif additionalClass == "HETEROTYPIC">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as heterotypic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink heterotypic synonym"></span></a>
-					<#elseif additionalClass == "SYNONYM">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink synonym"></span></a>
-					<#elseif additionalClass == "MISSPELLED">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as misspelled name of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misspelled name"></span></a>
-					<#elseif additionalClass == "ORTOGRAPHIC">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as ortographic synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink ortographic synonym"></span></a>
-					<#elseif additionalClass == "UNCERTAIN">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as uncertain synonym of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink uncertain synonym"></span></a>
-					<#elseif additionalClass == "MISAPPLIED">
-						<a href="#" onclick="unlinkSynonym(this, '${additionalClass}', ' as misapplied name of '); return false;"><span class="unlinkSynonymLink ui-icon ui-icon-close" title="Unlink misapplied name"></span></a>
-					</#if>
+				<#if allowsAlterationsByUserOnThis>
+					<span class="taxonToolButton ui-icon ui-icon-gear" title="Tools"></span>
 				</#if>
 			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
@@ -97,7 +73,7 @@
 					<@printEditorExpertSpecific taxon.explicitlySetEditors taxon.explicitlySetExperts false />
 				</div>
 			</#if>
-			<#if !isSynonym>
+			<#if !taxon.synonym>
 				<#if !taxon.checklist??>
 					<div class="checklistChangesMidTree">
 						Checklist: Orphan taxa
@@ -120,15 +96,13 @@
 				</div>
 			</#if>
 		</div>
-		<#if !isSynonym>
+		<#if !taxon.synonym && showSynonyms>
 			<div class="showChildrenTools">
 				<button class="treePlusMinusSign taxonToolButton" onclick="treePlusMinusSignClick(this);">
 					<span class="ui-icon ui-icon-plus"></span>
 				</button>
 				<span class="taxonChildCount">(${taxon.children?size})</span>
 			</div>
-		</#if>
-		<#if !isSynonym>
 			<div class="synonyms" id="${taxon.qname?replace(".","")}Synonyms">
 				<@printSynonyms taxon.basionyms "Basionyms" "BASIONYM" /> 
 				<@printSynonyms taxon.objectiveSynonyms "Objective synonyms" "OBJECTIVE" />
@@ -153,7 +127,7 @@
 		<div class="synonymSection">
 			<h3>${label}</h3>
 			<#list synonyms as synonym>	 
-				<@printTaxon synonym true type />
+				<@printTaxon synonym false type />
 			</#list>
 		</div>
 	</#if>

@@ -1,6 +1,6 @@
-<!--
-	<h5 class="checklistHeader"><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h5>
--->
+
+<h5><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h5>
+	
 <div id="rootTree">
 	<#assign roots = []>
 	
@@ -38,7 +38,7 @@
 		
 	<div class="taxonChilds rootTaxonChilds" <#if root.hasParent()>id="${root.parent.qname?replace(".","")}Children"<#else>id="rootTaxonContainer"</#if>>
 		<ul class="childTaxonList">
-			<li><@printTaxon root false "rootTaxon" /></li>
+			<li><@printTaxon root true "rootTaxon" /></li>
 		</ul>			
 	</div>
 </div>

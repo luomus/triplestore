@@ -449,13 +449,51 @@ function sendTaxon(e) {
 	$("#sendTaxonDialog").dialog("open");
 } 
 
-function unlinkSynonym(e, type, confirmText) {
+function unlinkSynonym(e) {
+	var e = $(e).closest('.taxonWithTools');
+	var type = undefined;
+	var confirmText = undefined;
+	if (e.hasClass('BASIONYM')) {
+			type = 'BASIONYM';
+			confirmText = ' as basionym of ';
+	} else if (e.hasClass('OBJECTIVE')) {
+			type = 'OBJECTIVE';
+			confirmText = ' as objective synonym of ';
+	} else if (e.hasClass('SUBJECTIVE')) {
+			type = 'SUBJECTIVE';
+			confirmText = ' as subjective synonym of ';
+	} else if (e.hasClass('HOMOTYPIC')) {
+			type = 'HOMOTYPIC';
+			confirmText = ' as homotypic synonym of ';
+	} else if (e.hasClass('HETEROTYPIC')) {
+			type = 'HETEROTYPIC';
+			confirmText = ' as heterotypic synonym of ';
+	} else if (e.hasClass('SYNONYM')) {
+			type = 'SYNONYM';
+			confirmText = ' as synonym of ';
+	} else if (e.hasClass('MISSPELLED')) {
+			type = 'MISSPELLED';
+			confirmText = ' as misspelled name of ';
+	} else if (e.hasClass('ORTOGRAPHIC')) {
+			type = 'ORTOGRAPHIC';
+			confirmText = ' as ortographic synonym of ';
+	} else if (e.hasClass('UNCERTAIN')) {
+			type = 'UNCERTAIN';
+			confirmText = ' as uncertain synonym of ';
+	} else if (e.hasClass('MISAPPLIED')) {
+			type = 'MISAPPLIED';
+			confirmText = ' as misapplied name of ';
+	}
+	unlinkSynonymOfType(e, type, confirmText);
+}
+
+function unlinkSynonymOfType(e, type, confirmText) {
 	if (!confirmUnlink(e, confirmText)) return;
-	removeSynonym(e, type, $(e).closest('.taxonWithTools').attr('id'));
+	removeSynonym(e, type, $(e).attr('id'));
 }
 
 function confirmUnlink(e, text) {
-	var synonymScientificName = $(e).closest(".taxonWithTools").find(".scientificName").text();
+	var synonymScientificName = $(e).find(".scientificName").text();
 	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
 	return confirm('Are you sure you want to remove ' + synonymScientificName + text + synonymParentScientificName + '?');
 }
@@ -502,29 +540,60 @@ $(function() {
 	
 	$(document).on('click', '.taxonInfo .taxonToolButton', function(e) {
 		$("#menu").remove();
-		var menu = $('<ul id="menu"></ul>');
-		menu.on('click', function() { return false; });
-		var menuMove = $('<li id="menuMove">Move</li>');
-		menuMove.on('click', function() {
-			sendTaxon(this);
-			return false;
-		});
-		menu.append(menuMove);
-		var hasCriticalData = $(this).closest('.taxonInfo').find('.criticalData').length > 0;
-		var allowsAlterationsByUser = $(this).hasClass('allowsAlterationsByUser');
-		if (!hasCriticalData && allowsAlterationsByUser) {
-			var menuSome = $('<li>Some action</li>');
-			menuSome.on('click', function() {
-				//toit(this);
+		
+		var taxonId = $(e.target).closest(".taxonWithTools").attr("id");
+		var container = $(this);
+		
+		$.get("${baseURL}/api/taxonToolsMenu/"+taxonId, function(data) {
+			var menu = $(data);
+			container.after(menu);
+			menu.on('click', function() { return false; });
+			menu.on('mouseleave', function() { 
+			//$("#menu").remove(); 
+			});
+			
+			$("#taxonToolMenuEditFull").click(function() {
+				editTaxon($(container).closest('.taxonInfo'), true);
 				return false;
 			});
-			menu.append(menuSome);
-		} else {
-			menu.append('<li id="menuSome" class="ui-state-disabled">Some action</li>');
-		}
-		menu.menu();
-		$(this).after(menu);
-		taxonTreeGraphs.repaintEverything();
+			
+			$("#taxonToolMenuMove").click(function() {
+				alert('Move');
+				return false;
+			});
+			
+			$("#taxonToolMenuHide").click(function() {
+				alert('hide');
+				return false;
+			});
+			
+			$("#taxonToolMenuUnhide").click(function() {
+				alert('unhide');
+				return false;
+			});
+			
+			$("#taxonToolMenuDetachSynonym").click(function() {
+				unlinkSynonym(container);
+				return false;
+			});
+			
+			$("#taxonToolMenuDetach").click(function() {
+				alert('detach');
+				return false;
+			});
+			
+			$("#taxonToolMenuDelete").click(function() {
+				alert('delete');
+				return false;
+			});
+		
+			$("#taxonToolMenuCritical").click(function() {
+				alert('criticaldata');
+				return false;
+			});
+		
+			taxonTreeGraphs.repaintEverything();
+		});
 		return false;
 	});
 	

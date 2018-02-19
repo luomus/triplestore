@@ -17,7 +17,6 @@
 <div class="hidden">
 	<span id="taxonToEditQname">${taxon.qname?html}</span>
 	<span id="taxonToEditScientificName">${taxon.scientificName!""}</span>
-	<span id="taxonToEditCreatedAtTimestamp">${taxon.createdAtTimestamp}</span>
 </div>
 
 <div class="column">
@@ -54,7 +53,7 @@
 			<span id="scientificNameToolButtons">
 				<label>&nbsp;</label>
 				<button id="fixTypo">Fix name/author</button> 
-				<#if isChecklistTaxon> 
+				<#if !taxon.synonym> 
 					OR
 					<button id="alterScientificName">Change name and create synonym</button>
 				</#if>
@@ -485,21 +484,6 @@
 </div>
 </#if>
 
-<div class="taxonDeleteContainer">
-<#if !taxon.hasCriticalData()>
-		<button id="detachTaxon" class="ui-state-error">Detach taxon</button>
-		<button id="deleteTaxon" class="ui-state-error">Delete taxon</button>
-<#else>
-	<p><span class="criticalData ui-icon ui-icon-key" title="Taxon has critical data"></span> This taxon can not be deleted or detached. It has critical data.</p>
-	<ul>
-		<#list taxon.criticalData as critical>
-			<ul>${critical}</ul>
-		</#list>
-	</ul>
-</#if>
-</div>
-
-
 <div class="clear"></div>
 
 
@@ -507,45 +491,6 @@
 $(function() {
 
 	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
-	
-	$("#deleteTaxon").on('click', function() {
-		var taxonToDeleteQname = $("#taxonToEditQname").text();
-		var taxonToDeleteScientificName = $("#taxonToEditScientificName").text();
-		var taxonToDeteteCreatedAt =  parseInt($("#taxonToEditCreatedAtTimestamp").text());
-		var lastAllowedTaxonDeleteTimestamp = ${lastAllowedTaxonDeleteTimestamp};
-		
-		if (taxonToDeteteCreatedAt < lastAllowedTaxonDeleteTimestamp) {
-			alert('This taxon can not be deleted anymore. You can only delete taxa for 5 hours after creation. Please, contact admins to get taxon deleted. You can detach the taxon from the checklist.');
-			return;
-		}
-		
-		if (!confirm('Are you sure you want to delete taxon '+taxonToDeleteScientificName +' ('+taxonToDeleteQname+') ?')) return;
-		
-		$.post("${baseURL}/api/deleteTaxon/"+taxonToDeleteQname, function(data) {
-			$("#editTaxonContent").html('<p class="successMessage">Deleted!</p>');
-			var taxon = $("#"+taxonToDeleteQname.replace("MX.", "MX"));
-			var closeButton = taxon.find('.treePlusMinusSign').first();
-			collapseTaxon(closeButton);
-			taxon.hide('slow', function() {
-				$(this).remove();
-			});
-  		});
-  		
-	});
-	
-	$("#detachTaxon").on('click', function() {
-		var taxonToDetachQname = $("#taxonToEditQname").text();
-		var taxonToDetachScientificName = $("#taxonToEditScientificName").text();
-		
-		if (!confirm('Are you sure you want to detach taxon '+taxonToDetachScientificName +' ('+taxonToDetachQname+') from this checklist and make it an orphan taxa?')) return;
-		
-		$.post("${baseURL}/api/detachTaxon/"+taxonToDetachQname, function(data) {
-			$("#editTaxonContent").html('<p class="successMessage">Detached!</p>');
-			$("#"+taxonToDetachQname.replace("MX.", "MX")).hide('slow', function() {
-				$(this).remove();
-			});
-  		});
-	});
 	
 	$("#imagesButton").on('click', function() {
 		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
