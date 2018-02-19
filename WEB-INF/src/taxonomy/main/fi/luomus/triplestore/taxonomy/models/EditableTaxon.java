@@ -180,7 +180,7 @@ public class EditableTaxon extends Taxon {
 		return this.getChecklist() == null;
 	}
 
-	public boolean isDeleteable() {
+	public boolean isDeletable() {
 		long lastAllowed = TaxonomyEditorBaseServlet.getLastAllowedTaxonDeleteTimestamp();
 		if (this.getCreatedAtTimestamp() < lastAllowed) return false;
 		return !hasCriticalData();

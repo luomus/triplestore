@@ -8,7 +8,7 @@
 			<li id="taxonToolMenuHide">Hide</li>
 		</#if>
 	</#if>
-	<#if taxon.deleteable>
+	<#if taxon.deletable>
 		<li id="taxonToolMenuDelete"><span class="ui-icon ui-icon-trash"></span>Delete</li>
 	</#if>
 	<#if taxon.hasCriticalData()>
