@@ -15,7 +15,8 @@
 
 <div id="editTaxonDescriptions">
 
-<h6><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h6>
+
+<p><a href="${baseURL}/${taxon.qname}">&laquo; To taxonomy tree</a> &mdash; <#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></p>
 
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon />
@@ -25,6 +26,7 @@
 	&nbsp;
 	${taxon.qname}
 </h5>
+
 
 <#assign locales = ["fi","sv","en"] />
 
