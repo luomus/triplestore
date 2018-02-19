@@ -1,10 +1,5 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.containers.rdf.Model;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.dao.TriplestoreDAO;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,6 +10,11 @@ import java.util.TreeSet;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 @WebServlet(urlPatterns = {"/it/*"})
 public class InformationSystemsViewerServlet extends EditorBaseServlet {
@@ -45,11 +45,6 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 		}
 		activeCount -= systems.get(Sixfold.ABANDONED.toString()).size();
 
-		//		Model system = systems.get("").get(0);
-		//		system.getStatements("").iterator().next().getObjectLiteral().get
-		//		
-		//dao.getProperties("").getAllProperties().iterator().next().getRange().getValueFor("")
-		//		
 		responseData.setData("properties", dao.getProperties("KE.informationSystem"));
 		responseData.setData("systems", systems);
 		responseData.setData("activeCount", activeCount);

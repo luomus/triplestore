@@ -18,7 +18,6 @@ import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/redListIndexCorrection/*"})
 public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
@@ -56,8 +55,8 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		
 		Subject subject = new Subject(evaluationId);
 		Statement indexStatement = indexAdded ? new Statement(INDEX_PREDICATE, new ObjectResource(redListIndexCorrection)) : null;
-		Statement notesStatement = new Statement(NOTES_PREDICATE, new ObjectLiteral(StringUtils.sanitizeLiteral(redListIndexCorrectionNotes))); 
-		Statement editNotesStatement = new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(StringUtils.sanitizeLiteral(editNotes)));
+		Statement notesStatement = new Statement(NOTES_PREDICATE, new ObjectLiteral(redListIndexCorrectionNotes)); 
+		Statement editNotesStatement = new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(editNotes));
 		Statement lastModifiedStatement = new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate()));
 		Statement lastModifiedByStatement = new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(editor));
 		

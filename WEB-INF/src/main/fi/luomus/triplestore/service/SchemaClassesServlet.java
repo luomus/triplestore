@@ -2,6 +2,7 @@ package fi.luomus.triplestore.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
-import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/schema/class/*"})
 public class SchemaClassesServlet extends ApiServlet {
@@ -74,10 +74,6 @@ public class SchemaClassesServlet extends ApiServlet {
 		return shortName(model.getSubject().getQname());
 	}
 
-	private String shortName(String qname) {
-		return StringUtils.shortName(qname);
-	}
-
 	protected void labels(JSONObject json, Model model) {
 		json.setObject("label", labels(model));
 	}
@@ -107,4 +103,19 @@ public class SchemaClassesServlet extends ApiServlet {
 		throw new UnsupportedOperationException();
 	}
 
+	public static String shortName(String qname) {
+		if (qname == null) return null;
+		if (!qname.contains(".")) return qname;
+		String[] parts = qname.split(Pattern.quote("."));
+		if (parts.length == 2) {
+			return parts[1];
+		}
+		String shortName = "";
+		for (int i = 1; i<parts.length; i++) {
+			shortName += parts[i];
+			if (i < parts.length-1) shortName += ".";
+		}
+		return shortName;
+	}
+	
 }

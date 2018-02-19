@@ -332,9 +332,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			Qname existingId = getExistingIdByCitation(publication);
 			if (existingId != null) {
 				publication.setQname(existingId);
-				return publication;
+			} else {
+				publication.setQname(this.getSeqNextValAndAddResource("MP"));
 			}
-			publication.setQname(this.getSeqNextValAndAddResource("MP"));
 		}
 		Model model = new Model(publication.getQname());
 		model.setType(MP_PUBLICATION);
@@ -347,7 +347,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private Qname getExistingIdByCitation(Publication publication) throws Exception {
 		String citation = publication.getCitation();
 		if (citation == null) return null;
-		citation = citation.trim();
+		citation = ObjectLiteral.sanitizeLiteral(citation);
 		Collection<Model> existing = this.getSearchDAO().search(
 				new SearchParams(1, 0)
 				.type(MP_PUBLICATION)
@@ -430,7 +430,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Statement statement = null;
 		if (objectliteral != null) {
 			String langcode = rs.getString(4);
-			statement = new Statement(new Predicate(predicatename), new ObjectLiteral(objectliteral, langcode), context);
+			statement = new Statement(new Predicate(predicatename), ObjectLiteral.unsanitazedObjectLiteral(objectliteral, langcode), context);
 		} else {
 			statement = new Statement(new Predicate(predicatename), new ObjectResource(objectname), context);
 		}

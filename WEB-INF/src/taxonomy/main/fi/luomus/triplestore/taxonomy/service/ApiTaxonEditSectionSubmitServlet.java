@@ -38,7 +38,6 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
-import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/taxonEditSectionSubmit/*"})
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
@@ -318,7 +317,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 				if (!given(value)) continue;
 				if (predicateProperty.isLiteralProperty()) {
 					value = cleanPossibleVernacularName(parameterName, langcode, value);
-					value = StringUtils.sanitizeLiteral(value);
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value, langcode), context));
 				} else {
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value), context));

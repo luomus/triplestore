@@ -13,7 +13,6 @@ import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-least-concern/*"})
 public class ApiMarkLeastConcernServler extends ApiMarkNotEvaluatedServler {
@@ -32,7 +31,7 @@ public class ApiMarkLeastConcernServler extends ApiMarkNotEvaluatedServler {
 		model.addStatement(new Statement(new Predicate(IUCNEvaluation.RED_LIST_STATUS), new ObjectResource("MX.iucnLC")));
 
 		String notes = IUCNEvaluation.LC_MARK_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
-		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EDIT_NOTES), new ObjectLiteral(StringUtils.sanitizeLiteral(notes))));
+		model.addStatement(new Statement(new Predicate(IUCNEvaluation.EDIT_NOTES), new ObjectLiteral(notes)));
 
 		String habitat = req.getParameter("habitat");
 		String[] habitatSpecificTypes = req.getParameterValues("habitatSpecificType");

@@ -32,7 +32,6 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
-import fi.luomus.triplestore.utils.StringUtils;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -67,7 +66,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			setTaxon(speciesQname, model);
 			setYear(year, model);
 			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
-			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(StringUtils.sanitizeLiteral(notes))));
+			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 			
 			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
 		}
@@ -316,7 +315,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 		notes += IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
 		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
-		model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(StringUtils.sanitizeLiteral(notes))));
+		model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 	}
 
 	private void setYear(int year, Model model) {
@@ -410,7 +409,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				value = value.replace(",", ".");
 				if (value.startsWith(".")) value = "0" + value;
 			}
-			model.addStatement(new Statement(new Predicate(parameterName), new ObjectLiteral(StringUtils.sanitizeLiteral(value))));
+			model.addStatement(new Statement(new Predicate(parameterName), new ObjectLiteral(value)));
 		} else {
 			model.addStatement(new Statement(new Predicate(parameterName), new ObjectResource(value)));
 		}

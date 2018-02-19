@@ -19,7 +19,6 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.utils.StringUtils;
 
 public class IUCNEvaluation {
 
@@ -411,7 +410,7 @@ public class IUCNEvaluation {
 	private Statement copy(Statement statement) {
 		if (statement.isLiteralStatement()) {
 			ObjectLiteral literal = statement.getObjectLiteral();
-			String content = StringUtils.sanitizeLiteral(literal.getContent());
+			String content = literal.getContent();
 			if (literal.hasLangcode()) {
 				return new Statement(statement.getPredicate(), new ObjectLiteral(content, literal.getLangcode()));
 			} else {

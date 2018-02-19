@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.LocalizedTexts;
+import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
@@ -22,7 +23,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
-import fi.luomus.triplestore.utils.StringUtils;
 
 public class TaxonValidator {
 
@@ -249,24 +249,26 @@ public class TaxonValidator {
 	}
 
 	private void validateDescription(Statement s) {
-		String content = s.getObjectLiteral().getContent();
+		String content = s.getObjectLiteral().getUnsanitazedContent();
 		
-		if (StringUtils.countOfUTF8Bytes(content) >= 4000) {
+		if (Utils.countOfUTF8Bytes(content) >= ObjectLiteral.MAX_BYTE_LENGTH) {
 			setError(getFieldDescription(s.getPredicate()), "The text was too long and it has been shortened!");
 		}
 		
-		content = content.toLowerCase();
 		Set<String> tags = parseTags(content);
 		tags.removeAll(ALLOWED_TAGS);
 		if (!tags.isEmpty()) {
-			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next().replace("/", "") + ". They were removed from the saved content! Allowed tags are: " + StringUtils.ALLOWED_TAGS);
+			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next().replace("/", "") + ". They were removed from the saved content! Allowed tags are: " + ObjectLiteral.ALLOWED_TAGS);
 			return ;
 		}
 		
-		content = Utils.removeWhitespace(content);
-		if (content.contains("style=")) {
+		if (hasStyles(content)) {
 			setWarning(getFieldDescription(s.getPredicate()), "Custom styles are discouraged");
 		}
+	}
+
+	private boolean hasStyles(String content) {
+		return Utils.removeWhitespace(content).contains("style=");
 	}
 
 	private String getFieldDescription(Predicate predicate) {
@@ -288,7 +290,7 @@ public class TaxonValidator {
 	private static final Collection<String> ALLOWED_TAGS; 
 	static {
 		ALLOWED_TAGS = new ArrayList<>();
-		for (String tag : StringUtils.ALLOWED_TAGS.split(Pattern.quote(","))) {
+		for (String tag : ObjectLiteral.ALLOWED_TAGS.split(Pattern.quote(","))) {
 			tag = tag.trim();
 			ALLOWED_TAGS.add(tag);
 			ALLOWED_TAGS.add("/"+tag);
