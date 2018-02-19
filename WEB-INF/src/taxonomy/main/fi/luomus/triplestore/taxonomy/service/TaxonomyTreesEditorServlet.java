@@ -41,8 +41,6 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 			responseData.setData("checklist", getTaxonomyDAO().getChecklists().get(taxon.getChecklist().toString()));
 		}
 		
-		getTaxonomyDAO().addOccurrences(taxon);
-		
 		return responseData;
 	}
 
