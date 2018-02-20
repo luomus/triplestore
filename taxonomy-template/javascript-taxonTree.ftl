@@ -445,45 +445,33 @@ function sendTaxon(e) {
 	$("#taxonToSendID").val(taxonToSendID);
 	
 	var taxonToSendName = $("#"+taxonToSendID).find(".scientificName").first().text();
-	$("#taxonToSendName").text(taxonToSendName);
+	$("#taxonToSendName").text(taxonToSendName + ' (' + taxonToSendID.replace('MX', 'MX.') + ')');
+	
+	var info = generateSendTaxonInfo(taxonToSendID);
+	$("#taxonToSendInfo").text(info);
+	
 	$("#sendTaxonDialog").dialog("open");
 } 
 
+
+function generateSendTaxonInfo(taxonId) {
+	var e = $("#"+taxonId);
+	var synonym = e.hasClass('synonym');
+	if (synonym) {
+		var type = getSynonymType(e);
+		var label = getSynonymLabel(type);
+		var synonymParentScientificName = getSynonymParentScientificName(e);
+		return 'which is ' + label + ' of ' + synonymParentScientificName; 
+	} else {
+		var checklistName = $("#checklistName").text();
+		return 'of ' + checklistName; 
+	}
+}
+
 function unlinkSynonym(e) {
 	var e = $(e).closest('.taxonWithTools');
-	var type = undefined;
-	var confirmText = undefined;
-	if (e.hasClass('BASIONYM')) {
-			type = 'BASIONYM';
-			confirmText = ' as basionym of ';
-	} else if (e.hasClass('OBJECTIVE')) {
-			type = 'OBJECTIVE';
-			confirmText = ' as objective synonym of ';
-	} else if (e.hasClass('SUBJECTIVE')) {
-			type = 'SUBJECTIVE';
-			confirmText = ' as subjective synonym of ';
-	} else if (e.hasClass('HOMOTYPIC')) {
-			type = 'HOMOTYPIC';
-			confirmText = ' as homotypic synonym of ';
-	} else if (e.hasClass('HETEROTYPIC')) {
-			type = 'HETEROTYPIC';
-			confirmText = ' as heterotypic synonym of ';
-	} else if (e.hasClass('SYNONYM')) {
-			type = 'SYNONYM';
-			confirmText = ' as synonym of ';
-	} else if (e.hasClass('MISSPELLED')) {
-			type = 'MISSPELLED';
-			confirmText = ' as misspelled name of ';
-	} else if (e.hasClass('ORTOGRAPHIC')) {
-			type = 'ORTOGRAPHIC';
-			confirmText = ' as ortographic synonym of ';
-	} else if (e.hasClass('UNCERTAIN')) {
-			type = 'UNCERTAIN';
-			confirmText = ' as uncertain synonym of ';
-	} else if (e.hasClass('MISAPPLIED')) {
-			type = 'MISAPPLIED';
-			confirmText = ' as misapplied name of ';
-	}
+	var type = getSynonymType(e);
+	var confirmText = getDetachConfirmText(type);
 	unlinkSynonymOfType(e, type, confirmText);
 }
 
@@ -494,8 +482,12 @@ function unlinkSynonymOfType(e, type, confirmText) {
 
 function confirmUnlink(e, text) {
 	var synonymScientificName = $(e).find(".scientificName").text();
-	var synonymParentScientificName = $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
+	var synonymParentScientificName = getSynonymParentScientificName(e);
 	return confirm('Are you sure you want to remove ' + synonymScientificName + text + synonymParentScientificName + '?');
+}
+
+function getSynonymParentScientificName(e) {
+	return $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
 }
 
 function removeSynonym(e, synonymType, removedId) {
@@ -558,7 +550,7 @@ $(function() {
 			});
 			
 			$("#taxonToolMenuMove").click(function() {
-				alert('Move');
+				sendTaxon(this);
 				return false;
 			});
 			
@@ -786,5 +778,49 @@ $(function() {
 	$(".rootTaxon").find(".treePlusMinusSign").click();
 });
 
+function getSynonymType(e) {
+	if (e.hasClass('BASIONYM')) {
+		return 'BASIONYM';
+	} else if (e.hasClass('OBJECTIVE')) {
+		return 'OBJECTIVE';
+	} else if (e.hasClass('SUBJECTIVE')) {
+		return 'SUBJECTIVE';
+	} else if (e.hasClass('HOMOTYPIC')) {
+		return 'HOMOTYPIC';
+	} else if (e.hasClass('HETEROTYPIC')) {
+		return 'HETEROTYPIC';
+	} else if (e.hasClass('SYNONYM')) {
+		return 'SYNONYM';
+	} else if (e.hasClass('MISSPELLED')) {
+		return 'MISSPELLED';
+	} else if (e.hasClass('ORTOGRAPHIC')) {
+		return 'ORTOGRAPHIC';
+	} else if (e.hasClass('UNCERTAIN')) {
+		return 'UNCERTAIN';
+	} else if (e.hasClass('MISAPPLIED')) {
+		return 'MISAPPLIED';
+	}
+	return 'UNKNOWN';
+}
+
+function getDetachConfirmText(type) {
+	return ' as ' + getSynonymLabel(type) + ' of '; 
+}
+
+function getSynonymLabel(type) {
+	return SYNONYM_LABELS[type]; 
+}
+
+var SYNONYM_LABELS = [];
+SYNONYM_LABELS['BASIONYM'] = 'basionym';
+SYNONYM_LABELS['OBJECTIVE'] = 'objective synonym';
+SYNONYM_LABELS['SUBJECTIVE'] = 'subjective synonym';
+SYNONYM_LABELS['HOMOTYPIC'] = 'homotypic synonym';
+SYNONYM_LABELS['HETEROTYPIC'] = 'heterotypic synonym';
+SYNONYM_LABELS['SYNONYM'] = 'synonym';
+SYNONYM_LABELS['MISSPELLED'] = 'misspelled name';
+SYNONYM_LABELS['ORTOGRAPHIC'] = 'ortographic synonym';
+SYNONYM_LABELS['UNCERTAIN'] = 'uncertain synonym';
+SYNONYM_LABELS['MISAPPLIED'] = 'misapplied name';
 
 </script>

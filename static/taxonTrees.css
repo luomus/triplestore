@@ -365,3 +365,7 @@ div.loading {
 #menu li {
 	margin-bottom: 5px;
 }
+
+#sendTaxonDialog label {
+	width: 50px;
+}

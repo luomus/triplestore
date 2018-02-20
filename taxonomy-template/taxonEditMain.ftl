@@ -133,34 +133,38 @@
 		</form>
 	</div>
 	
-	<div id="sendTaxonDialog" class="taxonDialog" title="Send taxon as child">
+	<div id="sendTaxonDialog" class="taxonDialog" title="Move taxon">
 		<form id="sendTaxonDialogForm" onsubmit="sendTaxonAsChildDialogSubmit(); return false;">
 			<input type="hidden" name="taxonToSendID" id="taxonToSendID" />
 			<input type="hidden" name="newParentID" id="newParentID" />
 						
-			<label>Taxon to send</label>
-			<span id="taxonToSendName">name</span>
+			<label>Move</label>
+			<b><span id="taxonToSendName">name</span></b> &nbsp; 
+			<span id="taxonToSendInfo">info</span>
 			<br />
 			
-			<label for="newParent">New parent</label>
+			<label>As</label>
+			<select name="sendAsType">
+				<option value="CHILD">child</option>
+				<option value="BASIONYM">basionym</option>
+				<option value="OBJECTIVE">objective synonym</option>
+				<option value="SUBJECTIVE">subjective synonym</option>
+				<option value="HOMOTYPIC">homotypic synonym</option>
+				<option value="HETEROTYPIC">heterotypic synonym</option>
+				<option value="SYNONYM">synonym</option>
+				<option value="MISSPELLED">misspelled name</option>
+				<option value="ORTOGRAPHIC">ortographic synonym</option>
+				<option value="UNCERTAIN">uncertain synonym</option>
+				<option value="MISAPPLIED">misapplied name</option>
+			</select>
+			
+			<br />
+			<label>Of</label>
 			<input type="text" id="newParentIDSelector" name="newParentSelector" /> <span id="newParentIdDisplay"></span><br />
 			<label>&nbsp;</label> (type name or part of name and select taxon)
 			<br />
 			
-			<input type="submit" class="button addButton" value="Send"  />
-			
-			<p class="info">
-				The normal way to move a taxon (for example from one genus to other genus) is to open the children of both genuses side-by-side, to enable taxon dragging mode
-				and to drag the desired species to the other genus. However, when you have to move taxa somewhere that is very 'far' in the taxonomy tree, it can take a lot of clicks
-				to get the children side-by-side. The alternative approach is to use this dialogue to send the taxon to a new parent. No synonyms will be created! To automatically 
-				create synonyms, use taxon dragging. 
-			</p>
-			<p class="info">
-				After performing a send, if the new parent's children are visible, you must close and re-open the new parent's children to be able to see the sent taxon.
-			</p>
-			<p class="info">
-				You must have permissions to the taxon being send OR to the new parent.
-			</p>
+			<input type="submit" class="button addButton" value="Move"  />
 		</form>
 	</div>
 	

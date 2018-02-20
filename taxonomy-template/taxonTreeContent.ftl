@@ -1,5 +1,5 @@
 
-<h5><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h5>
+<h5 id="checklistName"><#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></h5>
 	
 <div id="rootTree">
 	<#assign roots = []>
