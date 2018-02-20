@@ -520,6 +520,21 @@ function removeSynonym(e, synonymType, removedId) {
 	});
 }
 
+function openCriticalDataDialog(e) {
+	$("#criticalDataDialog").remove();
+	var taxonId = $(e).closest('.taxonWithTools').attr('id');
+	$.get("${baseURL}/api/criticalDataDialog/"+taxonId, function(data) {
+		var dialog = $(data);
+		dialog.appendTo("body");
+		dialog.dialog({
+			modal: true, height: 'auto', width: 600, 
+			close: function() { 
+				$("#criticalDataDialog").remove(); 
+			}
+		});	
+	});
+}
+
 $(function() {
 
 	$(document).on('click', '.taxonInfo', function() {
@@ -580,7 +595,7 @@ $(function() {
 			});
 		
 			$("#taxonToolMenuCritical").click(function() {
-				alert('criticaldata');
+				openCriticalDataDialog(this);
 				return false;
 			});
 		

@@ -168,4 +168,39 @@
 		</form>
 	</div>
 	
+	<div id="sendTaxonDialog" class="taxonDialog" title="Move taxon">
+		<form id="sendTaxonDialogForm" onsubmit="sendTaxonAsChildDialogSubmit(); return false;">
+			<input type="hidden" name="taxonToSendID" id="taxonToSendID" />
+			<input type="hidden" name="newParentID" id="newParentID" />
+						
+			<label>Move</label>
+			<b><span id="taxonToSendName">name</span></b> &nbsp; 
+			<span id="taxonToSendInfo">info</span>
+			<br />
+			
+			<label>As</label>
+			<select name="sendAsType">
+				<option value="CHILD">child</option>
+				<option value="BASIONYM">basionym</option>
+				<option value="OBJECTIVE">objective synonym</option>
+				<option value="SUBJECTIVE">subjective synonym</option>
+				<option value="HOMOTYPIC">homotypic synonym</option>
+				<option value="HETEROTYPIC">heterotypic synonym</option>
+				<option value="SYNONYM">synonym</option>
+				<option value="MISSPELLED">misspelled name</option>
+				<option value="ORTOGRAPHIC">ortographic synonym</option>
+				<option value="UNCERTAIN">uncertain synonym</option>
+				<option value="MISAPPLIED">misapplied name</option>
+			</select>
+			
+			<br />
+			<label>Of</label>
+			<input type="text" id="newParentIDSelector" name="newParentSelector" /> <span id="newParentIdDisplay"></span><br />
+			<label>&nbsp;</label> (type name or part of name and select taxon)
+			<br />
+			
+			<input type="submit" class="button addButton" value="Move"  />
+		</form>
+	</div>
+	
 <#include "luomus-footer.ftl">
