@@ -36,7 +36,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	public static final Predicate HAS_SUBJECTIVE = new Predicate("MX.hasSubjectiveSynonym");
 	public static final Predicate HAS_HOMOTYPIC  = new Predicate("MX.hasHomotypicSynonym");
 	public static final Predicate HAS_HETEROTYPIC  = new Predicate("MX.hasHeterotypicSynonym");
-	public static final Predicate HAS_ORTOGRAPHIC  = new Predicate("MX.hasOrtographicVariant");
+	public static final Predicate HAS_ORTOGRAPHIC  = new Predicate("MX.hasOrthographicVariant");
 	public static final Map<SynonymType, Predicate> SYNONYM_PREDICATES;
 	static {
 		SYNONYM_PREDICATES = new HashMap<>();
