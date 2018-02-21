@@ -6,10 +6,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.google.common.collect.Lists;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -56,8 +59,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try { 
-			//			System.out.println(sql);
-			//			System.out.println(values);
+			// System.out.println(sql);
+			// System.out.println(values);
 			con = dao.openConnection();
 			p = con.prepareStatement(sql);
 			int i = 1;
@@ -283,10 +286,32 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		if (subjects.isEmpty()) return models;
 
 		TransactionConnection con = null;
+		try {
+			con = dao.openConnection();
+			if (subjects.size() < 1000) {
+				getPart(subjects, models, con);
+			} else {
+				List<Qname> all = new ArrayList<>(subjects);
+				for (List<Qname> partition : partition(all)) {
+					getPart(partition, models, con);
+				}
+			}
+		} finally {
+			Utils.close(con);
+		}
+		Collections.sort(models, new Comparator<Model>() {
+			@Override
+			public int compare(Model o1, Model o2) {
+				return o1.getSubject().getURI().compareTo(o2.getSubject().getURI());
+			}});
+		return models;
+	}
+
+	private void getPart(Collection<Qname> subjects, List<Model> models, TransactionConnection con) throws SQLException {
+		if (subjects.isEmpty()) return;
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try {
-			con = dao.openConnection();
 			String sql = constructSelectQuery(subjects);
 			p = con.prepareStatement(sql);
 			rs = p.executeQuery();
@@ -308,31 +333,29 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 				models.add(currentModel);
 			}
 		} finally {
-			Utils.close(p, rs, con);
+			Utils.close(p, rs);
 		}
-		return models;
 	}
 
-	private String constructSelectQuery(Set<Qname> results) throws SQLException {
+	private <T> List<List<T>> partition(List<T> keys) {
+		List<List<T>> splitted = Lists.partition(keys, 999);
+		return splitted;
+	}
+
+	private String constructSelectQuery(Collection<Qname> results) throws SQLException {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid, subjectname "); 
 		sql.append(" FROM    "+SCHEMA+".rdf_statementview ");
-		sql.append(" WHERE   ( subjectname IN ( ");
-		int c = 0;
+		sql.append(" WHERE   subjectname IN ( ");
 		Iterator<Qname> i = results.iterator();
 		while (i.hasNext()) {
 			sql.append("'").append(i.next()).append("'");
 			if (i.hasNext()) {
-				if (c++ > 990) {
-					c = 0;
-					sql.append(" ) OR subjectname IN ( ");
-				} else {
-					sql.append(", ");				
-				}	
+				sql.append(", ");				
 			}
 		}
-		sql.append(" ) ) ");
-		sql.append(" ORDER BY subjecturi, predicateuri ");
+		sql.append(" ) ");
+		sql.append(" ORDER BY subjectname ");
 		return sql.toString();
 	}
 

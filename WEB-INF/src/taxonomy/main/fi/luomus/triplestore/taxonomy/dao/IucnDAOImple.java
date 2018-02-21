@@ -246,8 +246,9 @@ public class IucnDAOImple implements IucnDAO {
 				public Map<String, IUCNEditors> load() {
 					try {
 						Map<String, IUCNEditors> map = new HashMap<>();
-						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, "MKV.taxonGroupIucnEditors")) {
+						for (Model m : triplestoreDAO.getSearchDAO().search(new SearchParams().type("MKV.taxonGroupIucnEditors"))) {
 							IUCNEditors editors = new IUCNEditors(new Qname(m.getSubject().getQname()));
+							if (!m.hasStatements("MKV.taxonGroup")) continue;
 							String groupQname = m.getStatements("MKV.taxonGroup").get(0).getObjectResource().getQname();
 							for (Statement editor : m.getStatements("MKV.iucnEditor")) {
 								editors.addEditor(new Qname(editor.getObjectResource().getQname()));
