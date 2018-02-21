@@ -355,7 +355,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			}
 		}
 		sql.append(" ) ");
-		sql.append(" ORDER BY subjectname ");
+		sql.append(" ORDER BY subjecturi, predicateuri ");
 		return sql.toString();
 	}
 
