@@ -44,6 +44,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
 
+	private static final Qname MISAPPLIED = new Qname("MX.misappliedCircumscription");
 	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2000; // XXX change year here
@@ -199,11 +200,19 @@ public class IUCN2010Sisaan {
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getScientificName())) {
 				response = taxonomyDAO.search(new TaxonSearch(data.getScientificName()).onlyExact());
+				if (response.getExactMatches().size() > 1) {
+					response = taxonomyDAO.search(new TaxonSearch(data.getScientificName()).onlyExact().addExlucedNameType(MISAPPLIED));
+				}
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getScientificName())) {
 				String cleanedSciName = cleanScientificName(data.getScientificName());
 				if (given(cleanedSciName)) {
 					response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact());
+				}
+				if (response.getExactMatches().size() > 1) {
+					if (given(cleanedSciName)) {
+						response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact().addExlucedNameType(MISAPPLIED));
+					}
 				}
 			}
 			if (response.getExactMatches().isEmpty() && given(data.getFinnishName())) {
