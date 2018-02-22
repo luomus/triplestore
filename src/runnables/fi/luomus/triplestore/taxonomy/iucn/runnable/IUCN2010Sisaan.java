@@ -457,6 +457,8 @@ public class IUCN2010Sisaan {
 		try {
 			StringBuilder b = new StringBuilder();
 			String id = given(data.taxonQname) ? data.taxonQname : data.getScientificName();
+
+			b.append(data.legacyInformalGroup).append("|");
 			b.append(id).append("|");
 			b.append(data.getFinnishName()).append("|");
 			if (!data.getAlternativeFinnishNames().isEmpty()) b.append(data.getAlternativeFinnishNames().toString());

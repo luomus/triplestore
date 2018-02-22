@@ -82,8 +82,9 @@ public class IUCNLineData {
 	public String legacyPublications;
 	public String redListStatusAccuracyNotes;
 	public String editNotes;
+	public String legacyInformalGroup;
 	private final String[] parts;
-
+		
 	public IUCNLineData(Mode mode, String[] parts) {
 		this.parts = parts;
 		if (mode == Mode.V2010) {
@@ -108,6 +109,7 @@ public class IUCNLineData {
 		} else {
 			scientificName = sciNameField;
 		}
+		legacyInformalGroup = s(9);
 		finnishName = s(12);
 		alternativeFinnishNames = s(13);
 		taxonomicNotes = s(16);
@@ -169,7 +171,7 @@ public class IUCNLineData {
 		redListStatus = s(3);
 		criteriaForStatus = s(4);
 		exteralPopulationImpactOnRedListStatus = s(5);
-		
+		legacyInformalGroup = s(1);
 	}
 
 	private void sammaleet2019() {
