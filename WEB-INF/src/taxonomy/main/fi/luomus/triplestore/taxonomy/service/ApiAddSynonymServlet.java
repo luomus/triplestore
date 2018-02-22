@@ -72,7 +72,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 		Collection<EditableTaxon> synonyms = parseAndCreateNewTaxons(req, dao, taxonomyDAO);
 		if (synonyms.isEmpty()) {
-			return new ResponseData().setData("error", "Must give at least one new taxon or one existing taxon").setViewName("api-error");
+			return new ResponseData().setData("error", "Must give at least one new scientific name").setViewName("api-error");
 		}
 
 		for (EditableTaxon synonym : synonyms) {

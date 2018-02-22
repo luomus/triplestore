@@ -427,6 +427,7 @@ function addNewChild(e) {
 function addNewSynonym(e) {
 	var synonymOfID = $(e).closest('.taxonWithTools').attr('id');
 	$("#addNewSynonymDialog").find(":input").not(":input[type=submit], #synonymType").val('');
+	$("#addNewSynonymDialog").find("tbody").find("tr").not(":first").remove();
 	
 	$("#synonymOfTaxon").val(synonymOfID);
 	
@@ -626,16 +627,40 @@ $(function() {
 		
 	$("#addNewTaxonDialogForm").validate({
 		rules: {
-			newTaxonScientificName: { required: { depends: function(e) { return ($('#newTaxonAuthor').val() != ""); }} }
+			newTaxonScientificName: { required: { depends: function(e) { return ($('#newTaxonAuthor').val() != ""); } } }
 		},
 		messages: {
 			newTaxonScientificName: "Scientific name must be given if author given."
 		}
 	});
 	$("#addNewSynonymDialogForm").validate({
-		// TODO jvähintään yksi uusi nimi
-		// pitää olla valittu tyyppi
+		rules: {
+			synonymType: "required"
+		},
+		messages: {
+			synonymType: "You must select type of the new synonym."
+		}
 	});
+	
+	$('.addNewSynonymScientificName').each(function() {
+    		$(this).rules('add', {
+        		required: true,
+		        messages: {
+            		required:  "Give scientific name of the synonym to add"
+        		}
+    		});
+	});
+
+	function atLeastOneSynonymNameHasValue() {
+		console.log('here');
+		var found = false;
+		$('.addNewSynonymScientificName').each(function() {
+			if ($(this).val() != '') found = true;
+		});
+		console.log('res ' + found);
+		return found;
+	}
+	
 	$("#sendTaxonDialogForm").validate({
 		ignore: [], // do not ignore hidden elements
 		rules: {
@@ -689,7 +714,7 @@ $(function() {
 });
 
 function addNewChildDialogSubmit() {
-	if (!$("#addNewTaxonDialogForm").valid()) return;
+	if (!$("#addNewTaxonDialogForm").valid()) return false;
 	
 	var checklist = '<#if checklist??>${checklist.qname}</#if>';
 	var parent = $('#newTaxonParent').val();
@@ -713,9 +738,9 @@ function addNewChildDialogSubmit() {
   	});
 }
 
-function addNewSynonymDialogSubmit() { 
+function addNewSynonymDialogSubmit() {
 	var form = $("#addNewSynonymDialogForm");
-	if (!form.valid()) return;
+	if (!form.valid()) return false;
 	
 	var synonymParentId = $('#synonymOfTaxon').val();
 	var synonymParent = $("#"+synonymParentId);
@@ -754,7 +779,7 @@ function addNewSynonymDialogSubmit() {
 }
 
 function sendTaxonAsChildDialogSubmit() {
-	if (!$("#sendTaxonDialogForm").valid()) return;
+	if (!$("#sendTaxonDialogForm").valid()) return false;
 	
 	var taxonToSendID = $('#taxonToSendID').val();
 	var newParentID = $('#newParentID').val();	

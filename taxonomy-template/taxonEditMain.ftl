@@ -105,7 +105,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td><input name="scientificName___1" /></td>
+						<td><input name="scientificName___1" class="addNewSynonymScientificName" /></td>
 						<td><input name="authors___1" /></td>
 						<td>
 							<select name="rank___1" class="taxonRankSelect"> 
