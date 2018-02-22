@@ -159,6 +159,7 @@ a.addNewItem {
 	color: rgb(20,110,20);
 	margin-bottom: 9px;
 	display: block;
+	cursor: pointer;
 }
 
 div.success {

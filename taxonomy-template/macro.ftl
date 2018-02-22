@@ -111,7 +111,7 @@
 				<@printSynonyms taxon.heterotypicSynonyms "Heterotypic synonyms" "HETEROTYPIC" />
 				<@printSynonyms taxon.synonyms "Synonyms" "SYNONYM" />
 				<@printSynonyms taxon.misspelledNames "Misspelled names" "MISSPELLED" />
-				<@printSynonyms taxon.ortographicVariants "Ortographical variants" "ORTOGRAPHIC" />
+				<@printSynonyms taxon.orthographicVariants "Orthographic variants" "ORTHOGRAPHIC" />
 				<@printSynonyms taxon.uncertainSynonyms "Uncertain synonyms" "UNCERTAIN" />
  				<@printSynonyms taxon.misappliedNames "Misapplied names" "MISAPPLIED" />
 			</div>		

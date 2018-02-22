@@ -88,7 +88,7 @@
 				<option value="HETEROTYPIC">Heterotypic synonym</option>
 				<option value="SYNONYM" selected="selected">Synonym</option>
 				<option value="MISSPELLED">Misspelled name</option>
-				<option value="ORTOGRAPHIC">Ortographic synonym</option>
+				<option value="ORTHOGRAPHIC">Orthographic variant</option>
 				<option value="UNCERTAIN">Uncertain synonym</option>
 				<option value="MISAPPLIED">Misapplied name</option>
 			</select>
@@ -126,7 +126,7 @@
 				<li><b>Objective/Homotypic:</b> Name based on same type specimen.</li>
 				<li><b>Subjective/Heterotypic:</b> Name not based on same type specimen.</li>
 				<li><b>Synonym:</b> Alternative name for taxon.</li>
-				<li><b>Misspelled/Ortographic:</b> The name is a (common) misspelling for the taxon.</li>
+				<li><b>Misspelled/Orthographic:</b> The name is a (common) misspelling for the taxon.</li>
 				<li><b>Uncertain:</b> Possible alternative name.</li>
 				<li><b>Misapplied:</b> This name has been wrongly used to refer this taxon (in Finland).</li>
 			</ul>

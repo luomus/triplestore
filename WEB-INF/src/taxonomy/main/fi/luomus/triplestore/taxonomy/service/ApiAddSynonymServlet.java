@@ -36,7 +36,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	public static final Predicate HAS_SUBJECTIVE = new Predicate("MX.hasSubjectiveSynonym");
 	public static final Predicate HAS_HOMOTYPIC  = new Predicate("MX.hasHomotypicSynonym");
 	public static final Predicate HAS_HETEROTYPIC  = new Predicate("MX.hasHeterotypicSynonym");
-	public static final Predicate HAS_ORTOGRAPHIC  = new Predicate("MX.hasOrthographicVariant");
+	public static final Predicate HAS_ORTHOGRAPHIC  = new Predicate("MX.hasOrthographicVariant");
 	public static final Map<SynonymType, Predicate> SYNONYM_PREDICATES;
 	static {
 		SYNONYM_PREDICATES = new HashMap<>();
@@ -49,12 +49,12 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		SYNONYM_PREDICATES.put(SynonymType.SUBJECTIVE, HAS_SUBJECTIVE);
 		SYNONYM_PREDICATES.put(SynonymType.HOMOTYPIC, HAS_HOMOTYPIC);
 		SYNONYM_PREDICATES.put(SynonymType.HETEROTYPIC, HAS_HETEROTYPIC);
-		SYNONYM_PREDICATES.put(SynonymType.ORTOGRAPHIC, HAS_ORTOGRAPHIC);
+		SYNONYM_PREDICATES.put(SynonymType.ORTHOGRAPHIC, HAS_ORTHOGRAPHIC);
 	}
 	public static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
 	private static final String SYNONYM_TYPE_PARAMETER = "synonymType";
 
-	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTOGRAPHIC };
+	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTHOGRAPHIC };
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {

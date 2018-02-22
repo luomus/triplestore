@@ -808,8 +808,8 @@ function getSynonymType(e) {
 		return 'SYNONYM';
 	} else if (e.hasClass('MISSPELLED')) {
 		return 'MISSPELLED';
-	} else if (e.hasClass('ORTOGRAPHIC')) {
-		return 'ORTOGRAPHIC';
+	} else if (e.hasClass('ORTHOGRAPHIC')) {
+		return 'ORTHOGRAPHIC';
 	} else if (e.hasClass('UNCERTAIN')) {
 		return 'UNCERTAIN';
 	} else if (e.hasClass('MISAPPLIED')) {
@@ -834,7 +834,7 @@ SYNONYM_LABELS['HOMOTYPIC'] = 'homotypic synonym';
 SYNONYM_LABELS['HETEROTYPIC'] = 'heterotypic synonym';
 SYNONYM_LABELS['SYNONYM'] = 'synonym';
 SYNONYM_LABELS['MISSPELLED'] = 'misspelled name';
-SYNONYM_LABELS['ORTOGRAPHIC'] = 'ortographic synonym';
+SYNONYM_LABELS['ORTHOGRAPHIC'] = 'orthographic variant';
 SYNONYM_LABELS['UNCERTAIN'] = 'uncertain synonym';
 SYNONYM_LABELS['MISAPPLIED'] = 'misapplied name';
 
