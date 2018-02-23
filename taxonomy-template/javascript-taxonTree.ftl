@@ -557,7 +557,7 @@ $(function() {
 			container.after(menu);
 			menu.on('click', function() { return false; });
 			menu.on('mouseleave', function() { 
-			//$("#menu").remove(); 
+				$("#menu").remove(); 
 			});
 			
 			$("#taxonToolMenuEditFull").click(function() {
