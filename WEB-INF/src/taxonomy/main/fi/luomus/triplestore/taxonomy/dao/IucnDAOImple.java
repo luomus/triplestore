@@ -458,75 +458,152 @@ public class IucnDAOImple implements IucnDAO {
 	public void completeLoading(IUCNEvaluation evaluation) throws Exception {
 		Model model = evaluation.getModel();
 		setOccurrences(model, evaluation);
-		setEndagermentReasons(model, evaluation);
-		setPrimaryHabitat(model, evaluation);
-		setSecondaryHabitats(model, evaluation);
+		setEndangermentReasons(model, evaluation);
+		setHabitatObjects(evaluation, model);
 		evaluation.setIncompletelyLoaded(false);
 	}
 
-	private void setEndagermentReasons(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement endagermentReasonObject : model.getStatements(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
-			IUCNEndangermentObject endangermentObject = getEndagermentObject(new Qname(endagermentReasonObject.getObjectResource().getQname()));
-			evaluation.addEndangermentReason(endangermentObject);
-		}
-		for (Statement endagermentReasonObject : model.getStatements(IUCNEvaluation.HAS_THREAT)) {
-			IUCNEndangermentObject endangermentObject = getEndagermentObject(new Qname(endagermentReasonObject.getObjectResource().getQname()));
-			evaluation.addThreat(endangermentObject);
-		}
-	}
-
-	private IUCNEndangermentObject getEndagermentObject(Qname endagermentObjectId) throws Exception {
-		Model model = triplestoreDAO.get(endagermentObjectId);
-		String endangerment = model.getStatements(IUCNEvaluation.ENDANGERMENT).get(0).getObjectResource().getQname();
-		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
-		IUCNEndangermentObject endangermentObject = new IUCNEndangermentObject(endagermentObjectId, new Qname(endangerment), order);
-		return endangermentObject;
-	}
-
-	private void setSecondaryHabitats(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
-			IUCNHabitatObject habitatObject = getHabitatObject(new Qname(secondaryHabitat.getObjectResource().getQname()));
-			evaluation.addSecondaryHabitat(habitatObject);
-		}
-	}
-
-	private void setPrimaryHabitat(Model model, IUCNEvaluation evaluation) throws Exception {
+	private void setHabitatObjects(IUCNEvaluation evaluation, Model model) throws Exception {
+		Set<Qname> habitatObjectIds = getHabitatObjectIds(model);
+		Map<String, Model> asMap = getModelsAsMap(habitatObjectIds);
+		
 		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
-			evaluation.setPrimaryHabitat(getHabitatObject(new Qname(model.getStatements(IUCNEvaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname())));
-		}
-	}
-
-	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
-		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
-			Occurrence occurrence = getOccurrence(hasOccurrence.getObjectResource().getQname());
-			if (occurrence != null) {
-				evaluation.addOccurrence(occurrence);			
+			String id = getPrimaryHabitatId(model);
+			Model habitatModel = asMap.get(id);
+			if	(notGiven(habitatModel)) {
+				errorReporter.report("Could not find primary habitat object " + id + " of " + evaluation.getId());
 			} else {
-				errorReporter.report("Could not find occurrence " + hasOccurrence.getObjectResource().getQname() + " for evaluation " + evaluation.getId() + " of " + evaluation.getSpeciesQname());
+				evaluation.setPrimaryHabitat(getHabitatObject(habitatModel));
 			}
+			
+		}
+		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
+			Model habitatModel = asMap.get(secondaryHabitat.getObjectResource().getQname());
+			if (notGiven(habitatModel)) {
+				errorReporter.report("Could not find secondary habitat object " + secondaryHabitat.getObjectResource().getQname() + " of " + evaluation.getId());
+				continue;
+			}
+			evaluation.addSecondaryHabitat(getHabitatObject(habitatModel));
 		}
 	}
 
-	private IUCNHabitatObject getHabitatObject(Qname habitatObjectId) throws Exception {
-		Model model = triplestoreDAO.get(habitatObjectId);
-		if (model.isEmpty()) {
-			errorReporter.report("Could not find habitat object " + habitatObjectId);
-			return null;
-		}
+	private String getPrimaryHabitatId(Model model) {
+		return model.getStatements(IUCNEvaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname();
+	}
+
+	private IUCNHabitatObject getHabitatObject(Model model) throws Exception {
 		String habitat = model.getStatements(IUCNEvaluation.HABITAT).get(0).getObjectResource().getQname();
 		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
-		IUCNHabitatObject habitatObject = new IUCNHabitatObject(habitatObjectId, new Qname(habitat), order);
+		IUCNHabitatObject habitatObject = new IUCNHabitatObject(new Qname(model.getSubject().getQname()), new Qname(habitat), order);
 		for (Statement type : model.getStatements(IUCNEvaluation.HABITAT_SPECIFIC_TYPE)) {
 			habitatObject.addHabitatSpecificType(new Qname(type.getObjectResource().getQname()));
 		}
 		return habitatObject;
 	}
-
-	private Occurrence getOccurrence(String occurrenceId) throws Exception {
-		Model model = triplestoreDAO.get(occurrenceId);
-		if (model.isEmpty()) {
-			return null;
+	
+	private Set<Qname> getHabitatObjectIds(Model model) {
+		Set<Qname> habitatObjectIds = new HashSet<>();
+		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
+			habitatObjectIds.add(new Qname(getPrimaryHabitatId(model)));
 		}
+		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
+			habitatObjectIds.add(new Qname(secondaryHabitat.getObjectResource().getQname()));
+		}
+		return habitatObjectIds;
+	}
+
+	private void setEndangermentReasons(Model model, IUCNEvaluation evaluation) throws Exception {
+		Map<String, Model> modelsAsMap = getEndangermentModels(model);
+		for (Statement s : model.getStatements(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
+			Model endangermentModel = modelsAsMap.get(s.getObjectResource().getQname());
+			if (notGiven(endangermentModel)) {
+				errorReporter.report("Could not find endangerment reason " + s.getObjectResource().getQname() + " of " + model.getSubject().getQname());
+				continue;
+			}
+			IUCNEndangermentObject endangermentObject = getEndagermentObject(endangermentModel);
+			evaluation.addEndangermentReason(endangermentObject);
+		}
+		for (Statement s : model.getStatements(IUCNEvaluation.HAS_THREAT)) {
+			Model endangermentModel = modelsAsMap.get(s.getObjectResource().getQname());
+			if (notGiven(endangermentModel)) {
+				errorReporter.report("Could not find threat " + s.getObjectResource().getQname() + " of " + model.getSubject().getQname());
+				continue;
+			}
+			IUCNEndangermentObject endangermentObject = getEndagermentObject(endangermentModel);
+			evaluation.addThreat(endangermentObject);
+		}
+	}
+
+	private boolean notGiven(Model model) {
+		return model == null || model.isEmpty();
+	}
+
+	private Map<String, Model> getEndangermentModels(Model model) throws Exception {
+		Set<Qname> endangermentObjectIds = getEndangermentIds(model);
+		return getModelsAsMap(endangermentObjectIds);
+	}
+
+	private Set<Qname> getEndangermentIds(Model model) {
+		Set<Qname> endangermentObjectIds = new HashSet<>();
+		for (Statement s : model.getStatements(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
+			endangermentObjectIds.add(new Qname(s.getObjectResource().getQname()));
+		}
+		for (Statement s : model.getStatements(IUCNEvaluation.HAS_THREAT)) {
+			endangermentObjectIds.add(new Qname(s.getObjectResource().getQname()));
+		}
+		return endangermentObjectIds;
+	}
+
+	private IUCNEndangermentObject getEndagermentObject(Model model) throws Exception {
+		String endangerment = model.getStatements(IUCNEvaluation.ENDANGERMENT).get(0).getObjectResource().getQname();
+		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
+		IUCNEndangermentObject endangermentObject = new IUCNEndangermentObject(new Qname(model.getSubject().getQname()), new Qname(endangerment), order);
+		return endangermentObject;
+	}
+
+	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
+		Map<String, Model> asMap = getOccurrenceModels(model);
+		
+		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
+			Model occurrenceModel = asMap.get(hasOccurrence.getObjectResource().getQname());
+			if (notGiven(occurrenceModel)) {
+				errorReporter.report("Could not find occurrence " + hasOccurrence.getObjectResource().getQname() + " for evaluation " + evaluation.getId() + " of " + evaluation.getSpeciesQname());
+				continue;
+			}
+			Occurrence occurrence = getOccurrence(occurrenceModel);
+			evaluation.addOccurrence(occurrence);			
+		}
+	}
+
+	private Map<String, Model> getOccurrenceModels(Model model) throws Exception {
+		Set<Qname> occurrenceIds = getOccurrenceIds(model);
+		return getModelsAsMap(occurrenceIds);
+	}
+
+	private Map<String, Model> getModelsAsMap(Set<Qname> subjects) throws Exception {
+		if (subjects.isEmpty()) return Collections.emptyMap();
+		Collection<Model> models = triplestoreDAO.getSearchDAO().get(subjects);
+		return modelsAsMap(models);
+	}
+	
+	private Map<String, Model> modelsAsMap(Collection<Model> models) {
+		if (models.isEmpty()) return Collections.emptyMap();
+		Map<String, Model> modelsAsMap = new HashMap<>();
+		for (Model m : models) {
+			modelsAsMap.put(m.getSubject().getQname(), m);
+		}
+		return modelsAsMap;
+	}
+
+	private Set<Qname> getOccurrenceIds(Model model) {
+		Set<Qname> occurrenceIds = new HashSet<>();
+		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
+			occurrenceIds.add(new Qname(hasOccurrence.getObjectResource().getQname()));
+		}
+		return occurrenceIds;
+	}
+
+	private Occurrence getOccurrence(Model model) throws Exception {
 		String areaQname = model.getStatements(MO_AREA).get(0).getObjectResource().getQname();
 		String statusQname = model.getStatements(MO_STATUS).get(0).getObjectResource().getQname();
 		Qname id = new Qname(model.getSubject().getQname());

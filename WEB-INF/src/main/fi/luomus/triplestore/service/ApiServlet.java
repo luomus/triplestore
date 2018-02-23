@@ -1,11 +1,9 @@
 package fi.luomus.triplestore.service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -129,15 +127,8 @@ public class ApiServlet extends EditorBaseServlet {
 	}
 
 	private static String normalResultTypeRDF(Set<Qname> qnames, Format format, TriplestoreDAO dao) throws Exception {
-		List<Model> models = new ArrayList<Model>();
-		for (Qname qname : qnames) {
-			Model model = dao.get(qname);
-			if (!model.isEmpty()) {
-				models.add(model);
-			}
-		}
+		Collection<Model> models = dao.getSearchDAO().get(qnames);
 		if (models.isEmpty()) return null;
-
 		return generateRdf(models, format);
 	}
 

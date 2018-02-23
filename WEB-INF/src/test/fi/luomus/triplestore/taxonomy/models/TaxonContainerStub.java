@@ -78,7 +78,13 @@ public class TaxonContainerStub implements TaxonContainer {
 
 	@Override
 	public Set<Qname> getInvasiveSpeciesEarlyWarningFilter() {
-		// TAuto-generated method stub
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Qname> getSynonymParents(Qname arg0) {
+		// Auto-generated method stub
 		return null;
 	}
 

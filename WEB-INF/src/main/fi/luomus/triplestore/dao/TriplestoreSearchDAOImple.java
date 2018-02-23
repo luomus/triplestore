@@ -19,6 +19,7 @@ import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
@@ -50,6 +51,12 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> search(SearchParams searchParams) throws SQLException {
+		Set<Qname> results = searchQnames(searchParams);
+		return get(results);
+	}
+
+	@Override
+	public Set<Qname> searchQnames(SearchParams searchParams) throws SQLException {
 		Set<Qname> results = new HashSet<>();
 
 		List<String> values = new ArrayList<String>();
@@ -75,8 +82,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		} finally {
 			Utils.close(p, rs, con);
 		}
-
-		return get(results);
+		return results;
 	}
 
 	private String buildSearchSQLAndSetValues(SearchParams searchParams, List<String> values) {
@@ -199,26 +205,27 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> get(Set<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception {
+		System.out.println("Getting " + qnames);
 		return get(qnames, resultType, new HashSet<Qname>());
 	}
 
 	private Collection<Model> get(Set<Qname> qnames, ResultType resultType, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
 		List<Model> models = new ArrayList<Model>();
-		for (Qname qname : qnames) {
-			Model model = dao.get(qname);
+		for (Model model : get(qnames)) {
 			if (!model.isEmpty()) {
 				models.add(model);
-				addResultTypeModels(resultType, models, qname, model, alreadyIncludedSubjects);
+				addResultTypeModels(resultType, models, model, alreadyIncludedSubjects);
 			}
 		}
 		return models;
 	}
 
-	private void addResultTypeModels(ResultType resultType, List<Model> models, Qname qname, Model model, Set<Qname> alreadyIncludedSubjects) throws Exception {
+	private void addResultTypeModels(ResultType resultType, List<Model> models, Model model, Set<Qname> alreadyIncludedSubjects) throws Exception {
+		if (resultType == ResultType.NORMAL) return;
 		if (resultType == ResultType.CHAIN) {
-			models.addAll(get(fetchTaxonChain(qname)));
+			models.addAll(get(fetchTaxonChain(model.getSubject())));
 		} else if (resultType == ResultType.CHILDREN) {
-			models.addAll(get(fetchAllChildren(qname)));
+			models.addAll(get(fetchAllChildren(model.getSubject())));
 		} else if (resultType == ResultType.TREE) {
 			models.addAll(fetchTree(model));
 		} else if (resultType == ResultType.DEEP) {
@@ -229,7 +236,9 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private Collection<Model> deep(Model model, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
-		if (model.getType() != null && !model.getType().equals("rdf:Alt") && !model.getType().equals("rdf:Property")) return Collections.emptyList();
+		if (model.getType() != null && !model.getType().equals("rdf:Alt") && !model.getType().equals("rdf:Property")) {
+			return Collections.emptyList();
+		}
 		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
 		List<Model> models = new ArrayList<Model>();
 		Set<Qname> objects = new HashSet<>();
@@ -251,7 +260,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		Predicate hasPart = new Predicate("MZ.hasPart");
 		Qname parentQname = qnameOf(parent);
 
-		Set<Qname> immediateChildren = fetchImmediateChildren(parentQname);
+		Set<Qname> immediateChildren = fetchImmediateChildren(parent.getSubject());
 		if (immediateChildren.isEmpty()) return models;
 
 		Collection<Model> immediateChildModels = get(immediateChildren);
@@ -281,10 +290,11 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return new Qname(parent.getSubject().getQname());
 	}
 
-	private Collection<Model> get(Set<Qname> subjects) throws SQLException {
-		List<Model> models = new ArrayList<Model>();
-		if (subjects.isEmpty()) return models;
+	@Override
+	public Collection<Model> get(Set<Qname> subjects) throws SQLException {
+		if (subjects.isEmpty()) return Collections.emptyList();
 
+		List<Model> models = new ArrayList<Model>();
 		TransactionConnection con = null;
 		try {
 			con = dao.openConnection();
@@ -299,6 +309,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		} finally {
 			Utils.close(con);
 		}
+
 		Collections.sort(models, new Comparator<Model>() {
 			@Override
 			public int compare(Model o1, Model o2) {
@@ -359,11 +370,11 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return sql.toString();
 	}
 
-	private Set<Qname> fetchTaxonChain(Qname qname) throws SQLException {
+	private Set<Qname> fetchTaxonChain(Subject subject) throws SQLException {
 		Set<Qname> resultSet = new HashSet<>();
 		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(qname);
+		searchForThese.add(new Qname(subject.getQname()));
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -401,19 +412,19 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return searchForQname;
 	}
 
-	private Set<Qname> fetchAllChildren(Qname qname) throws TooManyResultsException, SQLException {
-		return fetchChildren(qname, true);
+	private Set<Qname> fetchAllChildren(Subject subject) throws TooManyResultsException, SQLException {
+		return fetchChildren(subject, true);
 	}
 
-	private Set<Qname> fetchImmediateChildren(Qname qname) throws TooManyResultsException, SQLException {
-		return fetchChildren(qname, false);
+	private Set<Qname> fetchImmediateChildren(Subject subject) throws TooManyResultsException, SQLException {
+		return fetchChildren(subject, false);
 	}
 
-	private Set<Qname> fetchChildren(Qname qname, boolean all) throws TooManyResultsException, SQLException {
+	private Set<Qname> fetchChildren(Subject subject, boolean all) throws TooManyResultsException, SQLException {
 		Set<Qname> resultSet = new HashSet<>();
 		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(qname);
+		searchForThese.add(new Qname(subject.getQname()));
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;

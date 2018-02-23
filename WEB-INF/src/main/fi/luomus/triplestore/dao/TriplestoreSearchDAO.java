@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.dao;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -37,11 +38,29 @@ public interface TriplestoreSearchDAO {
 	public Collection<Model> get(Set<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception;
 
 	/**
+	 * Get models by qnames
+	 * @param subjects
+	 * @return
+	 * @throws Exception
+	 */
+	public Collection<Model> get(Set<Qname> subjects) throws Exception;
+	
+	/**
 	 * Return count of models ignoring limit/offset
 	 * @param searchParams
 	 * @return
 	 * @throws Exception 
 	 */
 	public int count(SearchParams searchParams) throws Exception;
+
+	/**
+	 * Search by combination of subjects, predicates, objects and rdf_type with limit and offset.
+	 * @param searchParams
+	 * @return matching subject qnames
+	 * @throws Exception
+	 */
+	public Set<Qname> searchQnames(SearchParams searchParams) throws SQLException;
+
+	
 		
 }

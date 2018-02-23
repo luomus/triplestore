@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -458,9 +459,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				p.setString(2, className);
 				rs = p.executeQuery();
 				RdfProperties properties = new RdfProperties();
+				Set<Qname> propertyQnames = new HashSet<>();
 				while (rs.next()) {
-					Qname predicate = new Qname(rs.getString(1));
-					Model model = dao.get(predicate);
+					propertyQnames.add(new Qname(rs.getString(1)));
+				}
+				for (Model model : dao.getSearchDAO().get(propertyQnames)) {
 					RdfProperty property = dao.createProperty(model);
 					properties.addProperty(property);
 				}

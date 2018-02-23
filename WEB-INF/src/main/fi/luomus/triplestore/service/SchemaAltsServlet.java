@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,12 +49,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 	}
 
 	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
-		Collection<Model> models = dao.getSearchDAO().search(new SearchParams().type(type));
-		Set<Qname> propertyQnames = new HashSet<>();
-		for (Model m : models) {
-			propertyQnames.add(new Qname(m.getSubject().getQname()));
-		}
-		return propertyQnames;
+		return dao.getSearchDAO().searchQnames(new SearchParams().type(type));
 	}
 
 	//	{

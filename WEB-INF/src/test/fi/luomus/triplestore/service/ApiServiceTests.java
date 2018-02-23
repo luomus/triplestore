@@ -521,11 +521,7 @@ public class ApiServiceTests {
 	
 	@Test
 	public void testget_properties() throws TooManyResultsException, Exception {
-		Collection<Model> properties = dao.getSearchDAO().search(new SearchParams().type("rdf:Property"));
-		Set<Qname> propertyQnames = new HashSet<>();
-		for (Model m : properties) {
-			propertyQnames.add(new Qname(m.getSubject().getQname()));
-		}
+		Set<Qname> propertyQnames = dao.getSearchDAO().searchQnames(new SearchParams().type("rdf:Property"));
 		
 		Collection<Model> models = dao.getSearchDAO().get(propertyQnames, ResultType.DEEP);
 		Set<String> qnames = new HashSet<>();
