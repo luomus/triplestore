@@ -50,7 +50,7 @@
 </@compress></#macro>
 
 <#macro printTaxon taxon additionalClass="">
-	<#assign allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
+	<#local allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span></#if> 
@@ -114,10 +114,12 @@
 				<@printSynonyms taxon.orthographicVariants "Orthographic variants" "ORTHOGRAPHIC" />
 				<@printSynonyms taxon.uncertainSynonyms "Uncertain synonyms" "UNCERTAIN" />
  				<@printSynonyms taxon.misappliedNames "Misapplied names" "MISAPPLIED" />
-			</div>		
-			<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
-				Add synonyms
-			</button>
+			</div>	
+			<#if allowsAlterationsByUserOnThis>
+				<button class="addSynonymButton taxonToolButton" onclick="addNewSynonym(this);">
+					Add synonyms
+				</button>
+			</#if>
 		</#if>
 	</div>
 </#macro>
