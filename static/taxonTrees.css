@@ -360,7 +360,9 @@ div.loading {
 	background-color: white;
 	border: 1px solid #eee;
 	border-radius: 3px;
-	padding: 2px;
+	position: absolute;
+	z-index: 12;
+	
 }
 #menu li {
 	margin-bottom: 5px;
