@@ -53,11 +53,11 @@
 	<#assign allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
-			<span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span> 
+			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span></#if> 
 			
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
-				<#if taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
+				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if allowsAlterationsByUserOnThis>
 					<span class="taxonToolButton ui-icon ui-icon-gear" title="Tools"></span>
 				</#if>
