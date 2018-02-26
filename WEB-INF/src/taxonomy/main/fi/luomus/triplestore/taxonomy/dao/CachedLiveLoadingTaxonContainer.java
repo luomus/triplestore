@@ -3,11 +3,11 @@ package fi.luomus.triplestore.taxonomy.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+
+import com.google.common.base.Optional;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -41,7 +41,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Set<Qname>> cachedSynonymParents = new Cached<Qname, Set<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
+	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
 	private final TriplestoreDAO triplestoreDAO;
 
 
@@ -68,7 +68,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private EditableTaxon createTaxon(Model model) throws Exception {
 		Qname qname = q(model.getSubject());
-		System.out.println("Luotiin taksoni " + qname);
 		EditableTaxon taxon = new EditableTaxon(qname, this);
 		for (Statement statement : model.getStatements()) {
 			addPropertyToTaxon(taxon, statement);
@@ -83,44 +82,21 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private void preloadSynonyms(List<EditableTaxon> taxons) throws Exception {
 		Set<Qname> synonymIds = new HashSet<>();
+		Set<Qname> taxonIds = new HashSet<>(); // TODO remove
 		for (EditableTaxon taxon : taxons) {
+			taxonIds.add(taxon.getQname());
 			if (taxon.hasSynonyms()) {
+				for (Qname synonymId : taxon.getSynonymsContainer().getAll()) {
+					cachedSynonymParents.put(synonymId, Optional.of(taxon.getQname()));
+				}
 				synonymIds.addAll(taxon.getSynonymsContainer().getAll());
 			}
 		}
 		if (synonymIds.isEmpty()) return;
-		System.out.println("Preload synonyms: " + synonymIds);
-		
-		Set<String> synonymQnames = new HashSet<>();
+
 		for (Model synonymModel : triplestoreDAO.getSearchDAO().get(synonymIds)) {
 			EditableTaxon synonym = createTaxon(synonymModel);
 			cachedTaxons.put(synonym.getQname(), synonym);
-			synonymQnames.add(synonym.getQname().toString());
-		}
-
-		System.out.println("Haetaan synonym parentit synonyymeille " + synonymQnames);
-		Collection<Model> synonymParents = triplestoreDAO.getSearchDAO().search(
-				new SearchParams()
-				.type("MX.taxon")
-				.predicates(SYNONYM_PREDICATES)
-				.objectresources(synonymQnames));
-
-		Map<Qname, Set<Qname>> synonymParentMap = new HashMap<>();
-		for (Model synonymParent : synonymParents) {
-			Qname synonymParentId = new Qname(synonymParent.getSubject().getQname());
-			for (String predicate : SYNONYM_PREDICATES) {
-				for (Statement statement : synonymParent.getStatements(predicate)) {
-					Qname synonymId = new Qname(statement.getObjectResource().getQname());
-					if (!synonymParentMap.containsKey(synonymId)) {
-						synonymParentMap.put(synonymId, new HashSet<Qname>());
-					}
-					synonymParentMap.get(synonymId).add(synonymParentId);
-				}
-			}
-		}
-		for (Map.Entry<Qname, Set<Qname>> e : synonymParentMap.entrySet()) {
-			cachedSynonymParents.put(e.getKey(), e.getValue());
-			System.out.println("Taksonia ladatessa pistettiin " + e.getKey() + " <- " + e.getValue());
 		}
 	}
 
@@ -154,7 +130,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private class ChildrenLoader implements CacheLoader<Qname, Set<Qname>> {
 		@Override
 		public Set<Qname> load(Qname taxonQname) {
-			System.out.println("Ladataan lapsia " + taxonQname);
 			try {
 				Collection<Model> models = triplestoreDAO.getSearchDAO().search(
 						new SearchParams()
@@ -170,7 +145,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 					childTaxons.add(child.getQname());
 					createdChildren.add(child);
 				}
-				System.out.println("Ladattaessa " + taxonQname + " lapsia ladattiin " + childTaxons);
 				preloadSynonyms(createdChildren);
 				return childTaxons;
 			} catch (Exception e) {
@@ -179,16 +153,20 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
-	private class SynonymParentLoader implements CacheLoader<Qname, Set<Qname>> {
+	private class SynonymParentLoader implements CacheLoader<Qname, Optional<Qname>> {
 		@Override
-		public Set<Qname> load(Qname taxonQname) {
-			System.out.println("Kutsutaan synonym parent loaderia " + taxonQname);
+		public Optional<Qname> load(Qname synonymTaxonId) {
+			System.out.println("Kutsutaan synonym parent loaderia " + synonymTaxonId);
 			try {
-				return triplestoreDAO.getSearchDAO().searchQnames(
+				Set<Qname> matches = triplestoreDAO.getSearchDAO().searchQnames(
 						new SearchParams()
 						.type("MX.taxon")
 						.predicates(SYNONYM_PREDICATES)
-						.objectresource(taxonQname));
+						.objectresource(synonymTaxonId));
+				if (matches.size() == 1) {
+					return Optional.of(matches.iterator().next());
+				}
+				return Optional.absent();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -216,8 +194,8 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
-	public Set<Qname> getSynonymParents(Qname synonymId) {
-		return cachedSynonymParents.get(synonymId);
+	public Qname getSynonymParent(Qname synonymId) {
+		return cachedSynonymParents.get(synonymId).orNull();
 	}
 
 	public void clearCaches() {
@@ -240,15 +218,22 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private void invalidateTaxonInIsolation(Taxon taxon) {
 		if (alreadyInvalidatedTaxonsInIsolation.contains(taxon.getQname())) return;
 		alreadyInvalidatedTaxonsInIsolation.add(taxon.getQname());
+
 		for (Taxon synonym : taxon.getAllSynonyms()) {
 			invalidateTaxonInIsolation(synonym);
 		}
-		for (Taxon synonymParent : taxon.getSynonymParents()) {
-			invalidateTaxonInIsolation(synonymParent);
+
+		if (taxon.isSynonym()) {
+			Taxon synonymParent = taxon.getSynonymParent();
+			if (synonymParent != null) {
+				invalidateTaxonInIsolation(synonymParent);
+			}
 		}
+
 		if (taxon.hasParent()) {
 			invalidateTaxonInIsolation(taxon.getParent());
 		}
+
 		cachedTaxons.invalidate(taxon.getQname());
 		cachedChildren.invalidate(taxon.getQname());
 		cachedSynonymParents.invalidate(taxon.getQname());

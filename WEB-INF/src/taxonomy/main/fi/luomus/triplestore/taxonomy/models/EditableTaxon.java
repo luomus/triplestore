@@ -50,13 +50,10 @@ public class EditableTaxon extends Taxon {
 			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
 		}
 
-		for (Taxon synonymParent : this.getSynonymParents()) {
-			if (allowsAlterationForUserDirectly(user, synonymParent)) {
-				return true; // User has permissions to the edit one of the synonym parents of this synonym, allow to edit 
-			}
-		}
+		Taxon synonymParent = this.getSynonymParent();
+		if (synonymParent == null) return false;
 
-		return false;
+		return allowsAlterationForUserDirectly(user, synonymParent);
 	}
 
 	private boolean allowsAlterationForUserDirectly(User user, Taxon taxon) {
@@ -72,7 +69,7 @@ public class EditableTaxon extends Taxon {
 	public Synonyms getSynonymsContainer() {
 		return super.getSynonymsContainer();
 	}
-	
+
 	public void invalidate() {
 		taxonContainer.invalidateTaxon(this);
 	}
@@ -153,10 +150,6 @@ public class EditableTaxon extends Taxon {
 	@Override
 	public boolean isFinnish() {
 		return this.isMarkedAsFinnishTaxon();
-	}
-
-	public boolean isSynonym() {
-		return this.getChecklist() == null;
 	}
 
 	public boolean isDeletable() {

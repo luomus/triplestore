@@ -83,7 +83,7 @@ public class TaxonContainerStub implements TaxonContainer {
 	}
 
 	@Override
-	public Set<Qname> getSynonymParents(Qname arg0) {
+	public Qname getSynonymParent(Qname arg0) {
 		// Auto-generated method stub
 		return null;
 	}
