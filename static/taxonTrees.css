@@ -189,7 +189,7 @@ div.taxonInfo .icons > * {
 	float: right;
 }
 .synonym > div.taxonInfo {
-  min-width: 1px;
+  min-width: 200px;
 }
 
 div.taxonInfo span {
