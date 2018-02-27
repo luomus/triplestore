@@ -47,7 +47,7 @@ public class IUCN2010Sisaan {
 	private static final Qname MISAPPLIED = new Qname("MX.misappliedCircumscription");
 	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
-	private static final int EVALUATION_YEAR = 2000; // XXX change year here
+	private static final int EVALUATION_YEAR = 2010; // XXX change year here
 	private static final String OCCURRENCES = "occurrences";
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
@@ -115,7 +115,7 @@ public class IUCN2010Sisaan {
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); 
 			
 			// dev mode
-			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+			// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
 			
 			process();
 			taxonomyDAO.close();
@@ -132,7 +132,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			//if (!f.getName().equals("Hämähäkit_siirto.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("Jäkälät_korjattavat.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -156,7 +156,7 @@ public class IUCN2010Sisaan {
 	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		//IUCNLineData data = new IUCNLineData(parts);
-		IUCNLineData data = new IUCNLineData(Mode.V2000, parts); // XXX change parse mode here
+		IUCNLineData data = new IUCNLineData(Mode.V2010, parts); // XXX change parse mode here
 		dump(data);
 		Qname fixedQnameForName = getFixedQnameForName(data.scientificName);
 		if (fixedQnameForName != null) data.taxonQname = fixedQnameForName.toString();
@@ -320,7 +320,7 @@ public class IUCN2010Sisaan {
 		}
 		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
 		triplestoreDAO.store(evaluation, null); // XXX disable loading here
-		//System.out.println(evaluation.getModel().getRDF() + " / " + evaluation.getPrimaryHabitat() + " / " + evaluation.getThreats() + " / " + evaluation.getEndangermentReasons());
+		//System.out.println(evaluation.getModel().getRDF() + " primary: " + evaluation.getPrimaryHabitat() + " secondary: " + evaluation.getSecondaryHabitats() + " threats: " + evaluation.getThreats() + " endangarment reasons: " + evaluation.getEndangermentReasons() + " occurrences " + evaluation.getOccurrences());
 		iucnDAO.getIUCNContainer().setEvaluation(evaluation); 
 	}
 
