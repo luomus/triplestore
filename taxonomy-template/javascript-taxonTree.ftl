@@ -590,6 +590,10 @@ $(function() {
 		e.stopPropagation();
 	});
 	
+	$(document).on('click', '.icons', function() {
+		return false;
+	});
+	
 	$(document).on('click', '.taxonToolMenu', function(e) {
 		$("#menu").remove();
 		

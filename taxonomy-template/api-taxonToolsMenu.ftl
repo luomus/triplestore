@@ -1,4 +1,3 @@
-<div class="clear"></div>
 <ul id="menu">
 	<li id="taxonToolMenuMove">Move as ...</li>
 	<#if !taxon.synonym>

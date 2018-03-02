@@ -376,7 +376,7 @@ div.taxonInfo .icons {
 div.taxonInfo .icons > * {
 	float: right;
 }
-div.taxonInfo .icons:hover {
+.taxonToolMenu:hover {
 	background-color: rgba(50, 152, 206, 0.2);
 }
 

@@ -57,10 +57,10 @@
 			
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
-				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
 				</#if>
+				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 			</div>
 			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
 			
