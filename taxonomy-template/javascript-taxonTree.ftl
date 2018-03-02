@@ -454,7 +454,6 @@ function sendTaxon(e) {
 	$("#sendTaxonDialog").dialog("open");
 } 
 
-
 function generateSendTaxonInfo(taxonId) {
 	var e = $("#"+taxonId);
 	var synonym = e.hasClass('synonym');
@@ -469,22 +468,43 @@ function generateSendTaxonInfo(taxonId) {
 	}
 }
 
+function deleteTaxon(e) {
+	var e = $(e).closest('.taxonWithTools');
+	var scientificName = $(e).find(".scientificName").text();
+	var confirmText = 'Are you sure you want to permanently delete ' + scientificName + '?';
+	if (confirm(confirmText)) {
+		removeTaxon($(e).attr('id'));
+	}
+}
+
+function removeTaxon(removedId) {
+	var uri = '${baseURL}/api/deleteTaxon/'+removedId;
+	var taxonContainer = $("#"+removedId); 
+	$.post(uri, function(data) {
+		if (data == "ok") {
+			if (taxonContainer.find(".treePlusMinusSign").length) {
+				collapseTaxon(taxonContainer.find(".treePlusMinusSign"));
+			}
+			taxonContainer.fadeOut(function() {
+				taxonTreeGraphs.repaintEverything();
+			});
+		}
+	});
+}
+
 function unlinkSynonym(e) {
 	var e = $(e).closest('.taxonWithTools');
 	var type = getSynonymType(e);
-	var confirmText = getDetachConfirmText(type);
-	unlinkSynonymOfType(e, type, confirmText);
-}
-
-function unlinkSynonymOfType(e, type, confirmText) {
-	if (!confirmUnlink(e, confirmText)) return;
-	removeSynonym(e, type, $(e).attr('id'));
+	var confirmText = getDetachSynonymConfirmText(type);
+	if (confirmUnlink(e, confirmText)) {
+		removeSynonym(e, type, $(e).attr('id'));
+	}
 }
 
 function confirmUnlink(e, text) {
 	var synonymScientificName = $(e).find(".scientificName").text();
 	var synonymParentScientificName = getSynonymParentScientificName(e);
-	return confirm('Are you sure you want to remove ' + synonymScientificName + text + synonymParentScientificName + '?');
+	return confirm('Are you sure you want to detach ' + synonymScientificName + text + synonymParentScientificName + ' and make it an orphan taxa?');
 }
 
 function getSynonymParentScientificName(e) {
@@ -499,15 +519,15 @@ function removeSynonym(e, synonymType, removedId) {
 		if (data == "ok") {
 			collapseTaxon(synonymParent.find(".treePlusMinusSign"));
 			synonymParent.fadeOut(function() {
-					$.get("${baseURL}/api/singleTaxonInfo/"+synonymParentId, function(data) {
-						synonymParent.replaceWith(data);
-						synonymParent = $("#"+synonymParentId);
-						synonymParent.find('button, .button').button();
-						synonymParent.fadeIn(function() {
-							taxonTreeGraphs.repaintEverything();
-						});
+				$.get("${baseURL}/api/singleTaxonInfo/"+synonymParentId, function(data) {
+					synonymParent.replaceWith(data);
+					synonymParent = $("#"+synonymParentId);
+					synonymParent.find('button, .button').button();
+					synonymParent.fadeIn(function() {
+						taxonTreeGraphs.repaintEverything();
 					});
 				});
+			});
 		} else {
 			var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
 			validationDialog.appendTo("body");
@@ -591,7 +611,7 @@ $(function() {
 			});
 			
 			$("#taxonToolMenuDelete").click(function() {
-				alert('delete');
+				deleteTaxon(container);
 				return false;
 			});
 		
@@ -843,7 +863,7 @@ function getSynonymType(e) {
 	return 'UNKNOWN';
 }
 
-function getDetachConfirmText(type) {
+function getDetachSynonymConfirmText(type) {
 	return ' as ' + getSynonymLabel(type) + ' of '; 
 }
 

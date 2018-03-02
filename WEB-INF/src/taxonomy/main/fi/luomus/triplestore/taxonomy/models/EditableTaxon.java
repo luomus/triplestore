@@ -155,6 +155,7 @@ public class EditableTaxon extends Taxon {
 	public boolean isDeletable() {
 		long lastAllowed = TaxonomyEditorBaseServlet.getLastAllowedTaxonDeleteTimestamp();
 		if (this.getCreatedAtTimestamp() < lastAllowed) return false;
+		if (this.hasSynonyms()) return false;
 		return !hasCriticalData();
 	}
 
