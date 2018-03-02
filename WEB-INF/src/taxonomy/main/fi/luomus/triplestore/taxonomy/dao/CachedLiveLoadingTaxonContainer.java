@@ -51,12 +51,13 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private class TaxonLoader implements CacheLoader<Qname, EditableTaxon> {
 		@Override
-		public EditableTaxon load(Qname qname) {
+		public EditableTaxon load(Qname taxonQname) {
 			try {
-				Model model = triplestoreDAO.get(qname);
-				if (model.isEmpty()) throw new NoSuchTaxonException(qname);
+				Model model = triplestoreDAO.get(taxonQname);
+				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
 				EditableTaxon taxon = createTaxon(model);
 				preloadSynonyms(taxon);
+				taxon.getChildren();
 				return taxon;
 			} catch (NoSuchTaxonException e) {
 				throw e;
@@ -82,9 +83,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private void preloadSynonyms(List<EditableTaxon> taxons) throws Exception {
 		Set<Qname> synonymIds = new HashSet<>();
-		Set<Qname> taxonIds = new HashSet<>(); // TODO remove
 		for (EditableTaxon taxon : taxons) {
-			taxonIds.add(taxon.getQname());
 			if (taxon.hasSynonyms()) {
 				for (Qname synonymId : taxon.getSynonymsContainer().getAll()) {
 					cachedSynonymParents.put(synonymId, Optional.of(taxon.getQname()));
@@ -92,6 +91,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				synonymIds.addAll(taxon.getSynonymsContainer().getAll());
 			}
 		}
+
 		if (synonymIds.isEmpty()) return;
 
 		for (Model synonymModel : triplestoreDAO.getSearchDAO().get(synonymIds)) {
@@ -137,16 +137,16 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 						.predicate(IS_PART_OF)
 						.objectresource(taxonQname));
 				if (models.isEmpty()) return Collections.emptySet();
-				Set<Qname> childTaxons = new HashSet<Qname>();
+				Set<Qname> childIds = new HashSet<Qname>();
 				List<EditableTaxon> createdChildren = new ArrayList<>();
 				for (Model model : models) {
 					EditableTaxon child = createTaxon(model);
 					cachedTaxons.put(child.getQname(), child);
-					childTaxons.add(child.getQname());
+					childIds.add(child.getQname());
 					createdChildren.add(child);
 				}
 				preloadSynonyms(createdChildren);
-				return childTaxons;
+				return childIds;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -156,7 +156,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private class SynonymParentLoader implements CacheLoader<Qname, Optional<Qname>> {
 		@Override
 		public Optional<Qname> load(Qname synonymTaxonId) {
-			System.out.println("Kutsutaan synonym parent loaderia " + synonymTaxonId);
 			try {
 				Set<Qname> matches = triplestoreDAO.getSearchDAO().searchQnames(
 						new SearchParams()
