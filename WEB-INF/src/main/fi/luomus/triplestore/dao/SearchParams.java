@@ -57,6 +57,14 @@ public class SearchParams {
 		addTo(objectresources, qnames);
 		return this;
 	}
+	public SearchParams objectresourceQnames(Set<Qname> qnames) {
+		Set<String> qnameStrings = new HashSet<>();
+		for (Qname qname : qnames) {
+			qnameStrings.add(qname.toString());
+		}
+		addTo(objectresources, qnameStrings);
+		return this;
+	}
 	public SearchParams objectliteral(String literal) {
 		objectliterals.add(literal);
 		return this;
