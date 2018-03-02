@@ -590,7 +590,7 @@ $(function() {
 		e.stopPropagation();
 	});
 	
-	$(document).on('click', '.taxonInfo .taxonToolButton', function(e) {
+	$(document).on('click', '.taxonToolMenu', function(e) {
 		$("#menu").remove();
 		
 		var taxonId = $(e.target).closest(".taxonWithTools").attr("id");

@@ -179,15 +179,6 @@ div.taxonInfo {
 div.synonymSection div.taxonWithTools {
 	display: block;
 }
-.taxaOfConcept {
-	border: 1px dotted #A3D8FF;
-}
-div.taxonInfo .icons {
-  float: right;
-}
-div.taxonInfo .icons > * {
-	float: right;
-}
 .synonym > div.taxonInfo {
   min-width: 200px;
 }
@@ -358,14 +349,35 @@ div.loading {
 
 #menu {
 	background-color: white;
-	border: 1px solid #eee;
+	border: 1px solid #999;
 	border-radius: 3px;
 	position: absolute;
 	z-index: 12;
+	padding: 5px;
 	
 }
 #menu li {
 	margin-bottom: 5px;
+	padding: 5px;
+	font-size: 120%;
+}
+#menu li:hover {
+	background-color: rgb(220, 240, 255);
+}
+#menu li .ui-icon {
+	margin-bottom: 5px;
+	margin-right: 5px;
+	display: inline-block;
+}
+
+div.taxonInfo .icons {
+	float: right;
+}
+div.taxonInfo .icons > * {
+	float: right;
+}
+div.taxonInfo .icons:hover {
+	background-color: rgba(50, 152, 206, 0.2);
 }
 
 #sendTaxonDialog label {
