@@ -159,4 +159,8 @@ public class EditableTaxon extends Taxon {
 		return !hasCriticalData();
 	}
 
+	public boolean isDetachable() {
+		return !hasCriticalData();
+	}
+
 }

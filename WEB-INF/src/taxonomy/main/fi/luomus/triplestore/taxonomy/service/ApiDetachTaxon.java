@@ -24,12 +24,13 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		if (!given(taxonQname)) {
 			return redirectTo500(res);
 		} 
-			
+		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
+		
 		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
 		checkPermissionsToAlterTaxon(taxon, req);
 		
-		if (taxon.hasCriticalData()) {
-			throw new IllegalStateException("Can not detach "+taxonQname+": It has critical data.");
+		if (!taxon.isDetachable()) {
+			throw new IllegalStateException("Can not detach "+taxonQname+" because of preconditions.");
 		}
 		
 		taxon.invalidate();

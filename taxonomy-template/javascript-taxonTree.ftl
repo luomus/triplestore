@@ -468,16 +468,40 @@ function generateSendTaxonInfo(taxonId) {
 	}
 }
 
+function detachTaxon(e) {
+	var e = $(e).closest('.taxonWithTools');
+	var scientificName = $(e).find(".scientificName").text();
+	var confirmText = 'Are you sure you want to detach ' + scientificName + ' and make it an orphan taxon?';
+	if (confirm(confirmText)) {
+		detachTaxonId($(e).attr('id'));
+	}
+}
+
+function detachTaxonId(detachId) {
+	var uri = '${baseURL}/api/detachTaxon/'+detachId;
+	var taxonContainer = $("#"+detachId); 
+	$.post(uri, function(data) {
+		if (data == "ok") {
+			if (taxonContainer.find(".treePlusMinusSign").length) {
+				collapseTaxon(taxonContainer.find(".treePlusMinusSign"));
+			}
+			taxonContainer.fadeOut(function() {
+				taxonTreeGraphs.repaintEverything();
+			});
+		}
+	});
+}
+
 function deleteTaxon(e) {
 	var e = $(e).closest('.taxonWithTools');
 	var scientificName = $(e).find(".scientificName").text();
 	var confirmText = 'Are you sure you want to permanently delete ' + scientificName + '?';
 	if (confirm(confirmText)) {
-		removeTaxon($(e).attr('id'));
+		deleteTaxonId($(e).attr('id'));
 	}
 }
 
-function removeTaxon(removedId) {
+function deleteTaxonId(removedId) {
 	var uri = '${baseURL}/api/deleteTaxon/'+removedId;
 	var taxonContainer = $("#"+removedId); 
 	$.post(uri, function(data) {
@@ -504,7 +528,7 @@ function unlinkSynonym(e) {
 function confirmUnlink(e, text) {
 	var synonymScientificName = $(e).find(".scientificName").text();
 	var synonymParentScientificName = getSynonymParentScientificName(e);
-	return confirm('Are you sure you want to detach ' + synonymScientificName + text + synonymParentScientificName + ' and make it an orphan taxa?');
+	return confirm('Are you sure you want to detach ' + synonymScientificName + text + synonymParentScientificName + ' and make it an orphan taxon?');
 }
 
 function getSynonymParentScientificName(e) {
@@ -606,7 +630,7 @@ $(function() {
 			});
 			
 			$("#taxonToolMenuDetach").click(function() {
-				alert('detach');
+				detachTaxon(container);
 				return false;
 			});
 			
