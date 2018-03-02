@@ -205,7 +205,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public Collection<Model> get(Set<Qname> qnames, ResultType resultType) throws TooManyResultsException, Exception {
-		System.out.println("Getting " + qnames);
+		if (qnames.isEmpty()) return Collections.emptyList();
 		return get(qnames, resultType, new HashSet<Qname>());
 	}
 
@@ -236,7 +236,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private Collection<Model> deep(Model model, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
-		if (model.getType() != null && !model.getType().equals("rdf:Alt") && !model.getType().equals("rdf:Property")) {
+		if (notAltOrProperty(model)) {
 			return Collections.emptyList();
 		}
 		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
@@ -253,6 +253,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		}
 		models.addAll(get(objects, ResultType.DEEP));
 		return models;
+	}
+
+	private boolean notAltOrProperty(Model model) {
+		return !("rdf:Alt".equals(model.getType()) || "rdf:Property".equals(model.getType()));
 	}
 
 	private Collection<Model> fetchTree(Model parent) throws TooManyResultsException, SQLException {
