@@ -80,7 +80,6 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				String dwUri = config.get("DwURL");
 				client = new HttpClientService();
 				JSONObject response = client.contentAsJson(new HttpGet(dwUri+"/"+taxonId.toString()));
-				System.out.println(dwUri+"/"+taxonId.toString()); // TODO remove
 				if (response.hasKey("used")) {
 					return response.getBoolean("used");
 				}
