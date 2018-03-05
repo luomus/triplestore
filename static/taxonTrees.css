@@ -387,6 +387,7 @@ div.taxonInfo .icons > * {
 #criticalDataDialog td  {
 	min-width: 150px;
 	padding-bottom: 2em;
+	padding-right: 5px;
 }
 #criticalDataDialog th {
 	text-align: left;
