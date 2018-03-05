@@ -1,5 +1,9 @@
 <ul id="menu">
-	<li id="taxonToolMenuMove">Move as ...</li>
+	<#if !taxon.hasTreeRelatedCriticalData()>
+		<li id="taxonToolMenuMove">Move as ...</li>
+	<#else>
+		<li class="ui-state-disabled">Move as ...</li>
+	</#if>
 	<#if !taxon.synonym>
 		<#if taxon.hidden>
 			<li id="taxonToolMenuUnhide">Unhide</li>

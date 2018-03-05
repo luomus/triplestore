@@ -93,7 +93,7 @@ label.error, span.error {
 	color: rgb(200, 100, 150);
 }
 label.error {
-	width: auto;
+	width: auto !important;
 	margin-left: 5px;
 }
 .helpPage {

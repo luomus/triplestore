@@ -82,14 +82,19 @@ public class EditableTaxon extends Taxon {
 		return hasCritical;
 	}	
 
+	public boolean hasTreeRelatedCriticalData() {
+		if (this.hasExplicitlySetExpertsOrEditors()) return true;
+		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
+		return false;
+	}
+
 	private Boolean initHasCritical() {
+		if (this.hasTreeRelatedCriticalData()) return true;
 		if (this.hasChildren()) return true;
 		if (this.hasSecureLevel()) return true;
 		if (this.hasIUCNEvaluation()) return true;
 		if (this.hasAdministrativeStatuses()) return true;
 		if (this.hasDescriptions()) return true;
-		if (this.hasExplicitlySetExpertsOrEditors()) return true;
-		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
 		if (this.isIdentifierUsedInDataWarehouse()) return true;
 		return false;
 	}
@@ -98,13 +103,13 @@ public class EditableTaxon extends Taxon {
 		if (this.isSpecies()) return false;
 		return !this.getExplicitlySetInformalTaxonGroups().isEmpty();
 	}
-	
+
 	public boolean hasExplicitlySetExpertsOrEditors() {
 		if (!this.getExplicitlySetEditors().isEmpty()) return true;
 		if (!this.getExplicitlySetExperts().isEmpty()) return true;
 		return false;
 	}
-	
+
 	public boolean hasExplicitlySetOriginalPublication(String qname) {
 		return getExplicitlySetOriginalPublications().contains(new Qname(qname));
 	}

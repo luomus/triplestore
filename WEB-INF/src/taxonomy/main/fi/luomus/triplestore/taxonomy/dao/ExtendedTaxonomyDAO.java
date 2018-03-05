@@ -17,14 +17,13 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public IucnDAO getIucnDAO();
 	
 	/**
-	 * Checks if given name (scientific, vernacular or other name) exists in the given checklist, ignoring the taxon qname in question.
+	 * Checks if given name (scientific, vernacular or other name) exists in the given checklist, ignoring the taxon in question.
 	 * @param name
-	 * @param checklist
-	 * @param taxonQnameToIgnore
-	 * @return List of matcing taxons
-	 * @throws Exception 
+	 * @param taxon
+	 * @return list of matches
+	 * @throws Exception
 	 */
-	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception;
+	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception;
 
 	/**
 	 * Returns new taxon with newly assiged id

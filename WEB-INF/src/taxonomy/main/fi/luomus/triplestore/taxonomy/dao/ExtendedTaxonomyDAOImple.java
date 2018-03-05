@@ -184,27 +184,33 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception {
+	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
 		List<Taxon> matches = new ArrayList<Taxon>();
+		
+		Qname checklist = null;
+		if (given(taxon.getChecklist())) {
+			checklist = taxon.getChecklist();
+		} else {
+			Taxon synonymParent = taxon.getSynonymParent();
+			if (synonymParent != null) {
+				checklist = synonymParent.getChecklist();
+			}
+			if (!given(checklist)) {
+				checklist = new Qname("MR.1");
+			}
+		}
+		
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
 		try {
 			con = triplestoreDAO.openConnection();
-			if (checklist == null) {
-				p = con.prepareStatement("" +
-						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
-						" WHERE checklist IS NULL AND name = ? AND qname != ? ");
-				p.setString(1, name.toUpperCase());
-				p.setString(2, taxonQnameToIgnore.toString());
-			} else {
-				p = con.prepareStatement("" +
-						" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
-						" WHERE checklist = ? AND name = ? AND qname != ? ");
-				p.setString(1, checklist.toString());
-				p.setString(2, name.toUpperCase());
-				p.setString(3, taxonQnameToIgnore.toString());
-			}
+			p = con.prepareStatement("" +
+					" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
+					" WHERE checklist = ? AND name = ? AND qname != ? ");
+			p.setString(1, checklist.toString());
+			p.setString(2, name.toUpperCase());
+			p.setString(3, taxon.getQname().toString());
 			rs = p.executeQuery();
 			while (rs.next()) {
 				Qname matchQname = new Qname(rs.getString(1));
