@@ -51,12 +51,13 @@ public class TaxonValidatorTests {
 			return null;
 		}
 	}
+	
 	private static class TestTaxonDAO extends TaxonomyDAOStub {
 		@Override
-		public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception {
+		public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
 			List<Taxon> list = new ArrayList<>();
 			if ("Parus major".equals(name)) {
-				Taxon t =new Taxon(new Qname("MX.123"), taxonContainer);
+				Taxon t = new Taxon(new Qname("MX.123"), taxonContainer);
 				t.setScientificName("Parus major");
 				t.setTaxonRank(SPECIES);
 				list.add(t);

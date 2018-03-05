@@ -139,12 +139,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Qname checklist, Qname taxonQnameToIgnore) throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public EditableTaxon createTaxon() throws Exception {
 		// Auto-generated method stub
 		return null;
@@ -172,6 +166,12 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId) {
 		// Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
+		// Auto-generated method stub
+		return null;
 	}
 
 }
