@@ -572,7 +572,7 @@ function openCriticalDataDialog(e) {
 		var dialog = $(data);
 		dialog.appendTo("body");
 		dialog.dialog({
-			modal: true, height: 'auto', width: 600, 
+			modal: true, height: 'auto', width: 600, position: { my: "center", at: "top+30%" },
 			close: function() { 
 				$("#criticalDataDialog").remove(); 
 			}
@@ -656,7 +656,8 @@ $(function() {
 	$(".taxonDialog").dialog({
  		autoOpen: false,
 		modal: true,
-		width: 550
+		width: 550,
+		position: { my: "center", at: "top+30%" }
 	});
         
 	$("#editTaxon").dialog({

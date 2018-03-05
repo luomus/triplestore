@@ -36,5 +36,12 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public Set<String> getInformalTaxonGroupRoots();
 	
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
+
+	/**
+	 * Is the given taxon id used explicitly in data warehouse as a target name or taxon census target (etc) 
+	 * @param taxonId
+	 * @return
+	 */
+	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId);
 	
 }

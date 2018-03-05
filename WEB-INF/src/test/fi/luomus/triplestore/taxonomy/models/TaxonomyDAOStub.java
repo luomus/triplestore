@@ -168,4 +168,10 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 		return null;
 	}
 
+	@Override
+	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId) {
+		// Auto-generated method stub
+		return false;
+	}
+
 }

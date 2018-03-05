@@ -1,5 +1,7 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +15,7 @@ import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Filter;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -21,9 +24,11 @@ import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.Cached.CacheLoader;
+import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
@@ -42,11 +47,39 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
+	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
+
 	private final TriplestoreDAO triplestoreDAO;
+	private final ExtendedTaxonomyDAO taxonomyDAO;
 
-
-	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO) {
+	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
+		this.taxonomyDAO = taxonomyDAO;
+	}
+
+	private class TaxaWithImagesLoader implements SingleObjectCache.CacheLoader<Set<Qname>> {
+		@Override
+		public Set<Qname> load() {
+			System.out.println("Loading taxa with media...");
+			TransactionConnection con = null;
+			PreparedStatement p = null;
+			ResultSet rs = null;
+			try {
+				Set<Qname> taxonIds = new HashSet<>();
+				con = triplestoreDAO.openConnection();
+				p = con.prepareStatement(" select distinct objectname from "+TriplestoreDAOConst.SCHEMA+".rdf_statementview where predicatename = 'MM.taxonURI' ");
+				rs = p.executeQuery();
+				while (rs.next()) {
+					taxonIds.add(new Qname(rs.getString(1)));
+				}
+				System.out.println("Taxa with media loaded.");
+				return taxonIds;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} finally {
+				Utils.close(p, rs, con);
+			}
+		}
 	}
 
 	private class TaxonLoader implements CacheLoader<Qname, EditableTaxon> {
@@ -69,7 +102,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private EditableTaxon createTaxon(Model model) throws Exception {
 		Qname qname = q(model.getSubject());
-		EditableTaxon taxon = new EditableTaxon(qname, this);
+		EditableTaxon taxon = new EditableTaxon(qname, this, taxonomyDAO);
 		for (Statement statement : model.getStatements()) {
 			addPropertyToTaxon(taxon, statement);
 		}
@@ -275,7 +308,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	@Override
 	public Set<Qname> getHasMediaFilter() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+		return cachedTaxaWithImages.get();
 	}
 
 	@Override

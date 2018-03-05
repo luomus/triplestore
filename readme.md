@@ -289,6 +289,9 @@ TriplestoreURL = http://localhost:8081/triplestore
 TriplestoreUsername = 
 TriplestorePassword = 
 
+#Used in Taxon editor for critical data resolving
+DwURL = https://../taxon-use
+
 #Used by IUCN editor
 TaxonomyAPIURL = http://laji.fi/api/taxonomy
 

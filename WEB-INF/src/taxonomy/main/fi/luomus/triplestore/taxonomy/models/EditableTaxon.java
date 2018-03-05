@@ -1,7 +1,5 @@
 package fi.luomus.triplestore.taxonomy.models;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,6 +10,7 @@ import fi.luomus.commons.taxonomy.Synonyms;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 public class EditableTaxon extends Taxon {
@@ -19,10 +18,12 @@ public class EditableTaxon extends Taxon {
 	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
 
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
+	private final ExtendedTaxonomyDAO taxonomyDAO;
 
-	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer) {
+	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer, ExtendedTaxonomyDAO taxonomyDAO) {
 		super(qname, taxonContainer);
 		this.taxonContainer = taxonContainer;
+		this.taxonomyDAO = taxonomyDAO;
 	}
 
 	@Override
@@ -74,59 +75,36 @@ public class EditableTaxon extends Taxon {
 		taxonContainer.invalidateTaxon(this);
 	}
 
-	private Collection<String> criticalDatas = null;
-
-	public Collection<String> getCriticalData() {
-		if (criticalDatas == null) {
-			criticalDatas = initCriticalData();
-		}
-		return criticalDatas;
-	}
+	private Boolean hasCritical = null;
 
 	public boolean hasCriticalData() {
-		return !getCriticalData().isEmpty();
+		if (hasCritical == null) hasCritical = initHasCritical();
+		return hasCritical;
+	}	
+
+	private Boolean initHasCritical() {
+		if (this.hasChildren()) return true;
+		if (this.hasSecureLevel()) return true;
+		if (this.hasIUCNEvaluation()) return true;
+		if (this.hasAdministrativeStatuses()) return true;
+		if (this.hasDescriptions()) return true;
+		if (this.hasExplicitlySetExpertsOrEditors()) return true;
+		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
+		if (this.isIdentifierUsedInDataWarehouse()) return true;
+		return false;
 	}
 
-	private Collection<String> initCriticalData() {
-		Collection<String> criticals = new ArrayList<>();
-		if (this.hasChildren()) criticals.add("Taxon has children");
-		if (this.hasSecureLevel()) criticals.add("Taxon has observation secure level");
-		if (this.hasIUCNStatuses()) criticals.add("Taxon has an IUCN status");
-		if (!this.getAdministrativeStatuses().isEmpty()) criticals.add("Taxon has an administrative status");
-		if (!this.getDescriptions().getContextsWithContentAndLocales().isEmpty()) criticals.add("Taxon has description texts in " + contextNames(this.getDescriptions()));
-		if (!this.getInvasiveSpeciesMainGroups().isEmpty()) criticals.add("Taxon is invasive species");
-		if (!this.getExplicitlySetEditors().isEmpty()) criticals.add("Taxon is used to define editor permissions");
-		if (!this.getExplicitlySetExperts().isEmpty()) criticals.add("Taxon is used to define expertise");
-		if (!this.getExplicitlySetInformalTaxonGroups().isEmpty()) criticals.add("Taxon is set to an informal group");
-		return criticals;
+	public boolean hasExplicitlySetHigherInformalTaxonGroup() {
+		if (this.isSpecies()) return false;
+		return !this.getExplicitlySetInformalTaxonGroups().isEmpty();
 	}
-
-	private String contextNames(Content descriptions) {
-		Set<String> names = new HashSet<>();
-		for (Qname context : descriptions.getContextsWithContentAndLocales().keySet()) {
-			if (context.toString().startsWith("LA.")) {
-				names.add("Pinkka");
-			} else if (Content.DEFAULT_DESCRIPTION_CONTEXT.equals(context)) {
-				names.add("FinBIF");
-			} else {
-				names.add(context.toURI());
-			}
-		}
-		Iterator<String> i = names.iterator();
-		StringBuilder b = new StringBuilder();
-		while (i.hasNext()) {
-			b.append(i.next());
-			if (i.hasNext()) {
-				b.append(", ");
-			}
-		}
-		return b.toString();
+	
+	public boolean hasExplicitlySetExpertsOrEditors() {
+		if (!this.getExplicitlySetEditors().isEmpty()) return true;
+		if (!this.getExplicitlySetExperts().isEmpty()) return true;
+		return false;
 	}
-
-	private boolean hasIUCNStatuses() {
-		return getLatestRedListStatusFinland() != null;
-	}
-
+	
 	public boolean hasExplicitlySetOriginalPublication(String qname) {
 		return getExplicitlySetOriginalPublications().contains(new Qname(qname));
 	}
@@ -161,6 +139,53 @@ public class EditableTaxon extends Taxon {
 
 	public boolean isDetachable() {
 		return !hasCriticalData();
+	}
+
+	public boolean hasIUCNEvaluation() {
+		if (!this.getRedListStatusesInFinland().isEmpty()) return true;
+		try {
+			return taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(this.getQname().toString()).hasEvaluations();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public boolean hasAdministrativeStatuses() {
+		return !this.getAdministrativeStatuses().isEmpty();
+	}
+
+	public boolean hasDescriptions() {
+		return !this.getDescriptions().getContextsWithContentAndLocales().isEmpty();
+	}
+
+	public String getContextNamesWithDescriptions() {
+		Set<String> names = new HashSet<>();
+		for (Qname context : this.getDescriptions().getContextsWithContentAndLocales().keySet()) {
+			if (context.toString().startsWith("LA.")) {
+				names.add("Pinkka");
+			} else if (Content.DEFAULT_DESCRIPTION_CONTEXT.equals(context)) {
+				names.add("FinBIF");
+			} else {
+				names.add(context.toURI());
+			}
+		}
+		Iterator<String> i = names.iterator();
+		StringBuilder b = new StringBuilder();
+		while (i.hasNext()) {
+			b.append(i.next());
+			if (i.hasNext()) {
+				b.append(", ");
+			}
+		}
+		return b.toString();
+	}
+
+	public boolean hasTaxonImages() {
+		return taxonContainer.getHasMediaFilter().contains(this.getQname());
+	}
+
+	public boolean isIdentifierUsedInDataWarehouse() {
+		return taxonomyDAO.isTaxonIdUsedInDataWarehouse(this.getQname());
 	}
 
 }

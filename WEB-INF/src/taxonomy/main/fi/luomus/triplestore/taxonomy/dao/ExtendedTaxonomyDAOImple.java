@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.http.client.methods.HttpGet;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.config.Config;
@@ -20,6 +21,8 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.http.HttpClientService;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -45,7 +48,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final IucnDAOImple iucnDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final Cached<TaxonSearch, TaxonSearchResponse> cachedTaxonSearches;
+	private final Cached<Qname, Boolean> cachedDwUses;
 	private final DataSource dataSource;
+	private final Config config;
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		this(config, config.developmentMode(), triplestoreDAO, errorReporter);
@@ -56,11 +61,39 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		System.out.println("Creating " +  ExtendedTaxonomyDAOImple.class.getName());
 		this.dataSource = TaxonSearchDataSourceDefinition.initDataSource(config.connectionDescription());
 		this.triplestoreDAO = triplestoreDAO;
-		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO);
+		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO, this);
 		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, this, errorReporter);
 		this.cachedTaxonSearches = new Cached<TaxonSearch, TaxonSearchResponse>(
 				new TaxonSearchLoader(),
 				60*60*3, 50000);
+		this.cachedDwUses = new Cached<Qname, Boolean>(
+				new DwUseLoader(),
+				60*60*3, 50000);
+		this.config = config;
+	}
+
+	private class DwUseLoader implements Cached.CacheLoader<Qname, Boolean> {
+		@Override
+		public Boolean load(Qname taxonId) {
+			HttpClientService client = null;
+			try {
+				String dwUri = config.get("DwURL");
+				client = new HttpClientService();
+				JSONObject response = client.contentAsJson(new HttpGet(dwUri+"/"+taxonId.toString()));
+				System.out.println(dwUri+"/"+taxonId.toString()); // TODO remove
+				if (response.hasKey("used")) {
+					return response.getBoolean("used");
+				}
+				if (response.hasKey("status")) {
+					throw new Exception(dwUri + " returned status: " + response.getInteger("status") + " with message: " + response.getString("message"));
+				}
+				throw new Exception(dwUri + " returned unknown response");
+			} catch (Exception e) {
+				throw new RuntimeException("Dw use for " + taxonId, e);
+			} finally {
+				client.close();
+			}
+		}
 	}
 
 	private class TaxonSearchLoader implements Cached.CacheLoader<TaxonSearch, TaxonSearchResponse> {
@@ -200,7 +233,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public EditableTaxon createTaxon() throws Exception {
 		Qname qname = triplestoreDAO.getSeqNextValAndAddResource("MX");
-		return new EditableTaxon(qname, taxonContainer);
+		return new EditableTaxon(qname, taxonContainer, this);
 	}
 
 	@Override
@@ -238,6 +271,11 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
 		return cachedBiogeographicalProvinces.get();
+	}
+
+	@Override
+	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId) {
+		return cachedDwUses.get(taxonId);
 	}
 
 }

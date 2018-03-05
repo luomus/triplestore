@@ -121,5 +121,9 @@ public class IUCNEvaluationTarget {
 	public Collection<IUCNEvaluation> getEvaluations() {
 		return evaluations.values();
 	}
+
+	public boolean hasEvaluations() {
+		return !evaluations.isEmpty();
+	}
 	
 }
