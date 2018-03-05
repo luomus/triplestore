@@ -443,11 +443,11 @@ function sendTaxon(e) {
 	var taxonContainer = $(e).closest('.taxonWithTools');
 	var taxonId = taxonContainer.attr('id');
 	$("#sendTaxonDialog").remove();
-	$.get("${baseURL}/api/moveTaxonDialog/"+taxonId, function(data) {
+	$.get("${baseURL}/api/sendTaxonDialog/"+taxonId, function(data) {
 		var dialog = $(data);
 		dialog.appendTo("body");
 		dialog.find('button, .button').button();
-		$("#moveTaxonManageCriticalButton").on('click', function() {
+		$("#sendTaxonManageCriticalButton").on('click', function() {
 			$("#sendTaxonDialog").remove();
 			openCriticalDataDialog(taxonContainer);
 		});
@@ -828,31 +828,28 @@ function addNewSynonymDialogSubmit() {
     });  	
 }
 
-function sendTaxonAsChildDialogSubmit() {
+function sendTaxonDialogSubmit() {
 	var selectorVal = $("#newParentIDSelector").val().toUpperCase().trim();
 	if (startsWith('MX.', selectorVal)) {
 		$("#newParentID").val(selectorVal);
 	}
 	
-	if (!$("#sendTaxonDialogForm").valid()) return false;
+	var form = $("#sendTaxonDialogForm");
+	if (!form.valid()) return false;
 	
 	var taxonToSendID = $('#taxonToSendID').val();
-	var newParentID = $('#newParentID').val();	
+	var newParentID = $('#newParentID').val();
+	
 	$.ajax({
 		type: "POST",
-		url: '${baseURL}/api/sendtaxon?taxonToSendID='+encodeURIComponent(taxonToSendID)+'&newParentID='+encodeURIComponent(newParentID),
-		suppressErrors: true 
+		url: '${baseURL}/api/sendTaxon',
+      	data: form.serialize()
 	})
-	.done(function(data) {
+	.success(function(data) {
+		//XXX TODO close tree, same as detach  and load again for both target and send taxon
 		$('#'+taxonToSendID).remove();
 		taxonTreeGraphs.repaintEverything();
 		$("#sendTaxonDialog").dialog("close");
-		$(".addButton").show();
-  	})
-  	.fail(function(xhr, status, error) {
-  		$(".addButton").show();
-  		alert(xhr.responseText);
-  		return false;
   	});	
 }
 

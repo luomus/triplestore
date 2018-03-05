@@ -107,12 +107,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			dao.store(new Subject(taxonQname), usedAndGivenStatements);
 		}
 
-		taxon.invalidate();
-		taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
+		taxon.invalidateSelf();
+		
 		ValidationData validationData;
 		if (editingDescriptionFields) {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validateDescriptions(usedAndGivenStatements.getGivenStatements());
 		} else {
+			taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
 		}
 
@@ -147,7 +148,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		}
 		dao.addTaxon(synonym);
 		dao.insert(new Subject(taxon.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(SynonymType.SYNONYM), new ObjectResource(synonym.getQname())));
-		taxon.invalidate();
 	}
 
 	private void setNewScientificNameAndAuthor(String alteredScientificName, String alteredAuthor, UsedAndGivenStatements usedAndGivenStatements) {

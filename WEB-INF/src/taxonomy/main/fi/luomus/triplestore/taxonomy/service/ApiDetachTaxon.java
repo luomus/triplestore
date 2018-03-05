@@ -33,15 +33,13 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 			throw new IllegalStateException("Can not detach "+taxonQname+" because of preconditions.");
 		}
 		
-		taxon.invalidate();
+		taxon.invalidateSelfAndLinking();
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		Subject subject = new Subject(taxonQname);
 		
 		dao.delete(subject, IS_PART_OF_PREDICATE);
 		dao.delete(subject, NAME_ACCORDING_TO_PREDICATE);
-
-		taxon.invalidate();
 		
 		return apiSuccessResponse(res);
 	}

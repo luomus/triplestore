@@ -87,6 +87,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public EditableTaxon load(Qname taxonQname) {
 			try {
 				Model model = triplestoreDAO.get(taxonQname);
+				System.out.println("Lattasin modelin " + model.getRDF());
 				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
 				EditableTaxon taxon = createTaxon(model);
 				preloadSynonyms(taxon);
@@ -231,44 +232,34 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	public void clearCaches() {
-		cachedChildren.invalidateAll();
-		cachedSynonymParents.invalidateAll();
-		cachedTaxons.invalidateAll();
-	}
-
-	public void invalidateTaxon(Taxon taxon) {
 		synchronized (LOCK) {
-			alreadyInvalidatedTaxonsInIsolation.clear();
-			invalidateTaxonInIsolation(taxon);
-			alreadyInvalidatedTaxonsInIsolation.clear();
+			cachedChildren.invalidateAll();
+			cachedSynonymParents.invalidateAll();
+			cachedTaxons.invalidateAll();
 		}
-
 	}
 
-	private final Set<Qname> alreadyInvalidatedTaxonsInIsolation = new HashSet<>();
-
-	private void invalidateTaxonInIsolation(Taxon taxon) {
-		if (alreadyInvalidatedTaxonsInIsolation.contains(taxon.getQname())) return;
-		alreadyInvalidatedTaxonsInIsolation.add(taxon.getQname());
-
-		for (Taxon synonym : taxon.getAllSynonyms()) {
-			invalidateTaxonInIsolation(synonym);
-		}
-
-		if (taxon.isSynonym()) {
-			Taxon synonymParent = taxon.getSynonymParent();
-			if (synonymParent != null) {
-				invalidateTaxonInIsolation(synonymParent);
-			}
-		}
-
-		if (taxon.hasParent()) {
-			invalidateTaxonInIsolation(taxon.getParent());
-		}
-
+	public void invalidateSelf(Taxon taxon) {
 		cachedTaxons.invalidate(taxon.getQname());
-		cachedChildren.invalidate(taxon.getQname());
-		cachedSynonymParents.invalidate(taxon.getQname());
+	}
+
+	public void invalidateSelfAndLinking(Taxon taxon) {
+		synchronized (LOCK) {
+			if (taxon.isSynonym()) {
+				Taxon synonymParent = taxon.getSynonymParent();
+				if (synonymParent != null) {
+					System.out.println("Sanotaan synonym parentille että unohtaa itsensä " + synonymParent.getQname());
+					invalidateSelf(synonymParent);
+				}
+			}
+
+			if (taxon.hasParent()) {
+				System.out.println("Kyllä mä parentit heitän mäkeen taksonille " + taxon.getParentQname());
+				cachedChildren.invalidate(taxon.getParentQname());
+			}
+
+			invalidateSelf(taxon);
+		}
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 			dao.insert(new Subject(synonymParent.getQname()), new Statement(getPredicate(synonymType), new ObjectResource(synonym.getQname())));
 		}
 
-		synonymParent.invalidate();
+		synonymParent.invalidateSelf();
 
 		return apiSuccessResponse(res);
 	}
@@ -126,6 +126,10 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	public static SynonymType getSynonymType(HttpServletRequest req) {
 		String type = req.getParameter(SYNONYM_TYPE_PARAMETER);
+		return getSynonymType(type);
+	}
+	
+	public static SynonymType getSynonymType(String type) {
 		if (type == null) throw new IllegalArgumentException();
 		return SynonymType.valueOf(type);
 	}

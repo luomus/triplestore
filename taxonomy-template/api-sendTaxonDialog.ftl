@@ -1,7 +1,7 @@
 <#include "macro.ftl">
 
 	<div id="sendTaxonDialog" class="taxonDialog" title="Move taxon">
-		<form id="sendTaxonDialogForm" onsubmit="sendTaxonAsChildDialogSubmit(); return false;">
+		<form id="sendTaxonDialogForm" onsubmit="sendTaxonDialogSubmit(); return false;">
 			<input type="hidden" name="taxonToSendID" id="taxonToSendID" value="${taxon.qname}" />
 			<input type="hidden" name="newParentID" id="newParentID" />
 						
@@ -39,7 +39,7 @@
 				<div style="display: inline-block; margin-left: 1em;">
 					<span class="ui-icon ui-icon-alert"></span> 
 					Some operations are not permitted 
-					<button id="moveTaxonManageCriticalButton">Manage critical data</button>
+					<button id="sendTaxonManageCriticalButton">Manage critical data</button>
 				</div>
 			</#if>
 

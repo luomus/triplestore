@@ -36,11 +36,12 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 			}
 		}
 		
-		synonymParent.invalidate();
+		synonymParent.invalidateSelf();
+		
 		return apiSuccessResponse(res);
 	}
 
-	private List<Statement> getSynonymStatements(SynonymType synonymType, Model synonymParentModel) {
+	public static List<Statement> getSynonymStatements(SynonymType synonymType, Model synonymParentModel) {
 		return synonymParentModel.getStatements(ApiAddSynonymServlet.getPredicate(synonymType).getQname());
 	}
 

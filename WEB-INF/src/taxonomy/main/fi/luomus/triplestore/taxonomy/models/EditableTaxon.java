@@ -71,8 +71,12 @@ public class EditableTaxon extends Taxon {
 		return super.getSynonymsContainer();
 	}
 
-	public void invalidate() {
-		taxonContainer.invalidateTaxon(this);
+	public void invalidateSelfAndLinking() {
+		taxonContainer.invalidateSelfAndLinking(this);
+	}
+	
+	public void invalidateSelf() {
+		taxonContainer.invalidateSelf(this);
 	}
 
 	private Boolean hasCritical = null;

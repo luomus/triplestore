@@ -185,7 +185,7 @@ public class IucnDAOImple implements IucnDAO {
 					}
 					if (modifiedTaxon) {
 						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
-						taxon.invalidate();
+						taxon.invalidateSelf();
 					}
 				}
 			} catch (Exception e) {

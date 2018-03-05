@@ -22,9 +22,9 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 	public static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
 
-	private static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
-	private static final Predicate SORT_ORDER_PREDICATE = new Predicate("sortOrder");
-	private static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
+	public static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
+	public static final Predicate SORT_ORDER_PREDICATE = new Predicate("sortOrder");
+	public static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
 	private static final Predicate SCIENTITIF_NAME_PREDICATE = new Predicate("MX.scientificName");
 	private static final Qname GENUS = new Qname("MX.genus");
 
@@ -54,27 +54,29 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 			throw new IllegalAccessException("Can not move a taxon from some other checklist to be a child of another checklist");
 		}
 
-		taxon.invalidate();
-		newParent.invalidate();
-		if (oldParent != null) {
-			oldParent.invalidate();
-		}
-
+		taxon.invalidateSelfAndLinking();
+		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
-		dao.store(new Subject(taxonQname), new Statement(IS_PART_OF_PREDICATE, new ObjectResource(newParentQname)));
-		dao.store(new Subject(taxonQname), new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(LAST_IN_ORDER)));
-		if (taxon.getChecklist() == null) {
-			dao.store(new Subject(taxonQname), new Statement(NAME_ACCORDING_TO_PREDICATE, new ObjectResource(newParent.getChecklist())));
-		}
+		move(taxon, newParent, dao);
 		if (taxon.isSpecies()) {
 			changeScientificNameAndCreateSynonymOfOldName(taxon, newParent, taxonomyDAO, dao);
 		}
 		
-		taxon.invalidate();
+		taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
+		taxon.invalidateSelfAndLinking();
 		
 		return apiSuccessResponse(res);
 	}
 
+	public static void move(EditableTaxon taxon, EditableTaxon newParent, TriplestoreDAO dao) throws Exception {
+		Subject subject = new Subject(taxon.getQname());
+		dao.store(subject, new Statement(IS_PART_OF_PREDICATE, new ObjectResource(newParent.getQname())));
+		dao.store(subject, new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(LAST_IN_ORDER)));
+		if (!given(taxon.getChecklist())) {
+			dao.store(subject, new Statement(NAME_ACCORDING_TO_PREDICATE, new ObjectResource(newParent.getChecklist())));
+		}
+	}
+	
 	private void changeScientificNameAndCreateSynonymOfOldName(EditableTaxon taxon, EditableTaxon newParent, ExtendedTaxonomyDAO taxonomyDAO, TriplestoreDAO dao) throws Exception {
 		String newParentGenus = newParent.getScientificNameOfRank(GENUS);
 		if (!given(newParentGenus)) return;

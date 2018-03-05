@@ -33,7 +33,7 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 			throw new IllegalStateException("Can not delete taxon "+taxonQname+" because of preconditions");
 		}
 
-		taxon.invalidate();
+		taxon.invalidateSelfAndLinking();
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
@@ -52,17 +52,15 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 
 	private void unlinkSynonym(EditableTaxon removedTaxon, TriplestoreDAO dao) throws Exception {
 		String removedId = removedTaxon.getQname().toString();
-		EditableTaxon synonymParent = (EditableTaxon) removedTaxon.getSynonymParent();
-		if (synonymParent == null) return;
-
-		Model synonymParentModel = dao.get(synonymParent.getQname());
+		Qname synonymParentId = getTaxonomyDAO().getTaxonContainer().getSynonymParent(removedTaxon.getQname());
+		if (synonymParentId == null) return;
+		
+		Model synonymParentModel = dao.get(synonymParentId);
 		for (Statement s : synonymParentModel.getStatements()) {
 			if (shouldDelete(removedId, s)) {
 				dao.deleteStatement(s.getId());
 			}
 		}
-
-		synonymParent.invalidate();
 	}
 
 	private boolean shouldDelete(String removedId, Statement s) {

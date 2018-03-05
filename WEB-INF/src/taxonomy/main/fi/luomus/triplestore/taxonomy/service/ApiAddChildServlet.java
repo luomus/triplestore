@@ -42,7 +42,8 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		}
 		
 		dao.addTaxon(taxon);
-		taxon.invalidate();
+		
+		taxon.invalidateSelfAndLinking();
 		
 		responseData.setData("newTaxon", taxon);
 		
