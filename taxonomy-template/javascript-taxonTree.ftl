@@ -852,6 +852,7 @@ function sendTaxonDialogSubmit() {
 	var taxonToSendID = $('#taxonToSendID').val();
 	var newParentID = $('#newParentID').val();
 	var taxonToSendContainer = $('#'+taxonToSendID.replace("MX.", "MX")); 
+	var newParentContainer = $('#'+newParentID.replace("MX.", "MX"));
 	
 	$.ajax({
 		type: "POST",
@@ -863,8 +864,24 @@ function sendTaxonDialogSubmit() {
 			collapseTaxon(taxonToSendContainer.find(".treePlusMinusSign"));
 		}
 		taxonToSendContainer.fadeOut(function() {
-			taxonTreeGraphs.repaintEverything();
 			taxonToSendContainer.remove();
+			taxonTreeGraphs.repaintEverything();
+			
+			if (newParentContainer.length) {
+				if (newParentContainer.find(".treePlusMinusSign").length) {
+					collapseTaxon(newParentContainer.find(".treePlusMinusSign"));
+				}
+				newParentContainer.fadeOut(function() {
+					$.get("${baseURL}/api/singleTaxonInfo/"+newParentID, function(data) {
+						newParentContainer.replaceWith(data);
+						newParentContainer = $('#'+newParentID.replace("MX.", "MX"));
+						newParentContainer.find('button, .button').button();
+						newParentContainer.fadeIn(function() {
+							taxonTreeGraphs.repaintEverything();
+						});
+					});
+				});
+			}
 		});
 		$("#sendTaxonDialog").dialog("close");
   	});	
