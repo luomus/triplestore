@@ -40,6 +40,11 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		
 		dao.delete(subject, IS_PART_OF_PREDICATE);
 		dao.delete(subject, NAME_ACCORDING_TO_PREDICATE);
+		if (taxon.hasSynonyms()) {
+			for (Predicate synonymPredicate : ApiAddSynonymServlet.SYNONYM_PREDICATES.values()) {
+				dao.delete(subject, synonymPredicate);
+			}
+		}
 		
 		return apiSuccessResponse(res);
 	}
