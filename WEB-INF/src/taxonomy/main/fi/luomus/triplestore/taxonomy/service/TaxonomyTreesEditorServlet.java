@@ -22,8 +22,8 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req).setViewName("taxonEditMain");
 
 		Qname root = getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(req); 
-		if (root == null || root.toString().equals(FAVICON_ICO)) {
-			return redirectTo404(res);
+		if (root == null) {
+			return redirectTo(getConfig().baseURL()+"/not-found", res);
 		}
 
 		ExtendedTaxonomyDAO dao = getTaxonomyDAO();
@@ -40,25 +40,29 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 		if (taxon.getChecklist() != null) {
 			responseData.setData("checklist", getTaxonomyDAO().getChecklists().get(taxon.getChecklist().toString()));
 		}
-		
+
 		return responseData;
 	}
 
 	private Qname getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(HttpServletRequest req) throws Exception {
-		String qname = getQname(req);
+		Qname qname = new Qname(getQname(req));
 		if (!given(qname)) {
 			return DEFAULT_ROOT_QNAME;
 		}
+		if (qname.toString().equals(FAVICON_ICO)) return null;
 		if (checklistQname(qname)) {
-			Checklist checklist = getTaxonomyDAO().getChecklists().get(qname);
+			Checklist checklist = getTaxonomyDAO().getChecklists().get(qname.toString());
 			if (checklist == null || checklist.getRootTaxon() == null) return null;
 			return checklist.getRootTaxon();
+		} 
+		if (getTaxonomyDAO().getTaxonContainer().hasTaxon(qname)) {
+			return qname;
 		}
-		return new Qname(qname);
+		return null;
 	}
 
-	private boolean checklistQname(String qname) {
-		return qname.startsWith("MR.");
+	private boolean checklistQname(Qname qname) {
+		return qname.toString().startsWith("MR.");
 	}
 
 }
