@@ -449,6 +449,31 @@ function addNewSynonym(e) {
 	$("#addNewSynonymDialog").dialog("open");
 }
 
+function hideTaxon(e) {
+	var taxonContainer = $(e).closest('.taxonWithTools');
+	var taxonId = taxonContainer.attr('id');
+	var uri = '${baseURL}/api/hideTaxon/'+taxonId;
+	$("#menu").remove();
+	$.post(uri, function(data) {
+		if (data == "ok") {
+			var hideIcon = $('<span class="hiddenTaxon"></span>');
+			taxonContainer.find('.taxonInfo').first().find('.taxonId').first().after(hideIcon);
+		}
+	});
+}
+
+function unhideTaxon(e) {
+	var taxonContainer = $(e).closest('.taxonWithTools');
+	var taxonId = taxonContainer.attr('id');
+	var uri = '${baseURL}/api/unhideTaxon/'+taxonId;
+	$("#menu").remove();
+	$.post(uri, function(data) {
+		if (data == "ok") {
+			taxonContainer.find('.taxonInfo').first().find('.hiddenTaxon').remove();
+		}
+	});
+}
+
 function sendTaxon(e) {
 	var taxonContainer = $(e).closest('.taxonWithTools');
 	var taxonId = taxonContainer.attr('id');
@@ -666,12 +691,12 @@ $(function() {
 			});
 			
 			$("#taxonToolMenuHide").click(function() {
-				alert('hide');
+				hideTaxon(this);
 				return false;
 			});
 			
 			$("#taxonToolMenuUnhide").click(function() {
-				alert('unhide');
+				unhideTaxon(this);
 				return false;
 			});
 			

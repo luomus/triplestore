@@ -54,6 +54,9 @@
 	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
 			<span class="taxonId" title="${taxon.qname}">ID</span>
+			<#if taxon.hidden>
+				<span class="hiddenTaxon"></span>
+			</#if>
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span></#if> 
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
@@ -89,11 +92,6 @@
 						Checklist: ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 					</div>
 				</#if>
-			</#if>
-			<#if taxon.hidden>
-				<div class="checklistChangesMidTree">
-					[Hidden]
-				</div>
 			</#if>
 		</div>
 		<#if !taxon.synonym>

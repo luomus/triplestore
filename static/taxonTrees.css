@@ -404,7 +404,20 @@ div.taxonInfo .icons > * {
 	text-decoration: underline;
 	margin-right: 2px;
 }
-
+.hiddenTaxon::BEFORE {
+	content: "HIDDEN";
+	background-color: rgb(100,100,140);
+	color: white;
+	padding: 1px 5px 1px 5px;
+	border: 1px solid grey;
+	border-radius: 30px;
+	font-weight: bold;
+	display: inline-block;
+	text-align: center;
+	vertical-align: bottom;
+	margin-left: 5px;
+	margin-right: 5px;
+}
 div.simply-toast {
 	color: #fff;
 	background-color: #5cb85c;
