@@ -514,7 +514,7 @@ var newParentTaxonSelectedFunction = function (event, ui) {
 	
 function detachTaxon(e) {
 	var e = $(e).closest('.taxonWithTools');
-	var scientificName = $(e).find(".scientificName").text();
+	var scientificName = $(e).find(".scientificName").first().text();
 	var confirmText = 'Are you sure you want to detach ' + scientificName + ' and make it an orphan taxon?';
 	if (confirm(confirmText)) {
 		detachTaxonId($(e).attr('id'));
@@ -538,7 +538,7 @@ function detachTaxonId(detachId) {
 
 function deleteTaxon(e) {
 	var e = $(e).closest('.taxonWithTools');
-	var scientificName = $(e).find(".scientificName").text();
+	var scientificName = $(e).find(".scientificName").first().text();
 	var confirmText = 'Are you sure you want to permanently delete ' + scientificName + '?';
 	if (confirm(confirmText)) {
 		deleteTaxonId($(e).attr('id'));
@@ -570,13 +570,13 @@ function unlinkSynonym(e) {
 }
 
 function confirmUnlink(e, text) {
-	var synonymScientificName = $(e).find(".scientificName").text();
+	var synonymScientificName = $(e).find(".scientificName").first().text();
 	var synonymParentScientificName = getSynonymParentScientificName(e);
 	return confirm('Are you sure you want to detach ' + synonymScientificName + text + synonymParentScientificName + ' and make it an orphan taxon?');
 }
 
 function getSynonymParentScientificName(e) {
-	return $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").text();
+	return $(e).closest(".synonyms").closest(".taxonWithTools").children('.taxonInfo').find(".scientificName").first().text();
 }
 
 function removeSynonym(e, synonymType, removedId) {
