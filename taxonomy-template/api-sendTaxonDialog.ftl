@@ -8,7 +8,11 @@
 			<label>Move</label>
 			<b><@printScientificNameAndAuthor taxon /></b> &nbsp; 
 			<#if taxon.synonym>
-				which is synonym of <@printScientificNameAndAuthor taxon.synonymParent />
+				<#if taxon.synonymParent??>
+					which is synonym of <@printScientificNameAndAuthor taxon.synonymParent />
+				<#else>
+					which is an orphan taxa
+				</#if>
 			<#else>
 				of ${checklists[taxon.checklist.toString()].getFullname("en")!taxon.checklist}
 			</#if>
