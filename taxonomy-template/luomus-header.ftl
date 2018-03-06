@@ -46,6 +46,7 @@
 	<link href="${staticURL}/taxonomy.css?${staticContentTimestamp}" rel="stylesheet" />
 	<#if page == "taxonEditMain" || page == "taxonDescriptions">
 		<link href="${staticURL}/taxonTrees.css?${staticContentTimestamp}" rel="stylesheet" />
+		<script src="${staticURL}/jquery.simply-toast.js?${staticContentTimestamp}"></script>
 	</#if>
 	<#if page?starts_with("iucn")>
 		<link href="${staticURL}/iucn.css?${staticContentTimestamp}" rel="stylesheet" />

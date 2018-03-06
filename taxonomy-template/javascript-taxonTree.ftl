@@ -40,7 +40,17 @@ $(function() {
   		off_label: 'Disabled',
   		checked: false
 	});
-		  	
+	
+	$("#taxonTree").on('click', '.taxonId', function() {
+		var qname = $(this).attr('title');
+  		var temp = $("<input>");
+    	$("body").append(temp);
+    	temp.val(qname).select();
+    	document.execCommand("copy");
+    	temp.remove();
+    	$.simplyToast('info', qname + ' copied to clipboard');
+    	return false;
+	});
 });
 
 function treePlusMinusSignClick(e) {

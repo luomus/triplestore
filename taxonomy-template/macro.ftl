@@ -2,7 +2,7 @@
 	<#return qname1 == qname2>
 </#function>
 
-<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
+<#macro printScientificNameAndAuthor taxon><span title="${taxon.qname}" class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
 <#macro printEditorExpert taxon><#if taxon.checklist?has_content><@printEditorExpertSpecific taxon.editors taxon.experts /></#if></#macro>
 
@@ -53,8 +53,8 @@
 	<#local allowsAlterationsByUserOnThis = taxon.allowsAlterationsBy(user)>
 	<div class="taxonWithTools ${additionalClass} <#if taxon.synonym>synonym</#if> <#if taxon.hasChildren()>hasChildren</#if>" id="${taxon.qname?replace(".","")}">
 		<div class="taxonInfo <#if taxon.taxonRank?has_content>${taxon.taxonRank?replace("MX.","")}<#else>unranked</#if>">
+			<span class="taxonId" title="${taxon.qname}">ID</span>
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span></#if> 
-			
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
 				<#if allowsAlterationsByUserOnThis>

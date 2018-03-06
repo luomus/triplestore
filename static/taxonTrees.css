@@ -397,3 +397,19 @@ div.taxonInfo .icons > * {
 	font-variant: small-caps;
 	color: red;
 }
+
+.taxonId {
+	font-size: 7px;
+	color: blue;
+	text-decoration: underline;
+	margin-right: 2px;
+}
+
+div.simply-toast {
+	color: #fff;
+	background-color: #5cb85c;
+	border: 1px solid #7ec77e;
+	font-size: 120%;
+	padding: 1em;
+	border-radius: 6px;
+}
