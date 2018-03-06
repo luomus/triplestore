@@ -11,7 +11,6 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
@@ -66,21 +65,21 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		removeExistingLinkings(toSend, newParent, dao);
 		if ("CHILD".equals(sendAsType)) {
 			ApiChangeParentServlet.move(toSend, newParent, dao);
+			toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
+			toSend.invalidateSelfAndLinking();
 		} else {
 			SynonymType synonymType = ApiAddSynonymServlet.getSynonymType(sendAsType);
 			moveAsSynonym(toSend, newParent, synonymType, dao);
+			newParent.invalidateSelf();
 		}
-
-		toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
-		toSend.invalidateSelfAndLinking();
-
+		
 		return apiSuccessResponse(res);
 	}
 
 	private void removeExistingLinkings(EditableTaxon toSend, EditableTaxon newParent, TriplestoreDAO dao) throws Exception {
-		Taxon synonymParent = toSend.getSynonymParent();
-		if (synonymParent != null) {
-			Model synonymParentModel = dao.get(synonymParent.getQname());
+		Qname synonymParentId = getTaxonomyDAO().getTaxonContainer().getSynonymParent(toSend.getQname());
+		if (synonymParentId != null) {
+			Model synonymParentModel = dao.get(synonymParentId);
 			for (Predicate synonymPredicate : ApiAddSynonymServlet.SYNONYM_PREDICATES.values()) {
 				for (Statement s : synonymParentModel.getStatements(synonymPredicate.getQname())) {
 					if (s.isResourceStatement() && s.getObjectResource().getQname().equals(toSend.getQname().toString())) {
