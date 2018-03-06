@@ -16,7 +16,9 @@
 	</#if>
 	<#if taxon.detachable>
 		<#if taxon.synonym>
-			<li id="taxonToolMenuDetachSynonym"><span class="ui-icon ui-icon-scissors"></span>Detach</li>
+			<#if taxon.synonymParent??>
+				<li id="taxonToolMenuDetachSynonym"><span class="ui-icon ui-icon-scissors"></span>Detach</li>
+			</#if>
 		<#else>
 			<li id="taxonToolMenuDetach"><span class="ui-icon ui-icon-scissors"></span>Detach</li>
 		</#if>
