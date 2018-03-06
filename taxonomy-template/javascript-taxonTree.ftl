@@ -531,6 +531,7 @@ function detachTaxonId(detachId) {
 			}
 			taxonContainer.fadeOut(function() {
 				taxonTreeGraphs.repaintEverything();
+				taxonContainer.remove();
 			});
 		}
 	});
@@ -555,6 +556,7 @@ function deleteTaxonId(removedId) {
 			}
 			taxonContainer.fadeOut(function() {
 				taxonTreeGraphs.repaintEverything();
+				taxonContainer.remove();
 			});
 		}
 	});
@@ -849,6 +851,7 @@ function sendTaxonDialogSubmit() {
 	
 	var taxonToSendID = $('#taxonToSendID').val();
 	var newParentID = $('#newParentID').val();
+	var taxonToSendContainer = $('#'+taxonToSendID.replace("MX.", "MX")); 
 	
 	$.ajax({
 		type: "POST",
@@ -856,9 +859,13 @@ function sendTaxonDialogSubmit() {
       	data: form.serialize()
 	})
 	.success(function(data) {
-		//XXX TODO close tree, same as detach  and load again for both target and send taxon
-		$('#'+taxonToSendID).remove();
-		taxonTreeGraphs.repaintEverything();
+		if (taxonToSendContainer.find(".treePlusMinusSign").length) {
+			collapseTaxon(taxonToSendContainer.find(".treePlusMinusSign"));
+		}
+		taxonToSendContainer.fadeOut(function() {
+			taxonTreeGraphs.repaintEverything();
+			taxonToSendContainer.remove();
+		});
 		$("#sendTaxonDialog").dialog("close");
   	});	
 }
