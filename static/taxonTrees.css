@@ -12,13 +12,16 @@ body, html {
 #content-wrapper {
 	padding: 0;
 }
+
 h3, h4 {
 	margin: 0;
 	font-size: 100%;
 }
+
 h4 {
 	margin-top: 3px;
 }
+
 #taxonTree {
 	min-height: 250px;
 	position: relative;
