@@ -87,7 +87,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public EditableTaxon load(Qname taxonQname) {
 			try {
 				Model model = triplestoreDAO.get(taxonQname);
-				System.out.println("Lattasin modelin " + model.getRDF());
 				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
 				EditableTaxon taxon = createTaxon(model);
 				preloadSynonyms(taxon);
@@ -248,13 +247,11 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			if (taxon.isSynonym()) {
 				Taxon synonymParent = taxon.getSynonymParent();
 				if (synonymParent != null) {
-					System.out.println("Sanotaan synonym parentille että unohtaa itsensä " + synonymParent.getQname());
 					invalidateSelf(synonymParent);
 				}
 			}
 
 			if (taxon.hasParent()) {
-				System.out.println("Kyllä mä parentit heitän mäkeen taksonille " + taxon.getParentQname());
 				cachedChildren.invalidate(taxon.getParentQname());
 			}
 
