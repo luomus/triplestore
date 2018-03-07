@@ -22,6 +22,7 @@ h4 {
 #taxonTree {
 	min-height: 250px;
 	position: relative;
+	padding-bottom: 300px;
 }
 
 #editTaxonContent {
