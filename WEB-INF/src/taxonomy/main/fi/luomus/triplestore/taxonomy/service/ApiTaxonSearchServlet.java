@@ -38,7 +38,7 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
 		searchword = searchword.trim();
 		Document response =  getTaxonomyDAO()
-				.search(new TaxonSearch(searchword, 30, checklist)
+				.search(new TaxonSearch(searchword, 10, checklist)
 						.setOnlySpecies(onlySpecies)
 						.setOnlyFinnish(onlyFinnish))
 				.getResultsAsDocument();
