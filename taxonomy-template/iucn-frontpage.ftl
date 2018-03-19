@@ -17,6 +17,8 @@
 		<li>Muutoksen syy ei ole pakollinen jos NE-laji muuttuu muuhun luokkaan</li>
 		<li>Taksonomisen tietokannasta tieto siellä määritellystä lajin asemasta/vakiintumisesta Suomessa näkyville tallennuslomakkeella.</li>
 		<li>Korjattu lajiluettelon rajausta: Jos lajille on kopioitu vuoden 2010 tiedot mutta ei tehty muita tallennuksia, arvioinnille ei asettunut tilaksi "Aloitettu" joten lajiluettelossa rajaus aloitetuilla ei näyttänyt näitä arviointeja.</li>
+		<li>Lisätty Excel-latauksen ohjeisiin kuinka tuoda kaikki sisältö tekstinä, ettei Excel muuta lukuja päivämääriksi yms.</li>
+		<li>Excel-latauksen sarakejärjestyksiä on muutettu toivotusti. Loppuun on lisätty RLI-laskentaa varten lisää sarakkeita.</li>
 	</ul>
 	<h6>Uudistuksia 24.1.2018</h6>
 	<ul>

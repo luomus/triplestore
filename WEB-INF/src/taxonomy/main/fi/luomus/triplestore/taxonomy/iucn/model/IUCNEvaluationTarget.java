@@ -33,7 +33,9 @@ public class IUCNEvaluationTarget {
 	}
 
 	public String getScientificName() {
-		return taxon.getScientificName();
+		String s = taxon.getScientificName();
+		if (!given(s)) return taxon.getQname().toString();
+		return s;
 	}
 
 	public String getVernacularNameFi() {
@@ -54,9 +56,22 @@ public class IUCNEvaluationTarget {
 				if (i.hasNext()) b.append(", ");
 			}
 		}
-		if (b.length() == 0) return "";
-		return "(" + b.toString() + ")";
+		return b.toString();
 	}
+	
+	public String getVernacularNames() {
+		StringBuilder b = new StringBuilder();
+		List<String> names = new ArrayList<>();
+		names.addAll(taxon.getVernacularName().getAllTexts().values());
+		names.addAll(taxon.getAlternativeVernacularNames().getAllValues());
+		Iterator<String> i = names.iterator();
+		while (i.hasNext()) {
+			b.append(i.next());
+			if (i.hasNext()) b.append(", ");
+		}
+		return b.toString();
+	}
+	
 	public String getOrderAndFamily() {
 		StringBuilder b = new StringBuilder();
 		String className = taxon.getScientificNameOfRank(ORDER);

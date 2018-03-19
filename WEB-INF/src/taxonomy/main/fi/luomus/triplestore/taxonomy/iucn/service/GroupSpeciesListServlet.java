@@ -1,10 +1,14 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,18 +18,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.Person;
 import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -38,6 +50,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	private static final String PREV_RED_LIST_STATUS = "prevRedListStatus";
 	private static final int DEFAULT_PAGE_SIZE = 100;
 	private static final long serialVersionUID = -9070472068743470346L;
+	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
 	private static final Comparator<IUCNEvaluationTarget> ALPHA_COMPARATOR = new Comparator<IUCNEvaluationTarget>() {
 		@Override
@@ -115,26 +128,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			int pageCount = pageCount(filteredTargets.size(), pageSize);
 			if (currentPage > pageCount) currentPage = pageCount;
 
-			List<IUCNEvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
-
 			TriplestoreDAO dao = getTriplestoreDAO();
 			if (isFileDownload(req)) {
-				for (IUCNEvaluationTarget target : pageTargets) {
-					if (target.hasEvaluation(selectedYear)) {
-						IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
-						if (evaluation.isIncompletelyLoaded()) {
-							container.complateLoading(evaluation);
-						}
-					}
-				}
-				res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
-				responseData.setContentType("text/csv; charset=utf-8")
-				.setViewName("iucn-group-species-download")
-				.setData("areaStatusesDownload", AREA_STATUSES_FOR_DOWNLOAD);
-			} else {
-				responseData.setViewName("iucn-group-species-list");
+				return doDownload(res, responseData, container, selectedYear, filteredTargets);
 			}
-			return responseData
+			List<IUCNEvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
+			return responseData.setViewName("iucn-group-species-list")
 					.setData("group", group)
 					.setData("statusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
 					.setData("persons", getTaxonomyDAO().getPersons())
@@ -156,14 +155,482 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 		}
 
-		private static final Map<String, String> AREA_STATUSES_FOR_DOWNLOAD;
+		private ResponseData doDownload(HttpServletResponse res, ResponseData responseData, IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets) throws Exception {
+			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
+			Collections.reverse(years);
+			String headerRow = fileDownloadHeaderRow(selectedYear, years);
+			List<String> rows = fileDownloadDataRows(container, selectedYear, targets, years);
+			writeFileDownloadRows(res, selectedYear, headerRow, rows);
+			return responseData.setOutputAlreadyPrinted();
+		}
+
+		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, String headerRow, List<String> rows) throws IOException {
+			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
+			res.setContentType("text/csv; charset=utf-8");
+			PrintWriter writer = res.getWriter();
+			writer.write(headerRow);
+			writer.write("\n");
+			int i = 0;
+			for (String row : rows) {
+				writer.write(row);
+				writer.write("\n");
+				if (i++ % 500 == 0) writer.flush();
+			}
+			writer.flush();
+		}
+
+		private List<String> fileDownloadDataRows(IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets, List<Integer> years) throws Exception {
+			List<String> rows = new ArrayList<>();
+			for (IUCNEvaluationTarget target : targets) {
+				if (target.hasEvaluation(selectedYear)) {
+					IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
+					if (evaluation.isIncompletelyLoaded()) {
+						container.complateLoading(evaluation);
+					}
+
+					rows.add(fileDownloadDataRow(evaluation, target, years));
+				}
+			}
+			return rows;
+		}
+
+		private String fileDownloadDataRow(IUCNEvaluation evaluation, IUCNEvaluationTarget target, List<Integer> years) throws Exception {
+			int selectedYear = evaluation.getEvaluationYear();
+			IUCNEvaluation previous = target.getPreviousEvaluation(selectedYear);
+			List<String> data = new ArrayList<>();
+			data.add(""); // TODO iucn lajiryhmittely ryhmä1 ryhmä
+			data.add(""); // ryhmä 2 alaryhmä
+			data.add(""); // ryhmä 3 ala-alaryhmä
+			data.add(target.getOrderAndFamily());
+			data.add(taxonRank(target));
+			data.add(target.getScientificName());
+			data.add(target.getSynonymNames());
+			data.add(target.getVernacularNames());
+			data.add(target.getTaxon().getNotes());
+			data.add(adminStatuses(target));
+			data.add(state(evaluation));
+			data.add(lastModified(evaluation));
+			data.add(lastModifiedBy(evaluation));
+			data.add(statusWithExternalImpact(evaluation));
+			if (previous == null) {
+				data.add("--");
+				data.add("--");
+			} else {
+				data.add(statusWithExternalImpact(previous) + " (" + previous.getEvaluationYear()+")");
+				String corrected = previous.getCorrectedStatusForRedListIndex();
+				if (corrected != null) {
+					data.add(status(corrected) + " (" + previous.getEvaluationYear()+")");
+				} else {
+					data.add("--");
+				}
+			}
+			data.add(evaluation.getRemarks());
+			data.add(" -> ");
+			data.add(v(evaluation, "MKV.taxonomicNotes"));
+			data.add(enumValue(evaluation, "MKV.typeOfOccurrenceInFinland", getOccurrenceStatuses()));
+			data.add(v(evaluation, "MKV.typeOfOccurrenceInFinlandNotes"));
+
+			data.add(pair(evaluation, "MKV.distributionAreaMin", "MKV.distributionAreaMax"));
+			data.add(v(evaluation, "MKV.distributionAreaNotes"));
+			data.add(pair(evaluation, "MKV.occurrenceAreaMin", "MKV.occurrenceAreaMax"));
+			data.add(v(evaluation, "MKV.occurrenceAreaNotes"));
+			data.add(v(evaluation, "MKV.occurrenceNotes"));
+
+			for (String areaId : getTaxonomyDAO().getIucnDAO().getEvaluationAreas().keySet()) {
+				if (evaluation.hasOccurrence(areaId)) {
+					Occurrence o = evaluation.getOccurrence(areaId);
+					String label = AREA_STATUSES_FOR_DOWNLOAD.get(o.getStatus());
+					if (label == null) label = "UNKNOWN VALUE " + o.getStatus();
+					if (Boolean.TRUE.equals(o.getThreatened())) {
+						label += " (RT)";
+					}
+					data.add(label);
+				} else {
+					data.add("");
+				}
+			}			
+			data.add(v(evaluation, "MKV.occurrenceRegionsNotes"));
+			data.add(v(evaluation, "MKV.occurrenceRegionsPrivateNotes"));
+			data.add(v(evaluation, "MKV.regionallyThreatenedNotes"));
+			data.add(v(evaluation, "MKV.regionallyThreatenedPrivateNotes"));
+			data.add(habitat(evaluation.getPrimaryHabitat()));
+			data.add(habitats(evaluation.getSecondaryHabitats()));
+			data.add(v(evaluation, "MKV.habitatGeneralNotes"));
+			data.add(v(evaluation, "MKV.habitatNotes"));
+			data.add(d(evaluation, "MKV.generationAge"));
+			data.add(v(evaluation, "MKV.generationAgeNotes"));
+			data.add(v(evaluation, "MKV.evaluationPeriodLength"));
+			data.add(v(evaluation, "MKV.evaluationPeriodLengthNotes"));
+			data.add(pair(evaluation, "MKV.individualCountMin", "MKV.individualCountMax"));
+			data.add(v(evaluation, "MKV.individualCountNotes"));
+			data.add(v(evaluation, "MKV.populationSizePeriodBeginning"));
+			data.add(v(evaluation, "MKV.populationSizePeriodEnd"));
+			data.add(v(evaluation, "MKV.populationSizePeriodNotes"));
+			data.add(v(evaluation, "MKV.decreaseDuringPeriod"));
+			data.add(v(evaluation, "MKV.decreaseDuringPeriodNotes"));
+			data.add(v(evaluation, "MKV.populationVaries"));
+			data.add(v(evaluation, "MKV.populationVariesNotes"));
+			data.add(v(evaluation, "MKV.fragmentedHabitats"));
+			data.add(v(evaluation, "MKV.fragmentedHabitatsNotes"));
+			data.add(v(evaluation, "MKV.borderGain"));
+			data.add(v(evaluation, "MKV.borderGainNotes"));
+
+			data.add(endangerment(evaluation.getEndangermentReasons()));
+			data.add(v(evaluation, "MKV.endangermentReasonNotes"));
+			data.add(endangerment(evaluation.getThreats()));
+			data.add(v(evaluation, "MKV.threatNotes"));
+			data.add(v(evaluation, "MKV.groundsForEvaluationNotes"));
+
+			for (String criteria : CRITERIAS) {
+				data.add(v(evaluation, "MKV.criteria"+criteria));
+				data.add(v(evaluation, "MKV.criteria"+criteria+"Notes"));
+				data.add(status(evaluation.getValue("MKV.status"+criteria)));
+				data.add(v(evaluation, "MKV.status"+criteria+"Notes"));
+			}
+			data.add(v(evaluation, "MKV.criteriaNotes"));
+
+			data.add(status(evaluation.getIucnStatus()));
+			data.add(v(evaluation, "MKV.criteriaForStatus"));
+			data.add(status(evaluation.getValue("MKV.redListStatusMin")) + " - " + status(evaluation.getValue("MKV.redListStatusMax")));
+			data.add(evaluation.getExternalImpact());
+			data.add(enumValue(evaluation, "MKV.reasonForStatusChange"));
+			data.add(enumValue(evaluation, "MKV.ddReason"));
+			data.add(status(evaluation.getValue("MKV.possiblyRE")));
+			data.add(v(evaluation, "MKV.lastSightingNotes"));
+			data.add(v(evaluation, "MKV.lsaRecommendation"));
+
+			data.add(v(evaluation, "MKV.redListStatusAccuracyNotes"));
+			data.add(v(evaluation, "MKV.redListStatusNotes"));
+			data.add(v(evaluation, "MKV.criteriaForStatusNotes"));
+			data.add(v(evaluation, "MKV.exteralPopulationImpactOnRedListStatusNotes"));
+			data.add(v(evaluation, "MKV.reasonForStatusChangeNotes"));
+			data.add(v(evaluation, "MKV.ddReasonNotes"));
+			data.add(v(evaluation, "MKV.possiblyRENotes"));
+			data.add(v(evaluation, "MKV.lsaRecommendationNotes"));
+
+			data.add(v(evaluation, "MKV.percentageOfGlobalPopulation"));
+			data.add(v(evaluation, "MKV.percentageOfGlobalPopulationNotes"));
+
+			data.add(publications(evaluation));
+			data.add(v(evaluation, "MKV.otherSources"));
+
+			data.add(" -> ");
+
+			data.add(s(evaluation.getCalculatedRedListIndex()));
+			for (Integer year : years) {
+				if (year >= selectedYear) continue;
+				IUCNEvaluation yearEval = target.getEvaluation(year);
+				if (yearEval == null) {
+					data.add("--");
+					data.add("--");
+					data.add("--");
+				} else {
+					boolean hasRLICorrection = yearEval.hasCorrectedStatusForRedListIndex();
+					if (hasRLICorrection) {
+						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
+						int change = yearEval.getCalculatedRedListIndex() - yearEval.getCalculatedCorrectedRedListIndex();
+						data.add(s(change));
+						data.add(s(yearEval.getCalculatedCorrectedRedListIndex()));	
+					} else {
+						data.add(status(yearEval.getIucnStatus()));
+						data.add("0");
+						data.add(s(yearEval.getCalculatedRedListIndex()));
+					}
+				}
+			}
+			for (Integer year : years) {
+				if (year >= selectedYear) continue;
+				IUCNEvaluation yearEval = target.getEvaluation(year);
+				if (yearEval == null) {
+					data.add("--");
+				} else {
+					data.add(v(yearEval, "MKV.redListIndexCorrectionNotes"));
+				}
+			}
+			return Utils.toCSV(data);
+		}
+
+		private String pair(IUCNEvaluation evaluation, String minPredicate, String maxPredicate) {
+			String min = evaluation.getValue(minPredicate);
+			String max = evaluation.getValue(maxPredicate);
+			if (!given(min) && !given(max)) return null;
+			if (!given(min)) min = " ";
+			if (!given(max)) max = " ";
+			return min + " - " + max;
+		}
+
+		private String s(Integer i) {
+			if (i == null) return null;
+			return i.toString();
+		}
+
+		private String publications(IUCNEvaluation evaluation) throws Exception {
+			List<String> values = evaluation.getValues("MKV.publication");
+			if (values.isEmpty()) return null;
+			List<String> citations = new ArrayList<>();
+			for (String value : values) {
+				citations.add(getTaxonomyDAO().getPublications().get(value).getCitation());
+			}
+			return catenade(citations);
+		}
+
+		private String catenade(List<String> values) {
+			if (values.isEmpty()) return "";
+			StringBuilder b = new StringBuilder();
+			Iterator<String> i = values.iterator();
+			while (i.hasNext()) {
+				b.append(i.next());
+				if (i.hasNext()) b.append(", ");
+			}
+			return b.toString();
+		}
+
+		private String statusWithExternalImpact(IUCNEvaluation evaluation) {
+			String status = status(evaluation.getIucnStatus());
+			String externalImpart = externalImpact(evaluation);
+			if (given(externalImpart)) {
+				return status + externalImpart;
+			}		
+			return status;
+		}
+
+		private String externalImpact(IUCNEvaluation evaluation) {
+			String extImp = evaluation.getExternalImpact();
+			if (!given(extImp)) return null;
+			if (extImp.equals("-2")) return "°°";
+			if (extImp.equals("-1")) return "°";
+			if (extImp.equals("+1")) return "✝";
+			if (extImp.equals("+2")) return "✝✝";
+			return null;
+		}
+
+		private String endangerment(List<IUCNEndangermentObject> reasons) {
+			// TODO Auto-generated method stub
+			if (reasons.isEmpty()) return null;
+			StringBuilder b = new StringBuilder();
+			Iterator<IUCNEndangermentObject> i = reasons.iterator();
+			while (i.hasNext()) {
+				b.append(i.next().getEndangerment().toString().replace("MKV.endangermentReason", ""));
+				if (i.hasNext()) b.append(", ");
+			}
+			return b.toString();
+		}
+
+		private String d(IUCNEvaluation evaluation, String predicate) {
+			String s = evaluation.getValue(predicate);
+			if (!given(s)) return null;
+			return s.replace(".", ",");
+		}
+
+		private String habitats(List<IUCNHabitatObject> secondaryHabitats) {
+			if (secondaryHabitats.isEmpty()) return null;
+			List<String> values = new ArrayList<>();
+			for (IUCNHabitatObject o : secondaryHabitats) {
+				String value = habitat(o);
+				if (value != null) values.add(value);
+			}
+			return catenade(values);
+		}
+
+		private String habitat(IUCNHabitatObject habitat) {
+			if (habitat == null) return null;
+			StringBuilder b = new StringBuilder();
+			if (given(habitat.getHabitat())) {
+				b.append(habitat.getHabitat().toString().replace("MKV.habitat", ""));
+			}
+			b.append(" ");
+			for (Qname type : habitat.getHabitatSpecificTypes()) {
+				if (given(type)) {
+					String s = type.toString().replace("MKV.habitatSpecificType", "").toLowerCase();
+					if (s.equals("pak")) s = "pa";
+					if (s.equals("vak")) s = "va";
+					b.append(s).append(" ");
+				}
+			}
+			return b.toString().trim();
+		}
+
+		private String v(IUCNEvaluation evaluation, String predicate) {
+			String value = evaluation.getValue(predicate);
+			if (value == null) return "";
+			if (value.equals("false")) return "Ei";
+			if (value.equals("true")) return "Kyllä";
+			return value;
+		}
+
+		private String enumValue(IUCNEvaluation evaluation, String predicate) throws Exception {
+			String value = evaluation.getValue(predicate);
+			if (!given(value)) return "";
+			return getTriplestoreDAO().getProperties(IUCNEvaluation.EVALUATION_CLASS).getProperty(predicate).getRange().getValueFor(value).getLabel().forLocale("fi");
+		}
+
+		private String enumValue(IUCNEvaluation evaluation, String predicate, Collection<RdfProperty> range) {
+			String value = evaluation.getValue(predicate);
+			if (!given(value)) return "";
+			for (RdfProperty rangeValue : range) {
+				if (rangeValue.getQname().toString().equals(value)) {
+					return rangeValue.getLabel().forLocale("fi");
+				}
+			}
+			return "UNKNOWN VALUE";
+		}
+
+		private String status(String iucnStatus) {
+			if (iucnStatus == null) return "";
+			return iucnStatus.replace("MX.iucn", "");
+		}
+
+		private String lastModifiedBy(IUCNEvaluation evaluation) throws Exception {
+			if (!given(evaluation.getLastModifiedBy())) return "--";
+			Person person = getTaxonomyDAO().getPersons().get(evaluation.getLastModifiedBy());
+			if (person == null) return "--";
+			return person.getFullname();
+		}
+
+		private String lastModified(IUCNEvaluation evaluation) throws Exception {
+			if (evaluation.getLastModified() == null) return "--";
+			return DateUtils.format(evaluation.getLastModified(), "d.M.yyyy");
+		}
+
+		private String state(IUCNEvaluation evaluation) {
+			if (evaluation.isReady()) return "Valmis";
+			if (evaluation.isReadyForComments()) return "Valmis kommentoitavaksi";
+			return "Kesken";
+		}
+
+		private String adminStatuses(IUCNEvaluationTarget target) throws Exception {
+			RdfProperty property = getTriplestoreDAO().getProperties("MX.taxon").getProperty("MX.hasAdminStatus"); 
+			Iterator<Qname> i = target.getTaxon().getAdministrativeStatuses().iterator();
+			StringBuilder b = new StringBuilder();
+			while (i.hasNext()) {
+				Qname status = i.next();
+				String label = property.getRange().getValueFor(status.toString()).getLabel().forLocale("fi");
+				b.append(label);
+				if (i.hasNext()) b.append(", ");
+			}
+			return b.toString();
+		}
+
+		private String taxonRank(IUCNEvaluationTarget target) {
+			Qname rank = target.getTaxon().getTaxonRank(); 
+			if (!given(rank)) {
+				return "";
+			}
+			return rank.toString().replace("MX.", "");
+		}
+
+		private String fileDownloadHeaderRow(int selectedYear, List<Integer> years) throws Exception {
+			List<String> header = new ArrayList<>();
+			header.add("Ryhmä 1");
+			header.add("Ryhmä 2");
+			header.add("Ryhmä 3");
+			header.add("Lahko, Heimo");
+			header.add("Taksonominen taso");
+			header.add("Tieteellinen nimi");
+			header.add("Synonyymit");
+			header.add("Kansankieliset nimet");
+			header.add("Taksonomiatietokannan kommentit");
+			header.add("Hallinnollinen asema");
+			header.add("Arvioinnin tila");
+			header.add("Muokattu");
+			header.add("Muokkaaja");
+			header.add("Luokka");
+			header.add("Edellinen luokka");
+			header.add("Edell. RLI korjaus");
+			header.add("Kommentit arviosta");
+			header.add("ARVIOINNIN TIEDOT ALKAVAT");
+			header.add("Arvioinnin kommentit taksonomiasta (julkinen)");
+			header.add("Vakinaisuus");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Levinneisuusalueen koko");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Esiinymisalueen koko");
+			header.add("..muistiinpanot");
+			header.add("Kommentit esiintymisestä (julkinen)");
+			for (Area area : getTaxonomyDAO().getIucnDAO().getEvaluationAreas().values()) {
+				header.add(area.getName().forLocale("fi"));
+			}
+			header.add("Kommentit esiintymisalueista (julkinen)");
+			header.add("Muistiinpanot esiintymisalueista (yksityinen)");
+			header.add("Kommentit alueellisesta uhanalaisuudesta (julkinen)");
+			header.add("Muistiinpanot alueellisesta uhanalaisuudesta (yksityinen)");
+			header.add("Ensisijainen elinympäristö");
+			header.add("Muut elinympäristöt");
+			header.add("Kommentit elinympäristöstä (julkinen)");
+			header.add("Muistiinpanot elinympäristöistä (yksityinen)");
+			header.add("Sukupolvi");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Tarkastelujakson pituus");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Yksilömäärä");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Pop.koko alussa");
+			header.add("Pop.koko lopussa");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Pop. väheneminen");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Kannanvaihtelut");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Pop. pirstoutunut");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Rajantakainen vahvistus");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Uhanalaisuuden syyt");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Uhkatekijät");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Kommentit arvioinnin perusteista (julkinen)");
+			for (String criteria : CRITERIAS) {
+				header.add(criteria + " kriteerit");
+				header.add(criteria + "..muistiinpanot (yksityinen)");
+				header.add(criteria + " luokka");
+				header.add(criteria + "..muistiinpanot (yksityinen)");
+			}
+			header.add("Kommentit kriteereistä (julkinen)");
+			header.add("Luokka");
+			header.add("Kriteerit");
+			header.add("Vaihteluväli");
+			header.add("+/-");
+			header.add("Muutoksen syy");
+			header.add("DD-syy");
+			header.add("Mahd. hävinnyt");
+			header.add("Viimeisin havainto (julkinen)");
+			header.add("LSA ehd.");
+			header.add("Kommentit arvioinnin tarkkuudesta/luotettavuudesta (julkinen)");
+			header.add("Luokka muistiinpanot (yksityinen)");
+			header.add("Kriteerit muistiinpanot (yksityinen)");
+			header.add("+/- muistiinpanot (yksityinen)");
+			header.add("Muutoksen syy muistiinpanot (yksityinen)");
+			header.add("DD-syy muistiinpanot (yksityinen)");
+			header.add("Mahd. hävinnyt muistiinpanot (yksityinen)");
+			header.add("LSA ehd. muistiinpanot (yksityinen)");
+			header.add("Osuus glob.pop.");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Julkaisut");
+			header.add("Muut lähteet");
+			header.add("RLI TIEDOT ALKAVAT");
+			header.add(selectedYear + " RLI");
+			for (Integer year : years) {
+				if (year >= selectedYear) continue;
+				header.add(year  + " luokka (indeksikorjattu)");
+				header.add(year + " muutos"); //  (luokan rli - korjattu rli)
+				header.add(year + " RLI");
+			}
+			for (Integer year : years) {
+				if (year >= selectedYear) continue;
+				header.add(year + "RLI muistiinpanot");
+			}
+			return Utils.toCSV(header);
+		}
+
+		private static final Map<Qname, String> AREA_STATUSES_FOR_DOWNLOAD;
 		static {
 			AREA_STATUSES_FOR_DOWNLOAD = new HashMap<>();
-			AREA_STATUSES_FOR_DOWNLOAD.put("MX.typeOfOccurrenceOccurs", "x");
-			AREA_STATUSES_FOR_DOWNLOAD.put("MX.typeOfOccurrenceExtirpated", "RE");
-			AREA_STATUSES_FOR_DOWNLOAD.put("MX.typeOfOccurrenceAnthropogenic", "NA");
-			AREA_STATUSES_FOR_DOWNLOAD.put("MX.typeOfOccurrenceUncertain", "p");
-			AREA_STATUSES_FOR_DOWNLOAD.put("MX.doesNotOccur", "-");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceOccurs"), "x");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceExtirpated"), "RE");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceAnthropogenic"), "NA");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceUncertain"), "p");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), "-");
 		}
 
 		private boolean isFileDownload(HttpServletRequest req) {
