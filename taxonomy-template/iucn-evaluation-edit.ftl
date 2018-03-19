@@ -263,6 +263,9 @@
 	</div>
 </#if>
 
+<#if user?? && user.admin>
+<h5>${(evaluation.id)}</h5>
+</#if>
 
 <form id="evaluationEditForm" action="${baseURL}/iucn/species/${taxon.qname}/${selectedYear}" method="post" onsubmit="return false;">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)!""}" />

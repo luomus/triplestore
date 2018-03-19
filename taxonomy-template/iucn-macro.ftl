@@ -609,7 +609,9 @@
 	<#if data != "NONE">
 		<#assign property = evaluationProperties.getProperty(fieldName)>
 		<#list data.getValues(fieldName) as value>
-			<#if property.literalProperty && !property.booleanProperty>
+			<#if property.decimalProperty>
+				${(value?replace(".", ","))?html}
+			<#elseif property.literalProperty && !property.booleanProperty>
 				${value?html}
 			<#else>
 				<#if customRanges?has_content>
