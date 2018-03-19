@@ -117,10 +117,11 @@ public class IUCNValidator {
 	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> THREATHS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> CRITERIA_ENDANGERMENTREASON_NOT_REQUIRED = Utils.set("A3", "B1", "B2", "C2");
 	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
 	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set("MX.iucnEX", "MX.iucnEW", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
-	
+
 	private void validateExternalImpactAndStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (given(givenData.getExternalImpact())) {
 			if (EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES.contains(givenData.getIucnStatus())) {
@@ -128,7 +129,7 @@ public class IUCNValidator {
 			}
 		}
 	}
-	
+
 	private void validateLsaForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String lsaRec = givenData.getValue(IUCNEvaluation.LSA_RECOMMENDATION);
 		if (!"true".equals(lsaRec)) return;
@@ -137,7 +138,7 @@ public class IUCNValidator {
 			validationResult.setError("Erityisesti suojeltavaksi voi ehdottaa vain luokkaan VU-CR arvioituja", IUCNEvaluation.LSA_RECOMMENDATION);
 		}
 	}
-	
+
 	private void validateCriteriaForStatusForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getIucnStatus();
 		if (CRITERIA_FOR_STATUS_REQUIRED_STATUSES.contains(status)) {
@@ -146,7 +147,7 @@ public class IUCNValidator {
 			}
 		}
 	}
-	
+
 	private void validateThreathsForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getIucnStatus();
 		if (THREATHS_REQUIRED_STATUSES.contains(status)) {
@@ -159,10 +160,20 @@ public class IUCNValidator {
 	private void validateEndangermentReasonForStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getIucnStatus();
 		if (ENDANGERMENTREASON_REQUIRED_STATUSES.contains(status)) {
+			if (endangermentNotRequiredForCriteria(givenData)) return;
 			if (givenData.getEndangermentReasons().isEmpty()) {
 				validationResult.setError("Uhanalaisuuden syyt on täytettävä luokille NT-RE", IUCNEvaluation.HAS_ENDANGERMENT_REASON);
 			}
 		}
+	}
+
+	private boolean endangermentNotRequiredForCriteria(IUCNEvaluation givenData) {
+		String criteria = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
+		if (!given(criteria)) return false;
+		for (String allowedCriteria : CRITERIA_ENDANGERMENTREASON_NOT_REQUIRED) {
+			if (criteria.startsWith(allowedCriteria)) return true;
+		}
+		return false;
 	}
 
 
@@ -187,7 +198,7 @@ public class IUCNValidator {
 
 	private void validateSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String criterias = parseCriterias(givenData);
-		
+
 		if (criterias.contains("B1")) {
 			validateWhenCriteriaB1Given(givenData, validationResult);
 		}
@@ -271,7 +282,7 @@ public class IUCNValidator {
 		if (!given(givenData.getValue(IUCNEvaluation.STATE))) {
 			validationResult.setError("Ohjelmointivirhe: " + IUCNEvaluation.STATE + " puuttuu!", null);
 		}
-		
+
 		for (Occurrence o : givenData.getOccurrences()) {
 			if (o.getYear() == null || o.getYear().intValue() != givenData.getEvaluationYear()) {
 				validationResult.setError("Ohjelmointivirhe: Occurrences vuosi ei ole kunnossa", IUCNEvaluation.HAS_OCCURRENCE);
@@ -286,7 +297,7 @@ public class IUCNValidator {
 
 	private static final Set<Qname> ALLOWED_FOR_RT = 
 			Utils.set(new Qname("MX.typeOfOccurrenceOccurs"), new Qname("MX.typeOfOccurrenceAnthropogenic"), new Qname("MX.typeOfOccurrenceUncertain"));
-	
+
 	private void validateInvasive(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getValue(IUCNEvaluation.RED_LIST_STATUS);
 		if (!given(status)) return;
@@ -394,12 +405,12 @@ public class IUCNValidator {
 			return true;
 		}
 	}
-	
+
 	private void validateCriteriaFormat(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		for (String criteria : IUCNEvaluation.CRITERIAS) {
 			validateCriteriaFormat(givenData.getValue("MKV.criteria"+criteria), criteria, validationResult);
 		}
-		
+
 		String criteriaForStatus = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
 		if (given(criteriaForStatus)) {
 			CriteriaValidationResult result = CriteriaFormatValidator.validateJoined(criteriaForStatus);

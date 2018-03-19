@@ -341,6 +341,21 @@ public class IUCNValidatorTests {
 	}
 
 	@Test
+	public void test_endangerment_not_required_for_criteria() throws Exception {
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "A3b");
+
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("" +
+				"[Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A, " + 
+				"Esiintymisalueet on täytettävä luokille NT-CR, "+
+				"Uhkatekijät on täytettävä luokille NT-CR]",
+				result.listErrors().toString());
+	}
+
+	@Test
 	public void test_occurrences_primHabitat_threats_endangerment_2() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
 		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
@@ -392,7 +407,7 @@ public class IUCNValidatorTests {
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
-	
+
 	@Test
 	public void test_evaluationPeriodLength() throws Exception {
 		Model givenModel = new Model(new Qname("Foo"));
@@ -434,7 +449,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, new Qname("MX.iucnNA"));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.STATUS_C, new Qname("MX.iucnNE"));
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1"));
-		
+
 		// Silence some other validations
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A, "A1a");
 		givenModel.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, "B1a");
