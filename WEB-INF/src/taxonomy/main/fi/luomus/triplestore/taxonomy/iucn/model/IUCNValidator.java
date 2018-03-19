@@ -337,6 +337,15 @@ public class IUCNValidator {
 
 	private void validateDataTypes(IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
 		RdfProperties properties = dao.getProperties(IUCNEvaluation.EVALUATION_CLASS);
+		for (Statement s : givenData.getModel().getStatements()) {
+			if (s.isLiteralStatement()) {
+				int length = Utils.countOfUTF8Bytes(s.getObjectLiteral().getUnsanitazedContent());
+				if (length > 4000) {
+					String label = getLabel(properties.getProperty(s.getPredicate())); 
+					validationResult.setError("Liian pitkä teksti kentässä " + label, s.getPredicate().toString());
+				}
+			}
+		}
 		for (RdfProperty p : properties.getAllProperties()) {
 			if (p.isIntegerProperty()) {
 				for (Statement s : givenData.getModel().getStatements(p.getQname())) {

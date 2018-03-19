@@ -465,4 +465,20 @@ public class IUCNValidatorTests {
 				"Luokkaa \"NE - Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
 	}
 
+	@Test
+	public void test_too_long_text() throws Exception {
+		String longtext = "longtext is long! ";
+		while (longtext.length() < 4500) {
+			longtext += longtext;
+		}
+		
+		Model givenModel = new Model(new Qname("Foo"));
+		IUCNEvaluation givenData = createReadyEvaluation(givenModel);
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUATION_AREA_NOTES, longtext);
+		IUCNValidationResult result = validator.validate(givenData, null);
+		assertEquals("[Liian pitkä teksti kentässä Yksityiset muistiinpanot levinneisyysalueen koosta]", 
+				result.listErrors().toString());
+	}
+	
 }
