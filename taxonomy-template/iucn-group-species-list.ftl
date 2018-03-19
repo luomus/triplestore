@@ -111,6 +111,7 @@
 		<th>Luokka ${selectedYear}</th>
 		<th class="redListIndexTableField">Indeksi ${selectedYear}</th>
 		<th>Edellinen luokka</th>
+		<th>Edell. RLI</th>
 		<th>Komm.</th>
 	</thead>
 	<#if (pageCount > 1)>

@@ -132,15 +132,20 @@
 		<td>-</td>
 		<td class="redListIndexTableField">-</td>
 	</#if>
-	<td>
-		<#if target.hasPreviousEvaluation(year)>
+	<#if target.hasPreviousEvaluation(year)>
 			<#assign prevEvaluation = target.getPreviousEvaluation(year)>
-			<@iucnIndexCorrectedStatus prevEvaluation />
-			(${prevEvaluation.evaluationYear})
+			<td>
+				<@iucnStatus prevEvaluation />
+				(${prevEvaluation.evaluationYear})
+			</td>
+			<td>
+				<@iucnIndexCorrectedStatus prevEvaluation />
+				(${prevEvaluation.evaluationYear})
+			</td>
 		<#else>
-			-
-		</#if>
-	</td>
+			<td>-</td>
+			<td>-</td>
+	</#if>
 	<td>
 		<#if target.hasEvaluation(year)>
 			<#if target.getEvaluation(year).hasRemarks()>
