@@ -618,7 +618,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 			for (Integer year : years) {
 				if (year >= selectedYear) continue;
-				header.add(year + "RLI muistiinpanot");
+				header.add(year + " RLI muistiinpanot");
 			}
 			return Utils.toCSV(header);
 		}
