@@ -459,7 +459,7 @@ public class IUCNValidator {
 				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 			}
 		} else {
-			if (!thisStatus.equals(prevStatus)) {
+			if (!thisStatus.equals(prevStatus) && !"MX.iucnNE".equals(prevStatus)) {
 				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 			}
 		}

@@ -14,6 +14,7 @@
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
 		<li>Kriteereille A3, B1, B2 ja C2 ei vaadita enää uhanalaisuuden syytä pakollisena tietona.</li>
+		<li>Muutoksen syy ei ole pakollinen jos NE-laji muuttuu muuhun luokkaan</li>
 		<li>Taksonomisen tietokannasta tieto siellä määritellystä lajin asemasta/vakiintumisesta Suomessa näkyville tallennuslomakkeella.</li>
 		<li>Korjattu lajiluettelon rajausta: Jos lajille on kopioitu vuoden 2010 tiedot mutta ei tehty muita tallennuksia, arvioinnille ei asettunut tilaksi "Aloitettu" joten lajiluettelossa rajaus aloitetuilla ei näyttänyt näitä arviointeja.</li>
 	</ul>
