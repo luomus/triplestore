@@ -44,7 +44,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
 
-	private static final Qname MISAPPLIED = new Qname("MX.misappliedCircumscription");
+	private static final Qname MISAPPLIED = new Qname("MX.hasMisappliedName");
 	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010; // XXX change year here
