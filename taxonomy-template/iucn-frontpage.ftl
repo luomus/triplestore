@@ -10,7 +10,7 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia xx.2.2018</h6>
+	<h6>Uudistuksia 22.3.2018</h6>
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
 		<li>Kriteereille A3, B1, B2 ja C2 ei vaadita enää uhanalaisuuden syytä pakollisena tietona.</li>
