@@ -293,7 +293,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(v(evaluation, "MKV.criteriaForStatus"));
 			data.add(status(evaluation.getValue("MKV.redListStatusMin")) + " - " + status(evaluation.getValue("MKV.redListStatusMax")));
 			data.add(evaluation.getExternalImpact());
-			data.add(enumValue(evaluation, "MKV.reasonForStatusChange"));
+			data.add(reasonForStatusChange(evaluation));
 			data.add(enumValue(evaluation, "MKV.ddReason"));
 			data.add(status(evaluation.getValue("MKV.possiblyRE")));
 			data.add(v(evaluation, "MKV.lastSightingNotes"));
@@ -348,6 +348,15 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				}
 			}
 			return Utils.toCSV(data);
+		}
+
+		private String reasonForStatusChange(IUCNEvaluation evaluation) throws Exception {
+			if (!evaluation.hasValue("MKV.reasonForStatusChange")) return null;
+			List<String> values = new ArrayList<>();
+			for (String value : evaluation.getValues("MKV.reasonForStatusChange")) {
+				values.add(enumValue("MKV.reasonForStatusChange", value));
+			}
+			return catenade(values);
 		}
 
 		private String pair(IUCNEvaluation evaluation, String minPredicate, String maxPredicate) {
@@ -460,6 +469,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 		private String enumValue(IUCNEvaluation evaluation, String predicate) throws Exception {
 			String value = evaluation.getValue(predicate);
+			return enumValue(predicate, value);
+		}
+
+		private String enumValue(String predicate, String value) throws Exception {
 			if (!given(value)) return "";
 			return getTriplestoreDAO().getProperties(IUCNEvaluation.EVALUATION_CLASS).getProperty(predicate).getRange().getValueFor(value).getLabel().forLocale("fi");
 		}
