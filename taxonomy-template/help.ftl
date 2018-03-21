@@ -28,7 +28,7 @@
 			<ul>
 				<li><b>Case 1 - Fix name:</b> Click the taxon. Click "Fix name/author". Click "Save" (or "Save and close").</li>
 				<li><b>Case 2 - Change name:</b> Click the taxon. Click "Change name and create synonym". Click "Save" (or "Save and close"). The checklist taxon will have a new name. Old name is now a synonym name of the checklist taxon.</li>
-				<li><b>Case 3 - Rename synonym:</b> Click the taxon. Click "Fix name/author". Click "Save" (or "Save and close").</li>
+				<li><b>Case 3 - Rename synonym:</b> Click the synonym. Click "Fix name/author". Click "Save" (or "Save and close").</li>
 			</ul>
 		</td>
 	</tr>
