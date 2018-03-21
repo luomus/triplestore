@@ -81,7 +81,7 @@
              			<#if user.role == "DESCRIPTION_WRITER">
               				<li style="color: rgb(150, 225, 230); font-weight: bold;">[Description writer]</li>
               			</#if>
-              			<#if user.role == "ADMIN">
+              			<#if user.admin>
               				<li style="color: green; font-weight: bold;">[Admin]</li>
               			</#if>
               			<li>Logged in as <span class="name">${user.fullname}</span></li>
