@@ -305,7 +305,7 @@ div.taxonDropArea.ui-droppable.ui-state-active {
 .ui-sortable-placeholder * { visibility: hidden; }
 .portlet-content label { white-space: nowrap; }
 .portlet-content table { border-collapse: collapse; }
-.portlet-content textarea { height: 5em; width: 100%; }
+.portlet-content textarea { height: 9em; width: 100%; }
 
 .checklistChangesMidTree {
 	color: red;
