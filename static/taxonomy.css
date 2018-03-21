@@ -417,3 +417,12 @@ table#invasiveSpecies .error {
 	color: white;
 	display: block;
 }
+
+table#helpTable td, table#helpTable th {
+	border: 1px solid grey;
+	padding: 1em;
+	min-width: 10em;
+}
+table#helpTable img {
+	vertical-align: bottom;
+}

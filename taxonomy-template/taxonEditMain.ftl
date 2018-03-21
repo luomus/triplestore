@@ -119,7 +119,7 @@
 				</tbody>
 			</table>
 			<a class="addNewItem addNewSynonymRow">+ Add new</a>
-			<input type="submit" class="button addButton" value="Create synonyms"  />
+			<input type="submit" class="button addButton" value="Add synonyms"  />
 			<br /><br />
 			<ul class="info">
 				<li><b>Basionym:</b> The first name under which this taxon was described.</li>

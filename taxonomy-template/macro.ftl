@@ -23,7 +23,7 @@
 	<div class="taxonChildTools">
 		<div>
 			<h3>Children of ${parentTaxon.scientificName!parentTaxon.vernacularName.forLocale("en")!parentTaxon.qname}</h3>
-			<button class="closeTaxonChildsButton" title="Close" onclick="collapseTaxonByCloseButton(this)">&#215;</button>
+			<button class="closeTaxonChildsButton" title="Close" onclick="collapseTaxonByCloseButton(this)"><span class="ui-icon ui-icon-close"></span></button>
 			<#if parentTaxon.allowsAlterationsBy(user)>
 				<button class="enableSortingButton" onclick="enableSorting(this);">Enable sorting</button>
 			</#if>
@@ -31,7 +31,7 @@
 		</div>
 		<div class="clear"></div>
 		<div class="sortingControls ui-widget ui-widget-header"">
-			<button class="saveSortingButton" onclick="saveSorting(this);">Save sorting</button>
+			<button class="saveSortingButton" onclick="saveSorting(this);">Save order</button>
 			<button class="sortAlphabeticallyButton" onclick="sortAlphabetically(this);">ABC..</button> 
 			<button onclick="cancelSorting(this);">Cancel</button>
 		</div>
