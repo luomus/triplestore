@@ -47,9 +47,7 @@
 #toolbox table tr td {
 	vertical-align: top;
 }
-#toolbox table tr td :last  {
-	text-align: center;
-}
+
 .switchContainer {
 	display: inline-block;
 }
@@ -253,7 +251,6 @@ tr.errorMessage td {
 }
 
 #editTaxonDescriptions .portlet {
-	dislay: block;
 	margin: 0;
 	margin-bottom: 2em;
 } 

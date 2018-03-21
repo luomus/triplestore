@@ -323,7 +323,7 @@ div.taxonInfo .vernacularNameFI {
 div.loading {
   margin-top: 3em;
   font-size: 2em;
-  font-color: rgb(179,193,206);
+  color: rgb(179,193,206);
 }
 
 #rootTree {

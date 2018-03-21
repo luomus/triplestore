@@ -135,7 +135,7 @@ label.error {
 }
 .successMessage {
 	background-color: rgb(200,250,200);
-	font-color: rgb(50,100,50);
+	color: rgb(50,100,50);
 }
 .errorMessage {
 	border: 2px dashed red;
