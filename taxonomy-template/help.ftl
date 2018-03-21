@@ -71,7 +71,7 @@
 	</tr>
 	<tr>
 		<th>Move taxon as synonym</th>
-		<td>Click tools gear icon (<span class="ui-icon ui-icon-gear"></span>) of the taxon to move. Select "Move as...". Select type of synonym. Type name (or MX-identifier) of the synonyn parent. Click the name from appearing list. Click "Move".</td>
+		<td>Click tools gear icon (<span class="ui-icon ui-icon-gear"></span>) of the taxon to move. Select "Move as...". Select synonym type. Type name (or MX-identifier) of the synonyn parent. Click the name from appearing list. Click "Move".</td>
 	</tr>
 	<tr>
 		<th>Move synonym to checklist</th>
