@@ -19,7 +19,7 @@
 		<#if taxon.hasIUCNEvaluation()>
 			<tr>
 				<td>This taxon has IUCN evaluation:</td>
-				<td><@actions/> <button>Move evaluation</button></td>
+				<td><@actions/> <button id="moveEvaluationButton">Move evaluation</button></td>
 			</tr>
 		</#if>
 		<#if taxon.hasAdministrativeStatuses()>

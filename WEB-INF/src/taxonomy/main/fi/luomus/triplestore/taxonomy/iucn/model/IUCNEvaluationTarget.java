@@ -45,7 +45,7 @@ public class IUCNEvaluationTarget {
 	public Taxon getTaxon() {
 		return taxon;
 	}
-	
+
 	public String getSynonymNames() {
 		StringBuilder b = new StringBuilder();
 		Iterator<Taxon> i = taxon.getAllSynonyms().iterator();
@@ -58,7 +58,7 @@ public class IUCNEvaluationTarget {
 		}
 		return b.toString();
 	}
-	
+
 	public String getVernacularNames() {
 		StringBuilder b = new StringBuilder();
 		List<String> names = new ArrayList<>();
@@ -71,7 +71,7 @@ public class IUCNEvaluationTarget {
 		}
 		return b.toString();
 	}
-	
+
 	public String getOrderAndFamily() {
 		StringBuilder b = new StringBuilder();
 		String className = taxon.getScientificNameOfRank(ORDER);
@@ -87,7 +87,7 @@ public class IUCNEvaluationTarget {
 		}
 		return b.toString();
 	}
-	
+
 	private boolean given(String s) {
 		return s != null && s.length() > 0;
 	}
@@ -140,5 +140,9 @@ public class IUCNEvaluationTarget {
 	public boolean hasEvaluations() {
 		return !evaluations.isEmpty();
 	}
-	
+
+	public void removeEvaluation(IUCNEvaluation evaluation) {
+		evaluations.remove(evaluation.getEvaluationYear());
+	}
+
 }

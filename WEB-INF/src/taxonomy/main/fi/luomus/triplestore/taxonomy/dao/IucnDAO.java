@@ -45,6 +45,8 @@ public interface IucnDAO {
 
 	public EditHistory getEditHistory(IUCNEvaluation evaluation) throws Exception;
 
-	void completeLoading(IUCNEvaluation evaluation) throws Exception;
+	public void completeLoading(IUCNEvaluation evaluation) throws Exception;
+
+	public void moveEvaluation(String fromTaxonId, String toTaxonId, int year) throws Exception;
 
 }

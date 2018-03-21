@@ -534,7 +534,15 @@ var newParentTaxonSelectedFunction = function (event, ui) {
 	$("#newParentIdDisplay").text('('+selectedId+')');
 	return false;
 };
-    
+
+var newTargetTaxonSelectedFunction = function (event, ui) {
+	var selectedName = ui.item.label;
+	var selectedId =  ui.item.value
+	$("#newTargetID").val(selectedId);
+	$("#newTargetIDSelector").val(selectedName);
+	$("#newTargetIdDisplay").text('('+selectedId+')');
+	return false;
+};   
 
 	
 function detachTaxon(e) {
@@ -638,15 +646,54 @@ function removeSynonym(e, synonymType, removedId) {
 
 function openCriticalDataDialog(e) {
 	$("#criticalDataDialog").remove();
-	var taxonId = $(e).closest('.taxonWithTools').attr('id');
+	var taxonContainer = $(e).closest('.taxonWithTools');
+	var taxonId = taxonContainer.attr('id');
 	$.get("${baseURL}/api/criticalDataDialog/"+taxonId, function(data) {
 		var dialog = $(data);
 		dialog.appendTo("body");
 		dialog.find('button, .button').button();
+		$("#moveEvaluationButton").on('click', function() {
+			$("#criticalDataDialog").remove();
+			openMoveEvaluationDialog(taxonContainer);
+		});
 		dialog.dialog({
 			modal: true, height: 'auto', width: 600, position: { my: "center", at: "top+30%" },
 			close: function() { 
 				$("#criticalDataDialog").remove(); 
+			}
+		});	
+	});
+}
+
+function openMoveEvaluationDialog(e) {
+	$("#moveEvaluationDialog").remove();
+	var taxonId = $(e).closest('.taxonWithTools').attr('id');
+	$.get("${baseURL}/api/moveEvaluationDialog/"+taxonId, function(data) {
+		var dialog = $(data);
+		dialog.appendTo("body");
+		dialog.find('button, .button').button();
+		$("#moveEvaluationDialogForm").validate({
+			ignore: [], // do not ignore hidden elements
+			rules: {
+				newTargetID: { required: true },
+				evaluationYears: { required: true }
+			},
+			messages: {
+				newTargetID: "New target must be selected. Type the name or part of the name and select a taxon.",
+				evaluationYears: "Select at least one year with an evaluation."
+			},
+    		errorLabelContainer: '.errorTxt'
+		});
+		$("#newTargetIDSelector").autocomplete({ 
+			minLength: 3, 
+			source: autocompleteSourceFunction, 
+			select: newTargetTaxonSelectedFunction,
+			appendTo: "#moveEvaluationDialog"
+		});
+		dialog.dialog({
+			modal: true, height: 'auto', width: 600, position: { my: "center", at: "top+30%" },
+			close: function() { 
+				$("#moveEvaluationDialog").remove(); 
 			}
 		});	
 	});
@@ -799,6 +846,31 @@ $(function() {
 	});
    
 });
+
+function moveEvaluationDialogSubmit() {
+	var form = $("#moveEvaluationDialogForm");
+	if (!form.valid()) return false;
+	$.ajax({ 
+		type: "POST", 
+		url: '${baseURL}/api/moveEvaluation',
+      	data: form.serialize(),
+      	success: function(data) {
+			$("#moveEvaluationDialog").dialog("close");
+      		if (data == "ok") {
+				$.simplyToast('info', 'Evaluations moved');
+			} else {
+				var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
+				validationDialog.appendTo("body");
+				validationDialog.dialog({
+					modal: true, height: 'auto', width: 600, 
+					close: function() { 
+						$("#validationDialog").remove(); 
+					}
+				});
+			}
+      	}
+    });
+}
 
 function addNewChildDialogSubmit() {
 	if (!$("#addNewTaxonDialogForm").valid()) return false;

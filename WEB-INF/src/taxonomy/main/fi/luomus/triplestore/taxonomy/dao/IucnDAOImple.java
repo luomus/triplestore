@@ -425,7 +425,7 @@ public class IucnDAOImple implements IucnDAO {
 		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
 
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
-		if (devMode) { // XXX
+		if (devMode) {
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
 				searchParams.objectresource(qname);
 			}
@@ -707,6 +707,25 @@ public class IucnDAOImple implements IucnDAO {
 
 	private EditHistoryEntry buildEditHistory(IUCNEvaluation thisPeriodData) {
 		return new EditHistoryEntry(thisPeriodData.getValue(IUCNEvaluation.EDIT_NOTES), thisPeriodData.getValue(IUCNEvaluation.LAST_MODIFIED_BY));
+	}
+
+	@Override
+	public void moveEvaluation(String fromTaxonId, String toTaxonId, int year) throws Exception {
+		IUCNEvaluationTarget from = getIUCNContainer().getTarget(fromTaxonId);
+		IUCNEvaluationTarget to = getIUCNContainer().getTarget(toTaxonId);
+		if (!from.hasEvaluation(year)) throw new IllegalStateException("From does not have evaluation for year " + year);
+		if (to.hasEvaluation(year))  throw new IllegalStateException("To already has evaluation for year " + year);
+		
+		IUCNEvaluation evaluation = from.getEvaluation(year);
+		Model model = evaluation.getModel();
+		
+		Predicate evaluatedTaxonPredicate = new Predicate(IUCNEvaluation.EVALUATED_TAXON); 
+		model.removeAll(evaluatedTaxonPredicate);
+		Statement s = new Statement(evaluatedTaxonPredicate, new ObjectResource(toTaxonId));
+		model.addStatement(s);
+		triplestoreDAO.store(new Subject(evaluation.getId()), s);
+		
+		getIUCNContainer().moveEvaluation(evaluation, from, to);
 	}
 
 

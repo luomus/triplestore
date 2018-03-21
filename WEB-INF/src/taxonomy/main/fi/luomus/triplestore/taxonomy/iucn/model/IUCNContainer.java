@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
 public class IUCNContainer {
 
@@ -87,14 +87,29 @@ public class IUCNContainer {
 		synchronized (LOCK) {
 			String speciesQname = evaluation.getSpeciesQname();
 			IUCNEvaluationTarget target = getTarget(speciesQname);
-			target.setEvaluation(evaluation);
-			for (String groupQname : target.getGroups()) {
-				getStat(evaluation.getEvaluationYear(), groupQname).invalidate();
-			}
-
+			setEvaluation(evaluation, target);
 		}
 	}
 
+	private void setEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget target) {
+		target.setEvaluation(evaluation);
+		invalidateStats(evaluation, target);
+	}
+
+	private void invalidateStats(IUCNEvaluation evaluation, IUCNEvaluationTarget target) {
+		for (String groupQname : target.getGroups()) {
+			getStat(evaluation.getEvaluationYear(), groupQname).invalidate();
+		}
+	}
+
+	public void moveEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget from, IUCNEvaluationTarget to) {
+		synchronized (LOCK) {
+			from.removeEvaluation(evaluation);
+			setEvaluation(evaluation, to);
+			invalidateStats(evaluation, from);
+		}
+	}
+	
 	public Collection<Remark> getRemarksForGroup(String groupQname) throws Exception {
 		if (remarksOfGroup.containsKey(groupQname)) return remarksOfGroup.get(groupQname);
 		synchronized (LOCK) {
