@@ -328,9 +328,14 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					boolean hasRLICorrection = yearEval.hasCorrectedStatusForRedListIndex();
 					if (hasRLICorrection) {
 						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
-						int change = yearEval.getCalculatedRedListIndex() - yearEval.getCalculatedCorrectedRedListIndex();
-						data.add(s(change));
-						data.add(s(yearEval.getCalculatedCorrectedRedListIndex()));	
+						Integer rliByStatus = yearEval.getCalculatedRedListIndex();
+						Integer rliCorrected = yearEval.getCalculatedCorrectedRedListIndex(); 
+						if (rliByStatus == null || rliCorrected == null) {
+							data.add("Ei voi laskea");
+						} else {
+							data.add(s(rliByStatus - rliCorrected));
+						}
+						data.add(s(rliCorrected));	
 					} else {
 						data.add(status(yearEval.getIucnStatus()));
 						data.add("0");
