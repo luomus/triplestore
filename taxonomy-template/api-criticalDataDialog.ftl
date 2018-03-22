@@ -18,8 +18,8 @@
 		</#if>
 		<#if taxon.hasIUCNEvaluation()>
 			<tr>
-				<td>This taxon has IUCN evaluation:</td>
-				<td><@actions/> <button id="moveEvaluationButton">Move evaluation</button></td>
+				<td>This taxon has IUCN evaluations:</td>
+				<td><@actions/> <button id="moveEvaluationButton">Move evaluations</button></td>
 			</tr>
 		</#if>
 		<#if taxon.hasAdministrativeStatuses()>
