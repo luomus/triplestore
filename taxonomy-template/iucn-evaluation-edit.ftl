@@ -263,7 +263,7 @@
 	</div>
 </#if>
 
-<#if user?? && user.admin>
+<#if evaluation?? && user?? && user.admin>
 <h5>${(evaluation.id)}</h5>
 </#if>
 
