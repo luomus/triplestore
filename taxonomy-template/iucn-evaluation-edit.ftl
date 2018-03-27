@@ -399,10 +399,10 @@
 <#if permissions>
 	<div class="submitButtonContainer">
 		<textarea placeholder="Tallennuskommentit" class="editNotesInput" name="MKV.editNotes">${(editNotes!"")?html}</textarea>
-		<button id="saveButton">Tallenna</button>
-		<button id="readyForCommentsButton">Valmis kommentoitavaksi</button>
-		<button id="readyButton" class="ready">Valmis</button>
-		<button id="cancelButton">Peruuta kaikki muutokset</button>
+		<button class="submitButton" id="saveButton">Tallenna</button>
+		<button class="submitButton" id="readyForCommentsButton">Valmis kommentoitavaksi</button>
+		<button class="submitButton" id="readyButton" class="ready">Valmis</button>
+		<button class="submitButton" id="cancelButton">Peruuta kaikki muutokset</button>
 	</div>
 </form>
 </#if>
@@ -417,9 +417,7 @@ $(function() {
 	$(":input").on('change', function() { warnBeforeUnload = true; } ); 
 });
 
-$(document).submit(function(){
-    warnBeforeUnload = false;
-})
+$(".submitButton").on('click', function() { warnBeforeUnload = false; });
 
 $(window).on('beforeunload', function() {
 	if (warnBeforeUnload) {
