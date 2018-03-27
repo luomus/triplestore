@@ -10,6 +10,10 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 27.3.2018</h6>
+	<ul>
+		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia: Korjattu tämän toiminta Chrome ja IE selaimilla.</li>
+	</ul>	
 	<h6>Uudistuksia 22.3.2018</h6>
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
