@@ -10,6 +10,10 @@
 <@toolbox/>		
 
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
+	<h6>Uudistuksia 29.3.2018</h6>
+	<ul>
+		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia: Korjattu tämän toiminta kaikilla selaimilla myös RLI päivityksen ja kommenttejen jättämisen osalta. (27.3. "korjaus" rikkoi nämä)</li>
+	</ul>
 	<h6>Uudistuksia 27.3.2018</h6>
 	<ul>
 		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia: Korjattu tämän toiminta Chrome ja IE selaimilla.</li>
@@ -23,13 +27,6 @@
 		<li>Korjattu lajiluettelon rajausta: Jos lajille on kopioitu vuoden 2010 tiedot mutta ei tehty muita tallennuksia, arvioinnille ei asettunut tilaksi "Aloitettu" joten lajiluettelossa rajaus aloitetuilla ei näyttänyt näitä arviointeja.</li>
 		<li>Lisätty Excel-latauksen ohjeisiin kuinka tuoda kaikki sisältö tekstinä, ettei Excel muuta lukuja päivämääriksi yms.</li>
 		<li>Excel-latauksen sarakejärjestyksiä on muutettu toivotusti. Loppuun on lisätty RLI-laskentaa varten lisää sarakkeita.</li>
-	</ul>
-	<h6>Uudistuksia 24.1.2018</h6>
-	<ul>
-		<li>Muutettu luokkien esittämistä lajiluettelossa, lajin arviointisivulla ja tiedostolatauksessa: Otetaan huomioon luokan ylentäminen ja alentaminen.</li>
-		<li>Näytetään kaikentyyppiset synonyymit lajin tietojen ohessa luettelossa, arviointisivulla ja tiedostolatauksessa (aiemmin näytettiin vain aidot synonyymit).</li>
-		<li>Korjattu virhe jonka vuoksi uhanalaisuuden syy/uhkatekijät järjestys meni sekaisin. Tämä tapahtui (ainakin) jos muokattiin arviointia jossa oli jo ennestään useampi kuin yksi syy ja lisättiin uusia syitä. Lajeja joita tämä koskee on 91. Näistä on lähetetty tieto asianomaisille arvioijille.</li>
-		<li>Korjattu virhe DD-luokan arviointien muokkauksessa: "DD-luokituksen syy" -kenttä ei tullut näkyville.</li>
 	</ul>
 </div>
 

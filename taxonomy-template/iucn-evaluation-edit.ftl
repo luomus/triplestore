@@ -216,7 +216,7 @@
 			</p>
 			<p>
 				<label>&nbsp;</label>
-				<input type="submit" value="Päivitä" />
+				<input type="submit" class="submitButton" value="Päivitä" />
 			</p>
 		</div>
 	</div>
@@ -241,7 +241,7 @@
 		<div class="ui-widget-content">
 			<p class="info">Tässä voi kommentoida arviointia. Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
 			<p><textarea id="remarksField" name="MKV.remarks"></textarea></p>
-			<p><input type="submit" value="Tallenna kommentti" /></p>
+			<p><input type="submit" class="submitButton" value="Tallenna kommentti" /></p>
 		</div>
 	</div>
 	<hr />
