@@ -23,20 +23,20 @@
 				<#if !taxon.hasTreeRelatedCriticalData()>
 					<option value="CHILD">child</option>
 				<#else>
-					<option disabled="disabled" value="CHILD">child</option>
+					<option disabled="disabled" value="CHILD">Child</option>
 				</#if>
 
 				<#assign disabled=""/><#if taxon.hasCriticalData()><#assign disabled=" disabled=\"disabled\" "/></#if>
-				<option ${disabled} value="BASIONYM">basionym</option>
-				<option ${disabled} value="OBJECTIVE">objective synonym</option>
-				<option ${disabled} value="SUBJECTIVE">subjective synonym</option>
-				<option ${disabled} value="HOMOTYPIC">homotypic synonym</option>
-				<option ${disabled} value="HETEROTYPIC">heterotypic synonym</option>
-				<option ${disabled} value="SYNONYM">synonym</option>
-				<option ${disabled} value="MISSPELLED">misspelled name</option>
-				<option ${disabled} value="ORTOGRAPHIC">ortographic synonym</option>
-				<option ${disabled} value="UNCERTAIN">uncertain synonym</option>
-				<option ${disabled} value="MISAPPLIED">misapplied name</option>
+				<option ${disabled} value="BASIONYM">Basionym</option>
+				<option ${disabled} value="OBJECTIVE">Objective synonym</option>
+				<option ${disabled} value="SUBJECTIVE">Subjective synonym</option>
+				<option ${disabled} value="HOMOTYPIC">Homotypic synonym</option>
+				<option ${disabled} value="HETEROTYPIC">Heterotypic synonym</option>
+				<option ${disabled} value="SYNONYM">Synonym</option>
+				<option ${disabled} value="MISSPELLED">Misspelled name</option>
+				<option ${disabled} value="ORTHOGRAPHIC">Orthographic variant</option>
+				<option ${disabled} value="UNCERTAIN">Uncertain synonym</option>
+				<option ${disabled} value="MISAPPLIED">Misapplied name</option>
 			</select>
 			
 			<#if taxon.hasCriticalData()>
