@@ -3,15 +3,15 @@ package fi.luomus.triplestore.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import fi.luomus.commons.http.HttpClientService;
-import fi.luomus.commons.xml.Document;
-
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import fi.luomus.commons.http.HttpClientService;
+import fi.luomus.commons.xml.Document;
 
 public class ServletTests {
 
@@ -49,8 +49,11 @@ public class ServletTests {
 	public void test_no_authentication() throws Exception {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
-			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/MA.5"));
-			assertTrue(response.contains("HTTP Status 401"));
+			try {
+				noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/MA.5"));
+			} catch (Exception e) {
+				assertEquals("Request returned 401", e.getMessage());
+			}
 		} finally {
 			if (noAutenticationClient != null) noAutenticationClient.close();
 		}
