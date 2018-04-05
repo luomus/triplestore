@@ -240,6 +240,9 @@ public class CriteriaFormatValidatorTests {
 		assertEquals(true, CriteriaFormatValidator.forCriteria("B").validate("B1ab(iii)c(iv)+2ab(iii)c(iv)").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1ab(iii)c(iv)+B2ab(iii)c(iv)").isValid());
 
+		assertEquals(true, CriteriaFormatValidator.forCriteria("B").validate("B2ab(i)").isValid());
+		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B2a+2b(i)").isValid());
+		
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1ab()").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1ab(i").isValid());
 		assertEquals(false, CriteriaFormatValidator.forCriteria("B").validate("B1ab(i))").isValid());
