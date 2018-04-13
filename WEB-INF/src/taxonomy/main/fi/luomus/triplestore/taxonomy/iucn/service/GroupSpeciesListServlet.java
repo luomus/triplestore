@@ -21,8 +21,10 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Person;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
@@ -189,13 +191,15 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					}
 
 					rows.add(fileDownloadDataRow(evaluation, target, years));
+				} else {
+					rows.add(fileDownloadDataRow(new IUCNEvaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years));
 				}
 			}
 			return rows;
 		}
 
 		private String fileDownloadDataRow(IUCNEvaluation evaluation, IUCNEvaluationTarget target, List<Integer> years) throws Exception {
-			int selectedYear = evaluation.getEvaluationYear();
+			int selectedYear = evaluation.getEvaluationYear() == null ? years.get(0) : evaluation.getEvaluationYear();
 			IUCNEvaluation previous = target.getPreviousEvaluation(selectedYear);
 			List<String> data = new ArrayList<>();
 			data.add(""); // TODO iucn lajiryhmittely ryhmä1 ryhmä
@@ -291,7 +295,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			data.add(status(evaluation.getIucnStatus()));
 			data.add(v(evaluation, "MKV.criteriaForStatus"));
-			data.add(status(evaluation.getValue("MKV.redListStatusMin")) + " - " + status(evaluation.getValue("MKV.redListStatusMax")));
+			data.add(pair(status(evaluation.getValue("MKV.redListStatusMin")), status(evaluation.getValue("MKV.redListStatusMax"))));
 			data.add(evaluation.getExternalImpact());
 			data.add(reasonForStatusChange(evaluation));
 			data.add(enumValue(evaluation, "MKV.ddReason"));
@@ -367,12 +371,16 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		private String pair(IUCNEvaluation evaluation, String minPredicate, String maxPredicate) {
 			String min = evaluation.getValue(minPredicate);
 			String max = evaluation.getValue(maxPredicate);
-			if (!given(min) && !given(max)) return null;
-			if (!given(min)) min = " ";
-			if (!given(max)) max = " ";
-			return min + " - " + max;
+			return pair(min, max);
 		}
 
+		private String pair(String s1, String s2) {
+			if (!given(s1) && !given(s2)) return null;
+			if (!given(s1)) s1 = "";
+			if (!given(s2)) s2 = "";
+			return s1 + " -- " + s2;
+		}
+		
 		private String s(Integer i) {
 			if (i == null) return null;
 			return i.toString();
@@ -479,7 +487,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 		private String enumValue(String predicate, String value) throws Exception {
 			if (!given(value)) return "";
-			return getTriplestoreDAO().getProperties(IUCNEvaluation.EVALUATION_CLASS).getProperty(predicate).getRange().getValueFor(value).getLabel().forLocale("fi");
+			return getIUCNProperties().getProperty(predicate).getRange().getValueFor(value).getLabel().forLocale("fi");
+		}
+
+		private RdfProperties getIUCNProperties() throws Exception {
+			return getTriplestoreDAO().getProperties(IUCNEvaluation.EVALUATION_CLASS);
 		}
 
 		private String enumValue(IUCNEvaluation evaluation, String predicate, Collection<RdfProperty> range) {
@@ -513,6 +525,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		private String state(IUCNEvaluation evaluation) {
 			if (evaluation.isReady()) return "Valmis";
 			if (evaluation.isReadyForComments()) return "Valmis kommentoitavaksi";
+			if (evaluation.getState() == null) return "Aloittamatta";
 			return "Kesken";
 		}
 
@@ -648,7 +661,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceExtirpated"), "RE");
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceAnthropogenic"), "NA");
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceUncertain"), "p");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), "-");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), "--");
 		}
 
 		private boolean isFileDownload(HttpServletRequest req) {

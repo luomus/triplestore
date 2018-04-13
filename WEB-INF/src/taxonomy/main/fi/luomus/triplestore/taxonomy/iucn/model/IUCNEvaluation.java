@@ -257,7 +257,7 @@ public class IUCNEvaluation {
 		return STATE_READY_FOR_COMMENTS.equals(getState());
 	}
 
-	private String getState() {
+	public String getState() {
 		return getValue(STATE);
 	}
 
