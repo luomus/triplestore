@@ -18,7 +18,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 public class IUCNLineData {
 
 	public enum Mode {
-		V2010, SAMMALLEET2019, V2000
+		V2010, SAMMALLEET2019, V2000, GLOBAL
 
 	}
 	private static final Qname OCC_EX = new Qname("MX.typeOfOccurrenceExtirpated");
@@ -33,6 +33,7 @@ public class IUCNLineData {
 	private static final Qname STABLE = new Qname("MX.typeOfOccurrenceStablePopulation");
 	public String taxonQname;
 	public String scientificName;
+	public List<String> synonyms = new ArrayList<>();
 	public String finnishName;
 	public String alternativeFinnishNames;
 	public String taxonomicNotes;
@@ -84,18 +85,61 @@ public class IUCNLineData {
 	public String editNotes;
 	public String legacyInformalGroup;
 	private final String[] parts;
-		
+
 	public IUCNLineData(Mode mode, String[] parts) {
 		this.parts = parts;
 		if (mode == Mode.V2010) {
 			v2010();
-		}
-		if (mode == Mode.SAMMALLEET2019) {
+		} else if (mode == Mode.SAMMALLEET2019) {
 			sammaleet2019();
-		}
-		if (mode == Mode.V2000) {
+		} else if (mode == Mode.V2000) {
 			v2000();
+		} else if (mode == Mode.GLOBAL) {
+			global();
+		} else {
+			throw new UnsupportedOperationException(""+ mode);
 		}
+	}
+
+	private void global() {
+		String genus = s(6);
+		String species = s(7);
+		String infrarank = s(9);
+		String infraspec = s(10);
+		scientificName = sciname(genus, species, infrarank, infraspec);
+		for (String synonym : parseSynonyms(s(13))) {
+			synonyms.add(synonym);
+		}
+		redListStatus = s(17);
+		criteriaForStatus = s(18);
+		legacyInformalGroup = s(2);
+	}
+
+	private List<String> parseSynonyms(String s) {
+		if (!given(s)) return Collections.emptyList();
+		List<String> synonyms = new ArrayList<>();
+		if (s.contains(";")) {
+			for (String part : s.split(Pattern.quote(";"))) {
+				part = part.trim();
+				if (given(part)) {
+					synonyms.add(part);
+				}
+			}
+		} else {
+			synonyms.add(s);
+		}
+		return synonyms;
+	}
+
+	private String sciname(String genus, String species, String infrarank, String infraspec) {
+		String sciname = genus + " " + species;
+		if (given(infrarank)) sciname += " " + infrarank;
+		if (given(infraspec)) sciname += " " + infraspec;
+		sciname = sciname.trim();
+		while (sciname.contains("  ")) {
+			sciname = sciname.replace("  ", " ");
+		}
+		return sciname;
 	}
 
 	public IUCNLineData(String[] parts) {
@@ -206,13 +250,13 @@ public class IUCNLineData {
 		populationVariesNotes = s(27);
 		fragmentedHabitats = s(30);
 		fragmentedHabitatsNotes = s(29);
-		
+
 		borderGain = s(32);
 		borderGainNotes = s(31);
-		
+
 		endangermentReasons = s(33);
 		threats = s(35);
-		
+
 		criteriaA = s(37);
 		criteriaANotes = s(38);
 		criteriaB = s(39);
@@ -221,7 +265,7 @@ public class IUCNLineData {
 		criteriaCNotes = s(42);
 		criteriaD = s(43);
 		criteriaDNotes = s(44);
-		
+
 		groundsForEvaluationNotes = s(45);
 		redListStatus = s(46);
 		criteriaForStatus = s(47);
@@ -235,7 +279,7 @@ public class IUCNLineData {
 		redListStatusAccuracyNotes = s(53);
 		editNotes = s(57);
 	}
-	
+
 	private String s(int i) {
 		try {
 			String s = parts[i].trim();
@@ -252,6 +296,10 @@ public class IUCNLineData {
 		return scientificName;
 	}
 
+	public List<String> getSynonyms() {
+		return synonyms;
+	}
+
 	public String getFinnishName() {
 		return finnishName;
 	}
@@ -266,7 +314,7 @@ public class IUCNLineData {
 	}
 
 	private boolean given(String s) {
-		return s != null && s.length() > 0;
+		return s != null && s.trim().length() > 0;
 	}
 
 	public String getTaxonomicNotes() {
@@ -660,7 +708,7 @@ public class IUCNLineData {
 		String status = criteria.split(Pattern.quote(":"))[1].trim();
 		return RED_LIST_STATUSES.get(status);
 	}
-	
+
 	public String getCriteriaA() { return criteria(criteriaA); }
 	public String getCriteriaB() { return criteria(criteriaB); }
 	public String getCriteriaC() { return criteria(criteriaC); }
@@ -671,7 +719,7 @@ public class IUCNLineData {
 	public Qname getCriteriaCStatus() { return status(criteriaC); }
 	public Qname getCriteriaDStatus() { return status(criteriaD); }
 	public Qname getCriteriaEStatus() { return status(criteriaE); }
-	
+
 	public String getGroundsForEvaluationNotes() { return groundsForEvaluationNotes; }
 	public String getCriteriaForStatus() {return criteriaForStatus; }
 
@@ -864,5 +912,5 @@ public class IUCNLineData {
 		if (exteralPopulationImpactOnRedListStatus.equals("2")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2");
 		return null;
 	}
-	
+
 }
