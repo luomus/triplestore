@@ -63,6 +63,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String TRUE = "true";
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
+	private static final String INCLUDE_HIDDEN = "includeHidden";
 	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.301";
 	private static final String SORT_ORDER = "sortOrder";
 	private static final String MO_STATUS = "MO.status";
@@ -323,6 +324,7 @@ public class IucnDAOImple implements IucnDAO {
 		synchronized (LOCK) { // To prevent too many requests at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
 					.addParameter(ONLY_FINNISH, true)
+					.addParameter(INCLUDE_HIDDEN, true)
 					.addParameter(SELECTED_FIELDS, QNAME)
 					.addParameter(INFORMAL_GROUP_FILTERS, groupQname)
 					.addParameter(PAGE, "1")
