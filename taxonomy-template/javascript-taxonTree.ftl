@@ -849,7 +849,10 @@ $(function() {
 
 function moveEvaluationDialogSubmit(action) {
 	var form = $("#moveEvaluationDialogForm");
-	if (action == 'move' && !form.valid()) return false;
+	if (action == 'delete') {
+		$("#newTargetID").val('foo'); // make validation pass
+	}
+	if (!form.valid()) return false;
 	$.ajax({ 
 		type: "POST", 
 		url: '${baseURL}/api/moveEvaluation?action='+action,

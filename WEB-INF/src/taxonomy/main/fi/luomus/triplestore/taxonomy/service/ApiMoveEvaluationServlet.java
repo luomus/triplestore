@@ -97,6 +97,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 		
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonId));
+		IUCNEvaluationTarget target = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Model sourceModel = dao.get(taxonId);
 		
@@ -105,7 +106,9 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 			for (Statement s : sourceModel.getStatements(predicateName)) {
 				dao.deleteStatement(s.getId());
 			}
-			taxonomyDAO.getIucnDAO().deleteEvaluation(taxonId, year);
+			if (target.hasEvaluation(year)) {
+				taxonomyDAO.getIucnDAO().deleteEvaluation(taxonId, year);
+			}
 		}
 		
 		taxon.invalidateSelf();
