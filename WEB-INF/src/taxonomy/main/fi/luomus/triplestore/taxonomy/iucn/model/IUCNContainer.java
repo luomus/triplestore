@@ -34,7 +34,7 @@ public class IUCNContainer {
 		List<IUCNEvaluationTarget> t = new ArrayList<>(targets.values());
 		return Collections.unmodifiableCollection(t);
 	}
-	
+
 	public IUCNEvaluationTarget getTarget(String speciesQname) throws Exception {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
 		synchronized (LOCK) {
@@ -107,9 +107,17 @@ public class IUCNContainer {
 			from.removeEvaluation(evaluation);
 			setEvaluation(evaluation, to);
 			invalidateStats(evaluation, from);
+			invalidateStats(evaluation, to);
 		}
 	}
-	
+
+	public void deleteEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget from) {
+		synchronized (LOCK) {
+			from.removeEvaluation(evaluation);
+			invalidateStats(evaluation, from);
+		}
+	}
+
 	public Collection<Remark> getRemarksForGroup(String groupQname) throws Exception {
 		if (remarksOfGroup.containsKey(groupQname)) return remarksOfGroup.get(groupQname);
 		synchronized (LOCK) {
@@ -155,7 +163,7 @@ public class IUCNContainer {
 		String s = remark.split(Pattern.quote("\n"))[0];
 		return s.substring(s.length() - DATE_LENGTH, s.length()-1);
 	}
-	
+
 	private String getRemarkPart(String remark) {
 		StringBuilder b = new StringBuilder();
 		int i = 0;

@@ -468,7 +468,7 @@ public class IucnDAOImple implements IucnDAO {
 	private void setHabitatObjects(IUCNEvaluation evaluation, Model model) throws Exception {
 		Set<Qname> habitatObjectIds = getHabitatObjectIds(model);
 		Map<String, Model> asMap = getModelsAsMap(habitatObjectIds);
-		
+
 		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
 			String id = getPrimaryHabitatId(model);
 			Model habitatModel = asMap.get(id);
@@ -477,7 +477,7 @@ public class IucnDAOImple implements IucnDAO {
 			} else {
 				evaluation.setPrimaryHabitat(getHabitatObject(habitatModel));
 			}
-			
+
 		}
 		for (Statement secondaryHabitat : model.getStatements(IUCNEvaluation.SECONDARY_HABITAT)) {
 			Model habitatModel = asMap.get(secondaryHabitat.getObjectResource().getQname());
@@ -502,7 +502,7 @@ public class IucnDAOImple implements IucnDAO {
 		}
 		return habitatObject;
 	}
-	
+
 	private Set<Qname> getHabitatObjectIds(Model model) {
 		Set<Qname> habitatObjectIds = new HashSet<>();
 		if (model.hasStatements(IUCNEvaluation.PRIMARY_HABITAT)) {
@@ -565,7 +565,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void setOccurrences(Model model, IUCNEvaluation evaluation) throws Exception {
 		Map<String, Model> asMap = getOccurrenceModels(model);
-		
+
 		for (Statement hasOccurrence : model.getStatements(IUCNEvaluation.HAS_OCCURRENCE)) {
 			Model occurrenceModel = asMap.get(hasOccurrence.getObjectResource().getQname());
 			if (notGiven(occurrenceModel)) {
@@ -587,7 +587,7 @@ public class IucnDAOImple implements IucnDAO {
 		Collection<Model> models = triplestoreDAO.getSearchDAO().get(subjects);
 		return modelsAsMap(models);
 	}
-	
+
 	private Map<String, Model> modelsAsMap(Collection<Model> models) {
 		if (models.isEmpty()) return Collections.emptyMap();
 		Map<String, Model> modelsAsMap = new HashMap<>();
@@ -717,23 +717,28 @@ public class IucnDAOImple implements IucnDAO {
 		IUCNEvaluationTarget to = getIUCNContainer().getTarget(toTaxonId);
 		if (!from.hasEvaluation(year)) throw new IllegalStateException("From does not have evaluation for year " + year);
 		if (to.hasEvaluation(year))  throw new IllegalStateException("To already has evaluation for year " + year);
-		
+
 		IUCNEvaluation evaluation = from.getEvaluation(year);
 		Model model = evaluation.getModel();
-		
+
 		Predicate evaluatedTaxonPredicate = new Predicate(IUCNEvaluation.EVALUATED_TAXON); 
 		model.removeAll(evaluatedTaxonPredicate);
 		Statement s = new Statement(evaluatedTaxonPredicate, new ObjectResource(toTaxonId));
 		model.addStatement(s);
 		triplestoreDAO.store(new Subject(evaluation.getId()), s);
-		
+
 		getIUCNContainer().moveEvaluation(evaluation, from, to);
 	}
 
+	@Override
+	public void deleteEvaluation(String fromTaxonId, int year) throws Exception {
+		IUCNEvaluationTarget from = getIUCNContainer().getTarget(fromTaxonId);
+		if (!from.hasEvaluation(year)) throw new IllegalStateException("From does not have evaluation for year " + year);
 
+		IUCNEvaluation evaluation = from.getEvaluation(year);
+		triplestoreDAO.delete(evaluation.getModel().getSubject());
 
-
-
-
+		getIUCNContainer().deleteEvaluation(evaluation, from);
+	}
 
 }

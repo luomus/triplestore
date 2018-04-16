@@ -430,3 +430,7 @@ div.simply-toast {
 	padding: 1em;
 	border-radius: 6px;
 }
+
+.deleteButton {
+	background: red !important; 
+}

@@ -24,18 +24,25 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		boolean delete = "delete".equals(req.getParameter("action"));
+		
 		String taxonId = req.getParameter("taxonID");
 		String newTargetId = req.getParameter("newTargetID");
-		List<Integer> yearsToMove = yearsToMove(req);
+		List<Integer> years = yearsToMove(req);
 
 		if (!given(taxonId)) {
 			return error("Taxon to move from is missing");
 		}
+		if (years.isEmpty()) {
+			return error("No years selected");
+		}
+
+		if (delete) {
+			return delete(taxonId, years, req, res);
+		}
+		
 		if (!given(newTargetId)) {
 			return error("Target taxon info is missing");
-		}
-		if (yearsToMove.isEmpty()) {
-			return error("No years selected");
 		}
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
@@ -56,7 +63,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 		IUCNEvaluationTarget iucnSource = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
 		IUCNEvaluationTarget iucnTarget = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(newTargetId);
 
-		for (int year : yearsToMove) {
+		for (int year : years) {
 			if (iucnTarget.hasEvaluation(year)) {
 				return error("Target taxon already has IUCN evaluation for year " + year);
 			}
@@ -73,13 +80,34 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 			dao.deleteStatement(s.getId());
 			dao.insert(new Subject(targetTaxon.getQname()), s);
 		}
-		for (int year : yearsToMove) {
+		for (int year : years) {
 			if (iucnSource.hasEvaluation(year)) {
 				taxonomyDAO.getIucnDAO().moveEvaluation(taxonId, newTargetId, year);
 			}
 		}
 		
 		targetTaxon.invalidateSelf();
+		taxon.invalidateSelf();
+		
+		return apiSuccessResponse(res);
+	}
+
+	private ResponseData delete(String taxonId, List<Integer> years, HttpServletRequest req, HttpServletResponse res) throws Exception {
+		if (!getUser(req).isAdmin()) return error("Must be admin");
+		
+		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonId));
+		TriplestoreDAO dao = getTriplestoreDAO();
+		Model sourceModel = dao.get(taxonId);
+		
+		for (int year : years) {
+			String predicateName = "MX.redListStatus"+year+"Finland";
+			for (Statement s : sourceModel.getStatements(predicateName)) {
+				dao.deleteStatement(s.getId());
+			}
+			taxonomyDAO.getIucnDAO().deleteEvaluation(taxonId, year);
+		}
+		
 		taxon.invalidateSelf();
 		
 		return apiSuccessResponse(res);

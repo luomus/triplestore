@@ -1,6 +1,6 @@
 <div id="moveEvaluationDialog" class="taxonDialog" title="Move IUCN Red List evaluations">
 
-	<form id="moveEvaluationDialogForm" onsubmit="moveEvaluationDialogSubmit(); return false;">
+	<form id="moveEvaluationDialogForm" onsubmit="return false;">
 		<input type="hidden" name="taxonID" id="taxonID" value="${taxon.qname}" />
 		<input type="hidden" name="newTargetID" id="newTargetID" />
 		
@@ -46,7 +46,9 @@
 			
 		<div class="errorTxt"></div>
 			
-		<input type="submit" class="button addButton" value="Move"  />
-			
+		<input type="submit" class="button addButton" value="Move" onclick="moveEvaluationDialogSubmit('move');" />
+		<#if user.admin??>
+			<input style="float: right;" type="submit" class="button addButton deleteButton" value="Delete" onclick="moveEvaluationDialogSubmit('delete');" />
+		</#if>	
 	</form>
 </div>

@@ -847,17 +847,20 @@ $(function() {
    
 });
 
-function moveEvaluationDialogSubmit() {
+function moveEvaluationDialogSubmit(action) {
 	var form = $("#moveEvaluationDialogForm");
-	if (!form.valid()) return false;
+	if (action == 'move' && !form.valid()) return false;
 	$.ajax({ 
 		type: "POST", 
-		url: '${baseURL}/api/moveEvaluation',
+		url: '${baseURL}/api/moveEvaluation?action='+action,
       	data: form.serialize(),
       	success: function(data) {
 			$("#moveEvaluationDialog").dialog("close");
       		if (data == "ok") {
-				$.simplyToast('info', 'Evaluations moved');
+      			if (action == 'move')
+					$.simplyToast('info', 'Evaluations moved');
+				else 
+					$.simplyToast('info', 'Evaluations deleted');
 			} else {
 				var validationDialog = $('<div id="validationDialog"><h2>Validation error</h2><p class="errorMessage">'+data+'</p></div>');
 				validationDialog.appendTo("body");
