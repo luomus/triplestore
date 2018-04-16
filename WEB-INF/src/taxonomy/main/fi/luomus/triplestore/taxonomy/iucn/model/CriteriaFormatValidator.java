@@ -355,6 +355,9 @@ public class CriteriaFormatValidator {
 			if (prev != null && mainCriteria.getOrder() < prev.getOrder()) {
 				return new CriteriaValidationResult("Kriteeri " + mainCriteria.getMainCriteria() + " tulisi ilmoittaa ennen kriteeriä " + prev.getMainCriteria());
 			}
+			if (prev != null && prev.mainCriteria.equals(mainCriteria.mainCriteria)) {
+				return new CriteriaValidationResult("Kriteeri " + mainCriteria.getMainCriteria() + " ilmoitettu kahdesti; tulisi ilmoittaa alakriteerit yhdellä kertaa, ei '+'-merkillä eroteltuna");
+			}
 			CriteriaValidationResult result = validate(mainCriteria);
 			if (!result.isValid()) return result;
 			prev = mainCriteria;
