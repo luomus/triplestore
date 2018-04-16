@@ -119,6 +119,7 @@
 				</tbody>
 			</table>
 			<a class="addNewItem addNewSynonymRow">+ Add new</a>
+			<br />
 			<input type="submit" class="button addButton" value="Add synonyms"  />
 			<br /><br />
 			<ul class="info">

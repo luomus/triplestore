@@ -156,7 +156,7 @@ form ul li {
 a.addNewItem {
 	color: rgb(20,110,20);
 	margin-bottom: 9px;
-	display: block;
+	display: inline-block;
 	cursor: pointer;
 }
 
