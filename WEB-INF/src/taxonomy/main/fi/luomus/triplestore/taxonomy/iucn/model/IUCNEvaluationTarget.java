@@ -10,18 +10,21 @@ import java.util.Map;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonContainer;
 
 public class IUCNEvaluationTarget {
 
 	private static final Qname FAMILY = new Qname("MX.family");
 	private static final Qname ORDER = new Qname("MX.order");
-	private final Taxon taxon;
+	private final Qname taxonId;
 	private final Map<Integer, IUCNEvaluation> evaluations = new HashMap<>();
 	private final IUCNContainer container;
-
-	public IUCNEvaluationTarget(Taxon taxon, IUCNContainer container) {
-		this.taxon = taxon;
+	private final TaxonContainer taxonContainer;
+	
+	public IUCNEvaluationTarget(Qname taxonId, IUCNContainer container, TaxonContainer taxonContainer) {
+		this.taxonId = taxonId;
 		this.container = container;
+		this.taxonContainer = taxonContainer;
 	}
 
 	public List<String> getGroups() {
@@ -29,26 +32,26 @@ public class IUCNEvaluationTarget {
 	}
 
 	public String getQname() {
-		return taxon.getQname().toString();
+		return taxonId.toString();
 	}
 
 	public String getScientificName() {
-		String s = taxon.getScientificName();
-		if (!given(s)) return taxon.getQname().toString();
+		String s = getTaxon().getScientificName();
+		if (!given(s)) return getQname();
 		return s;
 	}
 
 	public String getVernacularNameFi() {
-		return taxon.getVernacularName() == null ? "" : taxon.getVernacularName().forLocale("fi"); 
+		return getTaxon().getVernacularName() == null ? "" : getTaxon().getVernacularName().forLocale("fi"); 
 	}
 
 	public Taxon getTaxon() {
-		return taxon;
+		return taxonContainer.getTaxon(taxonId);
 	}
 
 	public String getSynonymNames() {
 		StringBuilder b = new StringBuilder();
-		Iterator<Taxon> i = taxon.getAllSynonyms().iterator();
+		Iterator<Taxon> i = getTaxon().getAllSynonyms().iterator();
 		while (i.hasNext()) {
 			Taxon synonym = i.next();
 			if (given(synonym.getScientificName())) {
@@ -62,8 +65,8 @@ public class IUCNEvaluationTarget {
 	public String getVernacularNames() {
 		StringBuilder b = new StringBuilder();
 		List<String> names = new ArrayList<>();
-		names.addAll(taxon.getVernacularName().getAllTexts().values());
-		names.addAll(taxon.getAlternativeVernacularNames().getAllValues());
+		names.addAll(getTaxon().getVernacularName().getAllTexts().values());
+		names.addAll(getTaxon().getAlternativeVernacularNames().getAllValues());
 		Iterator<String> i = names.iterator();
 		while (i.hasNext()) {
 			b.append(i.next());
@@ -74,8 +77,8 @@ public class IUCNEvaluationTarget {
 
 	public String getOrderAndFamily() {
 		StringBuilder b = new StringBuilder();
-		String className = taxon.getScientificNameOfRank(ORDER);
-		String familyName = taxon.getScientificNameOfRank(FAMILY);
+		String className = getTaxon().getScientificNameOfRank(ORDER);
+		String familyName = getTaxon().getScientificNameOfRank(FAMILY);
 		if (given(className)) {
 			b.append(className);
 			if (given(familyName)) {

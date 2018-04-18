@@ -398,8 +398,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
-		Taxon taxon = taxonomyDAO.getTaxon(new Qname(speciesQname));
-		IUCNEvaluationTarget target = new IUCNEvaluationTarget(taxon, container);
+		IUCNEvaluationTarget target = new IUCNEvaluationTarget(new Qname(speciesQname), container, taxonomyDAO.getTaxonContainer());
 		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
 			target.setEvaluation(evaluation);
 		}
