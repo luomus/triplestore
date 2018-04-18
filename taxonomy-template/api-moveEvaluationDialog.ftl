@@ -21,7 +21,11 @@
 					</td>
 					<td>
 						<#if target.hasEvaluation(year)>
-							${redListStatusProperty.range.getValueFor(target.getEvaluation(year).iucnStatus).label.forLocale("fi")}
+							<#if target.getEvaluation(year).iucnStatus??>
+								${redListStatusProperty.range.getValueFor(target.getEvaluation(year).iucnStatus).label.forLocale("fi")}
+							<#else>
+								Eval exists, no status
+							</#if>
 						<#else>
 							-
 						</#if>
