@@ -205,6 +205,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(""); // TODO iucn lajiryhmittely ryhmä1 ryhmä
 			data.add(""); // ryhmä 2 alaryhmä
 			data.add(""); // ryhmä 3 ala-alaryhmä
+			data.add(target.getQname());
 			data.add(target.getOrderAndFamily());
 			data.add(taxonRank(target));
 			data.add(target.getScientificName());
@@ -555,6 +556,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Ryhmä 1");
 			header.add("Ryhmä 2");
 			header.add("Ryhmä 3");
+			header.add("Id");
 			header.add("Lahko, Heimo");
 			header.add("Taksonominen taso");
 			header.add("Tieteellinen nimi");
