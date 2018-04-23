@@ -7,7 +7,7 @@
 <@toolbox/>
 
 <div style="max-width:600px;">
-<p style="float: right" class="info">Uhanalaisuusarvioijat: <@editors group.qname.toString() /></p>
+<p style="float: right" class="info">Editorit: <@editors group.qname.toString() /></p>
 <h2>${group.name.forLocale("fi")!""}</h2>
 </div>
 

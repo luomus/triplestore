@@ -37,7 +37,7 @@
 		<tr>
 			<th>Eliöryhmä</th>
 			<th>Tila</th>
-			<th>Uhanalaisuusarvioijat</th>
+			<th>Editorit</th>
 			<#if user.isAdmin??><th></th></#if>
 		</tr>
 	</thead>
