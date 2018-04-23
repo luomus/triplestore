@@ -362,11 +362,29 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return Utils.toCSV(data);
 		}
 
+		private static final Map<String, Integer> STATUS_CHANGE_NUMBER_CODES;
+		static {
+			STATUS_CHANGE_NUMBER_CODES = new HashMap<>();
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeGenuine", 1);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeGenuineBeforePreviousEvaluation", 2);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeChangesInCriteria", 3);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeMoreInformation", 4);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeChangesInTaxonomy", 5);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeError", 6);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeErroneousInformation", 7);
+			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeOther", 8);
+		}
+
 		private String reasonForStatusChange(IUCNEvaluation evaluation) throws Exception {
 			if (!evaluation.hasValue("MKV.reasonForStatusChange")) return null;
 			List<String> values = new ArrayList<>();
 			for (String value : evaluation.getValues("MKV.reasonForStatusChange")) {
-				values.add(enumValue("MKV.reasonForStatusChange", value));
+				Integer code = STATUS_CHANGE_NUMBER_CODES.get(value);
+				if (code == null) {
+					values.add(value);
+				} else {
+					values.add(code.toString());
+				}
 			}
 			return catenade(values);
 		}
@@ -383,7 +401,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			if (!given(s2)) s2 = "";
 			return s1 + " -- " + s2;
 		}
-		
+
 		private String s(Integer i) {
 			if (i == null) return null;
 			return i.toString();
