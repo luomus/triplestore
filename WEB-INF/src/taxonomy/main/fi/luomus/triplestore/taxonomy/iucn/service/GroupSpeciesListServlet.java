@@ -627,7 +627,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Luokka");
 			header.add("Kriteerit");
 			header.add("Vaihteluväli");
-			header.add("+/-");
+			header.add("Alentaminen/ korottaminen");
 			header.add("Muutoksen syy");
 			header.add("DD-syy");
 			header.add("Mahd. hävinnyt");
@@ -636,7 +636,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Kommentit arvioinnin tarkkuudesta/luotettavuudesta (julkinen)");
 			header.add("Luokka muistiinpanot (yksityinen)");
 			header.add("Kriteerit muistiinpanot (yksityinen)");
-			header.add("+/- muistiinpanot (yksityinen)");
+			header.add("Alentaminen/ korottaminen muistiinpanot (yksityinen)");
 			header.add("Muutoksen syy muistiinpanot (yksityinen)");
 			header.add("DD-syy muistiinpanot (yksityinen)");
 			header.add("Mahd. hävinnyt muistiinpanot (yksityinen)");
