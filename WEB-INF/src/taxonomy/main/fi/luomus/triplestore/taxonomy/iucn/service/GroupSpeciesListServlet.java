@@ -321,16 +321,16 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			data.add(" -> ");
 
-			data.add(s(evaluation.getCalculatedRedListIndex()));
 			for (Integer year : years) {
-				if (year >= selectedYear) continue;
 				IUCNEvaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
 					data.add("--");
 					data.add("--");
 					data.add("--");
+					data.add("--");
 				} else {
 					boolean hasRLICorrection = yearEval.hasCorrectedStatusForRedListIndex();
+					data.add(status(yearEval.getIucnStatus()));
 					if (hasRLICorrection) {
 						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
 						Integer rliByStatus = yearEval.getCalculatedRedListIndex();
@@ -642,11 +642,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Julkaisut");
 			header.add("Muut lähteet");
 			header.add("RLI TIEDOT ALKAVAT");
-			header.add(selectedYear + " RLI");
 			for (Integer year : years) {
-				if (year >= selectedYear) continue;
-				header.add(year  + " luokka (indeksikorjattu)");
-				header.add(year + " muutos"); //  (luokan rli - korjattu rli)
+				header.add(year  + " luokka");
+				header.add(year  + " indeksikorjattu luokka");
+				header.add(year + " muutos");
 				header.add(year + " RLI");
 			}
 			for (Integer year : years) {
