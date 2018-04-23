@@ -210,7 +210,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(taxonRank(target));
 			data.add(target.getScientificName());
 			data.add(target.getSynonymNames());
-			data.add(target.getVernacularNames());
+			data.add(target.getTaxon().getVernacularName().forLocale("fi"));
+			data.add(target.getTaxon().getVernacularName().forLocale("sv"));
+			data.add(target.getTaxon().getVernacularName().forLocale("en"));
 			data.add(target.getTaxon().getNotes());
 			data.add(adminStatuses(target));
 			data.add(state(evaluation));
@@ -561,7 +563,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Taksonominen taso");
 			header.add("Tieteellinen nimi");
 			header.add("Synonyymit");
-			header.add("Kansankieliset nimet");
+			header.add("Suomenkielinen nimi");
+			header.add("Ruotsinkielinen nimi");
+			header.add("Englanninkielinen nimi");
 			header.add("Taksonomiatietokannan kommentit");
 			header.add("Hallinnollinen asema");
 			header.add("Arvioinnin tila");
