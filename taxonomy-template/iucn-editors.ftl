@@ -1,6 +1,6 @@
 <#include "luomus-header.ftl">
 
-<h1>Uhanalaisuusarvioinnin arvioijat - ${group.name.forLocale("fi")}</h1>
+<h1>Uhanalaisuusarvioinnin editorit - ${group.name.forLocale("fi")}</h1>
 
 <#if successMessage?has_content>
 	<p class="successMessage">${successMessage}</p>
