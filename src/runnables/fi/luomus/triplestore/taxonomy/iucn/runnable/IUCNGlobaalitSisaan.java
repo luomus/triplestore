@@ -10,6 +10,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonSearch;
@@ -39,13 +40,13 @@ public class IUCNGlobaalitSisaan {
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-			
+
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
 			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); 
-			
+
 			// dev mode
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
-			
+
 			process();
 			taxonomyDAO.close();
 		} catch (Exception e) {
@@ -103,13 +104,13 @@ public class IUCNGlobaalitSisaan {
 				reportTaxonNotFound("Tuntematon nimi", data, f);
 				return;
 			}
-			
+
 			Set<Qname> matchingQnames = matchTaxonQnames(response.getExactMatches());
 			if (matchingQnames.size() > 1) {
 				reportTaxonNotFound("Löytyi " + matchingQnames.size() + " osumaa: " + matchingQnames, data, f);
 				return;
 			}
-			process(data, matchingQnames.iterator().next(), f);
+			process(data, response.getExactMatches().get(0), f);
 		} catch (Exception e) {
 			reportError(e, data, f);
 		}	
@@ -166,9 +167,38 @@ public class IUCNGlobaalitSisaan {
 		return s.trim();
 	}
 
-	private static void process(IUCNLineData data, Qname taxonId, File f) throws Exception {
-		System.out.println("Täsmäsi " + data.scientificName + " -> " + taxonId);
+	private static void process(IUCNLineData data, Match match, File f) throws Exception {
+		System.out.println("Täsmäsi " + data.scientificName + " -> " + match.getTaxon().getQname());
+		File file = new File("c:/temp/iucn/global_" + f.getName().replace(".csv", "_" + DateUtils.getCurrentDate() +".txt"));
+		try {
+			StringBuilder b = new StringBuilder();
+			b.append(data.legacyInformalGroup).append("|");
+			b.append(data.scientificName).append("|");
+			b.append(data.synonyms.toString()).append("|");
+			b.append("->").append("|");
+			b.append(match.getMatchingName()).append("|");
+			b.append(match.getNameType()).append("|");
+			b.append("->").append("|");
+			b.append(match.getTaxon().getQname()).append("|");
+			b.append(match.getTaxon().getScientificName()).append("|");
+			b.append(debug(match.getInformalGroups())).append("|");
+			b.append("->").append("|");
+			b.append(data.redListStatus).append("|");
+			b.append(data.criteriaForStatus);
+			FileUtils.writeToFile(file, b.toString()+"\n", "ISO-8859-1", true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		// TODO save something
+	}
+
+	private static String debug(List<InformalTaxonGroup> informalGroups) {
+		StringBuilder b = new StringBuilder();
+		for (InformalTaxonGroup i : informalGroups) {
+			b.append(i.getName().forLocale("fi")).append(" ");
+		}
+		return b.toString().trim();
 	}
 
 	private static Set<Qname> matchTaxonQnames(List<Match> exactMatches) {
