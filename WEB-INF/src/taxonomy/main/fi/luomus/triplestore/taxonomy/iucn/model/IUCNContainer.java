@@ -39,10 +39,17 @@ public class IUCNContainer {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
 		synchronized (LOCK) {
 			if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
-			IUCNEvaluationTarget target = iucnDAO.loadTarget(speciesQname);
-			targets.put(speciesQname, target);
-			return target;
+			return iucnDAO.loadTarget(speciesQname);
 		}
+	}
+
+	public IUCNContainer addTarget(IUCNEvaluationTarget target) {
+		targets.put(target.getQname(), target);
+		return this;
+	}
+
+	public boolean hasTarget(String speciesQname) {
+		return targets.containsKey(speciesQname);
 	}
 
 	public List<IUCNEvaluationTarget> getTargetsOfGroup(String groupQname) throws Exception {

@@ -458,11 +458,15 @@ public class IUCNValidator {
 			if (thisStatus.equals(prevStatus)) {
 				validationResult.setError("Muutoksen syytä ei saa antaa jos arvioinnin luokka ei ole muuttunut", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 			}
-		} else {
-			if (!thisStatus.equals(prevStatus) && !"MX.iucnNE".equals(prevStatus)) {
-				validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
-			}
+			return;
 		}
+		
+		if (thisStatus.equals(prevStatus)) return;
+		
+		if (prevStatus.equals("MX.iucnNE") || prevStatus.equals("MX.iucnNA")) return;
+		if (thisStatus.equals("MX.iucnNE") || thisStatus.equals("MX.iucnNA")) return;
+		
+		validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 	}
 
 	private boolean given(String s) {

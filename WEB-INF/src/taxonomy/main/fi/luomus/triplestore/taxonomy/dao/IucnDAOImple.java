@@ -96,6 +96,8 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String NEXT_PAGE = "nextPage";
 	private static final String RESULTS = "results";
 
+	private static final Object EVAL_LOAD_LOCK = new Object();
+
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
 	private final TaxonomyDAO taxonomyDAO;
@@ -103,6 +105,8 @@ public class IucnDAOImple implements IucnDAO {
 	private final ErrorReporter errorReporter;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final boolean devMode;
+	private boolean initialEvaluationsLoaded = false;
+
 
 	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		System.out.println("Creating " +  IucnDAOImple.class.getName());
@@ -123,29 +127,22 @@ public class IucnDAOImple implements IucnDAO {
 		} catch (Exception e) {}
 	}
 
-	private void initializeContainer() {
-		try {
-			initialEvaluations = null;
-			for (String groupQname : getGroupEditors().keySet()) {
-				container.getTargetsOfGroup(groupQname);
-			}
-		} catch (Exception e) {
-			errorReporter.report(e);
-		}
-	}
-
 	private final Runnable iucnContainerReinitializer = new Runnable() {
 		@Override
 		public void run() {
-			System.out.println("IUCN container being reinitialized...");
-			try {
-				container = new IUCNContainer(IucnDAOImple.this);
-				IucnDAOImple.this.initializeContainer();
-				getEvaluations("MX.1");
-			} catch (Exception e) {
-				errorReporter.report("IUCN container reinitializing", e);
+			synchronized (EVAL_LOAD_LOCK) {
+				System.out.println("IUCN container being reinitialized...");
+				try {
+					initialEvaluationsLoaded = false;
+					container = new IUCNContainer(IucnDAOImple.this);
+					for (String groupQname : getGroupEditors().keySet()) {
+						container.getTargetsOfGroup(groupQname);
+					}
+				} catch (Exception e) {
+					errorReporter.report("IUCN container reinitializing", e);
+				}
+				System.out.println("Reinitializing IUCN container completed!");
 			}
-			System.out.println("Reinitializing IUCN container completed!");
 		}
 	};
 
@@ -154,7 +151,7 @@ public class IucnDAOImple implements IucnDAO {
 		public void run() {
 			System.out.println("Starting to synchronize taxon data with IUCN data...");
 			try {
-				getEvaluations("MX.1");
+				container.getTarget("MX.1"); // Make sure evaluation data is loaded
 				int currentYear = DateUtils.getCurrentYear();
 				int c = 1;
 				for (IUCNEvaluationTarget target : container.getTargets()) {
@@ -398,33 +395,28 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
-		IUCNEvaluationTarget target = new IUCNEvaluationTarget(new Qname(speciesQname), container, taxonomyDAO.getTaxonContainer());
-		for (IUCNEvaluation evaluation : getEvaluations(speciesQname)) {
-			target.setEvaluation(evaluation);
-		}
-		return target;
-	}
-
-	private Map<String, Collection<IUCNEvaluation>> initialEvaluations = null;
-	private final static Object EVAL_LOAD_LOCK = new Object();
-
-	private Collection<IUCNEvaluation> getEvaluations(String speciesQname) throws Exception {
-		if (initialEvaluations == null) {
+		if (!initialEvaluationsLoaded) {
 			synchronized (EVAL_LOAD_LOCK) {
-				if (initialEvaluations == null) {
-					initialEvaluations = loadInitialEvaluations();
+				if (!initialEvaluationsLoaded) {
+					loadInitialEvaluations();
+					initialEvaluationsLoaded = true;
 				}
 			}
 		}
-		if (initialEvaluations.containsKey(speciesQname)) return initialEvaluations.get(speciesQname);
-		return Collections.emptyList();
+		if (container.hasTarget(speciesQname)) return container.getTarget(speciesQname);
+		return createTarget(speciesQname);
 	}
 
-	private Map<String, Collection<IUCNEvaluation>> loadInitialEvaluations() throws Exception {
+	private IUCNEvaluationTarget createTarget(String speciesQname) throws Exception {
+		IUCNEvaluationTarget target;
+		target = new IUCNEvaluationTarget(new Qname(speciesQname), container, taxonomyDAO.getTaxonContainer());
+		container.addTarget(target);
+		return target;
+	}
+
+	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-
-		Map<String, Collection<IUCNEvaluation>> initialEvaluations = new HashMap<>();
-
+		
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
 		if (devMode) {
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
@@ -437,16 +429,17 @@ public class IucnDAOImple implements IucnDAO {
 			try {
 				IUCNEvaluation evaluation = createEvaluation(model);
 				String speciesQname = evaluation.getSpeciesQname();
-				if (!initialEvaluations.containsKey(speciesQname)) {
-					initialEvaluations.put(speciesQname, new ArrayList<IUCNEvaluation>());
+				
+				if (!container.hasTarget(speciesQname)) {
+					createTarget(speciesQname);
 				}
-				initialEvaluations.get(speciesQname).add(evaluation);
+				IUCNEvaluationTarget target = container.getTarget(speciesQname);
+				target.setEvaluation(evaluation);
 			} catch (Exception e) {
 				errorReporter.report("Error when loading evaluation " + model.getSubject().getQname(), e);
 			}
 		}
 		System.out.println("IUCN evaluations loaded!");
-		return initialEvaluations;
 	}
 
 	private IUCNEvaluation createEvaluation(Model model) throws Exception {
