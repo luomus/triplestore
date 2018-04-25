@@ -38,24 +38,26 @@
 
 <#macro iucnStatus evaluation html=true><@compress single_line=true><#t>
 	<#if evaluation.hasIucnStatus()><#t>
-		${evaluation.iucnStatus?replace("MX.iucn", "")}<@iucnExternalImpact evaluation html /><#t>
+		${evaluation.iucnStatus?replace("MX.iucn", "")}<@iucnStatusSymbols evaluation /><#t>
 	<#else><#t>
 	 -<#t>
 	</#if><#t>
 </@compress>
 </#macro>
 
-<#macro iucnExternalImpact evaluation html=true><@compress single_line=true><#t>
-	<#if evaluation.externalImpact??><#t>
-		<#if html><span class="externalImpact"><#t></#if>
-		<#if evaluation.externalImpact == '-2'>°°<#t>
-		<#elseif evaluation.externalImpact == '-1'>°<#t>
-		<#elseif evaluation.externalImpact == '+1'>✝<#t>
-		<#elseif evaluation.externalImpact == '+2'>✝✝<#t>
-		</#if>
-		<#if html></span><#t></#if>
+<#macro iucnStatusSymbols evaluation>
+	<#if evaluation.externalImpact??>
+		<span class="externalImpact">
+			<#if evaluation.externalImpact == '-2'>°°
+			<#elseif evaluation.externalImpact == '-1'>°
+			<#elseif evaluation.externalImpact == '+1'>✝
+			<#elseif evaluation.externalImpact == '+2'>✝✝
+			</#if>
+		</span>
 	</#if>
-</@compress>
+	<#if evaluation.hasValue("MKV.possiblyRE")>
+		<span class="possiblyRE">●</span>
+	</#if>
 </#macro>
 
 <#macro iucnIndexCorrectedStatus evaluation html=true><@compress single_line=true><#t>

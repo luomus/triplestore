@@ -427,6 +427,6 @@ select.regionalOccurrence {
 	max-width: 220px;
 }
 
-.externalImpact {
+.externalImpact, .possiblyRE {
 	color: red;
 }

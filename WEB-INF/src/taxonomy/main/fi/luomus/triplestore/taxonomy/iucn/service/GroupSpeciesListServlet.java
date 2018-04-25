@@ -441,7 +441,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private String possiblyRE(IUCNEvaluation evaluation) {
-			if (given(evaluation.getValue("MKV.possiblyRE"))) return "■";
+			if (evaluation.hasValue("MKV.possiblyRE")) return "●";
 			return null;
 		}
 
