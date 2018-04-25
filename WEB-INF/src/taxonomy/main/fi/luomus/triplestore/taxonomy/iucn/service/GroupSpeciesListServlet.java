@@ -209,6 +209,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(target.getOrderAndFamily());
 			data.add(taxonRank(target));
 			data.add(target.getScientificName());
+			data.add(target.getTaxon().getScientificNameAuthorship());
 			data.add(target.getSynonymNames());
 			data.add(target.getTaxon().getVernacularName().forLocale("fi"));
 			data.add(target.getTaxon().getVernacularName().forLocale("sv"));
@@ -593,6 +594,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Lahko, Heimo");
 			header.add("Taksonominen taso");
 			header.add("Tieteellinen nimi");
+			header.add("Auktori");
 			header.add("Synonyymit");
 			header.add("Suomenkielinen nimi");
 			header.add("Ruotsinkielinen nimi");
