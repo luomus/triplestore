@@ -296,7 +296,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 			data.add(v(evaluation, "MKV.criteriaNotes"));
 
-			data.add(status(evaluation.getIucnStatus()));
+			data.add(statusWithExternalImpact(evaluation));
 			data.add(v(evaluation, "MKV.criteriaForStatus"));
 			data.add(pair(status(evaluation.getValue("MKV.redListStatusMin")), status(evaluation.getValue("MKV.redListStatusMax"))));
 			data.add(evaluation.getExternalImpact());
@@ -331,9 +331,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					data.add("--");
 					data.add("--");
 				} else {
-					boolean hasRLICorrection = yearEval.hasCorrectedStatusForRedListIndex();
-					data.add(status(yearEval.getIucnStatus()));
-					if (hasRLICorrection) {
+					data.add(statusWithExternalImpact(yearEval));
+					if (yearEval.hasCorrectedStatusForRedListIndex()) {
 						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
 						Integer rliByStatus = yearEval.getCalculatedRedListIndex();
 						Integer rliCorrected = yearEval.getCalculatedCorrectedRedListIndex(); 
