@@ -177,6 +177,7 @@ public class IUCNGlobaalitSisaan {
 			b.append(match.getTaxon().getQname()).append("|");
 			b.append(match.getTaxon().getScientificName()).append("|");
 			b.append(debug(match.getInformalGroups())).append("|");
+			b.append(match.getTaxon().isFinnish() ? "Suomalainen" : "Ei");
 			b.append("->").append("|");
 			b.append(data.redListStatus).append("|");
 			b.append(data.criteriaForStatus);
