@@ -15,8 +15,9 @@
 
 <div id="editTaxonDescriptions">
 
-
+<#if user.role.name() != "DESCRIPTION_WRITER">
 <p><a href="${baseURL}/${taxon.qname}">&laquo; To taxonomy tree</a> &mdash; <#if checklist??>${checklist.getFullname("en")}<#else>Orphan taxa without checklist</#if></p>
+</#if>
 
 <h5 id="taxonEditHeader">
 	<@printScientificNameAndAuthor taxon />
