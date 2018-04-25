@@ -125,12 +125,7 @@ public class IUCNGlobaalitSisaan {
 		if (response.getExactMatches().isEmpty()) {
 			String cleanedSciName = cleanScientificName(scientificName);
 			if (given(cleanedSciName)) {
-				response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact());
-			}
-			if (response.getExactMatches().size() > 1) {
-				if (given(cleanedSciName)) {
-					response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact().addExlucedNameType(MISAPPLIED));
-				}
+				response = taxonomyDAO.search(new TaxonSearch(cleanedSciName).onlyExact().addExlucedNameType(MISAPPLIED));
 			}
 		}
 		return response;
