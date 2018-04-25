@@ -218,12 +218,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(state(evaluation));
 			data.add(lastModified(evaluation));
 			data.add(lastModifiedBy(evaluation));
-			data.add(statusWithExternalImpact(evaluation));
+			data.add(statusWithSymbols(evaluation));
 			if (previous == null) {
 				data.add("--");
 				data.add("--");
 			} else {
-				data.add(statusWithExternalImpact(previous) + " (" + previous.getEvaluationYear()+")");
+				data.add(statusWithSymbols(previous) + " (" + previous.getEvaluationYear()+")");
 				String corrected = previous.getCorrectedStatusForRedListIndex();
 				if (corrected != null) {
 					data.add(status(corrected) + " (" + previous.getEvaluationYear()+")");
@@ -296,7 +296,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 			data.add(v(evaluation, "MKV.criteriaNotes"));
 
-			data.add(statusWithExternalImpact(evaluation));
+			data.add(statusWithSymbols(evaluation));
 			data.add(v(evaluation, "MKV.criteriaForStatus"));
 			data.add(pair(status(evaluation.getValue("MKV.redListStatusMin")), status(evaluation.getValue("MKV.redListStatusMax"))));
 			data.add(evaluation.getExternalImpact());
@@ -331,7 +331,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					data.add("--");
 					data.add("--");
 				} else {
-					data.add(statusWithExternalImpact(yearEval));
+					data.add(statusWithSymbols(yearEval));
 					if (yearEval.hasCorrectedStatusForRedListIndex()) {
 						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
 						Integer rliByStatus = yearEval.getCalculatedRedListIndex();
@@ -427,13 +427,22 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString();
 		}
 
-		private String statusWithExternalImpact(IUCNEvaluation evaluation) {
+		private String statusWithSymbols(IUCNEvaluation evaluation) {
 			String status = status(evaluation.getIucnStatus());
-			String externalImpart = externalImpact(evaluation);
-			if (given(externalImpart)) {
-				return status + externalImpart;
-			}		
+			String externalImpact = externalImpact(evaluation);
+			String possiblyRE = possiblyRE(evaluation);
+			if (given(externalImpact)) {
+				status += externalImpact;
+			}
+			if (given(possiblyRE)) {
+				status += possiblyRE;
+			}
 			return status;
+		}
+
+		private String possiblyRE(IUCNEvaluation evaluation) {
+			if (given(evaluation.getValue("MKV.possiblyRE"))) return "■";
+			return null;
 		}
 
 		private String externalImpact(IUCNEvaluation evaluation) {
