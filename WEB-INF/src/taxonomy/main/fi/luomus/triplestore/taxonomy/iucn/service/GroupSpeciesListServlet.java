@@ -448,12 +448,17 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private String endangerment(List<IUCNEndangermentObject> reasons) {
-			// TODO Auto-generated method stub
 			if (reasons.isEmpty()) return null;
 			StringBuilder b = new StringBuilder();
 			Iterator<IUCNEndangermentObject> i = reasons.iterator();
 			while (i.hasNext()) {
-				b.append(i.next().getEndangerment().toString().replace("MKV.endangermentReason", ""));
+				String value = i.next().getEndangerment().toString();
+				if (value.equals("MKV.endangermentReasonT")) {
+					value = "?";
+				} else {
+					value = value.replace("MKV.endangermentReason", ""); 
+				}
+				b.append(value);
 				if (i.hasNext()) b.append(", ");
 			}
 			return b.toString();
