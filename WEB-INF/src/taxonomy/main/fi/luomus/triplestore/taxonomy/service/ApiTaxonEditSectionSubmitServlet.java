@@ -33,6 +33,7 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
+import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
@@ -62,6 +63,11 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
 	@Override
+	protected Set<User.Role> allowedRoles() {
+		return TaxonDescriptionsServlet.ALLOWED;
+	}
+
+	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = new ResponseData().setViewName("api-taxoneditsubmit");
 		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
@@ -83,32 +89,36 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			checkPermissionsToAlterTaxon(taxonQname, req);
 		}
 
-		if (given(newPublicationCitation)) {
-			Publication publication = storePublication(newPublicationCitation, dao);
-			usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
-			responseData.setData("addedPublication", publication);
-		}
-		if (given(newOccurrenceInFinlandPublicationCitation)) {
-			Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
-			usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
-			responseData.setData("addedOccurrenceInFinlandPublication", publication);
+		if (!editingDescriptionFields) {
+			if (given(newPublicationCitation)) {
+				Publication publication = storePublication(newPublicationCitation, dao);
+				usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+				responseData.setData("addedPublication", publication);
+			}
+			if (given(newOccurrenceInFinlandPublicationCitation)) {
+				Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
+				usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+				responseData.setData("addedOccurrenceInFinlandPublication", publication);
+			}	
 		}
 
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
 
-		if (given(alteredScientificName)) {
-			setNewScientificNameAndAuthor(alteredScientificName, alteredAuthor, usedAndGivenStatements);
-			createAndStoreSynonym(dao, taxonomyDAO, taxon);
+		if (!editingDescriptionFields) {
+			if (given(alteredScientificName)) {
+				setNewScientificNameAndAuthor(alteredScientificName, alteredAuthor, usedAndGivenStatements);
+				createAndStoreSynonym(dao, taxonomyDAO, taxon);
+			}
 		}
 		
-		if (storeBiogeographicalProvinceOccurrences) {
+		if (storeBiogeographicalProvinceOccurrences && !editingDescriptionFields) {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
 		} else {
 			dao.store(new Subject(taxonQname), usedAndGivenStatements);
 		}
 
 		taxon.invalidateSelf();
-		
+
 		ValidationData validationData;
 		if (editingDescriptionFields) {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validateDescriptions(usedAndGivenStatements.getGivenStatements());

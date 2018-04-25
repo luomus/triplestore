@@ -60,7 +60,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 						}
 					}, 10);
 
-	private static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
+	public static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
 	
 	@Override
 	protected Set<User.Role> allowedRoles() {
