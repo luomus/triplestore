@@ -51,7 +51,7 @@
 		<div class="errorTxt"></div>
 			
 		<input type="submit" class="button addButton" value="Move" onclick="moveEvaluationDialogSubmit('move');" />
-		<#if user.admin??>
+		<#if user.admin>
 			<input style="float: right;" type="submit" class="button addButton deleteButton" value="Delete" onclick="moveEvaluationDialogSubmit('delete');" />
 		</#if>	
 	</form>
