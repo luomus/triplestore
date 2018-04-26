@@ -156,6 +156,11 @@ public class IucnDAOImple implements IucnDAO {
 				int c = 1;
 				for (IUCNEvaluationTarget target : container.getTargets()) {
 					Qname speciesQname = new Qname(target.getQname());
+					if (!taxonomyDAO.getTaxonContainer().hasTaxon(speciesQname)) {
+						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname);
+						continue;
+					}
+					EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
 					boolean modifiedTaxon = false;
 					if (c++ % 5000 == 0) System.out.println(" ... syncing " + c);
 					for (IUCNEvaluation evaluation : target.getEvaluations()) {
@@ -167,7 +172,6 @@ public class IucnDAOImple implements IucnDAO {
 
 						Qname status = new Qname(evaluation.getIucnStatus());
 						Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
-						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
 						Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
 
 						if (taxonRedListStatus == null || !taxonRedListStatus.equals(status)) {
@@ -182,7 +186,6 @@ public class IucnDAOImple implements IucnDAO {
 						}
 					}
 					if (modifiedTaxon) {
-						EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
 						taxon.invalidateSelf();
 					}
 				}
