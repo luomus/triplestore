@@ -80,6 +80,7 @@ public class IUCN2010Sisaan {
 		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto2.csv", Utils.set(new Qname("MVL.31")));
 		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
+		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto_lisalataus.csv", Utils.set(new Qname("MVL.30")));
 		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
 		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(new Qname("MVL.343")));
 		FILE_TO_INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(new Qname("MVL.228")));
@@ -133,7 +134,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Hamahakit_loput.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("Pistiäiset_siirto_lisalataus.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
