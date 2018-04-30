@@ -155,6 +155,10 @@ public class IucnDAOImple implements IucnDAO {
 				int currentYear = DateUtils.getCurrentYear();
 				int c = 1;
 				for (IUCNEvaluationTarget target : container.getTargets()) {
+					if (target.getQname() == null || target.getQname().isEmpty()) {
+						errorReporter.report("Syncing taxon data with IUCN data: Null target taxon qname: " + debug(target));
+						continue;
+					}
 					Qname speciesQname = new Qname(target.getQname());
 					if (!taxonomyDAO.getTaxonContainer().hasTaxon(speciesQname)) {
 						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname);
@@ -193,6 +197,16 @@ public class IucnDAOImple implements IucnDAO {
 				errorReporter.report("Syncing taxon data with IUCN data", e);
 			}
 			System.out.println("Synchronizing taxon data with IUCN data completed!");
+		}
+
+		private String debug(IUCNEvaluationTarget target) {
+			StringBuilder b = new StringBuilder();
+			b.append("[");
+			for (IUCNEvaluation e : target.getEvaluations()) {
+				b.append("[").append(e.getId()).append(" ").append(e.getEvaluationYear()).append("]");
+			}
+			b.append("]");
+			return b.toString();
 		}
 
 		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Set<Qname> taxonsTypeOfOccurrenceInFinland) throws Exception {
