@@ -29,7 +29,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 public class IUCNGlobaalitSisaan {
 
 	private static final Qname MISAPPLIED = new Qname("MX.hasMisappliedName");
-	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/globaalit";
+	private static final String FILE_PATH = "C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/globaalit";
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 
@@ -177,7 +177,7 @@ public class IUCNGlobaalitSisaan {
 			b.append(match.getTaxon().getQname()).append("|");
 			b.append(match.getTaxon().getScientificName()).append("|");
 			b.append(debug(match.getInformalGroups())).append("|");
-			b.append(match.getTaxon().isFinnish() ? "Suomalainen" : "Ei");
+			b.append(match.getTaxon().isFinnish() ? "Suomalainen" : "Ei").append("|");
 			b.append("->").append("|");
 			b.append(data.redListStatus).append("|");
 			b.append(data.criteriaForStatus);
