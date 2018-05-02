@@ -165,7 +165,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public Set<Qname> load(Qname taxonQname) {
 			try {
 				Collection<Model> models = triplestoreDAO.getSearchDAO().search(
-						new SearchParams()
+						new SearchParams(Integer.MAX_VALUE, 0)
 						.type("MX.taxon")
 						.predicate(IS_PART_OF)
 						.objectresource(taxonQname));
@@ -191,7 +191,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public Optional<Qname> load(Qname synonymTaxonId) {
 			try {
 				Set<Qname> matches = triplestoreDAO.getSearchDAO().searchQnames(
-						new SearchParams()
+						new SearchParams(Integer.MAX_VALUE, 0)
 						.type("MX.taxon")
 						.predicates(SYNONYM_PREDICATES)
 						.objectresource(synonymTaxonId));
