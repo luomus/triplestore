@@ -69,6 +69,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				con = triplestoreDAO.openConnection();
 				p = con.prepareStatement(" select distinct objectname from "+TriplestoreDAOConst.SCHEMA+".rdf_statementview where predicatename = 'MM.taxonURI' ");
 				rs = p.executeQuery();
+				rs.setFetchSize(4001);
 				while (rs.next()) {
 					taxonIds.add(new Qname(rs.getString(1)));
 				}

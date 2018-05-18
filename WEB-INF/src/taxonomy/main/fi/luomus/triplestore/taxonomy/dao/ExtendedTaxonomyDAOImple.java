@@ -212,6 +212,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			p.setString(2, name.toUpperCase());
 			p.setString(3, taxon.getQname().toString());
 			rs = p.executeQuery();
+			rs.setFetchSize(4001);
 			while (rs.next()) {
 				Qname matchQname = new Qname(rs.getString(1));
 				String matchScientificName = rs.getString(2);
