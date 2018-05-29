@@ -115,7 +115,7 @@
 			</#list>
 		</ul>
 	<#else>
-		<span class="info">Ei hallinnollista asemaa</span>
+		<span class="info">Ei asemaa Suomessa</span>
 	</#if>
 </div>
 
@@ -307,7 +307,7 @@
 					</#list>
 				</ul>
 			<#else>
-				<span class="info">Ei hallinnollista asemaa</span>
+				<span class="info">Ei asemaa Suomessa</span>
 			</#if>	
 		</td>
 	</tr>
