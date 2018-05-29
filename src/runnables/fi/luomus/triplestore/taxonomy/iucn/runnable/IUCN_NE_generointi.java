@@ -64,15 +64,10 @@ public class IUCN_NE_generointi {
 
 	private static Set<Qname> taxonIds() throws FileNotFoundException, IOException {
 		Set<Qname> taxonIds = new HashSet<>();
-		for (File file : new File("c:/temp/ne-ksi").listFiles()) {
-			System.out.println(file.getName());
-			int i = 0;
-			for (String line : FileUtils.readLines(file)) {
-				i++;
-				if (i == 1) continue; // header
-				if (i == 2) continue; // top taxon
-				String id = line.split(",")[0].replace("\"", "");
-				taxonIds.add(new Qname(id));
+		for (String line : FileUtils.readLines(new File("c:/temp/ne-lajit.txt"))) {
+			Qname q = new Qname(line.trim());
+			if (q.isSet()) {
+				taxonIds.add(q);
 			}
 		}
 		return taxonIds;
