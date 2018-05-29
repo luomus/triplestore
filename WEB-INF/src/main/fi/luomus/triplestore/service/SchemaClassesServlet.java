@@ -34,7 +34,7 @@ public class SchemaClassesServlet extends ApiServlet {
 
 	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
-		Collection<Model> models = dao.getSearchDAO().search(new SearchParams().type("rdfs:Class"));
+		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdfs:Class"));
 		JSONArray response = parseClassResponse(models);
 		return jsonResponse(response, res);
 	}

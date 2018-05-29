@@ -12,6 +12,7 @@ import fi.luomus.commons.containers.ContentContextDescription;
 import fi.luomus.commons.containers.ContentGroups;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
+import fi.luomus.commons.containers.OccurrenceType;
 import fi.luomus.commons.containers.Person;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -170,6 +171,18 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
 	@Override
 	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, OccurrenceType> getOccurrenceTypes() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, OccurrenceType> getOccurrenceTypesForceReload() throws Exception {
 		// Auto-generated method stub
 		return null;
 	}

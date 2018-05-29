@@ -329,6 +329,10 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		try {
 			String sql = constructSelectQuery(subjects);
 			p = con.prepareStatement(sql);
+			int i = 1;
+			for (Qname subject : subjects) {
+				p.setString(i++, subject.toString());
+			}
 			rs = p.executeQuery();
 			String prevSubject = null;
 			Model currentModel = null;
@@ -364,7 +368,8 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		sql.append(" WHERE   subjectname IN ( ");
 		Iterator<Qname> i = results.iterator();
 		while (i.hasNext()) {
-			sql.append("'").append(i.next()).append("'");
+			i.next();
+			sql.append("?");
 			if (i.hasNext()) {
 				sql.append(", ");				
 			}

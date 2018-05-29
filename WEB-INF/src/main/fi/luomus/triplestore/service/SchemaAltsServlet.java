@@ -49,7 +49,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 	}
 
 	private Set<Qname> getQnamesOfType(TriplestoreDAO dao, String type) throws Exception {
-		return dao.getSearchDAO().searchQnames(new SearchParams().type(type));
+		return dao.getSearchDAO().searchQnames(new SearchParams(Integer.MAX_VALUE, 0).type(type));
 	}
 
 	//	{

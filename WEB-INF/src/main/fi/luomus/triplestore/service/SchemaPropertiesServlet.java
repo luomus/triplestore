@@ -23,7 +23,7 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 	@Override
 	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
-		Collection<Model> models = dao.getSearchDAO().search(new SearchParams().type("rdf:Property"));
+		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdf:Property"));
 		JSONArray response = parsePropertiesResponse(models);
 		return jsonResponse(response, res);
 	}

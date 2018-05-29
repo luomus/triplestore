@@ -88,7 +88,6 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String AREA = "ML.area";
 	private static final String BIOTA_QNAME = "MX.37600";
 	private static final String QNAME = "qname";
-	private static final String RDF_TYPE = "rdf:type";
 	private static final String ONLY_FINNISH = "onlyFinnish";
 	private static final String SELECTED_FIELDS = "selectedFields";
 	private static final String PAGE_SIZE = "pageSize";
@@ -297,7 +296,7 @@ public class IucnDAOImple implements IucnDAO {
 				public List<Integer> load() {
 					List<Integer> evaluationYears = new ArrayList<>();
 					try {
-						for (Model m : triplestoreDAO.getSearchDAO().search(RDF_TYPE, IUCNEvaluation.IUCN_RED_LIST_EVALUATION_YEAR_CLASS)) {
+						for (Model m : triplestoreDAO.getSearchDAO().search(new SearchParams().type(IUCNEvaluation.IUCN_RED_LIST_EVALUATION_YEAR_CLASS))) {
 							int year = Integer.valueOf(m.getStatements(IUCNEvaluation.EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
 							evaluationYears.add(year);
 						}

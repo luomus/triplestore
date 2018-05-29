@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
 @WebServlet(urlPatterns = {"/it/*"})
@@ -78,7 +79,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	private Map<String, TreeSet<Model>> tryToLoad(TriplestoreDAO dao) throws Exception {
 		Map<String, TreeSet<Model>> systems = new HashMap<>();
-		for (Model system : dao.getSearchDAO().search("rdf:type", "KE.informationSystem")) {
+		for (Model system : dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("KE.informationSystem"))) {
 			String state = getState(system);
 			String publicity = getPublicity(system);
 			String slot = resolveSixfoldSlot(state, publicity).toString();
