@@ -148,4 +148,10 @@ public class IUCNEvaluationTarget {
 		evaluations.remove(evaluation.getEvaluationYear());
 	}
 
+	@Override
+	public String toString() {
+		return "IUCNEvaluationTarget [getGroups()=" + getGroups() + ", getYears()=" + getYears() + "]";
+	}
+
+	
 }

@@ -161,7 +161,7 @@ public class IucnDAOImple implements IucnDAO {
 					}
 					Qname speciesQname = new Qname(target.getQname());
 					if (!taxonomyDAO.getTaxonContainer().hasTaxon(speciesQname)) {
-						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname);
+						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname + " for target " + target);
 						continue;
 					}
 					EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
