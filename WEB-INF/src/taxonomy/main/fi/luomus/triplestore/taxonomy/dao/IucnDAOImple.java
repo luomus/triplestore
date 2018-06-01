@@ -152,6 +152,7 @@ public class IucnDAOImple implements IucnDAO {
 			try {
 				container.getTarget("MX.1"); // Make sure evaluation data is loaded
 				int currentYear = DateUtils.getCurrentYear();
+				int draftYear = getDraftYear(getEvaluationYears());
 				int c = 1;
 				for (IUCNEvaluationTarget target : container.getTargets()) {
 					if (target.getQname() == null || target.getQname().isEmpty()) {
@@ -171,7 +172,7 @@ public class IucnDAOImple implements IucnDAO {
 						if (!evaluation.isLocked()) continue;
 						if (!evaluation.isReady()) continue;
 						if (!evaluation.hasIucnStatus()) continue;
-						if (year == null || year > currentYear) continue;
+						if (year == null || year > currentYear || year >= draftYear) continue; // To release 2019 evaluation for syncronization, create new valuation year 2025 
 
 						Qname status = new Qname(evaluation.getIucnStatus());
 						Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
@@ -196,6 +197,14 @@ public class IucnDAOImple implements IucnDAO {
 				errorReporter.report("Syncing taxon data with IUCN data", e);
 			}
 			System.out.println("Synchronizing taxon data with IUCN data completed!");
+		}
+
+		private int getDraftYear(List<Integer> evaluationYears) {
+			int max = 0;
+			for (Integer y : evaluationYears) {
+				max = Math.max(max, y);
+			}
+			return max;
 		}
 
 		private String debug(IUCNEvaluationTarget target) {
@@ -432,7 +441,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private void loadInitialEvaluations() throws Exception {
 		System.out.println("Loading IUCN evaluations...");
-		
+
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
 		if (devMode) {
 			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
@@ -445,7 +454,7 @@ public class IucnDAOImple implements IucnDAO {
 			try {
 				IUCNEvaluation evaluation = createEvaluation(model);
 				String speciesQname = evaluation.getSpeciesQname();
-				
+
 				if (!container.hasTarget(speciesQname)) {
 					createTarget(speciesQname);
 				}
