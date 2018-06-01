@@ -112,13 +112,13 @@ public class IUCN2010Sisaan {
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-			
+
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); 
-			
+
 			// dev mode
 			// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
-			
+
 			process();
 			taxonomyDAO.close();
 		} catch (Exception e) {
@@ -141,6 +141,18 @@ public class IUCN2010Sisaan {
 		//writeDumps();
 	}
 
+	private static final Set<String> ONLY_THESE = Utils.set( // XXX load only certain lines
+			"HYAC37|"
+			); 
+
+	private static boolean shouldSkip(String line) {
+		if (ONLY_THESE.isEmpty()) return false;
+		for (String s : ONLY_THESE) {
+			if (line.contains(s)) return false;
+		}
+		return true;
+	}
+
 	private static void process(File f) throws Exception {
 		Set<Qname> allowedInformalGroups = FILE_TO_INFORMAL_GROUP.get(f.getName());
 		if (allowedInformalGroups == null) throw new IllegalStateException("No informal groups for " + f.getName());
@@ -150,7 +162,7 @@ public class IUCN2010Sisaan {
 			i++;
 			line = line.trim();
 			if (line.isEmpty()) continue;
-			if (!line.contains("Astrenis sinuatus")) continue;
+			if (shouldSkip(line)) continue;
 			process(line, f, i, lines.size());
 			//if (i > 5) break; // XXX
 		}
