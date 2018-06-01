@@ -134,7 +134,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Pistiäiset_siirto_lisalataus.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("Pistiäiset_siirto.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -150,6 +150,7 @@ public class IUCN2010Sisaan {
 			i++;
 			line = line.trim();
 			if (line.isEmpty()) continue;
+			if (!line.contains("Astrenis sinuatus")) continue;
 			process(line, f, i, lines.size());
 			//if (i > 5) break; // XXX
 		}

@@ -22,7 +22,7 @@ import fi.luomus.commons.utils.FileUtils;
 public class IUCN_NE_generointi {
 
 	public static void main(String[] args) throws Exception {
-		HttpClientService client = new HttpClientService("https://triplestore.luomus.fi", "user", "pass");
+		HttpClientService client = new HttpClientService("https://triplestore.luomus.fi", "esko-dev", "y4JsjjskSK3j3k3j");
 		try {
 			Set<Qname> taxonIds = taxonIds();
 			for (Qname taxonId : taxonIds) {
@@ -34,7 +34,7 @@ public class IUCN_NE_generointi {
 				model.addStatementIfObjectGiven("MKV.evaluatedTaxon", taxonId);
 				model.addStatementIfObjectGiven("MKV.lastModified", DateUtils.getCurrentDate());
 				model.addStatementIfObjectGiven("MKV.evaluationYear", "2019");
-				model.addStatementIfObjectGiven("MKV.editNotes", "Merkitty NE-luokkaan massa-ajolla.; 18.12.2017");
+				model.addStatementIfObjectGiven("MKV.editNotes", "Merkitty NE-luokkaan massa-ajolla.; 1.6.2018");
 				System.out.println(model.getRDF());
 				store(model, client);
 			}
