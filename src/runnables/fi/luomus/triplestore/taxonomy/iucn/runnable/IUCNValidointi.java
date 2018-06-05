@@ -13,7 +13,10 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -38,8 +41,12 @@ public class IUCNValidointi {
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 	private static DataSource dataSource;
 	private static ErrorReporter errorReporter = new ErrorReporingToSystemErr();
-	private static File validationFile = new File("c:/temp/iucn/validation_" + DateUtils.getFilenameDatetime() + ".txt");
-	private static File statusChangeFile = new File("c:/temp/iucn/status_change_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File validationFile = new File("c:/temp/iucn/validointi_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File statusChangeFile = new File("c:/temp/iucn/luokka_muuttunut_RLI_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File automaticChangesFile = new File("c:/temp/iucn/automaattiset_muutokset_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File missing2010File = new File("c:/temp/iucn/2010_puuttuu_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File missing2019File = new File("c:/temp/iucn/2019_puuttuu_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File notReadyFile = new File("c:/temp/iucn/ei_merkitty_valmiiksi_" + DateUtils.getFilenameDatetime() + ".txt");
 
 	public static void main(String[] args) {
 		try {
@@ -58,10 +65,10 @@ public class IUCNValidointi {
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
 
-		// all data mode (prod) XXX
-		//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
-		// limited data mode (test)
-		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+		// all data mode XXX
+		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
+		// limited data mode
+		// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
 
 		taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget("MX.1");
 		validate();
@@ -71,9 +78,17 @@ public class IUCNValidointi {
 	private static void validate() throws Exception {
 		initFileHeaders();
 		for (IUCNEvaluationTarget target : taxonomyDAO.getIucnDAO().getIUCNContainer().getTargets()) {
-			if (!target.hasEvaluation(VALIDATION_YEAR)) continue;
+			if (!target.hasEvaluation(VALIDATION_YEAR)) {
+				if (target.hasEvaluations()) {
+					report(missing2019File, target.getEvaluations().iterator().next());
+				}
+				continue;
+			}
 			IUCNEvaluation evaluation = target.getEvaluation(VALIDATION_YEAR);
-			if (!evaluation.isReady()) continue;
+			if (!evaluation.isReady()) {
+				markReady(evaluation);
+				report(notReadyFile, evaluation);
+			}
 			if (evaluation.isIncompletelyLoaded()) {
 				taxonomyDAO.getIucnDAO().completeLoading(evaluation);
 			}
@@ -82,11 +97,21 @@ public class IUCNValidointi {
 			if (statusChanges(evaluation, previusEvaluation)) {
 				reportStatusChange(evaluation, target);
 			}
+			listAutomaticChanges(evaluation, previusEvaluation);
+			if (!target.hasEvaluation(2010) && (target.hasEvaluation(2000) || target.hasEvaluation(2015))) {
+				report(missing2010File, evaluation);
+			}
 		}
 	}
 
+	private static void markReady(IUCNEvaluation evaluation) {
+		Predicate state = new Predicate(IUCNEvaluation.STATE);
+		evaluation.getModel().removeAll(state);
+		evaluation.getModel().addStatement(new Statement(state, new ObjectResource(new Qname(IUCNEvaluation.STATE_READY))));
+	}
+
 	private static void initFileHeaders() throws Exception {
-		List<String> commonHeaders = Utils.list("ID", "Taxon ID", "Tieteellinen nimi", "Lajiryhmät");
+		List<String> commonHeaders = Utils.list("ID", "Taksonin ID", "Tieteellinen nimi", "Lajiryhmät", "Luokka (vuosi)");
 
 		List<String> validationHeaders = new ArrayList<>(commonHeaders);
 		validationHeaders.add("Virheet");
@@ -95,8 +120,58 @@ public class IUCNValidointi {
 		statusChangeHeaders.add("Muutoksen syy");
 		GroupSpeciesListServlet.appendRLIHeader(VALIDATION_YEAR, taxonomyDAO.getIucnDAO().getEvaluationYears(), statusChangeHeaders);
 
+		List<String> automatedChangesHeaders = new ArrayList<>(commonHeaders);
+		automatedChangesHeaders.add("Muutos");
+
 		report(validationFile, validationHeaders);
 		report(statusChangeFile, statusChangeHeaders);
+		report(automaticChangesFile, automatedChangesHeaders);
+		report(missing2010File, commonHeaders);
+		report(missing2019File, commonHeaders);
+		report(notReadyFile, commonHeaders);
+	}
+
+
+	private static final Set<String> EN_CR = Utils.set("MX.iucnEN", "MX.iucnCR");
+	private static final Set<String> RE_DD_NA_NE = Utils.set("MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
+	private static final Set<String> LC_RE_DD_NA_NE = Utils.set("MX.iucnLC", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
+
+	private static void listAutomaticChanges(IUCNEvaluation evaluation, IUCNEvaluation previusEvaluation) {
+		if ("MKV.reasonForStatusChangeChangesInCriteria".equals(evaluation.getValue("MKV.reasonForStatusChange"))) {
+			reportAutomaticChange(evaluation, "Muutoksen syy 3 - > 8");
+		}
+		if (previusEvaluation != null && previusEvaluation.getEvaluationYear().intValue() == 2010) {
+			if (evaluation.hasValue("MKV.reasonForStatusChange") && !statusChanges(evaluation, previusEvaluation)) {
+				reportAutomaticChange(evaluation, "Muutoksen syy poistetaan, koska luokat ovat " + s(evaluation.getIucnStatus()) + " <-> " + s(previusEvaluation.getIucnStatus()));
+			}
+		}
+		if (EN_CR.contains(evaluation.getIucnStatus())) {
+			if ("D1".equals(evaluation.getValue("MKV.criteriaForStatus"))) {
+				reportAutomaticChange(evaluation, "Kriteeri D1 -> D, koska luokka on " + s(evaluation.getIucnStatus()));
+			}
+		}
+		if (RE_DD_NA_NE.contains(evaluation.getIucnStatus())) {
+			if (evaluation.hasValue("MKV.exteralPopulationImpactOnRedListStatus")) {
+				reportAutomaticChange(evaluation, "Poistetaan luokan alenn./korott., koska luokka on " + s(evaluation.getIucnStatus()));
+			}
+		}
+		if (LC_RE_DD_NA_NE.contains(evaluation.getIucnStatus())) {
+			if (evaluation.hasValue("MKV.criteriaForStatus")) {
+				reportAutomaticChange(evaluation, "Poistetaan kriteerit, koska luokka on " + s(evaluation.getIucnStatus()));
+			}
+		}
+		if (evaluation.hasValue("MKV.ddReason") && !evaluation.getIucnStatus().equals("MX.iucnDD")) {
+			reportAutomaticChange(evaluation, "Poistetaan DD-syy, koska luokka on " + s(evaluation.getIucnStatus()));
+		}
+	}
+
+	private static String s(String iucnStatus) {
+		if (iucnStatus == null) return "";
+		return iucnStatus.replace("MX.iucn", "");
+	}
+
+	private static void reportAutomaticChange(IUCNEvaluation evaluation, String change) {
+		report(automaticChangesFile, evaluation, Utils.list(change));
 	}
 
 	private static boolean statusChanges(IUCNEvaluation evaluation, IUCNEvaluation previusEvaluation) {
@@ -127,15 +202,23 @@ public class IUCNValidointi {
 		report(validationFile, evaluation, result.listErrors());
 	}
 
+
+	private static void report(File file, IUCNEvaluation evaluation) {
+		report(file, evaluation, null);
+	}
+
 	private static void report(File file, IUCNEvaluation evaluation, List<String> values) {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(evaluation.getSpeciesQname()));
 		List<String> theseValues = Utils.list(
 				evaluation.getId(),
 				evaluation.getSpeciesQname(),
 				taxon.getScientificName(),
-				informalGroups(taxon.getInformalTaxonGroups())
+				informalGroups(taxon.getInformalTaxonGroups()),
+				s(evaluation.getIucnStatus())
 				);
-		theseValues.addAll(values);
+		if (values != null) {
+			theseValues.addAll(values);
+		}
 		report(file, theseValues);
 	}
 
@@ -151,6 +234,8 @@ public class IUCNValidointi {
 			throw new RuntimeException(e);
 		}
 	}
+
+
 
 	private static String informalGroups(Set<Qname> informalTaxonGroupIds) {
 		List<InformalTaxonGroup> informalTaxonGroups = new ArrayList<>();

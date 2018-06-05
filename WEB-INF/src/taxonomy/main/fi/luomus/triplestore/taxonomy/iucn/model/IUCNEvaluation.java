@@ -100,7 +100,8 @@ public class IUCNEvaluation {
 	public static final String EXTERNAL_IMPACT = "MKV.exteralPopulationImpactOnRedListStatus";
 	public static final String NOTE_DATE_SEPARATOR = "; ";
 	public static final String PERCENTAGE_OF_GLOBAL_POPULATION = "MKV.percentageOfGlobalPopulation";
-
+	public static final String DD_REASON = "MKV.ddReason";
+	
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;

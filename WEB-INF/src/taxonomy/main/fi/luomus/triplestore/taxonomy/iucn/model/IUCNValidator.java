@@ -56,6 +56,9 @@ public class IUCNValidator {
 			validateLsaForStatus(givenData, validationResult);
 			validateCriteriaForStatusForStatus(givenData, validationResult);
 			validateExternalImpactAndStatus(givenData, validationResult);
+			validatePossiblyRE(givenData, validationResult);
+			validateDDReason(givenData, validationResult);
+			validatePopulationSize(givenData, validationResult);
 		}
 
 		validateHabitat(givenData.getPrimaryHabitat(), validationResult);
@@ -71,6 +74,58 @@ public class IUCNValidator {
 		validateEvaluationPeriodLength(givenData, validationResult);
 		validateValidCriteriaStatuses(givenData, validationResult);
 		validateGlobalPercentage(givenData, validationResult);
+	}
+
+	private void validatePopulationSize(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		Double min = d(givenData.getValue(IUCNEvaluation.INDIVIDUAL_COUNT_MIN));
+		Double max = d(givenData.getValue(IUCNEvaluation.INDIVIDUAL_COUNT_MAX));
+		if (min == null && max == null) return;
+		if (min == null) min = 0.0;
+		if (max == null) max = 0.0;
+		max = Math.max(min, max);
+		validateIndividualCountMax("MX.iucnVU", Utils.list("C1", "C2"), max, 10000, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnEN", Utils.list("C1", "C2"), max, 2500, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnCR", Utils.list("C1", "C2"), max, 1000, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnVU", Utils.list("D", "D1"), max, 1000, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnEN", Utils.list("D", "D1"), max, 250, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnCR", Utils.list("D", "D1"), max, 50, givenData, validationResult);
+	}
+
+	private void validateIndividualCountMax(String status, List<String> criteria, Double individualCount, int limit, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (status.equals(givenData.getIucnStatus())) {
+			String evalCriteria = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
+			if (evalCriteria == null) return;
+			if (hasCriteria(evalCriteria, criteria)) {
+				if (individualCount > limit) {
+					validationResult.setError(status.replace("MX.iucn", "") + " luokalla ja kriteereillä " + evalCriteria + " yksilömäärän on oltava alle " + limit, IUCNEvaluation.INDIVIDUAL_COUNT_MAX);
+				}
+			}
+		}
+	}
+
+	private boolean hasCriteria(String evalCriteria, List<String> criteria) {
+		for (String c : criteria) {
+			if (evalCriteria.contains(c)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private void validateDDReason(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if ("MX.iucnDD".equals(givenData.getIucnStatus())) {
+			if (!givenData.hasValue(IUCNEvaluation.DD_REASON)) {
+				validationResult.setError("DD syy on ilmoitettava", IUCNEvaluation.DD_REASON);
+			}
+		}
+	}
+
+	private void validatePossiblyRE(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		if (!givenData.hasValue(IUCNEvaluation.POSSIBLY_RE)) return;
+		Set<String> allowed = "D2".equals(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS)) ? Utils.set("MX.iucnCR", "MX.iucnDD", "MX.iucnVU") : Utils.set("MX.iucnCR", "MX.iucnDD");
+		if (!allowed.contains(givenData.getIucnStatus())) {
+			validationResult.setError("Mahdollisesti hävinneeksi saa ilmoittaa ainoastaan luokkia CR, DD tai kriteerillä D2 myös luokassa VU", IUCNEvaluation.POSSIBLY_RE);
+		}
 	}
 
 	private void validateGlobalPercentage(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -115,11 +170,11 @@ public class IUCNValidator {
 
 	private static final Set<String> LSA_CAN_GIVE_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
 	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
-	private static final Set<String> THREATHS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> THREATHS_REQUIRED_STATUSES = CRITERIA_FOR_STATUS_REQUIRED_STATUSES;
 	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
 	private static final Set<String> CRITERIA_ENDANGERMENTREASON_NOT_REQUIRED = Utils.set("A3", "B1", "B2", "C2");
 	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
-	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = CRITERIA_FOR_STATUS_REQUIRED_STATUSES;
 	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set("MX.iucnEX", "MX.iucnEW", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
 
 	private void validateExternalImpactAndStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -208,6 +263,9 @@ public class IUCNValidator {
 		if (criterias.contains("A")) {
 			validateWhenCriteriaAGiven(givenData, validationResult);
 		}
+		if (criterias.contains("E")) {
+			validationResult.setError("Kriteeriä E ei käytetä", IUCNEvaluation.CRITERIA_FOR_STATUS);
+		}
 	}
 
 	private String parseCriterias(IUCNEvaluation givenData) {
@@ -241,18 +299,53 @@ public class IUCNValidator {
 	}
 
 	private void validateWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if (!given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX))) {
+		String min = givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN);
+		String max = givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX);
+		if (!given(min) && !given(max)) {
 			validationResult.setError("Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1", IUCNEvaluation.DISTRIBUTION_AREA_MIN);
 			validationResult.addErrorField(IUCNEvaluation.DISTRIBUTION_AREA_MAX);
+		} else {
+			Double dMin = d(min);
+			Double dMax = d(max);
+			validateAreaMax(givenData, "MX.iucnVU", 100, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnEN", 5000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnCR", 20000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
 		}
 	}
 
 	private void validateWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if (!given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN)) && !given(givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX))) {
+		String min = givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN);
+		String max = givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX);
+		if (!given(min) && !given(max)) {
 			validationResult.setError("Esiintymisalueen koko on ilmoitettava käytettäessä kriteeriä B2", IUCNEvaluation.OCCURRENCE_AREA_MIN);
 			validationResult.addErrorField(IUCNEvaluation.OCCURRENCE_AREA_MAX);
-		} 
+		} else {
+			Double dMin = d(min);
+			Double dMax = d(max);
+			validateAreaMax(givenData, "MX.iucnVU", 2000, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnEN", 500, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnCR", 10, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+		}
+	}
 
+	private void validateAreaMax(IUCNEvaluation givenData, String status, int limit, Double dMin, Double dMax, String field, IUCNValidationResult validationResult) {
+		if (status.equals(givenData.getIucnStatus())) {
+			if (dMin != null && dMin > limit) {
+				validationResult.setError(status.replace("MX.iucn", "") + " luokalla arvo saa olla enitään " +limit+" km²", field);
+			}
+			if (dMax != null && dMax > limit) {
+				validationResult.setError(status.replace("MX.iucn", "") + " luokalla arvo saa olla enitään " +limit+" km²", field);
+			}
+		}
+	}
+
+	private Double d(String s) {
+		if (notValidDecimal(s)) return null;
+		try {
+			return Double.valueOf(s);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private void validateCriteriasAndStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -460,12 +553,12 @@ public class IUCNValidator {
 			}
 			return;
 		}
-		
+
 		if (thisStatus.equals(prevStatus)) return;
-		
+
 		if (prevStatus.equals("MX.iucnNE") || prevStatus.equals("MX.iucnNA")) return;
 		if (thisStatus.equals("MX.iucnNE") || thisStatus.equals("MX.iucnNA")) return;
-		
+
 		validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 	}
 
