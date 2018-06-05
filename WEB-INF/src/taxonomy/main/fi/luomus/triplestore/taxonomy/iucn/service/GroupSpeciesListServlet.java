@@ -324,6 +324,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			data.add(" -> ");
 
+			appendRLIValues(target, years, selectedYear, data);
+			return Utils.toCSV(data);
+		}
+
+		public static void appendRLIValues(IUCNEvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) throws Exception {
 			for (Integer year : years) {
 				IUCNEvaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
@@ -359,7 +364,6 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					data.add(v(yearEval, "MKV.redListIndexCorrectionNotes"));
 				}
 			}
-			return Utils.toCSV(data);
 		}
 
 		private static final Map<String, Integer> STATUS_CHANGE_NUMBER_CODES;
@@ -402,7 +406,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return s1 + " -- " + s2;
 		}
 
-		private String s(Integer i) {
+		private static String s(Integer i) {
 			if (i == null) return null;
 			return i.toString();
 		}
@@ -428,7 +432,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString();
 		}
 
-		private String statusWithSymbols(IUCNEvaluation evaluation) {
+		private static String statusWithSymbols(IUCNEvaluation evaluation) {
 			String status = status(evaluation.getIucnStatus());
 			String externalImpact = externalImpact(evaluation);
 			String possiblyRE = possiblyRE(evaluation);
@@ -441,12 +445,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return status;
 		}
 
-		private String possiblyRE(IUCNEvaluation evaluation) {
+		private static String possiblyRE(IUCNEvaluation evaluation) {
 			if (evaluation.hasValue("MKV.possiblyRE")) return "●";
 			return null;
 		}
 
-		private String externalImpact(IUCNEvaluation evaluation) {
+		private static String externalImpact(IUCNEvaluation evaluation) {
 			String extImp = evaluation.getExternalImpact();
 			if (!given(extImp)) return null;
 			if (extImp.equals("-2")) return "°°";
@@ -507,7 +511,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString().trim();
 		}
 
-		private String v(IUCNEvaluation evaluation, String predicate) {
+		private static String v(IUCNEvaluation evaluation, String predicate) {
 			String value = evaluation.getValue(predicate);
 			if (value == null) return "";
 			if (value.equals("false")) return "Ei";
@@ -540,7 +544,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return "UNKNOWN VALUE";
 		}
 
-		private String status(String iucnStatus) {
+		private static String status(String iucnStatus) {
 			if (iucnStatus == null) return "";
 			return iucnStatus.replace("MX.iucn", "");
 		}
@@ -679,6 +683,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Julkaisut");
 			header.add("Muut lähteet");
 			header.add("RLI TIEDOT ALKAVAT");
+			appendRLIHeader(selectedYear, years, header);
+			return Utils.toCSV(header);
+		}
+
+		public static void appendRLIHeader(int selectedYear, List<Integer> years, List<String> header) {
 			for (Integer year : years) {
 				header.add(year  + " luokka");
 				header.add(year  + " indeksikorjattu luokka");
@@ -689,7 +698,6 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				if (year >= selectedYear) continue;
 				header.add(year + " RLI muistiinpanot");
 			}
-			return Utils.toCSV(header);
 		}
 
 		private static final Map<Qname, String> AREA_STATUSES_FOR_DOWNLOAD;
