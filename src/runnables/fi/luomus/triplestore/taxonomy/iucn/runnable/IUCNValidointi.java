@@ -3,6 +3,7 @@ package fi.luomus.triplestore.taxonomy.iucn.runnable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -77,7 +78,10 @@ public class IUCNValidointi {
 
 	private static void validate() throws Exception {
 		initFileHeaders();
-		for (IUCNEvaluationTarget target : taxonomyDAO.getIucnDAO().getIUCNContainer().getTargets()) {
+		Collection<IUCNEvaluationTarget> targets = taxonomyDAO.getIucnDAO().getIUCNContainer().getTargets();
+		int i = 1;
+		for (IUCNEvaluationTarget target : targets) {
+			System.out.println((i++) + "/" + targets.size() + " " + target.getQname());
 			if (!target.hasEvaluation(VALIDATION_YEAR)) {
 				if (target.hasEvaluations()) {
 					report(missing2019File, target.getEvaluations().iterator().next());
@@ -160,7 +164,7 @@ public class IUCNValidointi {
 				reportAutomaticChange(evaluation, "Poistetaan kriteerit, koska luokka on " + s(evaluation.getIucnStatus()));
 			}
 		}
-		if (evaluation.hasValue("MKV.ddReason") && !evaluation.getIucnStatus().equals("MX.iucnDD")) {
+		if (evaluation.hasValue("MKV.ddReason") && !"MX.iucnDD".equals(evaluation.getIucnStatus())) {
 			reportAutomaticChange(evaluation, "Poistetaan DD-syy, koska luokka on " + s(evaluation.getIucnStatus()));
 		}
 	}

@@ -329,12 +329,14 @@ public class IUCNValidator {
 	}
 
 	private void validateAreaMax(IUCNEvaluation givenData, String status, int limit, Double dMin, Double dMax, String field, IUCNValidationResult validationResult) {
+		String messageField = field.equals(IUCNEvaluation.OCCURRENCE_AREA_MAX) ? "esiintymisalueen koko" : "levinneisyysalueen koko";
 		if (status.equals(givenData.getIucnStatus())) {
 			if (dMin != null && dMin > limit) {
-				validationResult.setError(status.replace("MX.iucn", "") + " luokalla arvo saa olla enitään " +limit+" km²", field);
+				validationResult.setError(status.replace("MX.iucn", "") + " luokalla "+messageField+" saa olla enitään " +limit+" km²", field);
+				return;
 			}
 			if (dMax != null && dMax > limit) {
-				validationResult.setError(status.replace("MX.iucn", "") + " luokalla arvo saa olla enitään " +limit+" km²", field);
+				validationResult.setError(status.replace("MX.iucn", "") + " luokalla "+messageField+" saa olla enitään " +limit+" km²", field);
 			}
 		}
 	}
