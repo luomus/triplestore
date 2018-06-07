@@ -11,6 +11,7 @@ import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.ContentContextDescription;
 import fi.luomus.commons.containers.ContentGroups;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.OccurrenceType;
 import fi.luomus.commons.containers.Person;
@@ -183,6 +184,24 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
 	@Override
 	public Map<String, OccurrenceType> getOccurrenceTypesForceReload() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, IucnRedListInformalTaxonGroup> getIucnRedListInformalTaxonGroups() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, IucnRedListInformalTaxonGroup> getIucnRedListInformalTaxonGroupsForceReload() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<String> getIucnRedListInformalGroupRoots() {
 		// Auto-generated method stub
 		return null;
 	}

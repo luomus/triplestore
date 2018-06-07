@@ -7,6 +7,7 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
@@ -213,6 +214,12 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	public void store(Occurrences existingOccurrences, Occurrences newOccurrences, Set<Qname> supportedAreas) throws Exception {
 		// Auto-generated method stub
 		
+	}
+
+	@Override
+	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
+		// Auto-generated method stub
+		return null;
 	}
 
 }

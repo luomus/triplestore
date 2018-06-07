@@ -122,7 +122,7 @@ form ul li {
 	list-style: none;
 }
 
-#checklistForm .checklistName, #checklistForm textarea {
+#checklistForm .checklistName, #checklistForm textarea, #groupForm textarea {
 	width: 300px;
 	height: auto;
 }

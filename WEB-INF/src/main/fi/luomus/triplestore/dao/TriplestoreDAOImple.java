@@ -16,6 +16,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
@@ -50,12 +51,16 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
 
+	private static final String MVL_INCLUDES_INFORMAL_TAXON_GROUP = "MVL.includesInformalTaxonGroup";
+	private static final String MVL_INCLUDES_TAXON = "MVL.includesTaxon";
 	private static final String MR_IS_PUBLIC = "MR.isPublic";
 	private static final String MR_OWNER = "MR.owner";
 	private static final String MR_ROOT_TAXON = "MR.rootTaxon";
 	private static final String MVL_HAS_SUB_GROUP = "MVL.hasSubGroup";
+	private static final String MVL_HAS_IUCN_SUB_GROUP = "MVL.hasIucnSubGroup";
 	private static final String MVL_NAME = "MVL.name";
 	private static final String MVL_INFORMAL_TAXON_GROUP = "MVL.informalTaxonGroup";
+	private static final String MVL_IUCN_RED_LIST_TAXON_GROUP = "MVL.iucnRedListTaxonGroup";
 	private static final String UNBOUNDED = "unbounded";
 	private static final Set<String> PERSON_ROLE_PREDICATES = Utils.set("MA.role", "MA.roleKotka", "MA.organisation");
 	private static final String MA_FULL_NAME = "MA.fullName";
@@ -322,6 +327,26 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		for (Qname parent : group.getSubGroups()) {
 			model.addStatementIfObjectGiven(MVL_HAS_SUB_GROUP, parent);
+		}
+		store(model);
+		return group;
+	}
+
+	@Override
+	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
+		Model model = new Model(group.getQname());
+		model.setType(MVL_IUCN_RED_LIST_TAXON_GROUP);
+		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
+			model.addStatementIfObjectGiven(MVL_NAME, e.getValue(), e.getKey());
+		}
+		for (Qname parent : group.getSubGroups()) {
+			model.addStatementIfObjectGiven(MVL_HAS_IUCN_SUB_GROUP, parent);
+		}
+		for (Qname taxonId : group.getTaxons()) {
+			model.addStatementIfObjectGiven(MVL_INCLUDES_TAXON, taxonId);
+		}
+		for (Qname groupId : group.getInformalGroups()) {
+			model.addStatementIfObjectGiven(MVL_INCLUDES_INFORMAL_TAXON_GROUP, groupId);
 		}
 		store(model);
 		return group;
@@ -845,7 +870,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			deleteHabitatObjects(existingEvaluation);
 		}
 	}
-	
+
 	private void storeEndangermentObjectsAdnSetIdToModel(IUCNEvaluation givenData) throws Exception {
 		Model model = givenData.getModel();
 		for (IUCNEndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
@@ -877,7 +902,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			givenData.getModel().addStatement(new Statement(IucnDAO.HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
 		}
 	}
-	
+
 	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
 			this.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
@@ -901,7 +926,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			this.delete(new Subject(endangermentObject.getId()));
 		}
 	}
-	
+
 	private void store(IUCNHabitatObject habitat) throws Exception {
 		Qname id = given(habitat.getId()) ? habitat.getId() : this.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
 		habitat.setId(id);
@@ -928,5 +953,5 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public String getSchema() {
 		return SCHEMA;
 	}
-	
+
 }

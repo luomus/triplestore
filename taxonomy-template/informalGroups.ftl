@@ -4,10 +4,11 @@
 	<p class="successMessage">${successMessage}</p>
 </#if>
 
-<h1>Create and modify informal groups</h1>
-
 <#if user.admin>
-<p><a href="${baseURL}/informalGroups/add">&raquo; Create new group</a></p>
+	<h1>Create and modify informal groups</h1>
+	<p><a href="${baseURL}/informalGroups/add">&raquo; Create new group</a></p>
+<#else>
+	<h1>Informal groups</h1>
  </#if>
 
 <table class="resourceListTable informalGroupsTable">

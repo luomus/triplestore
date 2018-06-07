@@ -6,6 +6,7 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
@@ -54,6 +55,14 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public InformalTaxonGroup storeInformalTaxonGroup(InformalTaxonGroup group) throws Exception;
+
+	/**
+	 * Adds or modifies an IUCN red list informal taxon group. For new groups the ID must be already set.
+	 * @param group
+	 * @return the same group
+	 * @throws Exception
+	 */
+	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception;
 
 	/**
 	 * Add a taxon into db. Taxon must have Qname already set. If taxon doesn't have a taxon concept, a new one is generated.

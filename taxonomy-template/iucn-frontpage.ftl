@@ -2,7 +2,7 @@
 <#include "iucn-macro.ftl">
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
-
+<p><a href="${baseURL}/iucn-groups">Punaisen kirjan ryhmien tarkastelu ja muokkaus</a></p>
 <p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Käyttöohje</a> (13.2.2017 jälkeiset muutokset vielä päivittämättä)</p>
 <p><a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Elinympöristöluokkien tulkintaohje </a></p>
 <p><a href="https://laji.fi/map" target="_blank">Karttatyökaluun</a> (arviointialueiden rajat, koordinaattien selvitys, pinta-alan selvitys)</p>

@@ -15,7 +15,7 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public void addOccurrences(EditableTaxon taxon);
 
 	public IucnDAO getIucnDAO();
-	
+
 	/**
 	 * Checks if given name (scientific, vernacular or other name) exists in the given checklist, ignoring the taxon in question.
 	 * @param name
@@ -33,7 +33,8 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	public EditableTaxon createTaxon() throws Exception;
 
 	public Set<String> getInformalTaxonGroupRoots();
-	
+	public Set<String> getIucnRedListInformalGroupRoots();
+
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
 
 	/**
@@ -42,5 +43,5 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	 * @return
 	 */
 	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId);
-	
+
 }

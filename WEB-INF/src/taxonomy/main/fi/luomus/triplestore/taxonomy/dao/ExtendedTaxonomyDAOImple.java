@@ -186,7 +186,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
 		List<Taxon> matches = new ArrayList<Taxon>();
-		
+
 		Qname checklist = null;
 		if (given(taxon.getChecklist())) {
 			checklist = taxon.getChecklist();
@@ -199,7 +199,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				checklist = new Qname("MR.1");
 			}
 		}
-		
+
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -244,9 +244,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public Set<String> getInformalTaxonGroupRoots() {
-		Map<String, InformalTaxonGroup> allGroups = getInformalTaxonGroups();
+		return getRoots(getInformalTaxonGroups());
+	}
+
+	@Override
+	public Set<String> getIucnRedListInformalGroupRoots() {
+		return getRoots(getIucnRedListInformalTaxonGroups());
+	}
+
+	private <T extends InformalTaxonGroup> Set<String> getRoots(Map<String, T> allGroups) {
 		Set<String> roots = new LinkedHashSet<>(allGroups.keySet());
-		for (InformalTaxonGroup group : allGroups.values()) {
+		for (T group : allGroups.values()) {
 			for (Qname subGroup : group.getSubGroups()) {
 				roots.remove(subGroup.toString());
 			}
