@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -14,10 +15,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.rdf.ObjectResource;
-import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -48,6 +46,8 @@ public class IUCNValidointi {
 	private static File missing2010File = new File("c:/temp/iucn/2010_puuttuu_" + DateUtils.getFilenameDatetime() + ".txt");
 	private static File missing2019File = new File("c:/temp/iucn/2019_puuttuu_" + DateUtils.getFilenameDatetime() + ".txt");
 	private static File notReadyFile = new File("c:/temp/iucn/ei_merkitty_valmiiksi_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File groupErrorsFile = new File("c:/temp/iucn/ryhmissä_vikaa_" + DateUtils.getFilenameDatetime() + ".txt");
+	private static File targetNoEvalsFile = new File("c:/temp/iucn/!target_no_evals_" + DateUtils.getFilenameDatetime() + ".txt");
 
 	public static void main(String[] args) {
 		try {
@@ -82,6 +82,19 @@ public class IUCNValidointi {
 		int i = 1;
 		for (IUCNEvaluationTarget target : targets) {
 			System.out.println((i++) + "/" + targets.size() + " " + target.getQname());
+
+			Set<Qname> targetEvaluatedGroups = getEvaluatedGroups(target);
+			if (!target.hasEvaluations()) {
+				report(targetNoEvalsFile, Utils.list(target.getTaxon().getQname().toString()));
+				continue;
+			}
+			if (targetEvaluatedGroups.size() > 1) {
+				report(groupErrorsFile, target.getEvaluations().iterator().next(), Utils.list("Useita ryhmiä", informalGroups(targetEvaluatedGroups)));
+			}
+			if (targetEvaluatedGroups.isEmpty()) {
+				report(groupErrorsFile, target.getEvaluations().iterator().next(), Utils.list("Ei missään ryhmässä"));
+			}
+
 			if (!target.hasEvaluation(VALIDATION_YEAR)) {
 				if (target.hasEvaluations()) {
 					report(missing2019File, target.getEvaluations().iterator().next());
@@ -90,8 +103,8 @@ public class IUCNValidointi {
 			}
 			IUCNEvaluation evaluation = target.getEvaluation(VALIDATION_YEAR);
 			if (!evaluation.isReady()) {
-				markReady(evaluation);
 				report(notReadyFile, evaluation);
+				continue;
 			}
 			if (evaluation.isIncompletelyLoaded()) {
 				taxonomyDAO.getIucnDAO().completeLoading(evaluation);
@@ -108,14 +121,19 @@ public class IUCNValidointi {
 		}
 	}
 
-	private static void markReady(IUCNEvaluation evaluation) {
-		Predicate state = new Predicate(IUCNEvaluation.STATE);
-		evaluation.getModel().removeAll(state);
-		evaluation.getModel().addStatement(new Statement(state, new ObjectResource(new Qname(IUCNEvaluation.STATE_READY))));
+	private static Set<Qname> getEvaluatedGroups(IUCNEvaluationTarget target) throws Exception {
+		Set<String> evaluationGroups = taxonomyDAO.getIucnDAO().getGroupEditors().keySet();
+		Set<Qname> targetEvaluatedGroups = new HashSet<>();
+		for (Qname taxonGroup : target.getTaxon().getInformalTaxonGroups()) {
+			if (evaluationGroups.contains(taxonGroup.toString())) {
+				targetEvaluatedGroups.add(taxonGroup);
+			}
+		}
+		return targetEvaluatedGroups;
 	}
 
 	private static void initFileHeaders() throws Exception {
-		List<String> commonHeaders = Utils.list("ID", "Taksonin ID", "Tieteellinen nimi", "Lajiryhmät", "Luokka (vuosi)");
+		List<String> commonHeaders = Utils.list("Arvioinnin ID", "Vuosi", "Taksonin ID", "Tieteellinen nimi", "Lajiryhmät", "Luokka (vuosi)");
 
 		List<String> validationHeaders = new ArrayList<>(commonHeaders);
 		validationHeaders.add("Virheet");
@@ -134,7 +152,6 @@ public class IUCNValidointi {
 		report(missing2019File, commonHeaders);
 		report(notReadyFile, commonHeaders);
 	}
-
 
 	private static final Set<String> EN_CR = Utils.set("MX.iucnEN", "MX.iucnCR");
 	private static final Set<String> RE_DD_NA_NE = Utils.set("MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
@@ -215,6 +232,7 @@ public class IUCNValidointi {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(evaluation.getSpeciesQname()));
 		List<String> theseValues = Utils.list(
 				evaluation.getId(),
+				evaluation.getEvaluationYear().toString(),
 				evaluation.getSpeciesQname(),
 				taxon.getScientificName(),
 				informalGroups(taxon.getInformalTaxonGroups()),
@@ -239,15 +257,20 @@ public class IUCNValidointi {
 		}
 	}
 
-
-
 	private static String informalGroups(Set<Qname> informalTaxonGroupIds) {
-		List<InformalTaxonGroup> informalTaxonGroups = new ArrayList<>();
-		for (Qname qname : informalTaxonGroupIds) {
-			informalTaxonGroups.add(taxonomyDAO.getInformalTaxonGroups().get(qname.toString()));
+		try {
+			Set<String> evaluatedGroups = taxonomyDAO.getIucnDAO().getGroupEditors().keySet();
+			List<InformalTaxonGroup> informalTaxonGroups = new ArrayList<>();
+			for (Qname qname : informalTaxonGroupIds) {
+				if (evaluatedGroups.contains(qname.toString())) {
+					informalTaxonGroups.add(taxonomyDAO.getInformalTaxonGroups().get(qname.toString()));
+				}
+			}
+			Collections.sort(informalTaxonGroups);
+			return informalGroups(informalTaxonGroups);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		Collections.sort(informalTaxonGroups);
-		return informalGroups(informalTaxonGroups);
 	}
 
 	private static String informalGroups(List<InformalTaxonGroup> informalGroups) {

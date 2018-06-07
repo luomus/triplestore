@@ -85,7 +85,7 @@ public class IUCNValidator {
 		max = Math.max(min, max);
 		validateIndividualCountMax("MX.iucnVU", Utils.list("C1", "C2"), max, 10000, givenData, validationResult);
 		validateIndividualCountMax("MX.iucnEN", Utils.list("C1", "C2"), max, 2500, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnCR", Utils.list("C1", "C2"), max, 1000, givenData, validationResult);
+		validateIndividualCountMax("MX.iucnCR", Utils.list("C1", "C2"), max, 250, givenData, validationResult);
 		validateIndividualCountMax("MX.iucnVU", Utils.list("D", "D1"), max, 1000, givenData, validationResult);
 		validateIndividualCountMax("MX.iucnEN", Utils.list("D", "D1"), max, 250, givenData, validationResult);
 		validateIndividualCountMax("MX.iucnCR", Utils.list("D", "D1"), max, 50, givenData, validationResult);
@@ -307,9 +307,9 @@ public class IUCNValidator {
 		} else {
 			Double dMin = d(min);
 			Double dMax = d(max);
-			validateAreaMax(givenData, "MX.iucnVU", 100, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnVU", 20000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
 			validateAreaMax(givenData, "MX.iucnEN", 5000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
-			validateAreaMax(givenData, "MX.iucnCR", 20000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, "MX.iucnCR", 100, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
 		}
 	}
 
