@@ -90,7 +90,7 @@ public class IUCNValidointi {
 				continue;
 			}
 			if (targetEvaluatedGroups.size() > 1) {
-				report(groupErrorsFile, target.getLatestEvaluation(), Utils.list("Useita ryhmiä", informalGroups(targetEvaluatedGroups)));
+				report(groupErrorsFile, target.getLatestEvaluation(), Utils.list("Useita ryhmiä"));
 			}
 			if (targetEvaluatedGroups.isEmpty()) {
 				report(groupErrorsFile, target.getLatestEvaluation(), Utils.list("Ei missään ryhmässä"));
