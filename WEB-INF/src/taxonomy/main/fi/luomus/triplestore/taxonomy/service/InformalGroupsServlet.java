@@ -19,22 +19,22 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		ResponseData responseData = initResponseData(req);
-		
+
 		if (getUser(req).isAdmin()) {
 			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload()); // for admin always reload; for others this is et in initResponseData
 		}
-		
+
 		if (req.getRequestURI().endsWith("/informalGroups")) {
 			responseData.setData("roots", getTaxonomyDAO().getInformalTaxonGroupRoots());
 			return responseData.setViewName("informalGroups");
 		}
-		
+
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins");
-		
+
 		if (addNew(req)) {
 			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalTaxonGroup());
 		}
-		
+
 		String qname = getQname(req);
 		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
@@ -59,14 +59,10 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
 		if (!given(nameEN, nameFI, nameSV)) throw new IllegalStateException("Required parameters were not set");
 
-		nameEN = Utils.upperCaseFirst(nameEN.toLowerCase());
-		nameFI = Utils.upperCaseFirst(nameFI.toLowerCase());
-		nameSV = Utils.upperCaseFirst(nameSV.toLowerCase());
-
 		LocalizedText names = new LocalizedText();
-		names.set("en", nameEN);
-		names.set("fi", nameFI);
-		names.set("sv", nameSV);
+		names.set("en", Utils.upperCaseFirst(nameEN));
+		names.set("fi", Utils.upperCaseFirst(nameFI));
+		names.set("sv", Utils.upperCaseFirst(nameSV));
 
 		InformalTaxonGroup group = new InformalTaxonGroup(qname, names);
 

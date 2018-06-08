@@ -63,13 +63,13 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 
 		LocalizedText names = new LocalizedText();
 		if (nameEN != null) {
-			names.set("en", Utils.upperCaseFirst(nameEN.toLowerCase()));
+			names.set("en", Utils.upperCaseFirst(nameEN));
 		}
 		if (nameFI != null) {
-			names.set("fi", Utils.upperCaseFirst(nameFI.toLowerCase()));
+			names.set("fi", Utils.upperCaseFirst(nameFI));
 		}
 		if (nameSV != null) {
-			names.set("sv", Utils.upperCaseFirst(nameSV.toLowerCase()));
+			names.set("sv", Utils.upperCaseFirst(nameSV));
 		}
 
 		IucnRedListInformalTaxonGroup group = new IucnRedListInformalTaxonGroup(qname, names);
