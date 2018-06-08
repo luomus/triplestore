@@ -153,5 +153,9 @@ public class IUCNEvaluationTarget {
 		return "IUCNEvaluationTarget [getGroups()=" + getGroups() + ", getYears()=" + getYears() + "]";
 	}
 
+	public IUCNEvaluation getLatestEvaluation() throws Exception {
+		return getPreviousEvaluation(Integer.MAX_VALUE);
+	}
+
 	
 }

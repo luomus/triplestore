@@ -82,22 +82,23 @@ public class IUCNValidointi {
 		int i = 1;
 		for (IUCNEvaluationTarget target : targets) {
 			System.out.println((i++) + "/" + targets.size() + " " + target.getQname());
-
 			Set<Qname> targetEvaluatedGroups = getEvaluatedGroups(target);
 			if (!target.hasEvaluations()) {
-				report(targetNoEvalsFile, Utils.list(target.getTaxon().getQname().toString()));
+				if (!target.getQname().equals("MX.1")) {
+					report(targetNoEvalsFile, Utils.list(target.getTaxon().getQname().toString()));
+				}
 				continue;
 			}
 			if (targetEvaluatedGroups.size() > 1) {
-				report(groupErrorsFile, target.getEvaluations().iterator().next(), Utils.list("Useita ryhmiä", informalGroups(targetEvaluatedGroups)));
+				report(groupErrorsFile, target.getLatestEvaluation(), Utils.list("Useita ryhmiä", informalGroups(targetEvaluatedGroups)));
 			}
 			if (targetEvaluatedGroups.isEmpty()) {
-				report(groupErrorsFile, target.getEvaluations().iterator().next(), Utils.list("Ei missään ryhmässä"));
+				report(groupErrorsFile, target.getLatestEvaluation(), Utils.list("Ei missään ryhmässä"));
 			}
 
 			if (!target.hasEvaluation(VALIDATION_YEAR)) {
 				if (target.hasEvaluations()) {
-					report(missing2019File, target.getEvaluations().iterator().next());
+					report(missing2019File, target.getLatestEvaluation());
 				}
 				continue;
 			}
@@ -133,7 +134,7 @@ public class IUCNValidointi {
 	}
 
 	private static void initFileHeaders() throws Exception {
-		List<String> commonHeaders = Utils.list("Arvioinnin ID", "Vuosi", "Taksonin ID", "Tieteellinen nimi", "Lajiryhmät", "Luokka (vuosi)");
+		List<String> commonHeaders = Utils.list("Arvioinnin ID", "Vuosi", "Luokka", "Taksonin ID", "Tieteellinen nimi", "Lajiryhmät");
 
 		List<String> validationHeaders = new ArrayList<>(commonHeaders);
 		validationHeaders.add("Virheet");
@@ -145,12 +146,16 @@ public class IUCNValidointi {
 		List<String> automatedChangesHeaders = new ArrayList<>(commonHeaders);
 		automatedChangesHeaders.add("Muutos");
 
+		List<String> groupErrorsHeaders = new ArrayList<>(commonHeaders);
+		groupErrorsHeaders.add("Virhe");
+
 		report(validationFile, validationHeaders);
 		report(statusChangeFile, statusChangeHeaders);
 		report(automaticChangesFile, automatedChangesHeaders);
 		report(missing2010File, commonHeaders);
 		report(missing2019File, commonHeaders);
 		report(notReadyFile, commonHeaders);
+		report(groupErrorsFile, groupErrorsHeaders);
 	}
 
 	private static final Set<String> EN_CR = Utils.set("MX.iucnEN", "MX.iucnCR");
@@ -233,10 +238,10 @@ public class IUCNValidointi {
 		List<String> theseValues = Utils.list(
 				evaluation.getId(),
 				evaluation.getEvaluationYear().toString(),
+				s(evaluation.getIucnStatus()),
 				evaluation.getSpeciesQname(),
 				taxon.getScientificName(),
-				informalGroups(taxon.getInformalTaxonGroups()),
-				s(evaluation.getIucnStatus())
+				informalGroups(taxon.getInformalTaxonGroups())
 				);
 		if (values != null) {
 			theseValues.addAll(values);
