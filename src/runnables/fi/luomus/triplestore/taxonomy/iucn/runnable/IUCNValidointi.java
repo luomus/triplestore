@@ -35,6 +35,7 @@ import fi.luomus.triplestore.taxonomy.iucn.service.GroupSpeciesListServlet;
 
 public class IUCNValidointi {
 
+	private static final String WAKE_UP_TAXON = "MX.1";
 	private static final int VALIDATION_YEAR = 2019;
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
@@ -71,7 +72,7 @@ public class IUCNValidointi {
 		// limited data mode
 		// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
 
-		taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget("MX.1");
+		taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(WAKE_UP_TAXON);
 		validate();
 		taxonomyDAO.close();
 	}
@@ -84,7 +85,7 @@ public class IUCNValidointi {
 			System.out.println((i++) + "/" + targets.size() + " " + target.getQname());
 			Set<Qname> targetEvaluatedGroups = getEvaluatedGroups(target);
 			if (!target.hasEvaluations()) {
-				if (!target.getQname().equals("MX.1")) {
+				if (!target.getQname().equals(WAKE_UP_TAXON)) {
 					report(targetNoEvalsFile, Utils.list(target.getTaxon().getQname().toString()));
 				}
 				continue;
