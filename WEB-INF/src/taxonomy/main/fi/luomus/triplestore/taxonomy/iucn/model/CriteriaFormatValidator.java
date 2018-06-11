@@ -369,35 +369,35 @@ public class CriteriaFormatValidator {
 		if (!this.hasMainCriteria(given.getMainCriteria())) {
 			return new CriteriaValidationResult("Tuntematon kriteeri " + given.getMainCriteria());
 		}
-		MainCriteria specifiecMainCriteria = this.getMainCriteria(given.getMainCriteria());
-		if (specifiecMainCriteria.hasSubCriterias() && !given.hasSubCriterias()) {
-			return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " täytyy antaa yksi alakriteereistä " + specifiecMainCriteria.subCriteriasToString());
+		MainCriteria specifiedMainCriteria = this.getMainCriteria(given.getMainCriteria());
+		if (specifiedMainCriteria.hasSubCriterias() && !given.hasSubCriterias()) {
+			return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + " täytyy antaa yksi alakriteereistä " + specifiedMainCriteria.subCriteriasToString());
 		}
 		SubCriteria prevSubCriteria = null;
 		for (SubCriteria givenSubCriteria : given.getSubCriterias()) {
 			if (prevSubCriteria != null && givenSubCriteria.getSubCriteria() == prevSubCriteria.getSubCriteria()) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " on annettu alakriteeri " + givenSubCriteria.getSubCriteria() + " useammin kuin kerran");
+				return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + " on annettu alakriteeri " + givenSubCriteria.getSubCriteria() + " useammin kuin kerran");
 			}
-			SubCriteria specifiedSubCriteria = specifiecMainCriteria.getSubCriteria(givenSubCriteria.getSubCriteria());
+			SubCriteria specifiedSubCriteria = specifiedMainCriteria.getSubCriteria(givenSubCriteria.getSubCriteria());
 			if (specifiedSubCriteria == null) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + " ei ole määritelty alakriteeriä " + givenSubCriteria.getSubCriteria());
+				return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + " ei ole määritelty alakriteeriä " + givenSubCriteria.getSubCriteria());
 			}
 			if (prevSubCriteria != null && specifiedSubCriteria.getOrder() < prevSubCriteria.getOrder() ) {
-				return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + " alakriteerin " + givenSubCriteria.getSubCriteria() + " täytyy olla ennen alakriteeriä " + prevSubCriteria.getSubCriteria());
+				return new CriteriaValidationResult("Kriteerin " + specifiedMainCriteria.getMainCriteria() + " alakriteerin " + givenSubCriteria.getSubCriteria() + " täytyy olla ennen alakriteeriä " + prevSubCriteria.getSubCriteria());
 			}
 			if (specifiedSubCriteria.hasSpecifications() && !givenSubCriteria.hasSpecifications()) {
-				return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähintään yksi lisämerkinnöistä " + specifiedSubCriteria.getSpecifications());
+				return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " täytyy antaa vähintään yksi lisämerkinnöistä " + specifiedSubCriteria.getSpecifications());
 			}
 			String prevSpecification = null;
 			for (String givenSpecification : givenSubCriteria.getSpecifications()) {
 				if (givenSpecification.equals(prevSpecification)) {
-					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on annettu lisämerkintä " + prevSpecification + " useammin kuin kerran");
+					return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " on annettu lisämerkintä " + prevSpecification + " useammin kuin kerran");
 				}
 				if (!specifiedSubCriteria.hasSpecification(givenSpecification)) {
-					return new CriteriaValidationResult("Kriteerille " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " ei ole määritelty lisämerkintää " + givenSpecification);
+					return new CriteriaValidationResult("Kriteerille " + specifiedMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " ei ole määritelty lisämerkintää " + givenSpecification);
 				}
 				if (prevSpecification != null && specificationOrder(givenSpecification) < specificationOrder(prevSpecification)) {
-					return new CriteriaValidationResult("Kriteerin " + specifiecMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " lisämerkinnän " + givenSpecification + " tulis olla ennen lisämerkintää " + prevSpecification);
+					return new CriteriaValidationResult("Kriteerin " + specifiedMainCriteria.getMainCriteria() + specifiedSubCriteria.getSubCriteria() + " lisämerkinnän " + givenSpecification + " tulis olla ennen lisämerkintää " + prevSpecification);
 				}
 				prevSpecification = givenSpecification;
 			}
