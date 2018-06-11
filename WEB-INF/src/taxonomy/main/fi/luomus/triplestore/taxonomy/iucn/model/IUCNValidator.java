@@ -20,6 +20,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCri
 
 public class IUCNValidator {
 
+	private static final String KRITEERIEN_TARKISTUKSET = "Kriteerien tarkistukset: ";
 	private final TriplestoreDAO dao;
 	private final ErrorReporter errorReporter;
 
@@ -47,8 +48,9 @@ public class IUCNValidator {
 			validateStatusChange(givenData, comparisonData, validationResult);
 			validateRegionalEndangerment(givenData, validationResult);
 			validateInvasive(givenData, validationResult);
-			validateCriteriasAndStatuses(givenData, validationResult);
-			validateSpecificCriterias(givenData, validationResult);
+			validate_Criteria_CriteriaStatus_Pair(givenData, validationResult);
+			validateAdditionalDataRequirementsSpecificCriterias(givenData, validationResult);
+			validateCriteriaRequirements(givenData, validationResult);
 			validateOccurrences(givenData, validationResult);
 			validateHabitatForStatus(givenData, validationResult);
 			validateEndangermentReasonForStatus(givenData, validationResult);
@@ -74,6 +76,48 @@ public class IUCNValidator {
 		validateEvaluationPeriodLength(givenData, validationResult);
 		validateValidCriteriaStatuses(givenData, validationResult);
 		validateGlobalPercentage(givenData, validationResult);
+	}
+
+	private void validateCriteriaRequirements(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+		String status = givenData.getIucnStatus();
+		List<MainCriteria> criteria = null;
+
+		try {
+			criteria = CriteriaFormatValidator.parseCriteria(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS));
+		} catch (Exception e) {
+			// criteria format validation errors are handled in other validations
+			return;
+		}
+
+		for (MainCriteria c : criteria) {
+			if (c.getMainCriteria().equals("E")) {
+				validationResult.setError(KRITEERIEN_TARKISTUKSET + "Kriteeriä E ei käytetä", IUCNEvaluation.CRITERIA_FOR_STATUS);
+			}
+			if (c.getMainCriteria().equals("D")) {
+				validationResult.setError(KRITEERIEN_TARKISTUKSET + "Kriteeriä D ei käytetä. Tarkenna D1 tai D2.", IUCNEvaluation.CRITERIA_FOR_STATUS);
+			}
+			if (c.getMainCriteria().startsWith("B")) {
+				validateCriteriaBRequirementsForStatus(status, c, validationResult);
+			}
+			if (c.getMainCriteria().startsWith("D")) {
+				validateCriteriaDRequirementsForStatus(status, c, validationResult);
+			}
+		}
+
+	}
+
+	private void validateCriteriaDRequirementsForStatus(String status, MainCriteria c, IUCNValidationResult validationResult) {
+		if (CR_EN.contains(status) && c.getMainCriteria().equals("D2")) {
+			validationResult.setError(KRITEERIEN_TARKISTUKSET + "Jos kriteeri on D2, luokka ei voi olla EN tai CR", IUCNEvaluation.RED_LIST_STATUS);
+		}
+	}
+
+	private void validateCriteriaBRequirementsForStatus(String status, MainCriteria c, IUCNValidationResult validationResult) {
+		if (CR_EN_VU.contains(status)) {
+			if (c.getSubCriterias().size() < 2) {
+				validationResult.setError(KRITEERIEN_TARKISTUKSET + "VU-CR; Sekä kriteerissä B1 että B2 pitää molemmissa olla merkittynä vähintään kaksi alakriteeriä", IUCNEvaluation.RED_LIST_STATUS);
+			}
+		}
 	}
 
 	private void validatePopulationSize(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -168,13 +212,19 @@ public class IUCNValidator {
 		}
 	}
 
-	private static final Set<String> LSA_CAN_GIVE_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
-	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
-	private static final Set<String> THREATHS_REQUIRED_STATUSES = CRITERIA_FOR_STATUS_REQUIRED_STATUSES;
-	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = Utils.set("MX.iucnRE","MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> CR_EN = Utils.set("MX.iucnCR", "MX.iucnEN");
+	private static final Set<String> CR_EN_VU = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
+	private static final Set<String> CR_EN_VU_NT = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> CR_EN_VU_NT_LC = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
+	private static final Set<String> RE_CR_EN_VU_NT = Utils.set("MX.iucnRE", "MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+
+	private static final Set<String> LSA_CAN_GIVE_STATUSES = CR_EN_VU;
+	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = CR_EN_VU_NT;
+	private static final Set<String> THREATHS_REQUIRED_STATUSES = CR_EN_VU_NT;
+	private static final Set<String> ENDANGERMENTREASON_REQUIRED_STATUSES = RE_CR_EN_VU_NT;
 	private static final Set<String> CRITERIA_ENDANGERMENTREASON_NOT_REQUIRED = Utils.set("A3", "B1", "B2", "C2");
-	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
-	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = CRITERIA_FOR_STATUS_REQUIRED_STATUSES;
+	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = CR_EN_VU_NT_LC;
+	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = CR_EN_VU_NT;
 	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set("MX.iucnEX", "MX.iucnEW", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
 
 	private void validateExternalImpactAndStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -251,20 +301,17 @@ public class IUCNValidator {
 		}
 	}
 
-	private void validateSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void validateAdditionalDataRequirementsSpecificCriterias(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String criterias = parseCriterias(givenData);
 
 		if (criterias.contains("B1")) {
-			validateWhenCriteriaB1Given(givenData, validationResult);
+			requiredWhenCriteriaB1Given(givenData, validationResult);
 		}
 		if (criterias.contains("B2")) {
-			validateWhenCriteriaB2Given(givenData, validationResult);
+			requiredWhenCriteriaB2Given(givenData, validationResult);
 		}
 		if (criterias.contains("A")) {
-			validateWhenCriteriaAGiven(givenData, validationResult);
-		}
-		if (criterias.contains("E")) {
-			validationResult.setError("Kriteeriä E ei käytetä", IUCNEvaluation.CRITERIA_FOR_STATUS);
+			requiredWhenCriteriaAGiven(givenData, validationResult);
 		}
 	}
 
@@ -292,13 +339,13 @@ public class IUCNValidator {
 		return criterias;
 	}
 
-	private void validateWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void requiredWhenCriteriaAGiven(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!given(givenData.getValue(IUCNEvaluation.EVALUATION_PERIOD_LENGTH))) {
 			validationResult.setError("Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A", IUCNEvaluation.EVALUATION_PERIOD_LENGTH);
 		}
 	}
 
-	private void validateWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void requiredWhenCriteriaB1Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String min = givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MIN);
 		String max = givenData.getValue(IUCNEvaluation.DISTRIBUTION_AREA_MAX);
 		if (!given(min) && !given(max)) {
@@ -313,7 +360,7 @@ public class IUCNValidator {
 		}
 	}
 
-	private void validateWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void requiredWhenCriteriaB2Given(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String min = givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MIN);
 		String max = givenData.getValue(IUCNEvaluation.OCCURRENCE_AREA_MAX);
 		if (!given(min) && !given(max)) {
@@ -350,7 +397,7 @@ public class IUCNValidator {
 		}
 	}
 
-	private void validateCriteriasAndStatuses(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void validate_Criteria_CriteriaStatus_Pair(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		for (String criteriaPostfix : IUCNEvaluation.CRITERIAS) {
 			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
 			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
