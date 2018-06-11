@@ -115,7 +115,7 @@ public class IUCNValidator {
 	private void validateCriteriaBRequirementsForStatus(String status, MainCriteria c, IUCNValidationResult validationResult) {
 		if (CR_EN_VU.contains(status)) {
 			if (c.getSubCriterias().size() < 2) {
-				validationResult.setError(KRITEERIEN_TARKISTUKSET + "VU-CR; Sekä kriteerissä B1 että B2 pitää molemmissa olla merkittynä vähintään kaksi alakriteeriä", IUCNEvaluation.RED_LIST_STATUS);
+				validationResult.setError(KRITEERIEN_TARKISTUKSET + "VU-CR luokat: Sekä kriteerissä B1 että B2 pitää molemmissa olla merkittynä vähintään kaksi alakriteeriä", IUCNEvaluation.RED_LIST_STATUS);
 			}
 		}
 	}
