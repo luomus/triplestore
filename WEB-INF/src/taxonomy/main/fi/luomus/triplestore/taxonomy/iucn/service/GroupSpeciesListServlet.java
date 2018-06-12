@@ -132,7 +132,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			TriplestoreDAO dao = getTriplestoreDAO();
 			if (isFileDownload(req)) {
-				return doDownload(res, responseData, container, selectedYear, filteredTargets);
+				return doDownload(res, container, selectedYear, filteredTargets);
 			}
 			List<IUCNEvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
 			return responseData.setViewName("iucn-group-species-list")
@@ -157,13 +157,13 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 		}
 
-		private ResponseData doDownload(HttpServletResponse res, ResponseData responseData, IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets) throws Exception {
+		private ResponseData doDownload(HttpServletResponse res, IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets) throws Exception {
 			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
 			Collections.reverse(years);
 			String headerRow = fileDownloadHeaderRow(selectedYear, years);
 			List<String> rows = fileDownloadDataRows(container, selectedYear, targets, years);
 			writeFileDownloadRows(res, selectedYear, headerRow, rows);
-			return responseData.setOutputAlreadyPrinted();
+			return new ResponseData().setOutputAlreadyPrinted();
 		}
 
 		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, String headerRow, List<String> rows) throws IOException {
