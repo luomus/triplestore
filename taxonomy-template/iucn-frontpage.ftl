@@ -89,6 +89,21 @@
 
 <p class="info">Voit siirtyä arvioitavien lajien luetteloon klikkaamalla eliöryhmän nimeä.</p>
 
+<hr />
+
+<p>
+	Lataa kaikki arvioinnit yhteen tiedostoon <a id="downloadAll" href="${baseURL}/iucn/download-all/" class="button">Lataa</a>
+</p>
+<p>Tuotetut tiedostot ilmestyvät alle. Palaa latauksen aloitettuasi muutaman minuutin päästä tälle IUCN-osion etusivulle nähdäksesi tuotetut tiedostot.</p>
+
+<#if downloads?has_content>
+<ul>
+<#list downloads as filename>
+	<li><a href="${baseURL}/iucn/file/${filename}">${filename}</a></li>
+</#list>
+</ul>
+</#if>
+
 <script>
 $(function() {
 	$(".taxonGroupStat").each(function() {
@@ -97,6 +112,9 @@ $(function() {
 		$.get("${baseURL}/api/iucn-stat/"+groupQname+"?year=${selectedYear}", function(data) {
 			groupStatElement.html(data);
 		});
+	});
+	$("#downloadAll").on('click', function() {
+		return confirm('Haluatko varmasti ladata kaikkien arviointien tiedot?'); 
 	});
 });
 </script>

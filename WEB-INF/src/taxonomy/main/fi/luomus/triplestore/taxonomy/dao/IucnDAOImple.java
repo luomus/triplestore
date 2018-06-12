@@ -64,7 +64,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final int PAGE_SIZE_TAXON_LIST = 3000;
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	private static final String INCLUDE_HIDDEN = "includeHidden";
-	private static final String DEV_LIMITED_TO_INFORMAL_GROUP = "MVL.301";
+	private static final Set<String> DEV_LIMITED_TO_INFORMAL_GROUPS = Utils.set("MVL.301", "MVL.1");
 	private static final String SORT_ORDER = "sortOrder";
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_AREA = "MO.area";
@@ -340,7 +340,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private List<String> loadSpeciesOfGroup(String groupQname, HttpClientService client) throws Exception {
-		if (devMode && !groupQname.equals(DEV_LIMITED_TO_INFORMAL_GROUP)) return Collections.emptyList();
+		if (devMode && !DEV_LIMITED_TO_INFORMAL_GROUPS.contains(groupQname)) return Collections.emptyList();
 		System.out.println("Loading species of group " + groupQname + " for IUCN evaluation...");
 		List<String> speciesOfGroup = new ArrayList<>();
 		synchronized (LOCK) { // To prevent too many requests at once
@@ -444,9 +444,7 @@ public class IucnDAOImple implements IucnDAO {
 
 		SearchParams searchParams = new SearchParams(Integer.MAX_VALUE, 0).type(IUCNEvaluation.EVALUATION_CLASS);
 		if (devMode) {
-			for (String qname : loadSpeciesOfGroup(DEV_LIMITED_TO_INFORMAL_GROUP)) {
-				searchParams.objectresource(qname);
-			}
+			limitLoadingForDevMode(searchParams);
 		}
 		Collection<Model> evaluations = triplestoreDAO.getSearchDAO().search(searchParams);
 
@@ -465,6 +463,14 @@ public class IucnDAOImple implements IucnDAO {
 			}
 		}
 		System.out.println("IUCN evaluations loaded!");
+	}
+
+	private void limitLoadingForDevMode(SearchParams searchParams) throws Exception {
+		for (String limitedGroupId : DEV_LIMITED_TO_INFORMAL_GROUPS) {
+			for (String taxonId : loadSpeciesOfGroup(limitedGroupId)) {
+				searchParams.objectresource(taxonId);
+			}
+		}
 	}
 
 	private IUCNEvaluation createEvaluation(Model model) throws Exception {

@@ -263,7 +263,7 @@ BaseFolder = c:/apache-tomcat
 LanguageFileFolder = /webapps/triplestore/locale
 TemplateFolder     = /webapps/triplestore/taxonomy-template
 LogFolder          = /application-logs/triplestore/taxonomy
-
+ReportFolder       = /application-out/iucn-downloads
 
 LanguageFiles = locale
 SupportedLanguages = en

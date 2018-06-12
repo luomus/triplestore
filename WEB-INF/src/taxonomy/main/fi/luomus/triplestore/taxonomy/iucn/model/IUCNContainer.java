@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -21,7 +22,7 @@ public class IUCNContainer {
 
 	private final IucnDAOImple iucnDAO;
 	private final Map<Integer, Map<String, IUCNYearlyGroupStat>> stats = new HashMap<>();
-	private final Map<String, List<IUCNEvaluationTarget>> targetsOfGroup = new HashMap<>();
+	private final Map<String, List<IUCNEvaluationTarget>> targetsOfGroup = new LinkedHashMap<>();
 	private final Map<String, List<String>> groupsOfTarget = new HashMap<>();
 	private final Map<String, IUCNEvaluationTarget> targets = new HashMap<>();
 	private final Map<String, TreeSet<Remark>> remarksOfGroup = new HashMap<>();
@@ -30,6 +31,13 @@ public class IUCNContainer {
 		this.iucnDAO = iucnDAO;
 	}
 
+	public Collection<IUCNEvaluationTarget> getGroupOrderedTargets() {
+		List<IUCNEvaluationTarget> t = new ArrayList<>(60000);
+		for (List<IUCNEvaluationTarget> groupTargets : targetsOfGroup.values()) {
+			t.addAll(groupTargets);
+		}
+		return Collections.unmodifiableCollection(t);
+	}
 	public Collection<IUCNEvaluationTarget> getTargets() {
 		List<IUCNEvaluationTarget> t = new ArrayList<>(targets.values());
 		return Collections.unmodifiableCollection(t);

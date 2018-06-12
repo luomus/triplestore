@@ -157,21 +157,25 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 		}
 
-		private ResponseData doDownload(HttpServletResponse res, IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets) throws Exception {
-			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
-			Collections.reverse(years);
-			String headerRow = fileDownloadHeaderRow(selectedYear, years);
-			List<String> rows = fileDownloadDataRows(container, selectedYear, targets, years);
-			writeFileDownloadRows(res, selectedYear, headerRow, rows);
+		private ResponseData doDownload(HttpServletResponse res, IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets) throws Exception {
+			List<String> rows = getDownloadRows(container, selectedYear, targets);
+			writeFileDownloadRows(res, selectedYear, rows);
 			return new ResponseData().setOutputAlreadyPrinted();
 		}
 
-		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, String headerRow, List<String> rows) throws IOException {
+		protected List<String> getDownloadRows(IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets) throws Exception {
+			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
+			Collections.reverse(years);
+			List<String> rows = new ArrayList<>(targets.size()*4);
+			rows.add(fileDownloadHeaderRow(selectedYear, years));
+			appendDownloadDataRows(container, selectedYear, targets, years, rows);
+			return rows;
+		}
+
+		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, List<String> rows) throws IOException {
 			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
 			res.setContentType("text/csv; charset=utf-8");
 			PrintWriter writer = res.getWriter();
-			writer.write(headerRow);
-			writer.write("\n");
 			int i = 0;
 			for (String row : rows) {
 				writer.write(row);
@@ -181,8 +185,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			writer.flush();
 		}
 
-		private List<String> fileDownloadDataRows(IUCNContainer container, int selectedYear, List<IUCNEvaluationTarget> targets, List<Integer> years) throws Exception {
-			List<String> rows = new ArrayList<>();
+		private void appendDownloadDataRows(IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets, List<Integer> years, List<String> rows) throws Exception {
 			for (IUCNEvaluationTarget target : targets) {
 				if (target.hasEvaluation(selectedYear)) {
 					IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
@@ -195,7 +198,6 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					rows.add(fileDownloadDataRow(new IUCNEvaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years));
 				}
 			}
-			return rows;
 		}
 
 		private String fileDownloadDataRow(IUCNEvaluation evaluation, IUCNEvaluationTarget target, List<Integer> years) throws Exception {

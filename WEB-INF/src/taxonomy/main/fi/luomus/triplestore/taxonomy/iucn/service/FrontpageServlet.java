@@ -1,7 +1,9 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +53,25 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)));
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
+				.setData("downloads", getCompletedDownloads());
+	}
+
+	private List<String> getCompletedDownloads() {
+		List<String> files = new ArrayList<>();
+		try {
+			File folder = new File(getConfig().reportFolder());
+			folder.mkdirs();
+			for (File f : folder.listFiles()) {
+				if (f.getName().endsWith(".zip")) {
+					files.add(f.getName());
+				}
+			}
+			Collections.reverse(files);
+		} catch (Exception e) {
+			getErrorReporter().report(e);
+		}
+		return files;
 	}
 
 	protected int selectedYear(HttpServletRequest req) throws Exception {
@@ -87,17 +107,17 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	private int getDraftYear(List<Integer> allYears) throws Exception {
 		return Iterables.getLast(allYears);
 	}
-	
+
 	private static Collection<RdfProperty> occurrenceStatuses;
 	private static Collection<RdfProperty> regionalOccurrenceStatuses;
-	
+
 	protected Collection<RdfProperty> getRegionalOccurrenceStatuses() throws Exception {
 		if (regionalOccurrenceStatuses == null) {
 			regionalOccurrenceStatuses = initRegionalOccurrenceStatuses();
 		}
 		return regionalOccurrenceStatuses;
 	}
-	
+
 	private List<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
 		List<RdfProperty> statuses = new ArrayList<>();
 		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
@@ -108,7 +128,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		statuses.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
 		return statuses;
 	} 
-	
+
 	protected Collection<RdfProperty> getOccurrenceStatuses() throws Exception {
 		if (occurrenceStatuses == null) {
 			occurrenceStatuses = initOccurrenceStatuses();
@@ -127,7 +147,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Vieraslaji", referenceStatuses));
 		return occurrences;
 	}
-	
+
 	private RdfProperty buildOccurrenceStatus(String id, String label, Collection<RdfProperty> referenceStatuses) {
 		Qname qname = new Qname(id);
 		if (!contains(referenceStatuses, qname)) throw new IllegalStateException("Unknown reference status: " + id);
@@ -142,14 +162,14 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 		return false;
 	}
-	
+
 	private static HabitatLabelIndendator habitatLabelIndendator = null;
-	
+
 	protected HabitatLabelIndendator getHabitatLabelIndentaror() throws Exception {
 		if (habitatLabelIndendator == null) {
 			habitatLabelIndendator = new HabitatLabelIndendator(getTriplestoreDAO().getProperty(IucnDAO.HABITAT_PREDICATE).getRange().getValues());
 		}
 		return habitatLabelIndendator;
 	}
-	
+
 }
