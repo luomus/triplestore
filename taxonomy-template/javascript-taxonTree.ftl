@@ -787,7 +787,11 @@ $(function() {
       	modal: true,
       	beforeClose: function() {
       		if ($(".saveButton").length > 0) {
-				return confirm('This taxon has unsaved changes. Are you sure you want to close without saving?');
+				if (confirm('This taxon has unsaved changes. Are you sure you want to close without saving?')) {
+					$(".saveButton").remove();
+					return true;
+				}
+				return false;
 			}
 			return true;
       	}
