@@ -94,7 +94,7 @@
 <p>
 	Lataa kaikki arvioinnit yhteen tiedostoon <a id="downloadAll" href="${baseURL}/iucn/download-all/" class="button">Lataa</a>
 </p>
-<p>Tuotetut tiedostot ilmestyvät alle. Palaa latauksen aloitettuasi muutaman minuutin päästä tälle IUCN-osion etusivulle nähdäksesi tuotetut tiedostot.</p>
+<p>Tuotetut tiedostot ilmestyvät alle. Palaa latauksen aloitettuasi 2-10 minuutin päästä tälle IUCN-osion etusivulle nähdäksesi tuotetut tiedostot.</p>
 
 <#if downloads?has_content>
 <ul>
