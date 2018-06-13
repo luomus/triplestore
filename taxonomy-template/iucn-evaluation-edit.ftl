@@ -7,11 +7,14 @@
 	</a><br />
 </#list>
 
+<@toolbox/>		
+
+<div id="evaluationEdit">
+
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 <h2><a href="#"><@printScientificNameAndAuthor taxon /> ${taxon.vernacularName.forLocale("fi")!""}</a></h2>
 
-<@toolbox/>		
 
 <#if successMessage?has_content>
 	<p class="successMessage">${successMessage?html}</p>
@@ -407,6 +410,8 @@
 </form>
 </#if>
 
+</div>
+
 <@propertyCommentsScript />
 
 <script>
@@ -414,7 +419,7 @@
 var warnBeforeUnload = false;
 
 $(function() {
-	$(":input").on('change', function() { warnBeforeUnload = true; } ); 
+	$("#evaluationEdit :input").on('change', function() { warnBeforeUnload = true; } ); 
 });
 
 $(".submitButton").on('click', function() { warnBeforeUnload = false; });
