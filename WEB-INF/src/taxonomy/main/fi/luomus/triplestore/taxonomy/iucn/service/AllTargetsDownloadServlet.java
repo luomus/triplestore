@@ -41,17 +41,18 @@ public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
 	}
 
 	private void doDownload() throws Exception, IOException {
-		FileCompresser c = new FileCompresser(getZipFile());
+		FileCompresser c = null;
 		File tempFile = getTempFile();
 		try {
 			System.out.println("Starting IUCN all data download ...");
 			String data = getData();
 			System.out.println(" ... writing IUCN all data download ...");
 			FileUtils.writeToFile(tempFile, data);
+			c = new FileCompresser(getZipFile());
 			c.addToZip(tempFile);
 			System.out.println("IUCN all data download completed!");
 		} finally {
-			c.close();
+			if (c != null) c.close();
 			try {
 				tempFile.delete();
 			} catch (Exception e) {

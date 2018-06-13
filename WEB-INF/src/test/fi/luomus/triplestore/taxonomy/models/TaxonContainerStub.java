@@ -88,4 +88,16 @@ public class TaxonContainerStub implements TaxonContainer {
 		return null;
 	}
 
+	@Override
+	public Set<Qname> getIucnGroupsOfInformalTaxonGroup(Qname arg0) {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<Qname> getIucnGroupsOfTaxon(Qname arg0) {
+		// Auto-generated method stub
+		return null;
+	}
+
 }

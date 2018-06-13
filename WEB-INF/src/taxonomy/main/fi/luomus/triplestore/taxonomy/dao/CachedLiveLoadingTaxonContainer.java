@@ -5,12 +5,15 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Optional;
 
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -20,6 +23,7 @@ import fi.luomus.commons.taxonomy.Filter;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
 import fi.luomus.commons.utils.Cached;
@@ -43,18 +47,69 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
+	private final TriplestoreDAO triplestoreDAO;
+	private final ExtendedTaxonomyDAO taxonomyDAO;
 	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
 	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
-
-	private final TriplestoreDAO triplestoreDAO;
-	private final ExtendedTaxonomyDAO taxonomyDAO;
+	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfInformalTaxonGroup; // informal taxon group id -> IUCN group ids
+	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
 
 	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
+		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3*60*60);
+		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3*60*60);
+	}
+
+	private class IucnGroupsOfInformalTaxonGroupLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
+		private final TaxonomyDAO dao;
+		public IucnGroupsOfInformalTaxonGroupLoader(TaxonomyDAO dao) {
+			this.dao = dao;
+		}
+		@Override
+		public Map<Qname, Set<Qname>> load() {
+			try {
+				Map<Qname, Set<Qname>> map = new HashMap<>();
+				for (IucnRedListInformalTaxonGroup group : dao.getIucnRedListInformalTaxonGroupsForceReload().values()) {
+					for (Qname informalTaxonGroupId : group.getInformalGroups()) {
+						if (!map.containsKey(informalTaxonGroupId)) {
+							map.put(informalTaxonGroupId, new HashSet<Qname>());
+						}
+						map.get(informalTaxonGroupId).add(group.getQname());
+					}
+				}
+				return map;
+			} catch (Exception e) {
+				throw new RuntimeException("Loading iucn groups of informal taxon groups", e);
+			}
+		}		
+	}
+
+	private class IucnGroupsOfTaxonLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
+		private final TaxonomyDAO dao;
+		public IucnGroupsOfTaxonLoader(TaxonomyDAO dao) {
+			this.dao = dao;
+		}
+		@Override
+		public Map<Qname, Set<Qname>> load() {
+			try {
+				Map<Qname, Set<Qname>> map = new HashMap<>();
+				for (IucnRedListInformalTaxonGroup group : dao.getIucnRedListInformalTaxonGroupsForceReload().values()) {
+					for (Qname taxonId : group.getTaxons()) {
+						if (!map.containsKey(taxonId)) {
+							map.put(taxonId, new HashSet<Qname>());
+						}
+						map.get(taxonId).add(group.getQname());
+					}
+				}
+				return map;
+			} catch (Exception e) {
+				throw new RuntimeException("Loading iucn groups of taxons", e);
+			}
+		}		
 	}
 
 	private class TaxaWithImagesLoader implements SingleObjectCache.CacheLoader<Set<Qname>> {
@@ -236,6 +291,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			cachedChildren.invalidateAll();
 			cachedSynonymParents.invalidateAll();
 			cachedTaxons.invalidateAll();
+			cachedTaxaWithImages.invalidate();
 		}
 	}
 
@@ -303,6 +359,20 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	@Override
 	public Set<Qname> getInvasiveSpeciesEarlyWarningFilter() {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Set<Qname> getIucnGroupsOfInformalTaxonGroup(Qname informalTaxonGroupId) {
+		Set<Qname> set = cachedIucnGroupsOfInformalTaxonGroup.get().get(informalTaxonGroupId); 
+		if (set == null) return Collections.emptySet();
+		return set;
+	}
+
+	@Override
+	public Set<Qname> getIucnGroupsOfTaxon(Qname taxonId) {
+		Set<Qname> set = cachedIucnGroupsOfTaxon.get().get(taxonId); 
+		if (set == null) return Collections.emptySet();
+		return set;
 	}
 
 }

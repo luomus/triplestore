@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.Person;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -186,7 +187,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private void appendDownloadDataRows(IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets, List<Integer> years, List<String> rows) throws Exception {
+			int i = 0;
 			for (IUCNEvaluationTarget target : targets) {
+				if (i % 1000 == 0) System.out.println(i + "/" + targets.size());
+				i++;
 				if (target.hasEvaluation(selectedYear)) {
 					IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
 					if (evaluation.isIncompletelyLoaded()) {
@@ -204,9 +208,19 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			int selectedYear = evaluation.getEvaluationYear() == null ? years.get(0) : evaluation.getEvaluationYear();
 			IUCNEvaluation previous = target.getPreviousEvaluation(selectedYear);
 			List<String> data = new ArrayList<>();
-			data.add(""); // TODO iucn lajiryhmittely ryhmä1 ryhmä
-			data.add(""); // ryhmä 2 alaryhmä
-			data.add(""); // ryhmä 3 ala-alaryhmä
+			List<IucnRedListInformalTaxonGroup> targetGroups = getGroups(target);
+			IucnRedListInformalTaxonGroup groupRoot = getGroupRoot(target);
+			IucnRedListInformalTaxonGroup group2 = null;
+			IucnRedListInformalTaxonGroup group3 = null;
+			if (groupRoot !=  null) {
+				group2 = getSubGroup(groupRoot, targetGroups);
+				if (group2 != null) {
+					group3 = getSubGroup(group2, targetGroups);
+				}
+			}
+			data.add(groupName(groupRoot));
+			data.add(groupName(group2));
+			data.add(groupName(group3));
 			data.add(target.getQname());
 			data.add(target.getOrderAndFamily());
 			data.add(taxonRank(target));
@@ -328,6 +342,64 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			appendRLIValues(target, years, selectedYear, data);
 			return Utils.toCSV(data);
+		}
+
+		private String groupName(IucnRedListInformalTaxonGroup group) {
+			if (group == null) return "";
+			return group.getName("fi");
+		}
+
+		private IucnRedListInformalTaxonGroup getSubGroup(IucnRedListInformalTaxonGroup of, List<IucnRedListInformalTaxonGroup> in) {
+			for (Qname subGroupId : of.getSubGroups()) {
+				IucnRedListInformalTaxonGroup g = getGroup(subGroupId, in); 
+				if (g != null) return g;
+			}
+			return null;
+		}
+
+		private IucnRedListInformalTaxonGroup getGroup(Qname subGroupId, List<IucnRedListInformalTaxonGroup> in) {
+			for (IucnRedListInformalTaxonGroup g : in) {
+				if (g.getQname().equals(subGroupId)) return g;
+			}
+			return null;
+		}
+
+		private IucnRedListInformalTaxonGroup getGroupRoot(IUCNEvaluationTarget target) {
+			for (IucnRedListInformalTaxonGroup group : getGroups(target)) {
+				if (!group.hasParent()) return group;
+			}
+			return null;
+		}
+
+		private List<IucnRedListInformalTaxonGroup> getGroups(IUCNEvaluationTarget target) {
+			Set<Qname> groupIds = target.getTaxon().getIucnRedListTaxonGroups();
+			if (groupIds.isEmpty()) return Collections.emptyList();
+			List<IucnRedListInformalTaxonGroup> groups = new ArrayList<>();
+			for (Qname groupId : groupIds) {
+				try {
+					IucnRedListInformalTaxonGroup g = getGroup(groupId);
+					groups.add(g);
+					addParentGroups(groups, g);
+				} catch (Exception e) {
+					getErrorReporter().report("Missing group / load error for taxon id " + target.getTaxon().getQname() + " groupid " + groupId, e);
+				}
+			}
+			return groups;
+		}
+
+		private void addParentGroups(List<IucnRedListInformalTaxonGroup> groups, IucnRedListInformalTaxonGroup group) throws Exception {
+			while (group.hasParent()) {
+				group = getGroup(group.getParent());
+				if (!groups.contains(group)) {
+					groups.add(group);
+				}
+			}
+		}
+
+		private IucnRedListInformalTaxonGroup getGroup(Qname groupId) throws Exception {
+			IucnRedListInformalTaxonGroup group = getTaxonomyDAO().getIucnRedListInformalTaxonGroups().get(groupId.toString());
+			if (group == null) throw new IllegalStateException("Missing group " + groupId);
+			return group;
 		}
 
 		public static void appendRLIValues(IUCNEvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) throws Exception {
