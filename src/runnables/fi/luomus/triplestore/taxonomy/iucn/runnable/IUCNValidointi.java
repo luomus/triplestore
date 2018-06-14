@@ -114,13 +114,19 @@ public class IUCNValidointi {
 			IUCNEvaluation previusEvaluation = target.getPreviousEvaluation(VALIDATION_YEAR);
 			validate(evaluation, previusEvaluation);
 			if (statusChanges(evaluation, previusEvaluation)) {
-				reportStatusChange(evaluation, target);
+				if (notNE(evaluation) && notNE(previusEvaluation)) {
+					reportStatusChange(evaluation, target);
+				}
 			}
 			listAutomaticChanges(evaluation, previusEvaluation);
 			if (!target.hasEvaluation(2010) && (target.hasEvaluation(2000) || target.hasEvaluation(2015))) {
 				report(missing2010File, evaluation);
 			}
 		}
+	}
+
+	private static boolean notNE(IUCNEvaluation evaluation) {
+		return !"MX.iucnNE".equals(evaluation.getIucnStatus());
 	}
 
 	private static Set<Qname> getEvaluatedGroups(IUCNEvaluationTarget target) throws Exception {
@@ -206,7 +212,6 @@ public class IUCNValidointi {
 		String status = evaluation.getIucnStatus();
 		String prevStatus = previusEvaluation.getIucnStatus();
 		if (status == null || prevStatus == null) return false;
-		if ("MX.iucnNE".equals(status) || "MX.iucnNE".equals(prevStatus)) return false;
 		return !status.equals(prevStatus);
 	}
 
