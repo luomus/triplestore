@@ -150,7 +150,7 @@ public class IucnDAOImple implements IucnDAO {
 		public void run() {
 			System.out.println("Starting to synchronize taxon data with IUCN data...");
 			try {
-				container.getTarget("MX.1"); // Make sure evaluation data is loaded
+				container.makeSureEvaluationDataIsLoaded();
 				int currentYear = DateUtils.getCurrentYear();
 				int draftYear = getDraftYear(getEvaluationYears());
 				int c = 1;
@@ -420,14 +420,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	public IUCNEvaluationTarget loadTarget(String speciesQname) throws Exception {
-		if (!initialEvaluationsLoaded) {
-			synchronized (EVAL_LOAD_LOCK) {
-				if (!initialEvaluationsLoaded) {
-					loadInitialEvaluations();
-					initialEvaluationsLoaded = true;
-				}
-			}
-		}
+		makeSureEvaluationDataIsLoaded();
 		if (container.hasTarget(speciesQname)) return container.getTarget(speciesQname);
 		return createTarget(speciesQname);
 	}
@@ -437,6 +430,17 @@ public class IucnDAOImple implements IucnDAO {
 		target = new IUCNEvaluationTarget(new Qname(speciesQname), container, taxonomyDAO.getTaxonContainer());
 		container.addTarget(target);
 		return target;
+	}
+
+	public void makeSureEvaluationDataIsLoaded() throws Exception {
+		if (!initialEvaluationsLoaded) {
+			synchronized (EVAL_LOAD_LOCK) {
+				if (!initialEvaluationsLoaded) {
+					loadInitialEvaluations();
+					initialEvaluationsLoaded = true;
+				}
+			}
+		}		
 	}
 
 	private void loadInitialEvaluations() throws Exception {

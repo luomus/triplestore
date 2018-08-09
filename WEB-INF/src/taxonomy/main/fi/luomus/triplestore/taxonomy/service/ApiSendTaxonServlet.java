@@ -14,6 +14,9 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
 
@@ -72,7 +75,7 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 			moveAsSynonym(toSend, newParent, synonymType, dao);
 			newParent.invalidateSelf();
 		}
-		
+
 		return apiSuccessResponse(res);
 	}
 
@@ -92,8 +95,27 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 	}
 
 	private void moveAsSynonym(EditableTaxon toSend, EditableTaxon newParent, SynonymType synonymType, TriplestoreDAO dao) throws Exception {
+		deleteNonCriticalIucnEvaluations(toSend);
 		dao.delete(new Subject(toSend.getQname()), ApiChangeParentServlet.NAME_ACCORDING_TO_PREDICATE);
 		dao.insert(new Subject(newParent.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(synonymType), new ObjectResource(toSend.getQname())));
+	}
+
+	private void deleteNonCriticalIucnEvaluations(EditableTaxon toSend) throws Exception {
+		String taxonId = toSend.getQname().toString();
+		deleteNonCriticalIucnEvaluations(taxonId);
+	}
+
+	private void deleteNonCriticalIucnEvaluations(String taxonId) throws Exception {
+		IucnDAO iucnDAO = getTaxonomyDAO().getIucnDAO();
+		IUCNContainer iucnContainer = iucnDAO.getIUCNContainer();
+		if (iucnContainer.hasTarget(taxonId)) {
+			for (IUCNEvaluation e : iucnContainer.getTarget(taxonId).getEvaluations()) {
+				if (e.isCriticalDataEvaluation()) {
+					throw new IllegalStateException("Critical data validation should prevent this. Deleting evaluation with status " + e.getIucnStatus());
+				}
+				iucnDAO.deleteEvaluation(taxonId, e.getEvaluationYear());
+			}
+		}
 	}
 
 }

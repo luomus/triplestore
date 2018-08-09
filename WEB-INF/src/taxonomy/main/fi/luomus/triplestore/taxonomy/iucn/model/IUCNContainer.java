@@ -43,6 +43,11 @@ public class IUCNContainer {
 		return Collections.unmodifiableCollection(t);
 	}
 
+	public IUCNContainer makeSureEvaluationDataIsLoaded() throws Exception {
+		iucnDAO.makeSureEvaluationDataIsLoaded();
+		return this;
+	}
+	
 	public IUCNEvaluationTarget getTarget(String speciesQname) throws Exception {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
 		synchronized (LOCK) {

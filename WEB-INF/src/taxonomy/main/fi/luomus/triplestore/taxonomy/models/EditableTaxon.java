@@ -1,16 +1,21 @@
 package fi.luomus.triplestore.taxonomy.models;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.RedListStatus;
 import fi.luomus.commons.taxonomy.Synonyms;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 public class EditableTaxon extends Taxon {
@@ -74,7 +79,7 @@ public class EditableTaxon extends Taxon {
 	public void invalidateSelfAndLinking() {
 		taxonContainer.invalidateSelfAndLinking(this);
 	}
-	
+
 	public void invalidateSelf() {
 		taxonContainer.invalidateSelf(this);
 	}
@@ -151,12 +156,35 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean hasIUCNEvaluation() {
-		if (!this.getRedListStatusesInFinland().isEmpty()) return true;
-		try {
-			return taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(this.getQname().toString()).hasEvaluations();
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		Collection<RedListStatus> statuses = this.getRedListStatusesInFinland();
+		if (hasCriticalIUCNEvaluationStatus(statuses)) {
+			return true;
 		}
+		try {
+			IUCNContainer iucnContainer = taxonomyDAO.getIucnDAO().getIUCNContainer();
+			iucnContainer.makeSureEvaluationDataIsLoaded();
+			if (!iucnContainer.hasTarget(this.getQname().toString())) return false;
+			IUCNEvaluationTarget target = iucnContainer.getTarget(this.getQname().toString());
+
+			return hasCriticalIUCNEvaluationStatus(target);
+		} catch (Exception e) {
+			throw new RuntimeException(this.getQname().toString(), e);
+		}
+	}
+
+
+	private boolean hasCriticalIUCNEvaluationStatus(IUCNEvaluationTarget target) {
+		for (IUCNEvaluation e : target.getEvaluations()) {
+			if (e.isCriticalDataEvaluation()) return true;
+		}
+		return false;
+	}
+
+	private boolean hasCriticalIUCNEvaluationStatus(Collection<RedListStatus> statuses) {
+		for (RedListStatus s : statuses) {
+			if (IUCNEvaluation.isCriticalIUCNEvaluation(s.getStatus().toString())) return true;
+		}
+		return false;
 	}
 
 	public boolean hasAdministrativeStatuses() {

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Model;
@@ -101,7 +102,7 @@ public class IUCNEvaluation {
 	public static final String NOTE_DATE_SEPARATOR = "; ";
 	public static final String PERCENTAGE_OF_GLOBAL_POPULATION = "MKV.percentageOfGlobalPopulation";
 	public static final String DD_REASON = "MKV.ddReason";
-	
+
 	public static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
 	public static final Map<String, Integer> RED_LIST_STATUS_TO_INDEX;
@@ -469,4 +470,21 @@ public class IUCNEvaluation {
 		}
 		return false;
 	}
+
+	public boolean isCriticalDataEvaluation() {
+		if (!hasIucnStatus()) return false;
+		return isCriticalIUCNEvaluation(this.getIucnStatus());
+	}
+
+	private static final Set<String> NON_CRITICAL_IUCN_EVALUATION_STATUSES = Utils.set("MX.iucnNE", "MX.iucnNA");
+
+	public static boolean isCriticalIUCNEvaluation(String iucnStatus) {
+		if (notGiven(iucnStatus)) return false;
+		return !NON_CRITICAL_IUCN_EVALUATION_STATUSES.contains(iucnStatus);
+	}
+
+	private static boolean notGiven(String iucnStatus) {
+		return iucnStatus == null || iucnStatus.isEmpty();
+	}
+
 }
