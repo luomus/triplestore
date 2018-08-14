@@ -22,6 +22,7 @@ import org.apache.http.client.methods.HttpGet;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -145,6 +146,50 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	};
 
+	private final Runnable iucnRedListTaxonGroupNameUpdater = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("Staring to update IUCN Red List Taxon Group names...");
+			try {
+				for (IucnRedListInformalTaxonGroup group : taxonomyDAO.getIucnRedListInformalTaxonGroupsForceReload().values()) {
+					Model dbGroup = triplestoreDAO.get(group.getQname());
+					if (namesDoNotMatch(group, dbGroup)) {
+						triplestoreDAO.storeIucnRedListTaxonGroup(group);
+						System.out.println("Updated name of group " + group.getQname() + " to " + group.getName());
+					}
+				}
+			} catch (Exception e) {
+				errorReporter.report("Updating IUCN Red List Taxon Group names", e);
+			}
+			System.out.println("IUCN Red List Taxon Group names updated!");
+		}
+
+		private boolean namesDoNotMatch(IucnRedListInformalTaxonGroup group, Model dbGroup) {
+			for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
+				String locale = e.getKey();
+				if (locale == null) locale = "";
+				String name = e.getValue();
+				String dbName = getName(locale, dbGroup);
+				if (!dbName.equals(name)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private String getName(String locale, Model dbGroup) {
+			for (Statement s : dbGroup.getStatements("MVL.name")) {
+				if (s.isResourceStatement()) continue;
+				if (locale.equals(s.getObjectLiteral().getLangcode())) {
+					String name = s.getObjectLiteral().getContent(); 
+					if (name == null) return "";
+					return name;
+				}
+			}
+			return "";
+		}
+	};
+
 	private final Runnable taxonDataSynchronizer = new Runnable() {
 		@Override
 		public void run() {
@@ -240,9 +285,14 @@ public class IucnDAOImple implements IucnDAO {
 		int repeatPeriod24H = 24 * 60;
 		long intitialDelay3am = calculateInitialDelayTill(3, repeatPeriod24H);
 		long intitialDelay6am = calculateInitialDelayTill(6, repeatPeriod24H);
+
 		scheduler.scheduleAtFixedRate(
 				taxonDataSynchronizer, 
 				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+
+		scheduler.scheduleAtFixedRate(iucnRedListTaxonGroupNameUpdater, 
+				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+
 		scheduler.scheduleAtFixedRate(
 				iucnContainerReinitializer, 
 				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
