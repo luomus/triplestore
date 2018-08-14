@@ -20,6 +20,17 @@ import fi.luomus.triplestore.taxonomy.iucn.model.CriteriaFormatValidator.MainCri
 
 public class IUCNValidator {
 
+	private static final String NE = IUCNEvaluation.NE;
+	private static final String NA = IUCNEvaluation.NA;
+	private static final String DD = IUCNEvaluation.DD;
+	private static final String LC = IUCNEvaluation.LC;
+	private static final String NT = IUCNEvaluation.NT;
+	private static final String VU = IUCNEvaluation.VU;
+	private static final String EN = IUCNEvaluation.EN;
+	private static final String CR = IUCNEvaluation.CR;
+	private static final String RE = IUCNEvaluation.RE;
+	private static final String EW = IUCNEvaluation.EW;
+	private static final String EX = IUCNEvaluation.EX;
 	private static final String KRITEERIEN_TARKISTUKSET = "Kriteerien tarkistukset: ";
 	private final TriplestoreDAO dao;
 	private final ErrorReporter errorReporter;
@@ -127,12 +138,12 @@ public class IUCNValidator {
 		if (min == null) min = 0.0;
 		if (max == null) max = 0.0;
 		max = Math.max(min, max);
-		validateIndividualCountMax("MX.iucnVU", Utils.list("C1", "C2"), max, 10000, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnEN", Utils.list("C1", "C2"), max, 2500, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnCR", Utils.list("C1", "C2"), max, 250, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnVU", Utils.list("D", "D1"), max, 1000, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnEN", Utils.list("D", "D1"), max, 250, givenData, validationResult);
-		validateIndividualCountMax("MX.iucnCR", Utils.list("D", "D1"), max, 50, givenData, validationResult);
+		validateIndividualCountMax(VU, Utils.list("C1", "C2"), max, 10000, givenData, validationResult);
+		validateIndividualCountMax(EN, Utils.list("C1", "C2"), max, 2500, givenData, validationResult);
+		validateIndividualCountMax(CR, Utils.list("C1", "C2"), max, 250, givenData, validationResult);
+		validateIndividualCountMax(VU, Utils.list("D", "D1"), max, 1000, givenData, validationResult);
+		validateIndividualCountMax(EN, Utils.list("D", "D1"), max, 250, givenData, validationResult);
+		validateIndividualCountMax(CR, Utils.list("D", "D1"), max, 50, givenData, validationResult);
 	}
 
 	private void validateIndividualCountMax(String status, List<String> criteria, Double individualCount, int limit, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
@@ -157,7 +168,7 @@ public class IUCNValidator {
 	}
 
 	private void validateDDReason(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
-		if ("MX.iucnDD".equals(givenData.getIucnStatus())) {
+		if (DD.equals(givenData.getIucnStatus())) {
 			if (!givenData.hasValue(IUCNEvaluation.DD_REASON)) {
 				validationResult.setError("DD syy on ilmoitettava", IUCNEvaluation.DD_REASON);
 			}
@@ -166,7 +177,7 @@ public class IUCNValidator {
 
 	private void validatePossiblyRE(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (!givenData.hasValue(IUCNEvaluation.POSSIBLY_RE)) return;
-		Set<String> allowed = "D2".equals(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS)) ? Utils.set("MX.iucnCR", "MX.iucnDD", "MX.iucnVU") : Utils.set("MX.iucnCR", "MX.iucnDD");
+		Set<String> allowed = "D2".equals(givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS)) ? Utils.set(CR, DD, VU) : Utils.set(CR, DD);
 		if (!allowed.contains(givenData.getIucnStatus())) {
 			validationResult.setError("Mahdollisesti hävinneeksi saa ilmoittaa ainoastaan luokkia CR, DD tai kriteerillä D2 myös luokassa VU", IUCNEvaluation.POSSIBLY_RE);
 		}
@@ -212,11 +223,11 @@ public class IUCNValidator {
 		}
 	}
 
-	private static final Set<String> CR_EN = Utils.set("MX.iucnCR", "MX.iucnEN");
-	private static final Set<String> CR_EN_VU = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU");
-	private static final Set<String> CR_EN_VU_NT = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
-	private static final Set<String> CR_EN_VU_NT_LC = Utils.set("MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT", "MX.iucnLC");
-	private static final Set<String> RE_CR_EN_VU_NT = Utils.set("MX.iucnRE", "MX.iucnCR", "MX.iucnEN", "MX.iucnVU", "MX.iucnNT");
+	private static final Set<String> CR_EN = Utils.set(CR, EN);
+	private static final Set<String> CR_EN_VU = Utils.set(CR, EN, VU);
+	private static final Set<String> CR_EN_VU_NT = Utils.set(CR, EN, VU, NT);
+	private static final Set<String> CR_EN_VU_NT_LC = Utils.set(CR, EN, VU, NT, LC);
+	private static final Set<String> RE_CR_EN_VU_NT = Utils.set(RE, CR, EN, VU, NT);
 
 	private static final Set<String> LSA_CAN_GIVE_STATUSES = CR_EN_VU;
 	private static final Set<String> CRITERIA_FOR_STATUS_REQUIRED_STATUSES = CR_EN_VU_NT;
@@ -225,7 +236,7 @@ public class IUCNValidator {
 	private static final Set<String> CRITERIA_ENDANGERMENTREASON_NOT_REQUIRED = Utils.set("A3", "B1", "B2", "C2");
 	private static final Set<String> PRIMARY_HABITAT_REQUIRED_STATUSES = CR_EN_VU_NT_LC;
 	private static final Set<String> OCCURRENCES_REQUIRED_STATUSES = CR_EN_VU_NT;
-	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set("MX.iucnEX", "MX.iucnEW", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
+	private static final Set<String> EXTERNAL_IMPACT_NOT_ALLOVED_STATUSES = Utils.set(EX, EW, RE, DD, NA, NE);
 
 	private void validateExternalImpactAndStatus(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		if (given(givenData.getExternalImpact())) {
@@ -354,9 +365,9 @@ public class IUCNValidator {
 		} else {
 			Double dMin = d(min);
 			Double dMax = d(max);
-			validateAreaMax(givenData, "MX.iucnVU", 20000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
-			validateAreaMax(givenData, "MX.iucnEN", 5000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
-			validateAreaMax(givenData, "MX.iucnCR", 100, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, VU, 20000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, EN, 5000, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
+			validateAreaMax(givenData, CR, 100, dMin, dMax, IUCNEvaluation.DISTRIBUTION_AREA_MAX, validationResult);
 		}
 	}
 
@@ -369,9 +380,9 @@ public class IUCNValidator {
 		} else {
 			Double dMin = d(min);
 			Double dMax = d(max);
-			validateAreaMax(givenData, "MX.iucnVU", 2000, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
-			validateAreaMax(givenData, "MX.iucnEN", 500, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
-			validateAreaMax(givenData, "MX.iucnCR", 10, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+			validateAreaMax(givenData, VU, 2000, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+			validateAreaMax(givenData, EN, 500, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
+			validateAreaMax(givenData, CR, 10, dMin, dMax, IUCNEvaluation.OCCURRENCE_AREA_MAX, validationResult);
 		}
 	}
 
@@ -401,7 +412,7 @@ public class IUCNValidator {
 		for (String criteriaPostfix : IUCNEvaluation.CRITERIAS) {
 			String criteria = givenData.getValue("MKV.criteria"+criteriaPostfix);
 			String criteriaStatus = givenData.getValue("MKV.status"+criteriaPostfix);
-			if ("MX.iucnLC".equals(criteriaStatus)) return;
+			if (LC.equals(criteriaStatus)) return;
 			if (given(criteria) || given(criteriaStatus)) {
 				if (!given(criteria) || !given(criteriaStatus)) {
 					validationResult.setError("Kriteeri " + criteriaPostfix + " ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan", "MKV.status"+criteriaPostfix);
@@ -445,7 +456,7 @@ public class IUCNValidator {
 		if (!given(status)) return;
 		String statusInFinland = givenData.getValue(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 		if ("MX.typeOfOccurrenceAnthropogenic".equals(statusInFinland)) {
-			if (!"MX.iucnNA".equals(status)) {
+			if (!NA.equals(status)) {
 				validationResult.setError("Vieraslajille ainut sallittu luokka on NA", IUCNEvaluation.RED_LIST_STATUS);
 				validationResult.addErrorField(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 			}
@@ -467,7 +478,7 @@ public class IUCNValidator {
 	private void validateRegionalEndangerment(IUCNEvaluation givenData, IUCNValidationResult validationResult) {
 		String status = givenData.getIucnStatus();
 		if (!given(status)) return;
-		if ("MX.iucnLC".equals(status) || "MX.iucnNT".equals(status)) return;
+		if (LC.equals(status) || NT.equals(status)) return;
 		if (givenData.getOccurrences().isEmpty()) return;
 		for (Occurrence o : givenData.getOccurrences()) {
 			if ("MX.typeOfOccurrenceOccursButThreatened".equals(o.getStatus().toString())) {
@@ -605,8 +616,8 @@ public class IUCNValidator {
 
 		if (thisStatus.equals(prevStatus)) return;
 
-		if (prevStatus.equals("MX.iucnNE") || prevStatus.equals("MX.iucnNA")) return;
-		if (thisStatus.equals("MX.iucnNE") || thisStatus.equals("MX.iucnNA")) return;
+		if (prevStatus.equals(NE) || prevStatus.equals(NA)) return;
+		if (thisStatus.equals(NE) || thisStatus.equals(NA)) return;
 
 		validationResult.setError("Muutoksen syy on annettava jos edellisen arvioinnin luokka ei ole sama kuin tämän arvioinnin luokka", IUCNEvaluation.REASON_FOR_STATUS_CHANGE);
 	}
@@ -675,17 +686,17 @@ public class IUCNValidator {
 	private static final Map<String, Integer> IUCN_COMPARATOR_VALUES;
 	static {
 		IUCN_COMPARATOR_VALUES = new HashMap<>();
-		IUCN_COMPARATOR_VALUES.put("MX.iucnEX", 8);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnEW", 7);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnRE", 6);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnCR", 5);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnEN", 4);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnVU", 3);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnNT", 2);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnLC", 1);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnDD", null);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnNA", null);
-		IUCN_COMPARATOR_VALUES.put("MX.iucnNE", null);
+		IUCN_COMPARATOR_VALUES.put(EX, 8);
+		IUCN_COMPARATOR_VALUES.put(EW, 7);
+		IUCN_COMPARATOR_VALUES.put(RE, 6);
+		IUCN_COMPARATOR_VALUES.put(CR, 5);
+		IUCN_COMPARATOR_VALUES.put(EN, 4);
+		IUCN_COMPARATOR_VALUES.put(VU, 3);
+		IUCN_COMPARATOR_VALUES.put(NT, 2);
+		IUCN_COMPARATOR_VALUES.put(LC, 1);
+		IUCN_COMPARATOR_VALUES.put(DD, null);
+		IUCN_COMPARATOR_VALUES.put(NA, null);
+		IUCN_COMPARATOR_VALUES.put(NE, null);
 	}
 
 }

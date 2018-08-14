@@ -23,6 +23,17 @@ import fi.luomus.commons.utils.Utils;
 
 public class IUCNEvaluation {
 
+	public static final String NE = "MX.iucnNE";
+	public static final String NA = "MX.iucnNA";
+	public static final String DD = "MX.iucnDD";
+	public static final String LC = "MX.iucnLC";
+	public static final String NT = "MX.iucnNT";
+	public static final String VU = "MX.iucnVU";
+	public static final String EN = "MX.iucnEN";
+	public static final String CR = "MX.iucnCR";
+	public static final String RE = "MX.iucnRE";
+	public static final String EW = "MX.iucnEW";
+	public static final String EX = "MX.iucnEX";
 	public static final String TAXONOMIC_NOTES = "MKV.taxonomicNotes";
 	public static final String POSSIBLY_RE = "MKV.possiblyRE";
 	public static final String POPULATION_SIZE_PERIOD_BEGINNING = "MKV.populationSizePeriodBeginning"; 
@@ -109,17 +120,17 @@ public class IUCNEvaluation {
 
 	static {
 		RED_LIST_STATUS_TO_INDEX = new HashMap<>();
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEX", 5);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEW", 5);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnRE", 5);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnCR", 4);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnEN", 3);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnVU", 2);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNT", 1);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnLC", 0);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnDD", null);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNA", null);
-		RED_LIST_STATUS_TO_INDEX.put("MX.iucnNE", null); 
+		RED_LIST_STATUS_TO_INDEX.put(EX, 5);
+		RED_LIST_STATUS_TO_INDEX.put(EW, 5);
+		RED_LIST_STATUS_TO_INDEX.put(RE, 5);
+		RED_LIST_STATUS_TO_INDEX.put(CR, 4);
+		RED_LIST_STATUS_TO_INDEX.put(EN, 3);
+		RED_LIST_STATUS_TO_INDEX.put(VU, 2);
+		RED_LIST_STATUS_TO_INDEX.put(NT, 1);
+		RED_LIST_STATUS_TO_INDEX.put(LC, 0);
+		RED_LIST_STATUS_TO_INDEX.put(DD, null);
+		RED_LIST_STATUS_TO_INDEX.put(NA, null);
+		RED_LIST_STATUS_TO_INDEX.put(NE, null); 
 	}
 
 	private static final Comparator<Statement> REMARK_SORTER = new Comparator<Statement>() {
@@ -322,7 +333,7 @@ public class IUCNEvaluation {
 	}
 
 	public boolean isDd() {
-		return "MX.iucnDD".equals(getIucnStatus());
+		return DD.equals(getIucnStatus());
 	}
 
 	public List<IUCNEndangermentObject> getEndangermentReasons() {
@@ -476,7 +487,7 @@ public class IUCNEvaluation {
 		return isCriticalIUCNEvaluation(this.getIucnStatus());
 	}
 
-	private static final Set<String> NON_CRITICAL_IUCN_EVALUATION_STATUSES = Utils.set("MX.iucnNE", "MX.iucnNA");
+	private static final Set<String> NON_CRITICAL_IUCN_EVALUATION_STATUSES = Utils.set(NE, NA);
 
 	public static boolean isCriticalIUCNEvaluation(String iucnStatus) {
 		if (notGiven(iucnStatus)) return false;
