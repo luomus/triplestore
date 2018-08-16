@@ -178,7 +178,7 @@ div.synonymSection {
 div.taxonInfo {
 	display: inline-block;
 	vertical-align: middle;
-	min-width: 300px;
+	min-width: 400px;
 }
 div.synonymSection div.taxonWithTools {
 	display: block;
@@ -315,9 +315,13 @@ div.taxonDropArea.ui-droppable.ui-state-active {
 	color: inherit;
 }
 
-div.taxonInfo .vernacularNameFI {
-	display: block;
+div.taxonInfo .vernacularName {
 	padding-left: 1em;
+	opacity: 0.5;
+}
+
+div.taxonInfo .vernacularNameFI {
+	opacity: 1;
 }
 
 div.loading {

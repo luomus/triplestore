@@ -57,7 +57,7 @@
 			<#if taxon.hidden>
 				<span class="hiddenTaxon"></span>
 			</#if>
-			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${taxon.taxonRank?replace("MX.","")}]</#if></span></#if> 
+			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${properties.getProperty("MX.taxonRank").range.getValueFor(taxon.taxonRank).label.forLocale("en")}]</#if></span></#if> 
 			<@printScientificNameAndAuthor taxon />
 			<div class="icons">
 				<#if allowsAlterationsByUserOnThis>
@@ -65,7 +65,13 @@
 				</#if>
 				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
 			</div>
-			<span class="vernacularNameFI">${taxon.vernacularName.forLocale("fi")!""}</span>
+			<#if !taxon.vernacularName.empty>
+				<div class="vernacularNames">
+					<span class="vernacularNameFI vernacularName">${taxon.vernacularName.forLocale("fi")!""}</span>
+					<span class="vernacularNameSV vernacularName">${taxon.vernacularName.forLocale("sv")!""}</span>
+					<span class="vernacularNameEN vernacularName">${taxon.vernacularName.forLocale("en")!""}</span>
+				</div>
+			</#if>
 			
 			<#if additionalClass == "rootTaxon">
 				<div class="taxonEditorExpert">

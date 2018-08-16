@@ -352,6 +352,11 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
+	public Filter getIucnRedListTaxonGroupFilter() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public Set<Qname> getHasMediaFilter() throws UnsupportedOperationException {
 		return cachedTaxaWithImages.get();
 	}

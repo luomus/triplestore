@@ -18,6 +18,7 @@ import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.utils.Utils;
+import fi.luomus.java.tests.commons.taxonomy.TaxonContainerStub;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;

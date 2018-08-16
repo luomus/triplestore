@@ -52,7 +52,7 @@ public class ServletTests {
 			try {
 				noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/MA.5"));
 			} catch (Exception e) {
-				assertEquals("Request returned 401", e.getMessage());
+				assertTrue(e.getMessage().startsWith("Request returned 401"));
 			}
 		} finally {
 			if (noAutenticationClient != null) noAutenticationClient.close();
