@@ -363,7 +363,7 @@ public class IUCNValidatorTests {
 		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("occ")));
 		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
 		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
-		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "D");
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "D1");
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
@@ -376,7 +376,7 @@ public class IUCNValidatorTests {
 		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccursButThreatened")));
 		givenData.addEndangermentReason(new IUCNEndangermentObject(null, new Qname("some"), 0));
 		givenData.addThreat(new IUCNEndangermentObject(null, new Qname("some"), 0));
-		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "D");
+		givenData.getModel().addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, "D1");
 		IUCNValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
