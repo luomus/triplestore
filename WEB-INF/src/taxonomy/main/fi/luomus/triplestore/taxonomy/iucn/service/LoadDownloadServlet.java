@@ -21,6 +21,7 @@ public class LoadDownloadServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		if (!getUser(req).isIucnAdmin()) throw new IllegalAccessException();
 		String filename = getId(req);
 		File file = new File(getConfig().reportFolder(), filename);
 		if (!file.exists()) throw new IllegalStateException("File " + filename + " does not exist!");

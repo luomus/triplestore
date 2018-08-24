@@ -89,8 +89,8 @@
 
 <p class="info">Voit siirtyä arvioitavien lajien luetteloon klikkaamalla eliöryhmän nimeä.</p>
 
+<#if user.iucnAdmin>
 <hr />
-
 <p>
 	Lataa kaikki arvioinnit yhteen tiedostoon <a id="downloadAll" href="${baseURL}/iucn/download-all/" class="button">Lataa</a>
 </p>
@@ -102,6 +102,8 @@
 	<li><a href="${baseURL}/iucn/file/${filename}">${filename}</a></li>
 </#list>
 </ul>
+</#if>
+
 </#if>
 
 <script>
