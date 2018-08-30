@@ -59,7 +59,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String FI = "fi";
 	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
 	private static final Predicate IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE = new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP);
-	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName", "MX.tradeName");
+	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
 	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
 	@Override
@@ -110,7 +110,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 				createAndStoreSynonym(dao, taxonomyDAO, taxon);
 			}
 		}
-		
+
 		if (storeBiogeographicalProvinceOccurrences && !editingDescriptionFields) {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
 		} else {
@@ -337,8 +337,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	private String cleanPossibleVernacularName(String parameterName, String langcode, String value) {
-		if (VERNACULAR_NAMES.contains(parameterName) && FI_SV.contains(langcode)) {
-			value = value.toLowerCase();
+		if (VERNACULAR_NAMES.contains(parameterName)) {
+			if (FI_SV.contains(langcode)) {
+				return value.toLowerCase();
+			} else if (EN.equals(langcode)) {
+				return Utils.upperCaseFirst(value);
+			}
 		}
 		return value;
 	}
