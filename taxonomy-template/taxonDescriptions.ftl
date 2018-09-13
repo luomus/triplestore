@@ -86,7 +86,8 @@
 
 function initTinyMCE() {
 	tinymce.init({
-		
+		plugins: "paste",
+    	paste_as_text: true
   	});
  }
 
@@ -106,8 +107,9 @@ $(function() {
 		}
 		textarea.tinymce({
     		skin_url: '${staticURL}/tinymce-4.7.1/skins/lightgray',
-			plugins: 'link code',
+			plugins: 'link code paste',
     		toolbar: 'italic bold | link unlink | removeformat | undo, redo | code',
+    		paste_as_text: true,
     		menubar: false,
     		statusbar: false,
     		height: "360"
