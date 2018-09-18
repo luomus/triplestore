@@ -42,7 +42,7 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH_SYNONYM
   LEFT JOIN rdf_statementview author         ON (author.subjectname = qname.subjectname AND author.predicatename = 'MX.scientificNameAuthorship')
   LEFT JOIN rdf_statementview taxonrank      ON (taxonrank.subjectname = qname.subjectname AND taxonrank.predicatename = 'MX.taxonRank')
   JOIN rdf_statementview synonymqname        ON (synonymqname.subjectname = qname.subjectname AND synonymqname.predicatename IN (
-  'MX.hasBasionym','MX.hasSynonym','MX.hasObjectiveSynonym','MX.hasSubjectiveSynonym','MX.hasHomotypicSynonym','MX.hasHeterotypicSynonym','MX.hasMisappliedName','MX.hasMisspelledName','MX.hasOrthographicVariant','MX.hasUncertainSynonym'
+  'MX.hasBasionym','MX.hasSynonym','MX.hasObjectiveSynonym','MX.hasSubjectiveSynonym','MX.hasHomotypicSynonym','MX.hasHeterotypicSynonym','MX.hasMisappliedName','MX.hasAlternativeName','MX.hasMisspelledName','MX.hasOrthographicVariant','MX.hasUncertainSynonym'
   ))
   JOIN rdf_statementview nameOfSynonyms      ON ( nameOfSynonyms.predicatename = 'MX.scientificName' AND nameOfSynonyms.subjectname = synonymqname.objectname )
   WHERE qname.predicatename  = 'rdf:type'

@@ -32,6 +32,7 @@
 				<option ${disabled} value="SUBJECTIVE">Subjective synonym</option>
 				<option ${disabled} value="HOMOTYPIC">Homotypic synonym</option>
 				<option ${disabled} value="HETEROTYPIC">Heterotypic synonym</option>
+				<option ${disabled} value="ALTERNATIVE">Alternative name</option>
 				<option ${disabled} value="SYNONYM">Synonym</option>
 				<option ${disabled} value="MISSPELLED">Misspelled name</option>
 				<option ${disabled} value="ORTHOGRAPHIC">Orthographic variant</option>

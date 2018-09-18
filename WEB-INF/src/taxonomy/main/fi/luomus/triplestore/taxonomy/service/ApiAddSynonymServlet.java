@@ -31,6 +31,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	public static final Predicate HAS_MISAPPLIED = new Predicate("MX.hasMisappliedName");
 	public static final Predicate HAS_UNCERTAIN = new Predicate("MX.hasUncertainSynonym");
 	public static final Predicate HAS_MISSPELLED = new Predicate("MX.hasMisspelledName");
+	public static final Predicate HAS_ALTERNATIVE = new Predicate("MX.hasAlternativeName");
 	public static final Predicate HAS_SYNONYM = new Predicate("MX.hasSynonym");
 	public static final Predicate HAS_OBJECTIVE = new Predicate("MX.hasObjectiveSynonym");
 	public static final Predicate HAS_SUBJECTIVE = new Predicate("MX.hasSubjectiveSynonym");
@@ -44,6 +45,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		SYNONYM_PREDICATES.put(SynonymType.MISAPPLIED, HAS_MISAPPLIED);
 		SYNONYM_PREDICATES.put(SynonymType.UNCERTAIN, HAS_UNCERTAIN);
 		SYNONYM_PREDICATES.put(SynonymType.MISSPELLED, HAS_MISSPELLED);
+		SYNONYM_PREDICATES.put(SynonymType.ALTERNATIVE, HAS_ALTERNATIVE);
 		SYNONYM_PREDICATES.put(SynonymType.BASIONYM, HAS_BASIONYM);
 		SYNONYM_PREDICATES.put(SynonymType.OBJECTIVE, HAS_OBJECTIVE);
 		SYNONYM_PREDICATES.put(SynonymType.SUBJECTIVE, HAS_SUBJECTIVE);
@@ -54,7 +56,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	public static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
 	private static final String SYNONYM_TYPE_PARAMETER = "synonymType";
 
-	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTHOGRAPHIC };
+	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTHOGRAPHIC, ALTERNATIVE };
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {

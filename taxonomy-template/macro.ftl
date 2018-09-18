@@ -113,6 +113,7 @@
 				<@printSynonyms taxon.subjectiveSynonyms "Subjective synonyms" "SUBJECTIVE" />
 				<@printSynonyms taxon.homotypicSynonyms "Homotypic synonyms" "HOMOTYPIC" />
 				<@printSynonyms taxon.heterotypicSynonyms "Heterotypic synonyms" "HETEROTYPIC" />
+				<@printSynonyms taxon.alternativeNames "Alternative names" "ALTERNATIVE" />
 				<@printSynonyms taxon.synonyms "Synonyms" "SYNONYM" />
 				<@printSynonyms taxon.misspelledNames "Misspelled names" "MISSPELLED" />
 				<@printSynonyms taxon.orthographicVariants "Orthographic variants" "ORTHOGRAPHIC" />

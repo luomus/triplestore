@@ -1032,6 +1032,8 @@ function getSynonymType(e) {
 		return 'UNCERTAIN';
 	} else if (e.hasClass('MISAPPLIED')) {
 		return 'MISAPPLIED';
+	} else if (e.hasClass('ALTERNATIVE')) {
+		return 'ALTERNATIVE';
 	}
 	return 'UNKNOWN';
 }
@@ -1051,6 +1053,7 @@ SYNONYM_LABELS['SUBJECTIVE'] = 'subjective synonym';
 SYNONYM_LABELS['HOMOTYPIC'] = 'homotypic synonym';
 SYNONYM_LABELS['HETEROTYPIC'] = 'heterotypic synonym';
 SYNONYM_LABELS['SYNONYM'] = 'synonym';
+SYNONYM_LABELS['ALTERNATIVE'] = 'alternative name';
 SYNONYM_LABELS['MISSPELLED'] = 'misspelled name';
 SYNONYM_LABELS['ORTHOGRAPHIC'] = 'orthographic variant';
 SYNONYM_LABELS['UNCERTAIN'] = 'uncertain synonym';
