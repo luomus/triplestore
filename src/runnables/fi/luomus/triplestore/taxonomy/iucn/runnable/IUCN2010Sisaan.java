@@ -45,7 +45,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 public class IUCN2010Sisaan {
 
 	private static final Qname MISAPPLIED = new Qname("MX.hasMisappliedName");
-	private static final String FILE_PATH = "C:/esko-local/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
+	private static final String FILE_PATH = "C:/esko-local/workspace/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010; // XXX change year here
 	private static final String OCCURRENCES = "occurrences";
@@ -134,15 +134,15 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Pistiäiset_siirto.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("Putkilokasvit_siirto.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
 		//writeDumps();
 	}
 
-	private static final Set<String> ONLY_THESE = Utils.set( // XXX load only certain lines
-			"HYAC37|"
+	private static final Set<String> ONLY_THESE = Utils.set( // XXX load only certain lines (leave empty to disable this)
+			"VA117|"
 			); 
 
 	private static boolean shouldSkip(String line) {
