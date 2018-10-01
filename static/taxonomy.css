@@ -294,6 +294,11 @@ tr.errorMessage td {
 	width: 500px;
 }
 
+
+.deleteButton {
+	background: red !important; 
+}
+
 #editTaxonDescriptions .textareaContainer {
 	margin: 0;
 	padding: 0;

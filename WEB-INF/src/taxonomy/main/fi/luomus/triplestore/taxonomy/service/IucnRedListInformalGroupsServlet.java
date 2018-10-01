@@ -9,11 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
-@WebServlet(urlPatterns = {"/taxonomy-editor/iucn-groups/*", "/taxonomy-editor/iucn-groups/add/*"})
+@WebServlet(urlPatterns = {"/taxonomy-editor/iucn-groups/*", "/taxonomy-editor/iucn-groups/add/*", "/taxonomy-editor/iucn-groups/delete/*"})
 public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
 	private static final long serialVersionUID = 8786096622779728257L;
@@ -38,7 +39,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		if (addNew(req)) {
 			return responseData.setViewName("iucnGroups-edit").setData("action", "add").setData("group", new IucnRedListInformalTaxonGroup());
 		}
-
+		
 		String qname = getQname(req);
 		IucnRedListInformalTaxonGroup group = getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
@@ -51,12 +52,26 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		return req.getRequestURI().endsWith("/add");
 	}
 
+	private boolean delete(HttpServletRequest req) {
+		return req.getRequestURI().contains("/delete/");
+	}
+	
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean addNew = addNew(req);
+		boolean delete = delete(req);
+		
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
-		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
 
+		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
+		
+		if (delete) {
+			triplestoreDAO.delete(new Subject(qname));
+			getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload();
+			getSession(req).setFlashSuccess("IUCN group deleted");
+			return redirectTo(getConfig().baseURL()+"/iucn-groups", res);
+		}
+		
 		String nameEN = req.getParameter("name_en");
 		String nameFI = req.getParameter("name_fi");
 		String nameSV = req.getParameter("name_sv");
