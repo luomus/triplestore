@@ -66,7 +66,7 @@
 </form>
 
 <form action="${baseURL}/iucn-groups/delete/${group.qname}" method="post" id="groupDeleteForm">
-<input style="margin-left: 50%" type="submit" class="button deleteButton" value="Delete" />
+<input style="margin-left: 50%" type="submit" class="button deleteButton" value="Delete" onclick="return confirm('Really delete?')"/>
 </form>
 
 
