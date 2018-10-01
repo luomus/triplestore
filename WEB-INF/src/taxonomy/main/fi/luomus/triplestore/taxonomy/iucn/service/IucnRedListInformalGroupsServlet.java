@@ -1,4 +1,4 @@
-package fi.luomus.triplestore.taxonomy.service;
+package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import java.util.regex.Pattern;
 
@@ -13,6 +13,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn-groups/*", "/taxonomy-editor/iucn-groups/add/*", "/taxonomy-editor/iucn-groups/delete/*"})
 public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet {
