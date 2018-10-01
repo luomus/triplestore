@@ -100,6 +100,7 @@ public class IUCN2010Sisaan {
 		all.add(new Qname("MVL.213"));
 		all.add(new Qname("MVL.462"));
 		FILE_TO_INFORMAL_GROUP.put("yhdistetty.csv", all);
+		FILE_TO_INFORMAL_GROUP.put("2010_korjattavat_28092018.csv", all);
 	}
 
 	private static TriplestoreDAO triplestoreDAO;
@@ -117,7 +118,7 @@ public class IUCN2010Sisaan {
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); 
 
 			// dev mode
-			// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
 
 			process();
 			taxonomyDAO.close();
@@ -134,7 +135,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("Putkilokasvit_siirto.csv")) continue; // XXX load only one file here
+			if (!f.getName().equals("blaa")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -142,7 +143,6 @@ public class IUCN2010Sisaan {
 	}
 
 	private static final Set<String> ONLY_THESE = Utils.set( // XXX load only certain lines (leave empty to disable this)
-			"VA117|"
 			); 
 
 	private static boolean shouldSkip(String line) {
@@ -171,7 +171,7 @@ public class IUCN2010Sisaan {
 	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		//IUCNLineData data = new IUCNLineData(parts);
-		IUCNLineData data = new IUCNLineData(Mode.V2010, parts); // XXX change parse mode here
+		IUCNLineData data = new IUCNLineData(Mode.LUOKKA_MUUTOSSYY, parts); // XXX change parse mode here
 		dump(data);
 		Qname fixedQnameForName = getFixedQnameForName(data.scientificName);
 		if (fixedQnameForName != null) data.taxonQname = fixedQnameForName.toString();

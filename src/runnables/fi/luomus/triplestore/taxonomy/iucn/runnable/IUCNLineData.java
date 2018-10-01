@@ -18,7 +18,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 public class IUCNLineData {
 
 	public enum Mode {
-		V2010, SAMMALLEET2019, V2000, GLOBAL
+		V2010, SAMMALLEET2019, V2000, GLOBAL, LUOKKA_MUUTOSSYY
 
 	}
 	private static final Qname OCC_EX = new Qname("MX.typeOfOccurrenceExtirpated");
@@ -96,9 +96,17 @@ public class IUCNLineData {
 			v2000();
 		} else if (mode == Mode.GLOBAL) {
 			global();
+		} else if (mode == Mode.LUOKKA_MUUTOSSYY) {
+			luokkaMuutoksensyy();
 		} else {
 			throw new UnsupportedOperationException(""+ mode);
 		}
+	}
+
+	private void luokkaMuutoksensyy() {
+		taxonQname = s(0);
+		redListStatus = s(1);
+		reasonForStatusChange = s(2);
 	}
 
 	private void global() {
@@ -444,6 +452,7 @@ public class IUCNLineData {
 	}
 
 	public List<IUCNHabitatObject> getSecondaryHabitats() {
+		if (!given(secondaryHabitats)) return Collections.emptyList();
 		List<IUCNHabitatObject> list = new ArrayList<>();
 		List<IUCNHabitatObject> primary = getHabitats(primaryHabitat);
 		if (primary.size() > 1) {
@@ -882,7 +891,11 @@ public class IUCNLineData {
 		STATUS_CHANGE_REASONS.put("1", new Qname("MKV.reasonForStatusChangeGenuine"));
 		STATUS_CHANGE_REASONS.put("2", new Qname("MKV.reasonForStatusChangeMoreInformation"));
 		STATUS_CHANGE_REASONS.put("3", new Qname("MKV.reasonForStatusChangeChangesInCriteria"));
-		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
+		STATUS_CHANGE_REASONS.put("4", new Qname("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("5", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
+		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeError"));
+		STATUS_CHANGE_REASONS.put("7", new Qname("MKV.reasonForStatusChangeErroneousInformation"));
+		STATUS_CHANGE_REASONS.put("8", new Qname("MKV.reasonForStatusChangeOther"));
 		STATUS_CHANGE_REASONS.put("aito muutos", new Qname("MKV.reasonForStatusChangeGenuine"));
 		STATUS_CHANGE_REASONS.put("tiedon lisääntyminen", new Qname("MKV.reasonForStatusChangeMoreInformation"));
 		STATUS_CHANGE_REASONS.put("tiedon kasvu", new Qname("MKV.reasonForStatusChangeMoreInformation"));
