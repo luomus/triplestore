@@ -43,6 +43,10 @@
 	</#if>
 </form>
 
+<form action="${baseURL}/informalGroups/delete/${group.qname}" method="post" id="groupDeleteForm">
+	<input style="margin-left: 50%" type="submit" class="button deleteButton" value="Delete" />
+</form>
+
 <script>
 $(function() {
 	$("#groupForm").validate();

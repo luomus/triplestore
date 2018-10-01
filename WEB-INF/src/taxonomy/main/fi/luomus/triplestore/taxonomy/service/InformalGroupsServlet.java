@@ -7,11 +7,12 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 
-@WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*"})
+@WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*", "/taxonomy-editor/informalGroups/delete/*"})
 public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
 	private static final long serialVersionUID = -7740342063755041600L;
@@ -47,11 +48,24 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		return req.getRequestURI().endsWith("/add");
 	}
 
+	private boolean delete(HttpServletRequest req) {
+		return req.getRequestURI().contains("/delete/");
+	}
+
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		boolean addNew = addNew(req);
+		boolean delete = delete(req);
+
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
+
+		if (delete) {
+			triplestoreDAO.delete(new Subject(qname));
+			getTaxonomyDAO().getInformalTaxonGroupsForceReload();
+			getSession(req).setFlashSuccess("Informal group deleted");
+			return redirectTo(getConfig().baseURL()+"/informalGroups", res);
+		}
 
 		String nameEN = req.getParameter("name_en");
 		String nameFI = req.getParameter("name_fi");
