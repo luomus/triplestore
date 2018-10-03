@@ -76,8 +76,12 @@
 		<select id="searchTypeSelect">
 			<option value="">Select type...</option>
 			<option value="MA.person">Person</option>
+			<option value="ML.area">Area</option>
+			<option value="MY.collection">Collection</option>
+			<option value="MM.image">Image</option>
+			<option value="MP.publication">Publication</option>
 			<#list resources as resource>
-				<#if (resource.count > 0) && resource.name != "MA.person">
+				<#if (resource.count > 0)>
 					<option value="${resource.name}">${resource.name}</option>
 				</#if>
 			</#list>
