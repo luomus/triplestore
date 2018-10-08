@@ -104,9 +104,6 @@ public class IUCNValidator {
 			if (c.getMainCriteria().equals("E")) {
 				validationResult.setError(KRITEERIEN_TARKISTUKSET + "Kriteeriä E ei käytetä", IUCNEvaluation.CRITERIA_FOR_STATUS);
 			}
-			if (c.getMainCriteria().equals("D")) {
-				validationResult.setError(KRITEERIEN_TARKISTUKSET + "Kriteeriä D ei käytetä. Tarkenna D1 tai D2.", IUCNEvaluation.CRITERIA_FOR_STATUS);
-			}
 			if (c.getMainCriteria().startsWith("B")) {
 				validateCriteriaBRequirementsForStatus(status, c, validationResult);
 			}
