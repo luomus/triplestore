@@ -20,6 +20,7 @@ import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Filter;
+import fi.luomus.commons.taxonomy.InformalTaxonGroupTreeOrder;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
@@ -56,12 +57,23 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfInformalTaxonGroup; // informal taxon group id -> IUCN group ids
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
-
-	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO) {
+	private final SingleObjectCache<InformalTaxonGroupTreeOrder> cachedInformalTaxonGroupTreeOrder;
+	
+	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, final ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
 		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3*60*60);
 		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3*60*60);
+		this.cachedInformalTaxonGroupTreeOrder = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<InformalTaxonGroupTreeOrder>() {
+			@Override
+			public InformalTaxonGroupTreeOrder load() {
+				try {
+					return new InformalTaxonGroupTreeOrder(taxonomyDAO.getInformalTaxonGroupsForceReload());
+				} catch (Exception e) {
+					throw new RuntimeException();
+				}
+			}
+		}, 60);
 	}
 
 	private class IucnGroupsOfInformalTaxonGroupLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
@@ -380,5 +392,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		return set;
 	}
 
+	@Override
+	public Set<Qname> orderInformalTaxonGroups(Set<Qname> informalTaxonGroupIds) {
+		return cachedInformalTaxonGroupTreeOrder.get().orderInformalTaxonGroups(informalTaxonGroupIds);
+	}
+	
 }
 
