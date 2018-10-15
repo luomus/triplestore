@@ -10,7 +10,7 @@ var windowHeight = $(window).height();
 var dialogHeight = windowHeight * 0.9;
     
 $(function() {
-		
+	
 	taxonTreeGraphs = jsPlumb.getInstance();
 	
 	$(window).resize(function(){
@@ -41,17 +41,25 @@ $(function() {
   		checked: false
 	});
 	
-	$("#taxonTree").on('click', '.taxonId', function() {
-		var qname = $(this).attr('title');
+	$("#taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
+		var value = $(this).attr('title');
+		if (!value) return false;
+		value = value.trim();
   		var temp = $("<input>");
     	$("body").append(temp);
-    	temp.val(qname).select();
+    	temp.val(value).select();
     	document.execCommand("copy");
     	temp.remove();
-    	$.simplyToast('info', qname + ' copied to clipboard');
+    	if (value.indexOf(' ') > -1) {
+    		$.simplyToast('info', value + '<br/>copied to clipboard');
+    	} else {
+    		$.simplyToast('info', value + ' copied to clipboard');
+    	}
     	return false;
 	});
 });
+
+
 
 function treePlusMinusSignClick(e) {
 	if ($(e).data("state") === "expanded") {
