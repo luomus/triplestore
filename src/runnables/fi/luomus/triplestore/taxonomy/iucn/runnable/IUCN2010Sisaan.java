@@ -135,7 +135,7 @@ public class IUCN2010Sisaan {
 		for (File f : folder.listFiles()) {
 			if (!f.isFile()) continue;
 			if (!f.getName().endsWith(".csv")) continue;
-			if (!f.getName().equals("blaa")) continue; // XXX load only one file here
+			if (!f.getName().equals("Perhoset_siirto2.csv")) continue; // XXX load only one file here
 			System.out.println(f.getName());
 			process(f);
 		}
@@ -143,6 +143,7 @@ public class IUCN2010Sisaan {
 	}
 
 	private static final Set<String> ONLY_THESE = Utils.set( // XXX load only certain lines (leave empty to disable this)
+			"LE1503|MX.60231"
 			); 
 
 	private static boolean shouldSkip(String line) {
@@ -171,7 +172,7 @@ public class IUCN2010Sisaan {
 	private static void process(String line, File f, int i, int total) throws Exception {
 		String[] parts = line.split(Pattern.quote("|"));
 		//IUCNLineData data = new IUCNLineData(parts);
-		IUCNLineData data = new IUCNLineData(Mode.LUOKKA_MUUTOSSYY, parts); // XXX change parse mode here
+		IUCNLineData data = new IUCNLineData(Mode.V2010, parts); // XXX change parse mode here
 		dump(data);
 		Qname fixedQnameForName = getFixedQnameForName(data.scientificName);
 		if (fixedQnameForName != null) data.taxonQname = fixedQnameForName.toString();
