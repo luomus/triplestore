@@ -259,7 +259,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		// Map of
 		// MKV.primaryHabitat___0 : { MKV.habitat: [MKV.habitatMk], MKV.habitatSpecificType : [MKV.habitatSpecificTypePAK] }
 		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... } 
-		// MKV.primaryHabitat___1 : ...
+		// MKV.secondaryHabitat___1 : ...
 		for (Map.Entry<String, Map<String, String[]>> e : habitatPairParameters.entrySet()) {
 			String[] predicateAndIndexParts = e.getKey().split(Pattern.quote("___"));
 			String predicate = predicateAndIndexParts[0];
