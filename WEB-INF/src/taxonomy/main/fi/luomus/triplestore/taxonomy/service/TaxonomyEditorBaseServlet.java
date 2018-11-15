@@ -117,17 +117,17 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	protected EditableTaxon createTaxon(String scientificName, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {

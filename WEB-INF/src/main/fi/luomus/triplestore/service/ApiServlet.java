@@ -52,7 +52,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Set<Qname> qnames = new HashSet<>(getQnames(req));
 		if (qnames.isEmpty()) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
@@ -72,11 +72,11 @@ public class ApiServlet extends EditorBaseServlet {
 		try {
 			response = get(qnames, resultType, format, dao);
 		} catch (TooManyResultsException e) {
-			return redirectTo403(res);
+			return status403(res);
 		}
 
 		if (response == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 
 		if (jsonRequest(format)) {
@@ -177,7 +177,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = new Qname(getQname(req));
 		if (!qname.isSet()) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		Format format = getFormat(req);
 
@@ -217,7 +217,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = new Qname(getQname(req));
 		if (!qname.isSet()) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		Format format = getFormat(req);
 

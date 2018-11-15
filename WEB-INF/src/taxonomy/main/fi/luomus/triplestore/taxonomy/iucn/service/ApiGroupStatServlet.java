@@ -17,7 +17,7 @@ public class ApiGroupStatServlet extends ApiBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String groupQname = getId(req);
 		int year = Integer.valueOf(req.getParameter("year"));
-		if (!given(groupQname)) return redirectTo404(res);
+		if (!given(groupQname)) return status404(res);
 
 		IUCNYearlyGroupStat stat = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getStat(year, groupQname);
 

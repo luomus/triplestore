@@ -44,7 +44,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String speciesQname = speciesQname(req);
-		if (!given(speciesQname)) return redirectTo404(res);
+		if (!given(speciesQname)) return status404(res);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
@@ -201,7 +201,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		iucnDAO.getIUCNContainer().setEvaluation(givenData);
 
 		setFlashMessage(req, givenData, validationResult);
-		return redirectTo(getConfig().baseURL() + "/iucn/species/" + speciesQname + "/" + year , res);
+		return redirectTo(getConfig().baseURL() + "/iucn/species/" + speciesQname + "/" + year);
 	}
 
 	private void setRemarks(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) {

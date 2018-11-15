@@ -65,7 +65,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		String originalURL = getURL(req);
 		String next = originalURL.replace("/triplestore", "").replace("/taxonomy-editor", "");
 		uri.addParameter("next", next);
-		return redirectTo(uri.toString(), res);
+		return redirectTo(uri.toString());
 	}
 
 	public static String getURL(HttpServletRequest req) {
@@ -206,22 +206,22 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	protected String getQname(HttpServletRequest req) {

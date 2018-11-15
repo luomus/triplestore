@@ -1,5 +1,12 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -9,13 +16,6 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/editors/*"})
 public class EditorsServlet extends FrontpageServlet {
@@ -31,7 +31,7 @@ public class EditorsServlet extends FrontpageServlet {
 		String groupQname = getQname(req);
 		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(groupQname);
 		if (group == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 
@@ -57,7 +57,7 @@ public class EditorsServlet extends FrontpageServlet {
 			insertOrUpdate(dao, groupQname, groupEditorsQname, editors);
 			getSession(req).setFlashSuccess("Editors saved");
 		}
-		return redirectTo(getConfig().baseURL()+"/iucn/editors/"+groupQname, res);
+		return redirectTo(getConfig().baseURL()+"/iucn/editors/"+groupQname);
 	}
 
 	private List<String> editors(HttpServletRequest req) {

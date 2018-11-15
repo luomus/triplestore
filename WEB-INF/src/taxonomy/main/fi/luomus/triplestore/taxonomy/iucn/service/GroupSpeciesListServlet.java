@@ -71,7 +71,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			String groupQname = groupQname(req);
 			InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroups().get(groupQname);
 			if (group == null) {
-				return redirectTo404(res);
+				return status404(res);
 			}
 
 			IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();

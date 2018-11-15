@@ -39,7 +39,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		String qname = getQname(req);
 		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("informalGroups-edit").setData("action", "modify").setData("group", group);
 	}
@@ -64,7 +64,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			triplestoreDAO.delete(new Subject(qname));
 			getTaxonomyDAO().getInformalTaxonGroupsForceReload();
 			getSession(req).setFlashSuccess("Informal group deleted");
-			return redirectTo(getConfig().baseURL()+"/informalGroups", res);
+			return redirectTo(getConfig().baseURL()+"/informalGroups");
 		}
 
 		String nameEN = req.getParameter("name_en");
@@ -91,10 +91,10 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New informal group added");
-			return redirectTo(getConfig().baseURL()+"/informalGroups", res);
+			return redirectTo(getConfig().baseURL()+"/informalGroups");
 		} else {
 			getSession(req).setFlashSuccess("Informal group modified");
-			return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname, res);
+			return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname);
 		}
 	}
 

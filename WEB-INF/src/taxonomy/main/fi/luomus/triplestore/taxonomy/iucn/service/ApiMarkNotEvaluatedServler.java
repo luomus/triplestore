@@ -29,8 +29,8 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		String speciesQname = req.getParameter("speciesQname");
 		String groupQname = req.getParameter("groupQname");
 		int year = Integer.valueOf(req.getParameter("year"));
-		if (!given(speciesQname)) return redirectTo500(res);
-		if (!given(groupQname)) return redirectTo500(res);
+		if (!given(speciesQname)) return status500(res);
+		if (!given(groupQname)) return status500(res);
 		checkIucnPermissions(groupQname, req);
 		Qname editor = getUser(req).getQname();
 

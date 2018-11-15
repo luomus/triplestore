@@ -70,7 +70,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			getSession(req).setFlashSuccess("Ei mitään tallennettavaa!");
 		}
 		
-		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
+		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear());
 	}
 
 }

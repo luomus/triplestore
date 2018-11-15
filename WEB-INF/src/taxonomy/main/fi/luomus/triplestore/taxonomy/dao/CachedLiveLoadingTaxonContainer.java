@@ -402,5 +402,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		return cachedInformalTaxonGroupContainer.get().getParents(groupId);
 	}
 
+	@Override
+	public Collection<Taxon> getAll() {
+		throw new UnsupportedOperationException();
+	}
+
 }
 

@@ -42,7 +42,7 @@ public class SearchServlet extends ApiServlet {
 		int offset = getOffset(req);
 
 		if (noneGiven(subjects) && noneGiven(predicates) && noneGiven(objects) && noneGiven(objectresources) && noneGiven(objectliterals) && notGiven(type)) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		SearchParams searchParams = new SearchParams(limit, offset)
 				.subjects(subjects).predicates(predicates).objects(objects)

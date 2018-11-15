@@ -23,7 +23,7 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 
 		Qname root = getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(req); 
 		if (root == null) {
-			return redirectTo(getConfig().baseURL()+"/not-found", res);
+			return redirectTo(getConfig().baseURL()+"/not-found");
 		}
 
 		ExtendedTaxonomyDAO dao = getTaxonomyDAO();

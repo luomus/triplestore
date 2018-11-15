@@ -23,7 +23,7 @@ public class LogoutServlet extends EditorBaseServlet {
 		if (sessionHandler.hasSession()) {
 			sessionHandler.removeAuthentication("triplestore");
 		}
-		return redirectTo(getConfig().baseURL()+"/login", res);
+		return redirectTo(getConfig().baseURL()+"/login");
 	}
 
 }

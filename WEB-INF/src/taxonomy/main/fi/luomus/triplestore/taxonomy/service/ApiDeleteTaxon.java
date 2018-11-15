@@ -22,7 +22,7 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String taxonQname = getQname(req);
 		if (!given(taxonQname)) {
-			return redirectTo500(res);
+			return status500(res);
 		} 
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 		

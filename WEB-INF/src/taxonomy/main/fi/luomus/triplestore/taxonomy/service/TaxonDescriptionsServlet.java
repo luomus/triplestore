@@ -78,7 +78,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		TaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		if (!taxonomyDAO.getTaxonContainer().hasTaxon(taxonQname)) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);

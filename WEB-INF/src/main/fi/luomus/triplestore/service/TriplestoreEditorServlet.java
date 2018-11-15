@@ -96,7 +96,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			if (given(qname)) {
 				return redirectToGet(qname);
 			} else {
-				return redirectTo(getConfig().baseURL()+"/editor", res);
+				return redirectTo(getConfig().baseURL()+"/editor");
 			}
 		}
 	}

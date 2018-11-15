@@ -44,7 +44,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		String qname = getQname(req);
 		IucnRedListInformalTaxonGroup group = getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload().get(qname);
 		if (group == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("iucnGroups-edit").setData("action", "modify").setData("group", group);
 	}
@@ -70,7 +70,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 			triplestoreDAO.delete(new Subject(qname));
 			getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload();
 			getSession(req).setFlashSuccess("IUCN group deleted");
-			return redirectTo(getConfig().baseURL()+"/iucn-groups", res);
+			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
 		
 		String nameEN = req.getParameter("name_en");
@@ -118,10 +118,10 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New IUCN group added");
-			return redirectTo(getConfig().baseURL()+"/iucn-groups", res);
+			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		} else {
 			getSession(req).setFlashSuccess("IUCN group modified");
-			return redirectTo(getConfig().baseURL()+"/iucn-groups", res);
+			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
 	}
 

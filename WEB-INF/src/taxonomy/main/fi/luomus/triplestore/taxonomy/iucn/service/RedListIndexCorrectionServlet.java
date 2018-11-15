@@ -89,7 +89,7 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");
 
-		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
+		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear());
 	}
 
 	private String editNotes(boolean indexAdded) {

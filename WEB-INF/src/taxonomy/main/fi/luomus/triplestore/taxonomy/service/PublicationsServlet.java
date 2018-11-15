@@ -27,7 +27,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		String qname = getQname(req);
 		Publication publication = getTaxonomyDAO().getPublicationsForceReload().get(qname);
 		if (publication == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("publications-edit").setData("action", "modify").setData("publication", publication);
 	}
@@ -53,10 +53,10 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		
 		if (addNew) {
 			getSession(req).setFlashSuccess("New publication added");
-			return redirectTo(getConfig().baseURL()+"/publications", res);
+			return redirectTo(getConfig().baseURL()+"/publications");
 		} else {
 			getSession(req).setFlashSuccess("Publication modified");
-			return redirectTo(getConfig().baseURL()+"/publications/"+qname, res);
+			return redirectTo(getConfig().baseURL()+"/publications/"+qname);
 		}
 	}
 

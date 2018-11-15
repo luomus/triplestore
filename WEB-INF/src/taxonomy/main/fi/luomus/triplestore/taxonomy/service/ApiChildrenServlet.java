@@ -22,7 +22,7 @@ public class ApiChildrenServlet extends ApiBaseServlet {
 		
 		String parentQname = getQname(req);
 		if (!given(parentQname) || parentQname.equals("undefined")) {
-			return redirectTo500(res);
+			return status500(res);
 		} 
 		parentQname = parentQname.replace("MX", "MX.");
 		

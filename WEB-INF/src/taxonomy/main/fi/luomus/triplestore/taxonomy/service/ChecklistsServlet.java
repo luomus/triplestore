@@ -32,7 +32,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		String qname = getQname(req);
 		Checklist checklist = getTaxonomyDAO().getChecklistsForceReload().get(qname);
 		if (checklist == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("checklists-edit").setData("action", "modify").setData("checklist", checklist);
 	}
@@ -91,10 +91,10 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New checklist added");
-			return redirectTo(getConfig().baseURL()+"/checklists", res);
+			return redirectTo(getConfig().baseURL()+"/checklists");
 		} else {
 			getSession(req).setFlashSuccess("Checklist modified");
-			return redirectTo(getConfig().baseURL()+"/checklists/"+qname, res);
+			return redirectTo(getConfig().baseURL()+"/checklists/"+qname);
 		}
 	}
 

@@ -42,7 +42,7 @@ public class UriGeneratorServlet extends EditorBaseServlet {
 		String namespace = getQname(req);
 
 		if (!given(namespace) || namespace.contains(":")) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 
 		Qname next = getTriplestoreDAO().getSeqNextValAndAddResource(namespace);

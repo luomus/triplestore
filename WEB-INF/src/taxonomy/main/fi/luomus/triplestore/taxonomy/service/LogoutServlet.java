@@ -23,7 +23,7 @@ public class LogoutServlet extends TaxonomyEditorBaseServlet {
 		if (sessionHandler.hasSession()) {
 			sessionHandler.invalidate();
 		}
-		return redirectTo(getConfig().baseURL()+"/login", res);
+		return redirectTo(getConfig().baseURL()+"/login");
 	}
 
 }
