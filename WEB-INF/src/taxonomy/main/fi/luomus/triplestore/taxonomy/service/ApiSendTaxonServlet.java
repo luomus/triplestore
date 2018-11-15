@@ -15,8 +15,8 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
 
@@ -107,9 +107,9 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 	private void deleteNonCriticalIucnEvaluations(String taxonId) throws Exception {
 		IucnDAO iucnDAO = getTaxonomyDAO().getIucnDAO();
-		IUCNContainer iucnContainer = iucnDAO.getIUCNContainer();
+		Container iucnContainer = iucnDAO.getIUCNContainer();
 		if (iucnContainer.hasTarget(taxonId)) {
-			for (IUCNEvaluation e : iucnContainer.getTarget(taxonId).getEvaluations()) {
+			for (Evaluation e : iucnContainer.getTarget(taxonId).getEvaluations()) {
 				if (e.isCriticalDataEvaluation()) {
 					throw new IllegalStateException("Critical data validation should prevent this. Deleting evaluation with status " + e.getIucnStatus());
 				}

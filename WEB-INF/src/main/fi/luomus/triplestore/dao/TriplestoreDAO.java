@@ -22,7 +22,7 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public interface TriplestoreDAO {
@@ -256,6 +256,6 @@ public interface TriplestoreDAO {
 	 * @param existingEvaluation
 	 * @throws Exception
 	 */
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
+	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
 
 }

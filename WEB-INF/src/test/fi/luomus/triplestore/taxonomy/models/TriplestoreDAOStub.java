@@ -26,7 +26,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreSearchDAO;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 
 public class TriplestoreDAOStub implements TriplestoreDAO {
@@ -205,7 +205,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
 		// Auto-generated method stub
 		
 	}

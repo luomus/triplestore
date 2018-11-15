@@ -36,11 +36,11 @@ import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EndangermentObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -55,9 +55,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	private static final long serialVersionUID = -9070472068743470346L;
 	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
-	private static final Comparator<IUCNEvaluationTarget> ALPHA_COMPARATOR = new Comparator<IUCNEvaluationTarget>() {
+	private static final Comparator<EvaluationTarget> ALPHA_COMPARATOR = new Comparator<EvaluationTarget>() {
 		@Override
-		public int compare(IUCNEvaluationTarget o1, IUCNEvaluationTarget o2) {
+		public int compare(EvaluationTarget o1, EvaluationTarget o2) {
 			String s1 = o1.getTaxon().getScientificName();
 			String s2 = o2.getTaxon().getScientificName();
 			if (s1 == null) s1 = "\uffff'";
@@ -74,8 +74,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				return status404(res);
 			}
 
-			IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
-			List<IUCNEvaluationTarget> targets = container.getTargetsOfGroup(groupQname);
+			Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+			List<EvaluationTarget> targets = container.getTargetsOfGroup(groupQname);
 
 			SessionHandler session = getSession(req);
 
@@ -106,7 +106,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				}
 			}
 
-			List<IUCNEvaluationTarget> filteredTargets;
+			List<EvaluationTarget> filteredTargets;
 			try {
 				filteredTargets = filter(targets, states, taxon, redListStatuses, prevRedListStatuses, selectedYear);
 			} catch (TaxonLoadException e) {
@@ -115,7 +115,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 
 			if ("alphabetic".equals(orderBy)) {
-				List<IUCNEvaluationTarget> sorted = new ArrayList<>(filteredTargets);
+				List<EvaluationTarget> sorted = new ArrayList<>(filteredTargets);
 				Collections.sort(sorted, ALPHA_COMPARATOR);
 				filteredTargets = sorted;
 			}
@@ -135,10 +135,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			if (isFileDownload(req)) {
 				return doDownload(res, container, selectedYear, filteredTargets);
 			}
-			List<IUCNEvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
+			List<EvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
 			return responseData.setViewName("iucn-group-species-list")
 					.setData("group", group)
-					.setData("statusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
+					.setData("statusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 					.setData("persons", getTaxonomyDAO().getPersons())
 					.setData("targets", pageTargets)
 					.setData("remarks", container.getRemarksForGroup(groupQname))
@@ -152,19 +152,19 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData("prevRedListStatuses", prevRedListStatuses)
 					.setData("permissions", hasIucnPermissions(groupQname, req))
 					.setData(ORDER_BY, orderBy)
-					.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
-					.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
+					.setData("evaluationProperties", dao.getProperties(Evaluation.EVALUATION_CLASS))
+					.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
 					.setData("occurrenceStatuses", getOccurrenceStatuses())
 					.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 		}
 
-		private ResponseData doDownload(HttpServletResponse res, IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets) throws Exception {
+		private ResponseData doDownload(HttpServletResponse res, Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
 			List<String> rows = getDownloadRows(container, selectedYear, targets);
 			writeFileDownloadRows(res, selectedYear, rows);
 			return new ResponseData().setOutputAlreadyPrinted();
 		}
 
-		protected List<String> getDownloadRows(IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets) throws Exception {
+		protected List<String> getDownloadRows(Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
 			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
 			Collections.reverse(years);
 			List<String> rows = new ArrayList<>(targets.size()*4);
@@ -186,27 +186,27 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			writer.flush();
 		}
 
-		private void appendDownloadDataRows(IUCNContainer container, int selectedYear, Collection<IUCNEvaluationTarget> targets, List<Integer> years, List<String> rows) throws Exception {
+		private void appendDownloadDataRows(Container container, int selectedYear, Collection<EvaluationTarget> targets, List<Integer> years, List<String> rows) throws Exception {
 			int i = 0;
-			for (IUCNEvaluationTarget target : targets) {
+			for (EvaluationTarget target : targets) {
 				if (i % 1000 == 0) System.out.println(i + "/" + targets.size());
 				i++;
 				if (target.hasEvaluation(selectedYear)) {
-					IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
+					Evaluation evaluation = target.getEvaluation(selectedYear);
 					if (evaluation.isIncompletelyLoaded()) {
 						container.complateLoading(evaluation);
 					}
 
 					rows.add(fileDownloadDataRow(evaluation, target, years));
 				} else {
-					rows.add(fileDownloadDataRow(new IUCNEvaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years));
+					rows.add(fileDownloadDataRow(new Evaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years));
 				}
 			}
 		}
 
-		private String fileDownloadDataRow(IUCNEvaluation evaluation, IUCNEvaluationTarget target, List<Integer> years) throws Exception {
+		private String fileDownloadDataRow(Evaluation evaluation, EvaluationTarget target, List<Integer> years) throws Exception {
 			int selectedYear = evaluation.getEvaluationYear() == null ? years.get(0) : evaluation.getEvaluationYear();
-			IUCNEvaluation previous = target.getPreviousEvaluation(selectedYear);
+			Evaluation previous = target.getPreviousEvaluation(selectedYear);
 			List<String> data = new ArrayList<>();
 			List<IucnRedListInformalTaxonGroup> targetGroups = getGroups(target);
 			IucnRedListInformalTaxonGroup groupRoot = getGroupRoot(target);
@@ -364,14 +364,14 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return null;
 		}
 
-		private IucnRedListInformalTaxonGroup getGroupRoot(IUCNEvaluationTarget target) {
+		private IucnRedListInformalTaxonGroup getGroupRoot(EvaluationTarget target) {
 			for (IucnRedListInformalTaxonGroup group : getGroups(target)) {
 				if (!group.hasParent()) return group;
 			}
 			return null;
 		}
 
-		private List<IucnRedListInformalTaxonGroup> getGroups(IUCNEvaluationTarget target) {
+		private List<IucnRedListInformalTaxonGroup> getGroups(EvaluationTarget target) {
 			Set<Qname> groupIds = target.getTaxon().getIucnRedListTaxonGroups();
 			if (groupIds.isEmpty()) return Collections.emptyList();
 			List<IucnRedListInformalTaxonGroup> groups = new ArrayList<>();
@@ -402,9 +402,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return group;
 		}
 
-		public static void appendRLIValues(IUCNEvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) throws Exception {
+		public static void appendRLIValues(EvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) throws Exception {
 			for (Integer year : years) {
-				IUCNEvaluation yearEval = target.getEvaluation(year);
+				Evaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
 					data.add("--");
 					data.add("--");
@@ -431,7 +431,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 			for (Integer year : years) {
 				if (year >= selectedYear) continue;
-				IUCNEvaluation yearEval = target.getEvaluation(year);
+				Evaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
 					data.add("--");
 				} else {
@@ -453,7 +453,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeOther", 8);
 		}
 
-		private String reasonForStatusChange(IUCNEvaluation evaluation) throws Exception {
+		private String reasonForStatusChange(Evaluation evaluation) throws Exception {
 			if (!evaluation.hasValue("MKV.reasonForStatusChange")) return null;
 			List<String> values = new ArrayList<>();
 			for (String value : evaluation.getValues("MKV.reasonForStatusChange")) {
@@ -467,7 +467,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return catenade(values);
 		}
 
-		private String pair(IUCNEvaluation evaluation, String minPredicate, String maxPredicate) {
+		private String pair(Evaluation evaluation, String minPredicate, String maxPredicate) {
 			String min = evaluation.getValue(minPredicate);
 			String max = evaluation.getValue(maxPredicate);
 			return pair(min, max);
@@ -485,7 +485,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return i.toString();
 		}
 
-		private String publications(IUCNEvaluation evaluation) throws Exception {
+		private String publications(Evaluation evaluation) throws Exception {
 			List<String> values = evaluation.getValues("MKV.publication");
 			if (values.isEmpty()) return null;
 			List<String> citations = new ArrayList<>();
@@ -506,7 +506,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString();
 		}
 
-		private static String statusWithSymbols(IUCNEvaluation evaluation) {
+		private static String statusWithSymbols(Evaluation evaluation) {
 			String status = status(evaluation.getIucnStatus());
 			String externalImpact = externalImpact(evaluation);
 			String possiblyRE = possiblyRE(evaluation);
@@ -519,12 +519,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return status;
 		}
 
-		private static String possiblyRE(IUCNEvaluation evaluation) {
+		private static String possiblyRE(Evaluation evaluation) {
 			if (evaluation.hasValue("MKV.possiblyRE")) return "●";
 			return null;
 		}
 
-		private static String externalImpact(IUCNEvaluation evaluation) {
+		private static String externalImpact(Evaluation evaluation) {
 			String extImp = evaluation.getExternalImpact();
 			if (!given(extImp)) return null;
 			if (extImp.equals("-2")) return "°°";
@@ -534,10 +534,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return null;
 		}
 
-		private String endangerment(List<IUCNEndangermentObject> reasons) {
+		private String endangerment(List<EndangermentObject> reasons) {
 			if (reasons.isEmpty()) return null;
 			StringBuilder b = new StringBuilder();
-			Iterator<IUCNEndangermentObject> i = reasons.iterator();
+			Iterator<EndangermentObject> i = reasons.iterator();
 			while (i.hasNext()) {
 				String value = i.next().getEndangerment().toString();
 				if (value.equals("MKV.endangermentReasonT")) {
@@ -551,23 +551,23 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString();
 		}
 
-		private String d(IUCNEvaluation evaluation, String predicate) {
+		private String d(Evaluation evaluation, String predicate) {
 			String s = evaluation.getValue(predicate);
 			if (!given(s)) return null;
 			return s.replace(".", ",");
 		}
 
-		private String habitats(List<IUCNHabitatObject> secondaryHabitats) {
+		private String habitats(List<HabitatObject> secondaryHabitats) {
 			if (secondaryHabitats.isEmpty()) return null;
 			List<String> values = new ArrayList<>();
-			for (IUCNHabitatObject o : secondaryHabitats) {
+			for (HabitatObject o : secondaryHabitats) {
 				String value = habitat(o);
 				if (value != null) values.add(value);
 			}
 			return catenade(values);
 		}
 
-		private String habitat(IUCNHabitatObject habitat) {
+		private String habitat(HabitatObject habitat) {
 			if (habitat == null) return null;
 			StringBuilder b = new StringBuilder();
 			if (given(habitat.getHabitat())) {
@@ -585,7 +585,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString().trim();
 		}
 
-		private static String v(IUCNEvaluation evaluation, String predicate) {
+		private static String v(Evaluation evaluation, String predicate) {
 			String value = evaluation.getValue(predicate);
 			if (value == null) return "";
 			if (value.equals("false")) return "Ei";
@@ -593,7 +593,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return value;
 		}
 
-		private String enumValue(IUCNEvaluation evaluation, String predicate) throws Exception {
+		private String enumValue(Evaluation evaluation, String predicate) throws Exception {
 			String value = evaluation.getValue(predicate);
 			return enumValue(predicate, value);
 		}
@@ -604,10 +604,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private RdfProperties getIUCNProperties() throws Exception {
-			return getTriplestoreDAO().getProperties(IUCNEvaluation.EVALUATION_CLASS);
+			return getTriplestoreDAO().getProperties(Evaluation.EVALUATION_CLASS);
 		}
 
-		private String enumValue(IUCNEvaluation evaluation, String predicate, Collection<RdfProperty> range) {
+		private String enumValue(Evaluation evaluation, String predicate, Collection<RdfProperty> range) {
 			String value = evaluation.getValue(predicate);
 			if (!given(value)) return "";
 			for (RdfProperty rangeValue : range) {
@@ -623,26 +623,26 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return iucnStatus.replace("MX.iucn", "");
 		}
 
-		private String lastModifiedBy(IUCNEvaluation evaluation) throws Exception {
+		private String lastModifiedBy(Evaluation evaluation) throws Exception {
 			if (!given(evaluation.getLastModifiedBy())) return "--";
 			Person person = getTaxonomyDAO().getPersons().get(evaluation.getLastModifiedBy());
 			if (person == null) return "--";
 			return person.getFullname();
 		}
 
-		private String lastModified(IUCNEvaluation evaluation) throws Exception {
+		private String lastModified(Evaluation evaluation) throws Exception {
 			if (evaluation.getLastModified() == null) return "--";
 			return DateUtils.format(evaluation.getLastModified(), "d.M.yyyy");
 		}
 
-		private String state(IUCNEvaluation evaluation) {
+		private String state(Evaluation evaluation) {
 			if (evaluation.isReady()) return "Valmis";
 			if (evaluation.isReadyForComments()) return "Valmis kommentoitavaksi";
 			if (evaluation.getState() == null) return "Aloittamatta";
 			return "Kesken";
 		}
 
-		private String adminStatuses(IUCNEvaluationTarget target) throws Exception {
+		private String adminStatuses(EvaluationTarget target) throws Exception {
 			RdfProperty property = getTriplestoreDAO().getProperties("MX.taxon").getProperty("MX.hasAdminStatus"); 
 			Iterator<Qname> i = target.getTaxon().getAdministrativeStatuses().iterator();
 			StringBuilder b = new StringBuilder();
@@ -655,7 +655,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return b.toString();
 		}
 
-		private String taxonRank(IUCNEvaluationTarget target) {
+		private String taxonRank(EvaluationTarget target) {
 			Qname rank = target.getTaxon().getTaxonRank(); 
 			if (!given(rank)) {
 				return "";
@@ -792,8 +792,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			private static final long serialVersionUID = -6749180766121111373L;
 		}
 
-		private List<IUCNEvaluationTarget> filter(List<IUCNEvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, String[] prevRedListStatuses, int selectedYear) throws Exception {
-			List<IUCNEvaluationTarget> filtered = new ArrayList<>();
+		private List<EvaluationTarget> filter(List<EvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, String[] prevRedListStatuses, int selectedYear) throws Exception {
+			List<EvaluationTarget> filtered = new ArrayList<>();
 			if (!given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) return targets;
 
 			Set<String> taxonQnames = null;
@@ -805,9 +805,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				}
 			}
 
-			for (IUCNEvaluationTarget target : targets) {
-				IUCNEvaluation evaluation = target.getEvaluation(selectedYear);
-				IUCNEvaluation prevEvaluation = target.getPreviousEvaluation(selectedYear);
+			for (EvaluationTarget target : targets) {
+				Evaluation evaluation = target.getEvaluation(selectedYear);
+				Evaluation prevEvaluation = target.getPreviousEvaluation(selectedYear);
 				if (given(redListStatuses)) {
 					if (!redListStatusesMatch(redListStatuses, evaluation)) continue;
 				}
@@ -825,7 +825,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return filtered;
 		}
 
-		private boolean statesMatch(String[] states, IUCNEvaluation evaluation) {
+		private boolean statesMatch(String[] states, Evaluation evaluation) {
 			for (String state : states) {
 				if (!given(state)) continue;
 				if (state.equals("ready")) {
@@ -843,7 +843,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return false;
 		}
 
-		private boolean redListStatusesMatch(String[] redListStatuses, IUCNEvaluation evaluation) {
+		private boolean redListStatusesMatch(String[] redListStatuses, Evaluation evaluation) {
 			if (evaluation == null) return false;
 			String status = evaluation.getIucnStatus();
 			if (!given(status)) return false;
@@ -878,9 +878,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return false;
 		}
 
-		private List<IUCNEvaluationTarget> pageTargets(int currentPage, int pageSize, List<IUCNEvaluationTarget> targets) {
+		private List<EvaluationTarget> pageTargets(int currentPage, int pageSize, List<EvaluationTarget> targets) {
 			if (targets.isEmpty()) return targets;
-			List<IUCNEvaluationTarget> list = new ArrayList<>();
+			List<EvaluationTarget> list = new ArrayList<>();
 			int offset = (currentPage-1) * pageSize;
 			for (int pageItems = 0; pageItems<pageSize; pageItems++) {
 				int index = offset + pageItems;

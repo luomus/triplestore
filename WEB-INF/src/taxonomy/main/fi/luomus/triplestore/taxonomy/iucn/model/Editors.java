@@ -5,12 +5,12 @@ import fi.luomus.commons.containers.rdf.Qname;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IUCNEditors {
+public class Editors {
 
 	private final Qname id;
 	private final List<Qname> editors = new ArrayList<>();
 
-	public IUCNEditors(Qname id) {
+	public Editors(Qname id) {
 		this.id = id;
 	}
 

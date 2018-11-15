@@ -1,7 +1,7 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNYearlyGroupStat;
+import fi.luomus.triplestore.taxonomy.iucn.model.YearlyGroupStat;
 import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
 
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +19,7 @@ public class ApiGroupStatServlet extends ApiBaseServlet {
 		int year = Integer.valueOf(req.getParameter("year"));
 		if (!given(groupQname)) return status404(res);
 
-		IUCNYearlyGroupStat stat = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getStat(year, groupQname);
+		YearlyGroupStat stat = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getStat(year, groupQname);
 
 		return new ResponseData().setViewName("iucn-stat").setData("stat", stat);
 	}

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class IUCNValidationResult {
+public class ValidationResult {
 	private final List<String> errors = new ArrayList<>();
 	private final Set<String> erroreousFields = new HashSet<>();
 	public boolean hasErrors() {

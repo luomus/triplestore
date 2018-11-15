@@ -13,9 +13,9 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 public class EditableTaxon extends Taxon {
@@ -161,10 +161,10 @@ public class EditableTaxon extends Taxon {
 			return true;
 		}
 		try {
-			IUCNContainer iucnContainer = taxonomyDAO.getIucnDAO().getIUCNContainer();
+			Container iucnContainer = taxonomyDAO.getIucnDAO().getIUCNContainer();
 			iucnContainer.makeSureEvaluationDataIsLoaded();
 			if (!iucnContainer.hasTarget(this.getQname().toString())) return false;
-			IUCNEvaluationTarget target = iucnContainer.getTarget(this.getQname().toString());
+			EvaluationTarget target = iucnContainer.getTarget(this.getQname().toString());
 
 			return hasCriticalIUCNEvaluationStatus(target);
 		} catch (Exception e) {
@@ -173,8 +173,8 @@ public class EditableTaxon extends Taxon {
 	}
 
 
-	private boolean hasCriticalIUCNEvaluationStatus(IUCNEvaluationTarget target) {
-		for (IUCNEvaluation e : target.getEvaluations()) {
+	private boolean hasCriticalIUCNEvaluationStatus(EvaluationTarget target) {
+		for (Evaluation e : target.getEvaluations()) {
 			if (e.isCriticalDataEvaluation()) return true;
 		}
 		return false;
@@ -182,7 +182,7 @@ public class EditableTaxon extends Taxon {
 
 	private boolean hasCriticalIUCNEvaluationStatus(Collection<RedListStatus> statuses) {
 		for (RedListStatus s : statuses) {
-			if (IUCNEvaluation.isCriticalIUCNEvaluation(s.getStatus().toString())) return true;
+			if (Evaluation.isCriticalIUCNEvaluation(s.getStatus().toString())) return true;
 		}
 		return false;
 	}

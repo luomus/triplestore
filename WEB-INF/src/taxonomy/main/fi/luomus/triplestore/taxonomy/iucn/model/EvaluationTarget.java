@@ -12,16 +12,16 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
 
-public class IUCNEvaluationTarget {
+public class EvaluationTarget {
 
 	private static final Qname FAMILY = new Qname("MX.family");
 	private static final Qname ORDER = new Qname("MX.order");
 	private final Qname taxonId;
-	private final Map<Integer, IUCNEvaluation> evaluations = new HashMap<>();
-	private final IUCNContainer container;
+	private final Map<Integer, Evaluation> evaluations = new HashMap<>();
+	private final Container container;
 	private final TaxonContainer taxonContainer;
 	
-	public IUCNEvaluationTarget(Qname taxonId, IUCNContainer container, TaxonContainer taxonContainer) {
+	public EvaluationTarget(Qname taxonId, Container container, TaxonContainer taxonContainer) {
 		this.taxonId = taxonId;
 		this.container = container;
 		this.taxonContainer = taxonContainer;
@@ -95,11 +95,11 @@ public class IUCNEvaluationTarget {
 		return s != null && s.length() > 0;
 	}
 
-	public void setEvaluation(IUCNEvaluation evaluation) {
+	public void setEvaluation(Evaluation evaluation) {
 		evaluations.put(evaluation.getEvaluationYear(), evaluation);
 	}
 
-	public IUCNEvaluation getEvaluation(int year) throws Exception {
+	public Evaluation getEvaluation(int year) throws Exception {
 		return evaluations.get(year);
 	}
 
@@ -107,7 +107,7 @@ public class IUCNEvaluationTarget {
 		return getEvaluation(year) != null;
 	}
 
-	public IUCNEvaluation getPreviousEvaluation(int year) throws Exception {
+	public Evaluation getPreviousEvaluation(int year) throws Exception {
 		Integer prevYear = getPreviousYear(year);
 		if (prevYear == null) return null;
 		return getEvaluation(prevYear);
@@ -136,7 +136,7 @@ public class IUCNEvaluationTarget {
 		return getPreviousEvaluation(year) != null;
 	}
 
-	public Collection<IUCNEvaluation> getEvaluations() {
+	public Collection<Evaluation> getEvaluations() {
 		return evaluations.values();
 	}
 
@@ -144,7 +144,7 @@ public class IUCNEvaluationTarget {
 		return !evaluations.isEmpty();
 	}
 
-	public void removeEvaluation(IUCNEvaluation evaluation) {
+	public void removeEvaluation(Evaluation evaluation) {
 		evaluations.remove(evaluation.getEvaluationYear());
 	}
 
@@ -153,7 +153,7 @@ public class IUCNEvaluationTarget {
 		return "IUCNEvaluationTarget [getGroups()=" + getGroups() + ", getYears()=" + getYears() + "]";
 	}
 
-	public IUCNEvaluation getLatestEvaluation() throws Exception {
+	public Evaluation getLatestEvaluation() throws Exception {
 		return getPreviousEvaluation(Integer.MAX_VALUE);
 	}
 

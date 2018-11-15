@@ -36,10 +36,10 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.EndangermentObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
@@ -318,7 +318,7 @@ public class IUCN2010Sisaan {
 
 	private static void process(IUCNLineData data, Qname taxonId, File f) throws Exception {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
-		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(taxonId.toString());
+		EvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(taxonId.toString());
 		if (!target.getTaxon().isFinnish()) {
 			if (target.getTaxon().getOccurrenceInFinland() == null) {
 				reportTaxonNotFound("Ei ole merkitty suomalaiseksi", data, f);
@@ -334,13 +334,13 @@ public class IUCN2010Sisaan {
 			System.out.println("\t\t\t\t\t\t\t\t\tSkipping ... already has evaluation for " + EVALUATION_YEAR);
 			return; // Already loaded
 		}
-		IUCNEvaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
+		Evaluation evaluation = toEvaluation(taxonId, data, EVALUATION_YEAR);
 		triplestoreDAO.store(evaluation, null); // XXX disable loading here
 		//System.out.println(evaluation.getModel().getRDF() + " primary: " + evaluation.getPrimaryHabitat() + " secondary: " + evaluation.getSecondaryHabitats() + " threats: " + evaluation.getThreats() + " endangarment reasons: " + evaluation.getEndangermentReasons() + " occurrences " + evaluation.getOccurrences());
 		iucnDAO.getIUCNContainer().setEvaluation(evaluation); 
 	}
 
-	private static void reportShouldBeMarkedFinnish(IUCNEvaluationTarget target) {
+	private static void reportShouldBeMarkedFinnish(EvaluationTarget target) {
 		File file = new File("c:/temp/iucn/finnish_" + DateUtils.getCurrentDate() +".txt");
 		try {
 			Taxon t = target.getTaxon();
@@ -351,83 +351,83 @@ public class IUCN2010Sisaan {
 		}
 	}
 
-	private static IUCNEvaluation toEvaluation(Qname taxonId, IUCNLineData data, int evaluationYear) throws Exception {
-		IUCNEvaluation evaluation = taxonomyDAO.getIucnDAO().createNewEvaluation();
+	private static Evaluation toEvaluation(Qname taxonId, IUCNLineData data, int evaluationYear) throws Exception {
+		Evaluation evaluation = taxonomyDAO.getIucnDAO().createNewEvaluation();
 		Model model = evaluation.getModel();
-		model.addStatementIfObjectGiven(IUCNEvaluation.IS_LOCKED, true);
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATE, new Qname(IUCNEvaluation.STATE_READY));
-		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATED_TAXON, taxonId);
-		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_YEAR, String.valueOf(evaluationYear));
-		model.addStatementIfObjectGiven(IUCNEvaluation.BORDER_GAIN, data.getBorderGain());
-		model.addStatementIfObjectGiven(IUCNEvaluation.BORDER_GAIN+NOTES, data.getBorderGainNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A, data.getCriteriaA());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B, data.getCriteriaB());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_C, data.getCriteriaC());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_D, data.getCriteriaD());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_E, data.getCriteriaE());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_A+"Notes", data.criteriaANotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_B+"Notes", data.criteriaBNotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_C+"Notes", data.criteriaCNotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_D+"Notes", data.criteriaDNotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_E+"Notes", data.criteriaENotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATUS_A, data.getCriteriaAStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATUS_B, data.getCriteriaBStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATUS_C, data.getCriteriaCStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATUS_D, data.getCriteriaDStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.STATUS_E, data.getCriteriaEStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.CRITERIA_FOR_STATUS, data.getCriteriaForStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.DECREASE_DURING_PERIOD+NOTES, data.getDecreaseDuringPeriodNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MAX, s(data.getDistributionAreaMax()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUTION_AREA_MIN, s(data.getDistributionAreaMin()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.DISTRIBUATION_AREA_NOTES, data.getDistributionAreaNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH, s(data.getEvaluationPeriodLength()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.EVALUATION_PERIOD_LENGTH+NOTES, data.getEvaluationPeriodLengthNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.FRAGMENTED_HABITATS, data.getFragmentedHabitats());
-		model.addStatementIfObjectGiven(IUCNEvaluation.FRAGMENTED_HABITATS+NOTES, data.getFragmentedHabitatsNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.GENERATION_AGE, s(data.getGenerationAge()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.GENERATION_AGE+NOTES, data.getGenerationAgeNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.GROUNDS_FOR_EVALUATION_NOTES, data.getGroundsForEvaluationNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.HABITAT_GENERAL_NOTES, data.getHabitatGeneralNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.HABITAT+NOTES, data.getHabitatNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_MAX, s(data.getIndividualCountMax()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_MIN, s(data.getIndividualCountMin()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.INDIVIDUAL_COUNT_NOTES, data.getIndividualCountNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.LAST_SIGHTING_NOTES, data.getLastSightingNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.LEGACY_PUBLICATIONS, data.getLegacyPublications());
-		model.addStatementIfObjectGiven(IUCNEvaluation.LSA_RECOMMENDATION, data.getLsaRecommendation());
-		model.addStatementIfObjectGiven(IUCNEvaluation.LSA_RECOMMENDATION+NOTES, data.getLsaRecommendationNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MAX, s(data.getOccurrenceAreaMax()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_MIN, s(data.getOccurrenceAreaMin()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_AREA_NOTES, data.getOccurrenceAreaNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_NOTES, data.getOccurrenceNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.OCCURRENCE_REGIONS_NOTES, data.getOccurrenceRegionsNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_BEGINNING, s(data.getPopulationSizePeriodBeginning()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_END, s(data.getPopulationSizePeriodEnd()));
-		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_SIZE_PERIOD_NOTES, data.getPopulationSizePeriodNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_VARIES, data.getPopulationVaries());
-		model.addStatementIfObjectGiven(IUCNEvaluation.POPULATION_VARIES+NOTES, data.getPopulationVariesNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.POSSIBLY_RE, data.getPossiblyRE());
-		model.addStatementIfObjectGiven(IUCNEvaluation.POSSIBLY_RE+NOTES, data.getPossiblyRENotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.REASON_FOR_STATUS_CHANGE+NOTES, data.getReasonForStatusChangeNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS, data.getRedListStatus());
-		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MAX, data.getRedListStatusMax());
-		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_MIN, data.getRedListStatusMin());
-		model.addStatementIfObjectGiven(IUCNEvaluation.RED_LIST_STATUS_NOTES, data.getRedListStatusNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.TAXONOMIC_NOTES, data.getTaxonomicNotes());
-		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
-		model.addStatementIfObjectGiven(IUCNEvaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
+		model.addStatementIfObjectGiven(Evaluation.IS_LOCKED, true);
+		model.addStatementIfObjectGiven(Evaluation.STATE, new Qname(Evaluation.STATE_READY));
+		model.addStatementIfObjectGiven(Evaluation.EVALUATED_TAXON, taxonId);
+		model.addStatementIfObjectGiven(Evaluation.EVALUATION_YEAR, String.valueOf(evaluationYear));
+		model.addStatementIfObjectGiven(Evaluation.BORDER_GAIN, data.getBorderGain());
+		model.addStatementIfObjectGiven(Evaluation.BORDER_GAIN+NOTES, data.getBorderGainNotes());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_A, data.getCriteriaA());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_B, data.getCriteriaB());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_C, data.getCriteriaC());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_D, data.getCriteriaD());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_E, data.getCriteriaE());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_A+"Notes", data.criteriaANotes);
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_B+"Notes", data.criteriaBNotes);
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_C+"Notes", data.criteriaCNotes);
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_D+"Notes", data.criteriaDNotes);
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_E+"Notes", data.criteriaENotes);
+		model.addStatementIfObjectGiven(Evaluation.STATUS_A, data.getCriteriaAStatus());
+		model.addStatementIfObjectGiven(Evaluation.STATUS_B, data.getCriteriaBStatus());
+		model.addStatementIfObjectGiven(Evaluation.STATUS_C, data.getCriteriaCStatus());
+		model.addStatementIfObjectGiven(Evaluation.STATUS_D, data.getCriteriaDStatus());
+		model.addStatementIfObjectGiven(Evaluation.STATUS_E, data.getCriteriaEStatus());
+		model.addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, data.getCriteriaForStatus());
+		model.addStatementIfObjectGiven(Evaluation.DECREASE_DURING_PERIOD+NOTES, data.getDecreaseDuringPeriodNotes());
+		model.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MAX, s(data.getDistributionAreaMax()));
+		model.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MIN, s(data.getDistributionAreaMin()));
+		model.addStatementIfObjectGiven(Evaluation.DISTRIBUATION_AREA_NOTES, data.getDistributionAreaNotes());
+		model.addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, s(data.getEvaluationPeriodLength()));
+		model.addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH+NOTES, data.getEvaluationPeriodLengthNotes());
+		model.addStatementIfObjectGiven(Evaluation.FRAGMENTED_HABITATS, data.getFragmentedHabitats());
+		model.addStatementIfObjectGiven(Evaluation.FRAGMENTED_HABITATS+NOTES, data.getFragmentedHabitatsNotes());
+		model.addStatementIfObjectGiven(Evaluation.GENERATION_AGE, s(data.getGenerationAge()));
+		model.addStatementIfObjectGiven(Evaluation.GENERATION_AGE+NOTES, data.getGenerationAgeNotes());
+		model.addStatementIfObjectGiven(Evaluation.GROUNDS_FOR_EVALUATION_NOTES, data.getGroundsForEvaluationNotes());
+		model.addStatementIfObjectGiven(Evaluation.HABITAT_GENERAL_NOTES, data.getHabitatGeneralNotes());
+		model.addStatementIfObjectGiven(Evaluation.HABITAT+NOTES, data.getHabitatNotes());
+		model.addStatementIfObjectGiven(Evaluation.INDIVIDUAL_COUNT_MAX, s(data.getIndividualCountMax()));
+		model.addStatementIfObjectGiven(Evaluation.INDIVIDUAL_COUNT_MIN, s(data.getIndividualCountMin()));
+		model.addStatementIfObjectGiven(Evaluation.INDIVIDUAL_COUNT_NOTES, data.getIndividualCountNotes());
+		model.addStatementIfObjectGiven(Evaluation.LAST_SIGHTING_NOTES, data.getLastSightingNotes());
+		model.addStatementIfObjectGiven(Evaluation.LEGACY_PUBLICATIONS, data.getLegacyPublications());
+		model.addStatementIfObjectGiven(Evaluation.LSA_RECOMMENDATION, data.getLsaRecommendation());
+		model.addStatementIfObjectGiven(Evaluation.LSA_RECOMMENDATION+NOTES, data.getLsaRecommendationNotes());
+		model.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_MAX, s(data.getOccurrenceAreaMax()));
+		model.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_MIN, s(data.getOccurrenceAreaMin()));
+		model.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_NOTES, data.getOccurrenceAreaNotes());
+		model.addStatementIfObjectGiven(Evaluation.OCCURRENCE_NOTES, data.getOccurrenceNotes());
+		model.addStatementIfObjectGiven(Evaluation.OCCURRENCE_REGIONS_NOTES, data.getOccurrenceRegionsNotes());
+		model.addStatementIfObjectGiven(Evaluation.POPULATION_SIZE_PERIOD_BEGINNING, s(data.getPopulationSizePeriodBeginning()));
+		model.addStatementIfObjectGiven(Evaluation.POPULATION_SIZE_PERIOD_END, s(data.getPopulationSizePeriodEnd()));
+		model.addStatementIfObjectGiven(Evaluation.POPULATION_SIZE_PERIOD_NOTES, data.getPopulationSizePeriodNotes());
+		model.addStatementIfObjectGiven(Evaluation.POPULATION_VARIES, data.getPopulationVaries());
+		model.addStatementIfObjectGiven(Evaluation.POPULATION_VARIES+NOTES, data.getPopulationVariesNotes());
+		model.addStatementIfObjectGiven(Evaluation.POSSIBLY_RE, data.getPossiblyRE());
+		model.addStatementIfObjectGiven(Evaluation.POSSIBLY_RE+NOTES, data.getPossiblyRENotes());
+		model.addStatementIfObjectGiven(Evaluation.REASON_FOR_STATUS_CHANGE+NOTES, data.getReasonForStatusChangeNotes());
+		model.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, data.getRedListStatus());
+		model.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, data.getRedListStatusMax());
+		model.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, data.getRedListStatusMin());
+		model.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_NOTES, data.getRedListStatusNotes());
+		model.addStatementIfObjectGiven(Evaluation.TAXONOMIC_NOTES, data.getTaxonomicNotes());
+		model.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
+		model.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
 		model.addStatementIfObjectGiven("MKV.redListStatusAccuracyNotes", data.redListStatusAccuracyNotes);
-		model.addStatementIfObjectGiven(IUCNEvaluation.EXTERNAL_IMPACT, data.getExteralPopulationImpactOnRedListStatus());
+		model.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, data.getExteralPopulationImpactOnRedListStatus());
 		String editNotes = "Ladattu tiedostosta";
 		if (data.editNotes != null) editNotes = data.editNotes;
-		model.addStatementIfObjectGiven(IUCNEvaluation.EDIT_NOTES, editNotes);
+		model.addStatementIfObjectGiven(Evaluation.EDIT_NOTES, editNotes);
 		int i = 0;
 		for (Qname q : data.getEndangermentReasons()) {
-			evaluation.addEndangermentReason(new IUCNEndangermentObject(null, q, i++));
+			evaluation.addEndangermentReason(new EndangermentObject(null, q, i++));
 		}
 		i = 0;
 		for (Qname q : data.getThreats()) {
-			evaluation.addThreat(new IUCNEndangermentObject(null, q, i++));
+			evaluation.addThreat(new EndangermentObject(null, q, i++));
 		}
 		for (Map.Entry<Qname, Qname> e : data.getOccurrences().entrySet()) {
 			Qname area = e.getKey();
@@ -437,11 +437,11 @@ public class IUCN2010Sisaan {
 			evaluation.addOccurrence(occurrence);
 		}
 		evaluation.setPrimaryHabitat(data.getPrimaryHabitat());
-		for (IUCNHabitatObject habitat : data.getSecondaryHabitats()) {
+		for (HabitatObject habitat : data.getSecondaryHabitats()) {
 			evaluation.addSecondaryHabitat(habitat);
 		}
 		for (Qname q : data.getReasonForStatusChange()) {
-			model.addStatementIfObjectGiven(IUCNEvaluation.REASON_FOR_STATUS_CHANGE, q);
+			model.addStatementIfObjectGiven(Evaluation.REASON_FOR_STATUS_CHANGE, q);
 		}
 		return evaluation;
 	}

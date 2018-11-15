@@ -21,7 +21,7 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 
-public class IUCNEvaluation {
+public class Evaluation {
 
 	public static final String NE = "MX.iucnNE";
 	public static final String NA = "MX.iucnNA";
@@ -158,23 +158,23 @@ public class IUCNEvaluation {
 	private final RdfProperties evaluationProperties;
 	private final Model evaluation;
 	private Map<String, Occurrence> occurrences = null;
-	private IUCNHabitatObject primaryHabitat;
-	private List<IUCNHabitatObject> secondaryHabitats = null;
-	private List<IUCNEndangermentObject> endangermentReasons = null;
-	private List<IUCNEndangermentObject> threats = null;
+	private HabitatObject primaryHabitat;
+	private List<HabitatObject> secondaryHabitats = null;
+	private List<EndangermentObject> endangermentReasons = null;
+	private List<EndangermentObject> threats = null;
 	private boolean incompletelyLoaded = false;
 
-	public IUCNEvaluation(Model evaluation, RdfProperties evaluationProperties) {
+	public Evaluation(Model evaluation, RdfProperties evaluationProperties) {
 		this.evaluation = evaluation;
 		this.evaluationProperties = evaluationProperties;
 	}
 
-	public void setPrimaryHabitat(IUCNHabitatObject habitat) {
+	public void setPrimaryHabitat(HabitatObject habitat) {
 		if (habitat == null) return;
 		primaryHabitat = habitat;
 	}
 
-	public void addSecondaryHabitat(IUCNHabitatObject habitat) {
+	public void addSecondaryHabitat(HabitatObject habitat) {
 		if (habitat == null) return;
 		if (secondaryHabitats == null) secondaryHabitats = new ArrayList<>();
 		if (secondaryHabitats.contains(habitat)) return;
@@ -182,11 +182,11 @@ public class IUCNEvaluation {
 		Collections.sort(secondaryHabitats);
 	}
 
-	public IUCNHabitatObject getPrimaryHabitat() {
+	public HabitatObject getPrimaryHabitat() {
 		return primaryHabitat;
 	}
 
-	public List<IUCNHabitatObject> getSecondaryHabitats() {
+	public List<HabitatObject> getSecondaryHabitats() {
 		if (secondaryHabitats == null) return Collections.emptyList();
 		return Collections.unmodifiableList(secondaryHabitats);
 	}
@@ -336,31 +336,31 @@ public class IUCNEvaluation {
 		return DD.equals(getIucnStatus());
 	}
 
-	public List<IUCNEndangermentObject> getEndangermentReasons() {
+	public List<EndangermentObject> getEndangermentReasons() {
 		if (endangermentReasons == null) return Collections.emptyList();
 		return endangermentReasons;
 	}
 
-	public void addEndangermentReason(IUCNEndangermentObject endangermentReason) {
+	public void addEndangermentReason(EndangermentObject endangermentReason) {
 		if (endangermentReasons == null) endangermentReasons = new ArrayList<>();
 		if (endangermentReasons.contains(endangermentReason)) return;
 		endangermentReasons.add(endangermentReason);
 		Collections.sort(endangermentReasons);
 	}
 
-	public List<IUCNEndangermentObject> getThreats() {
+	public List<EndangermentObject> getThreats() {
 		if (threats == null) return Collections.emptyList();
 		return threats;
 	}
 
-	public void addThreat(IUCNEndangermentObject threat) {
+	public void addThreat(EndangermentObject threat) {
 		if (threats == null) threats = new ArrayList<>();
 		if (threats.contains(threat)) return;
 		threats.add(threat);
 		Collections.sort(threats);
 	}
 
-	public void copySpecifiedFieldsTo(IUCNEvaluation copyTarget) {
+	public void copySpecifiedFieldsTo(Evaluation copyTarget) {
 		copy(TYPE_OF_OCCURRENCE_IN_FINLAND, copyTarget);
 		copy(DISTRIBUTION_AREA_MIN, copyTarget);
 		copy(DISTRIBUTION_AREA_MAX, copyTarget);
@@ -373,7 +373,7 @@ public class IUCNEvaluation {
 		}
 
 		copyTarget.setPrimaryHabitat(copy(this.getPrimaryHabitat()));
-		for (IUCNHabitatObject habitatObject : this.getSecondaryHabitats()) {
+		for (HabitatObject habitatObject : this.getSecondaryHabitats()) {
 			copyTarget.addSecondaryHabitat(copy(habitatObject));
 		}
 		copy(HABITAT_GENERAL_NOTES, copyTarget);
@@ -384,23 +384,23 @@ public class IUCNEvaluation {
 		copy(FRAGMENTED_HABITATS, copyTarget);
 		copy(BORDER_GAIN, copyTarget);
 
-		for (IUCNEndangermentObject endangermentObject : this.getEndangermentReasons()) {
+		for (EndangermentObject endangermentObject : this.getEndangermentReasons()) {
 			copyTarget.addEndangermentReason(copy(endangermentObject));
 		}
-		for (IUCNEndangermentObject endangermentObject : this.getThreats()) {
+		for (EndangermentObject endangermentObject : this.getThreats()) {
 			copyTarget.addThreat(copy(endangermentObject));
 		}
 
 		copy(LAST_SIGHTING_NOTES, copyTarget);
 	}
 
-	private IUCNEndangermentObject copy(IUCNEndangermentObject endangermentObject) {
-		return new IUCNEndangermentObject(null, endangermentObject.getEndangerment(), endangermentObject.getOrder());
+	private EndangermentObject copy(EndangermentObject endangermentObject) {
+		return new EndangermentObject(null, endangermentObject.getEndangerment(), endangermentObject.getOrder());
 	}
 
-	private IUCNHabitatObject copy(IUCNHabitatObject habitatObject) {
+	private HabitatObject copy(HabitatObject habitatObject) {
 		if (habitatObject == null) return null;
-		IUCNHabitatObject copy = new IUCNHabitatObject(null, habitatObject.getHabitat(), habitatObject.getOrder());
+		HabitatObject copy = new HabitatObject(null, habitatObject.getHabitat(), habitatObject.getOrder());
 		for (Qname habitatSpecificType : habitatObject.getHabitatSpecificTypes()) {
 			copy.addHabitatSpecificType(habitatSpecificType);
 		}
@@ -413,7 +413,7 @@ public class IUCNEvaluation {
 		return copy;
 	}
 
-	private void copy(String predicateQname, IUCNEvaluation copyTarget) {
+	private void copy(String predicateQname, Evaluation copyTarget) {
 		List<Statement> statements = this.getModel().getStatements(predicateQname);
 		for (Statement statement : statements) {
 			copyTarget.getModel().addStatement(copy(statement));

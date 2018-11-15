@@ -7,14 +7,14 @@ import java.util.List;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.utils.Utils;
 
-public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
+public class HabitatObject implements Comparable<HabitatObject> {
 
 	private Qname id;
 	private final Qname habitat;
 	private final int order;
 	private List<Qname> habitatSpecificTypes = null;
 
-	public IUCNHabitatObject(Qname id, Qname habitat, int order) {
+	public HabitatObject(Qname id, Qname habitat, int order) {
 		this.id = id;
 		this.habitat = habitat;
 		this.order = order;
@@ -64,7 +64,7 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 	}
 
 	@Override
-	public int compareTo(IUCNHabitatObject o) {
+	public int compareTo(HabitatObject o) {
 		return Integer.valueOf(this.order).compareTo(o.order);
 	}
 
@@ -77,7 +77,7 @@ public class IUCNHabitatObject implements Comparable<IUCNHabitatObject> {
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass())
 			return false;
-		IUCNHabitatObject other = (IUCNHabitatObject) obj;
+		HabitatObject other = (HabitatObject) obj;
 		return this.habitat.equals(other.habitat);
 	}
 }

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
 
 public class IUCNLineData {
 
@@ -444,35 +444,35 @@ public class IUCNLineData {
 		return AREAS.get(id);
 	}
 
-	public IUCNHabitatObject getPrimaryHabitat() {
+	public HabitatObject getPrimaryHabitat() {
 		if (!given(primaryHabitat)) return null;
-		List<IUCNHabitatObject> list = getHabitats(primaryHabitat);
+		List<HabitatObject> list = getHabitats(primaryHabitat);
 		if (list.isEmpty()) return null;
 		return list.get(0);
 	}
 
-	public List<IUCNHabitatObject> getSecondaryHabitats() {
+	public List<HabitatObject> getSecondaryHabitats() {
 		if (!given(secondaryHabitats)) return Collections.emptyList();
-		List<IUCNHabitatObject> list = new ArrayList<>();
-		List<IUCNHabitatObject> primary = getHabitats(primaryHabitat);
+		List<HabitatObject> list = new ArrayList<>();
+		List<HabitatObject> primary = getHabitats(primaryHabitat);
 		if (primary.size() > 1) {
-			Iterator<IUCNHabitatObject> i = primary.iterator();
+			Iterator<HabitatObject> i = primary.iterator();
 			i.next();
 			while (i.hasNext()) {
-				IUCNHabitatObject o = i.next();
+				HabitatObject o = i.next();
 				if (o != null) list.add(o);
 			}
 		}
 		if (given(secondaryHabitats)) {
-			for (IUCNHabitatObject o : getHabitats(secondaryHabitats)) {
+			for (HabitatObject o : getHabitats(secondaryHabitats)) {
 				if (o != null) list.add(o);
 			}
 		}
 		return list;
 	}
 
-	private List<IUCNHabitatObject> getHabitats(String habitats) {
-		List<IUCNHabitatObject> list = new ArrayList<>();
+	private List<HabitatObject> getHabitats(String habitats) {
+		List<HabitatObject> list = new ArrayList<>();
 		habitats = Utils.removeWhitespace(habitats).replace("(", "").replace(")", "").replace("?", "").replace("*", "");
 		Set<String> unique = new LinkedHashSet<>();
 		for (String s : habitats.split(Pattern.quote(","))) {
@@ -482,7 +482,7 @@ public class IUCNLineData {
 		for (String s : unique) {
 			Qname habitatId = HABITAS.get(s);
 			if (habitatId != null) {
-				list.add(new IUCNHabitatObject(null, habitatId, i++));
+				list.add(new HabitatObject(null, habitatId, i++));
 				continue;
 			}
 			Object[] o = getSpecificTypesFromEnd(s);
@@ -492,7 +492,7 @@ public class IUCNLineData {
 			if (!specificTypes.isEmpty()) {
 				habitatId = HABITAS.get(remainingHabitat);
 				if (habitatId == null) continue; // There was a valid habitat specific type but no mapping for habitat
-				IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitatId, i++);
+				HabitatObject habitatObject = new HabitatObject(null, habitatId, i++);
 				for (Qname specificType : specificTypes) {
 					habitatObject.addHabitatSpecificType(specificType);
 				}

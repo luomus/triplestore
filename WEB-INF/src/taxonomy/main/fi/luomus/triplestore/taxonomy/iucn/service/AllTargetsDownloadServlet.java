@@ -13,8 +13,8 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileCompresser;
 import fi.luomus.commons.utils.FileUtils;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/download-all/*"})
 public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
@@ -68,8 +68,8 @@ public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
 	}
 
 	private List<String> getDataRows() throws Exception {
-		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
-		Collection<IUCNEvaluationTarget> targets = container.getGroupOrderedTargets();
+		Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		Collection<EvaluationTarget> targets = container.getGroupOrderedTargets();
 		int selectedYear = getMaxYear();
 		List<String> rows = getDownloadRows(container, selectedYear, targets);
 		return rows;

@@ -15,7 +15,7 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/editors/*"})
 public class EditorsServlet extends FrontpageServlet {
@@ -33,7 +33,7 @@ public class EditorsServlet extends FrontpageServlet {
 		if (group == null) {
 			return status404(res);
 		}
-		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		Editors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 
 		return responseData.setViewName("iucn-editors")
 				.setData("group", group)

@@ -22,8 +22,8 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
@@ -36,7 +36,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req);
 		int selectedYear = selectedYear(req);
 		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
-		Map<String, IUCNEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
+		Map<String, Editors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
 		TriplestoreDAO dao = getTriplestoreDAO();
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
@@ -47,13 +47,13 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("taxonGroups", taxonomyDAO.getInformalTaxonGroups())
 				.setData("taxonGroupRoots", taxonomyDAO.getInformalTaxonGroupRoots())
 				.setData("taxonGroupEditors", groupEditors)
-				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
-				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
-				.setData("endangermentObjectProperties", dao.getProperties(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS))
+				.setData("evaluationProperties", dao.getProperties(Evaluation.EVALUATION_CLASS))
+				.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
+				.setData("endangermentObjectProperties", dao.getProperties(Evaluation.ENDANGERMENT_OBJECT_CLASS))
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 				.setData("downloads", getCompletedDownloads());
 	}
 

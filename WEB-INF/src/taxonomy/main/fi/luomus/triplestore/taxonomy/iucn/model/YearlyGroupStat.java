@@ -1,14 +1,14 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-public class IUCNYearlyGroupStat {
+public class YearlyGroupStat {
 
-	private final IUCNContainer iucnContainer;
+	private final Container iucnContainer;
 	private final int year;
 	private final String groupQname;
 	private Integer readyCount = null;
 	private Integer startedCount = null;
 
-	public IUCNYearlyGroupStat(int year, String groupQname, IUCNContainer iucnContainer) {
+	public YearlyGroupStat(int year, String groupQname, Container iucnContainer) {
 		this.iucnContainer = iucnContainer;
 		this.year = year;
 		this.groupQname = groupQname;
@@ -27,8 +27,8 @@ public class IUCNYearlyGroupStat {
 
 	private int countReady() throws Exception {
 		int count = 0;
-		for (IUCNEvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
-			IUCNEvaluation evaluation = target.getEvaluation(year);
+		for (EvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
+			Evaluation evaluation = target.getEvaluation(year);
 			if (evaluation == null) continue;
 			if (evaluation.isReady()) count++;
 		}
@@ -43,8 +43,8 @@ public class IUCNYearlyGroupStat {
 
 	private int countStarted() throws Exception {
 		int count = 0;
-		for (IUCNEvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
-			IUCNEvaluation evaluation = target.getEvaluation(year);
+		for (EvaluationTarget target : iucnContainer.getTargetsOfGroup(groupQname)) {
+			Evaluation evaluation = target.getEvaluation(year);
 			if (evaluation == null) continue;
 			if (evaluation.isStarted()) count++;
 			if (evaluation.isReadyForComments()) count++;

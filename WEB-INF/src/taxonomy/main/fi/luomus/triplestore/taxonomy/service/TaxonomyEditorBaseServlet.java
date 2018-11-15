@@ -18,8 +18,8 @@ import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
@@ -95,7 +95,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
 		responseData.setData("evaluationYears", taxonomyDAO.getIucnDAO().getEvaluationYears());
-		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)));
+		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
 		return responseData;
 	}
 
@@ -155,7 +155,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	protected boolean hasIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
-		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		Editors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 		if (editors == null || editors.getEditors().isEmpty()) return false;
 		User user = getUser(req);
 		if (user == null || user.getQname() == null) return false;

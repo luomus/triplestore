@@ -14,7 +14,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/moveEvaluation/*"})
@@ -60,8 +60,8 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 		List<Statement> iucnStatementsToMove = new ArrayList<>();
 		Model sourceModel = dao.get(taxon.getQname());
 		Model destinationModel = dao.get(targetTaxon.getQname());
-		IUCNEvaluationTarget iucnSource = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
-		IUCNEvaluationTarget iucnTarget = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(newTargetId);
+		EvaluationTarget iucnSource = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
+		EvaluationTarget iucnTarget = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(newTargetId);
 
 		for (int year : years) {
 			if (iucnTarget.hasEvaluation(year)) {
@@ -97,7 +97,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 		
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonId));
-		IUCNEvaluationTarget target = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
+		EvaluationTarget target = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Model sourceModel = dao.get(taxonId);
 		

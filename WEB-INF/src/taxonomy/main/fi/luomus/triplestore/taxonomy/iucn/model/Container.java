@@ -14,41 +14,41 @@ import java.util.regex.Pattern;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
-public class IUCNContainer {
+public class Container {
 
 	private static final int DATE_LENGTH = "dd.mm.yyyy:".length();
 
 	private static final Object LOCK = new Object();
 
 	private final IucnDAOImple iucnDAO;
-	private final Map<Integer, Map<String, IUCNYearlyGroupStat>> stats = new HashMap<>();
-	private final Map<String, List<IUCNEvaluationTarget>> targetsOfGroup = new LinkedHashMap<>();
+	private final Map<Integer, Map<String, YearlyGroupStat>> stats = new HashMap<>();
+	private final Map<String, List<EvaluationTarget>> targetsOfGroup = new LinkedHashMap<>();
 	private final Map<String, List<String>> groupsOfTarget = new HashMap<>();
-	private final Map<String, IUCNEvaluationTarget> targets = new HashMap<>();
+	private final Map<String, EvaluationTarget> targets = new HashMap<>();
 	private final Map<String, TreeSet<Remark>> remarksOfGroup = new HashMap<>();
 
-	public IUCNContainer(IucnDAOImple iucnDAO) {
+	public Container(IucnDAOImple iucnDAO) {
 		this.iucnDAO = iucnDAO;
 	}
 
-	public Collection<IUCNEvaluationTarget> getGroupOrderedTargets() {
-		List<IUCNEvaluationTarget> t = new ArrayList<>(60000);
-		for (List<IUCNEvaluationTarget> groupTargets : targetsOfGroup.values()) {
+	public Collection<EvaluationTarget> getGroupOrderedTargets() {
+		List<EvaluationTarget> t = new ArrayList<>(60000);
+		for (List<EvaluationTarget> groupTargets : targetsOfGroup.values()) {
 			t.addAll(groupTargets);
 		}
 		return Collections.unmodifiableCollection(t);
 	}
-	public Collection<IUCNEvaluationTarget> getTargets() {
-		List<IUCNEvaluationTarget> t = new ArrayList<>(targets.values());
+	public Collection<EvaluationTarget> getTargets() {
+		List<EvaluationTarget> t = new ArrayList<>(targets.values());
 		return Collections.unmodifiableCollection(t);
 	}
 
-	public IUCNContainer makeSureEvaluationDataIsLoaded() throws Exception {
+	public Container makeSureEvaluationDataIsLoaded() throws Exception {
 		iucnDAO.makeSureEvaluationDataIsLoaded();
 		return this;
 	}
 	
-	public IUCNEvaluationTarget getTarget(String speciesQname) throws Exception {
+	public EvaluationTarget getTarget(String speciesQname) throws Exception {
 		if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
 		synchronized (LOCK) {
 			if (targets.containsKey(speciesQname)) return targets.get(speciesQname);
@@ -56,7 +56,7 @@ public class IUCNContainer {
 		}
 	}
 
-	public IUCNContainer addTarget(IUCNEvaluationTarget target) {
+	public Container addTarget(EvaluationTarget target) {
 		targets.put(target.getQname(), target);
 		return this;
 	}
@@ -65,11 +65,11 @@ public class IUCNContainer {
 		return targets.containsKey(speciesQname);
 	}
 
-	public List<IUCNEvaluationTarget> getTargetsOfGroup(String groupQname) throws Exception {
+	public List<EvaluationTarget> getTargetsOfGroup(String groupQname) throws Exception {
 		if (targetsOfGroup.containsKey(groupQname)) return targetsOfGroup.get(groupQname);
 		synchronized (LOCK) {
 			if (targetsOfGroup.containsKey(groupQname)) return targetsOfGroup.get(groupQname);
-			List<IUCNEvaluationTarget> targets = new ArrayList<>();
+			List<EvaluationTarget> targets = new ArrayList<>();
 			for (String speciesQname : iucnDAO.loadSpeciesOfGroup(groupQname)) {
 				targets.add(getTarget(speciesQname));
 				if (!groupsOfTarget.containsKey(speciesQname)) {
@@ -91,38 +91,38 @@ public class IUCNContainer {
 		}
 	}
 
-	public IUCNYearlyGroupStat getStat(int year, String groupQname) {
+	public YearlyGroupStat getStat(int year, String groupQname) {
 		synchronized (LOCK) {
 			if (!stats.containsKey(year)) {
-				stats.put(year, new HashMap<String, IUCNYearlyGroupStat>());
+				stats.put(year, new HashMap<String, YearlyGroupStat>());
 			}
 			if (!stats.get(year).containsKey(groupQname)) {
-				stats.get(year).put(groupQname, new IUCNYearlyGroupStat(year, groupQname, this));
+				stats.get(year).put(groupQname, new YearlyGroupStat(year, groupQname, this));
 			}
 			return stats.get(year).get(groupQname);
 		}
 	}
 
-	public void setEvaluation(IUCNEvaluation evaluation) throws Exception {
+	public void setEvaluation(Evaluation evaluation) throws Exception {
 		synchronized (LOCK) {
 			String speciesQname = evaluation.getSpeciesQname();
-			IUCNEvaluationTarget target = getTarget(speciesQname);
+			EvaluationTarget target = getTarget(speciesQname);
 			setEvaluation(evaluation, target);
 		}
 	}
 
-	private void setEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget target) {
+	private void setEvaluation(Evaluation evaluation, EvaluationTarget target) {
 		target.setEvaluation(evaluation);
 		invalidateStats(evaluation, target);
 	}
 
-	private void invalidateStats(IUCNEvaluation evaluation, IUCNEvaluationTarget target) {
+	private void invalidateStats(Evaluation evaluation, EvaluationTarget target) {
 		for (String groupQname : target.getGroups()) {
 			getStat(evaluation.getEvaluationYear(), groupQname).invalidate();
 		}
 	}
 
-	public void moveEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget from, IUCNEvaluationTarget to) {
+	public void moveEvaluation(Evaluation evaluation, EvaluationTarget from, EvaluationTarget to) {
 		synchronized (LOCK) {
 			from.removeEvaluation(evaluation);
 			setEvaluation(evaluation, to);
@@ -131,7 +131,7 @@ public class IUCNContainer {
 		}
 	}
 
-	public void deleteEvaluation(IUCNEvaluation evaluation, IUCNEvaluationTarget from) {
+	public void deleteEvaluation(Evaluation evaluation, EvaluationTarget from) {
 		synchronized (LOCK) {
 			from.removeEvaluation(evaluation);
 			invalidateStats(evaluation, from);
@@ -143,8 +143,8 @@ public class IUCNContainer {
 		synchronized (LOCK) {
 			if (remarksOfGroup.containsKey(groupQname)) return remarksOfGroup.get(groupQname);
 			TreeSet<Remark> remarks = new TreeSet<>();
-			for (IUCNEvaluationTarget target : getTargetsOfGroup(groupQname)) {
-				for (IUCNEvaluation evaluation : target.getEvaluations()) {
+			for (EvaluationTarget target : getTargetsOfGroup(groupQname)) {
+				for (Evaluation evaluation : target.getEvaluations()) {
 					if (evaluation.hasRemarks()) {
 						addRemarks(generateRemarks(evaluation, target), remarks);
 					}
@@ -155,7 +155,7 @@ public class IUCNContainer {
 		}
 	}
 
-	private Collection<Remark> generateRemarks(IUCNEvaluation evaluation, IUCNEvaluationTarget target) {
+	private Collection<Remark> generateRemarks(Evaluation evaluation, EvaluationTarget target) {
 		ArrayList<Remark> remarks = new ArrayList<>();
 		for (Statement statement : evaluation.getRemarkSatements()) {
 			String remarkContents = statement.getObjectLiteral().getContent();
@@ -203,7 +203,7 @@ public class IUCNContainer {
 		}
 	}
 
-	public void removeRemark(IUCNEvaluationTarget target, int deletedId) throws Exception {
+	public void removeRemark(EvaluationTarget target, int deletedId) throws Exception {
 		for (String groupQname : target.getGroups()) {
 			Iterator<Remark> i = getRemarksForGroup(groupQname).iterator();
 			while (i.hasNext()) {
@@ -216,13 +216,13 @@ public class IUCNContainer {
 		}
 	}
 
-	public void addRemark(IUCNEvaluationTarget target, IUCNEvaluation evaluation) throws Exception {
+	public void addRemark(EvaluationTarget target, Evaluation evaluation) throws Exception {
 		for (String groupQname : target.getGroups()) {
 			addRemarks(generateRemarks(evaluation, target), getRemarksForGroup(groupQname));
 		}
 	}
 
-	public void complateLoading(IUCNEvaluation evaluation) throws Exception {
+	public void complateLoading(Evaluation evaluation) throws Exception {
 		if (evaluation.isIncompletelyLoaded()) {
 			synchronized (LOCK) {
 				if (evaluation.isIncompletelyLoaded()) {

@@ -2,13 +2,13 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 
 import fi.luomus.commons.containers.rdf.Qname;
 
-public class IUCNEndangermentObject implements Comparable<IUCNEndangermentObject> {
+public class EndangermentObject implements Comparable<EndangermentObject> {
 
 	public Qname id;
 	public final Qname endangerment;
 	public final int order;
 	
-	public IUCNEndangermentObject(Qname id, Qname endangerment, int order) {
+	public EndangermentObject(Qname id, Qname endangerment, int order) {
 		this.id = id;
 		this.endangerment = endangerment;
 		this.order = order;
@@ -27,7 +27,7 @@ public class IUCNEndangermentObject implements Comparable<IUCNEndangermentObject
 	}
 
 	@Override
-	public int compareTo(IUCNEndangermentObject o) {
+	public int compareTo(EndangermentObject o) {
 		return Integer.valueOf(order).compareTo(o.order);
 	}
 
@@ -44,7 +44,7 @@ public class IUCNEndangermentObject implements Comparable<IUCNEndangermentObject
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass())
 			return false;
-		IUCNEndangermentObject other = (IUCNEndangermentObject) obj;
+		EndangermentObject other = (EndangermentObject) obj;
 		return this.endangerment.equals(other.endangerment);
 	}
 	
