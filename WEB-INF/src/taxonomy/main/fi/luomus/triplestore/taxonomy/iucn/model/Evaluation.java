@@ -477,7 +477,7 @@ public class Evaluation {
 	public boolean hasRegionalThreatenedData() {
 		if (hasValue("MKV.regionallyThreatenedNotes") || hasValue("MKV.regionallyThreatenedPrivateNotes")) return true;
 		for (Occurrence o : getOccurrences()) {
-			if (o.getThreatened() != null && o.getThreatened()) return true;
+			if (Boolean.TRUE.equals(o.getThreatened())) return true;
 		}
 		return false;
 	}
