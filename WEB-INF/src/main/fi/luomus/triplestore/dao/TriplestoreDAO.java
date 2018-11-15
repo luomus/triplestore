@@ -65,9 +65,9 @@ public interface TriplestoreDAO {
 	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception;
 
 	/**
-	 * Add a taxon into db. Taxon must have Qname already set. If taxon doesn't have a taxon concept, a new one is generated.
+	 * Add a taxon into db. Taxon must have Qname already set.
 	 * @param taxon
-	 * @return the same taxon with possibly a newly created taxon concept.
+	 * @return the same taxon
 	 * @throws Exception
 	 */
 	public Taxon addTaxon(EditableTaxon taxon) throws Exception;
