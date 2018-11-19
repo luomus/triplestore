@@ -9,7 +9,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 public interface IucnDAO {
 

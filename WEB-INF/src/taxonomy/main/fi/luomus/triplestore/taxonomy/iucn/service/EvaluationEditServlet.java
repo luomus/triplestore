@@ -26,10 +26,10 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.triplestore.taxonomy.iucn.model.EndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.utils.Utils;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 
 public class IUCNLineData {
 

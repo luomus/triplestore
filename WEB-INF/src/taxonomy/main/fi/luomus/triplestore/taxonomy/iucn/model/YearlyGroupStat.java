@@ -1,5 +1,7 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+
 public class YearlyGroupStat {
 
 	private final Container iucnContainer;

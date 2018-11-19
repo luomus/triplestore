@@ -11,8 +11,8 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-least-concern/*"})
 public class ApiMarkLeastConcernServler extends ApiMarkNotEvaluatedServler {

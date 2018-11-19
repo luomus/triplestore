@@ -38,8 +38,9 @@ import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
-import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.commons.utils.URIBuilder;
@@ -48,14 +49,11 @@ import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
-import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.triplestore.taxonomy.iucn.model.EndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class IucnDAOImple implements IucnDAO {
@@ -100,7 +98,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
-	private final TaxonomyDAO taxonomyDAO;
+	private final ExtendedTaxonomyDAO taxonomyDAO;
 	private Container container;
 	private final ErrorReporter errorReporter;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -108,7 +106,7 @@ public class IucnDAOImple implements IucnDAO {
 	private boolean initialEvaluationsLoaded = false;
 
 
-	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
+	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, ExtendedTaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
 		System.out.println("Creating " +  IucnDAOImple.class.getName());
 		this.config = config;
 		this.devMode = devMode;
@@ -196,8 +194,6 @@ public class IucnDAOImple implements IucnDAO {
 			System.out.println("Starting to synchronize taxon data with IUCN data...");
 			try {
 				container.makeSureEvaluationDataIsLoaded();
-				int currentYear = DateUtils.getCurrentYear();
-				int draftYear = getDraftYear(getEvaluationYears());
 				int c = 1;
 				for (EvaluationTarget target : container.getTargets()) {
 					if (target.getQname() == null || target.getQname().isEmpty()) {
@@ -210,31 +206,11 @@ public class IucnDAOImple implements IucnDAO {
 						continue;
 					}
 					EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
-					boolean modifiedTaxon = false;
 					if (c++ % 5000 == 0) System.out.println(" ... syncing " + c);
-					for (Evaluation evaluation : target.getEvaluations()) {
-						Integer year = evaluation.getEvaluationYear();
-						if (!evaluation.isLocked()) continue;
-						if (!evaluation.isReady()) continue;
-						if (!evaluation.hasIucnStatus()) continue;
-						if (year == null || year > currentYear || year >= draftYear) continue; // To release 2019 evaluation for syncronization, create new valuation year 2025 
-
-						Qname status = new Qname(evaluation.getIucnStatus());
-						Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
-						Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
-
-						if (taxonRedListStatus == null || !taxonRedListStatus.equals(status)) {
-							updateRedListStatus(taxon, year, status);
-							modifiedTaxon = true;
-						}
-						if (given(typeOfOccurrenceInFinland) && taxon.getTypesOfOccurrenceInFinland().isEmpty()) {
-							Set<Qname> types = new HashSet<>();
-							types.add(typeOfOccurrenceInFinland);
-							updateTypesOfOccurrenceInFinland(taxon, types);
-							modifiedTaxon = true;
-						}
-					}
-					if (modifiedTaxon) {
+					boolean statusesChanged = syncRedListStatuses(target, taxon);
+					boolean habitatsChanged = syncHabitats(target, taxon);
+					boolean typeOfOccurrenceChanged = syncTypeOfOccurrence(target, taxon);
+					if (statusesChanged || habitatsChanged || typeOfOccurrenceChanged) {
 						taxon.invalidateSelf();
 					}
 				}
@@ -244,12 +220,79 @@ public class IucnDAOImple implements IucnDAO {
 			System.out.println("Synchronizing taxon data with IUCN data completed!");
 		}
 
-		private int getDraftYear(List<Integer> evaluationYears) {
-			int max = 0;
-			for (Integer y : evaluationYears) {
-				max = Math.max(max, y);
+		private boolean syncTypeOfOccurrence(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			if (!taxon.getTypesOfOccurrenceInFinland().isEmpty()) return false;
+
+			Evaluation evaluation = getLatestReadyEvaluation(target);
+			if (evaluation == null) return false;
+
+			Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
+			if (!given(typeOfOccurrenceInFinland)) return false;
+
+			updateTypesOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
+			return true;
+		}
+
+		private boolean syncHabitats(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			Evaluation evaluation = getLatestReadyEvaluation(target);
+			if (evaluation == null) return false;
+			if (evaluation.getPrimaryHabitat() == null) return false;
+			
+			taxonomyDAO.addHabitats(taxon);
+			if (taxon.getPrimaryHabitat() != null && !isNewestPossible(evaluation)) {
+				return false; // don't override existing taxon data with old evaluation data
 			}
-			return max;
+
+			updateHabitats(taxon, evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
+			return true;
+		}
+
+		private boolean isNewestPossible(Evaluation evaluation) throws Exception {
+			return evaluation.getEvaluationYear().equals(getEvaluationYears().iterator().next());
+		}
+
+		private void updateHabitats(EditableTaxon taxon, HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) throws Exception {
+			UsedAndGivenStatements statements = new UsedAndGivenStatements();
+			statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
+			statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
+			if (primaryHabitat != null) {
+				statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
+			}
+			System.out.println("   " + taxon.getQname() + " " + IucnDAO.PRIMARY_HABITAT_PREDICATE + " -> " + primaryHabitat);
+			for (HabitatObject h : secondaryHabitats) {
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+				System.out.println("   " + taxon.getQname() + " " + IucnDAO.SECONDARY_HABITAT_PREDICATE + " -> " + h);
+			}
+			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+		}
+
+		private Evaluation getLatestReadyEvaluation(EvaluationTarget target) {
+			Evaluation latest =  null;
+			for (Evaluation evaluation : target.getEvaluations()) {
+				if (!evaluation.isReady()) continue;
+				if (evaluation.getPrimaryHabitat() == null) continue;
+				latest = evaluation;
+				break;
+			}
+			return latest;
+		}
+
+		private boolean syncRedListStatuses(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			boolean modifiedTaxon = false;
+			for (Evaluation evaluation : target.getEvaluations()) {
+				if (!evaluation.isLocked()) continue;
+				if (!evaluation.hasIucnStatus()) continue;
+
+				Integer year = evaluation.getEvaluationYear();
+				Qname status = new Qname(evaluation.getIucnStatus());
+				Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
+
+				if (!status.equals(taxonRedListStatus)) {
+					updateRedListStatus(taxon, year, status);
+					modifiedTaxon = true;
+				}
+			}
+			return modifiedTaxon;
 		}
 
 		private String debug(EvaluationTarget target) {
@@ -262,18 +305,18 @@ public class IucnDAOImple implements IucnDAO {
 			return b.toString();
 		}
 
-		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Set<Qname> taxonsTypeOfOccurrenceInFinland) throws Exception {
+		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
 			UsedAndGivenStatements statements = new UsedAndGivenStatements();
 			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
-			for (Qname type : taxonsTypeOfOccurrenceInFinland) {
-				statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(type)));
-			}
+			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(typeOfOccurrenceInFinland)));
 			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+			System.out.println("   " + taxon.getQname() + " " + TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE + " -> " + typeOfOccurrenceInFinland);
 		}
 
 		private void updateRedListStatus(EditableTaxon taxon, Integer year, Qname status) throws Exception {
 			Predicate statusPredicate = new Predicate("MX.redListStatus"+year+"Finland");
 			triplestoreDAO.store(new Subject(taxon.getQname()), new Statement(statusPredicate, new ObjectResource(status)));
+			System.out.println("   " + taxon.getQname() + " " + statusPredicate + " -> " + status);
 		}
 
 		private boolean given(Qname qname) {
@@ -552,7 +595,7 @@ public class IucnDAOImple implements IucnDAO {
 			if	(notGiven(habitatModel)) {
 				errorReporter.report("Could not find primary habitat object " + id + " of " + evaluation.getId());
 			} else {
-				evaluation.setPrimaryHabitat(getHabitatObject(habitatModel));
+				evaluation.setPrimaryHabitat(constructHabitatObject(habitatModel));
 			}
 
 		}
@@ -562,7 +605,7 @@ public class IucnDAOImple implements IucnDAO {
 				errorReporter.report("Could not find secondary habitat object " + secondaryHabitat.getObjectResource().getQname() + " of " + evaluation.getId());
 				continue;
 			}
-			evaluation.addSecondaryHabitat(getHabitatObject(habitatModel));
+			evaluation.addSecondaryHabitat(constructHabitatObject(habitatModel));
 		}
 	}
 
@@ -570,7 +613,7 @@ public class IucnDAOImple implements IucnDAO {
 		return model.getStatements(Evaluation.PRIMARY_HABITAT).get(0).getObjectResource().getQname();
 	}
 
-	private HabitatObject getHabitatObject(Model model) throws Exception {
+	public static HabitatObject constructHabitatObject(Model model) throws Exception {
 		String habitat = model.getStatements(Evaluation.HABITAT).get(0).getObjectResource().getQname();
 		int order = model.hasStatements(SORT_ORDER) ? Integer.valueOf(model.getStatements(SORT_ORDER).get(0).getObjectLiteral().getContent()) : 0;
 		HabitatObject habitatObject = new HabitatObject(new Qname(model.getSubject().getQname()), new Qname(habitat), order);

@@ -22,7 +22,7 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public interface TriplestoreDAO {

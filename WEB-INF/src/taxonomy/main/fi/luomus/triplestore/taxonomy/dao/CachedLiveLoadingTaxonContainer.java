@@ -27,6 +27,7 @@ import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.commons.utils.SingleObjectCache;
@@ -50,7 +51,26 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private final TriplestoreDAO triplestoreDAO;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
-	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
+
+	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers()
+			.extend(Evaluation.PRIMARY_HABITAT, new TripletToTaxonHandler() {
+				@Override
+				public void setToTaxon(Qname context, Qname predicatename, Qname objectname, String resourceliteral, String locale, Taxon taxon) {
+					EditableTaxon editableTaxon = (EditableTaxon) taxon;
+					editableTaxon.setPrimaryHabitatId(objectname.toString());
+				}
+			})
+			.extend(Evaluation.SECONDARY_HABITAT, new TripletToTaxonHandler() {
+				@Override
+				public void setToTaxon(Qname context, Qname predicatename, Qname objectname, String resourceliteral, String locale, Taxon taxon) {
+					EditableTaxon editableTaxon = (EditableTaxon) taxon;
+					if (editableTaxon.getSecondaryHabitatIds() == null) {
+						editableTaxon.setSecondaryHabitatIds(new ArrayList<>());
+					}
+					editableTaxon.getSecondaryHabitatIds().add(objectname.toString());
+				}
+			});
+
 	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
 	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
@@ -205,7 +225,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		return new Qname(resource.getQname());
 	}
 
-	private void addPropertyToTaxon(Taxon taxon, Statement statement) {
+	private void addPropertyToTaxon(EditableTaxon taxon, Statement statement) {
 		Qname context = statement.isForDefaultContext() ? null : q(statement.getContext());
 		Qname predicatename = q(statement.getPredicate());
 		Qname objectname = null;

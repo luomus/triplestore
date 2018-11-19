@@ -1,8 +1,10 @@
 package fi.luomus.triplestore.taxonomy.models;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
@@ -10,11 +12,11 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.RedListStatus;
 import fi.luomus.commons.taxonomy.Synonyms;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
@@ -24,6 +26,8 @@ public class EditableTaxon extends Taxon {
 
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
+	private String primaryHabitatId;
+	private List<String> secondaryHabitatIds;
 
 	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer, ExtendedTaxonomyDAO taxonomyDAO) {
 		super(qname, taxonContainer);
@@ -223,6 +227,30 @@ public class EditableTaxon extends Taxon {
 
 	public boolean isIdentifierUsedInDataWarehouse() {
 		return taxonomyDAO.isTaxonIdUsedInDataWarehouse(this.getQname());
+	}
+
+	public String getPrimaryHabitatId() {
+		return primaryHabitatId;
+	}
+
+	public void setPrimaryHabitatId(String primaryHabitatId) {
+		this.primaryHabitatId = primaryHabitatId;
+	}
+
+	public List<String> getSecondaryHabitatIds() {
+		return secondaryHabitatIds;
+	}
+
+	public void setSecondaryHabitatIds(List<String> secondaryHabitatIds) {
+		this.secondaryHabitatIds = secondaryHabitatIds;
+	}
+
+	public Set<String> getHabitatIds() {
+		if (primaryHabitatId == null && secondaryHabitatIds == null) return Collections.emptySet();
+		Set<String> ids = new HashSet<>();
+		if (primaryHabitatId != null) ids.add(primaryHabitatId);
+		if (secondaryHabitatIds != null) ids.addAll(secondaryHabitatIds);
+		return ids;
 	}
 
 }

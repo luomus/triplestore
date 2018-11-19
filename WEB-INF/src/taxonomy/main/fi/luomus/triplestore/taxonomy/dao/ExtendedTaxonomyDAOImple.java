@@ -31,6 +31,7 @@ import fi.luomus.commons.taxonomy.TaxonSearchDAOSQLQueryImple;
 import fi.luomus.commons.taxonomy.TaxonSearchDataSourceDefinition;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
@@ -120,6 +121,27 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	@Override
 	public EditableTaxon getTaxon(Qname qname) {
 		return taxonContainer.getTaxon(qname);
+	}
+
+	@Override
+	public void addHabitats(EditableTaxon taxon) {
+		try {
+			if (taxon.getPrimaryHabitat() != null) return;
+			Set<String> habitatObjectIds = taxon.getHabitatIds();
+			if (habitatObjectIds.isEmpty()) return;
+
+			Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(1000, 0).subjects(habitatObjectIds));
+			for (Model model : models) {
+				HabitatObject h = IucnDAOImple.constructHabitatObject(model);
+				if (h.getId().toString().equals(taxon.getPrimaryHabitatId())) {
+					taxon.setPrimaryHabitat(h);
+				} else {
+					taxon.addSecondaryHabitat(h);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

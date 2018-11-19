@@ -1,10 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.commons.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.utils.Utils;
 
 public class EditHistory {
 

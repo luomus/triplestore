@@ -10,6 +10,7 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -19,7 +20,6 @@ import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
@@ -91,6 +91,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
 		responseData.setData("properties", dao.getProperties("MX.taxon"));
 		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
+		responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
 		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));

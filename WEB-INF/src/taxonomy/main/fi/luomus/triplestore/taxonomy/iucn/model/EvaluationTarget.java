@@ -3,24 +3,31 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 public class EvaluationTarget {
 
 	private static final Qname FAMILY = new Qname("MX.family");
 	private static final Qname ORDER = new Qname("MX.order");
 	private final Qname taxonId;
-	private final Map<Integer, Evaluation> evaluations = new HashMap<>();
+	private final Map<Integer, Evaluation> evaluations = new TreeMap<>(new Comparator<Integer>() {
+		@Override
+		public int compare(Integer o1, Integer o2) {
+			return o2.compareTo(o1);
+		}
+	});
 	private final Container container;
 	private final TaxonContainer taxonContainer;
-	
+
 	public EvaluationTarget(Qname taxonId, Container container, TaxonContainer taxonContainer) {
 		this.taxonId = taxonId;
 		this.container = container;
@@ -127,9 +134,7 @@ public class EvaluationTarget {
 	}
 
 	private List<Integer> getYears() {
-		ArrayList<Integer> years = new ArrayList<>(evaluations.keySet());
-		Collections.sort(years);
-		return years;
+		return Collections.unmodifiableList(new ArrayList<>(evaluations.keySet()));
 	}
 
 	public boolean hasPreviousEvaluation(int year) throws Exception {
@@ -157,5 +162,5 @@ public class EvaluationTarget {
 		return getPreviousEvaluation(Integer.MAX_VALUE);
 	}
 
-	
+
 }

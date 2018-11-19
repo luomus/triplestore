@@ -12,6 +12,7 @@ import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAOImple;
 
 public class Container {

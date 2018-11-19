@@ -23,7 +23,7 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})

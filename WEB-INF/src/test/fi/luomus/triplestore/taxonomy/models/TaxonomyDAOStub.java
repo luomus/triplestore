@@ -206,4 +206,10 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 		return null;
 	}
 
+	@Override
+	public void addHabitats(EditableTaxon taxon) {
+		// sAuto-generated method stub
+		
+	}
+
 }

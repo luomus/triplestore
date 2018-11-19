@@ -44,9 +44,9 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.EndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatObject;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {

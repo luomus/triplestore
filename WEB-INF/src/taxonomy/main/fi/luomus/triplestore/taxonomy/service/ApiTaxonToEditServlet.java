@@ -29,6 +29,7 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 		}
 
 		dao.addOccurrences(taxon);
+		dao.addHabitats(taxon);
 		
 		boolean fullView = !taxon.isSynonym() || showFull(req);
 		return responseData.setData("taxon", taxon).setData("fullView", fullView);

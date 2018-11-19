@@ -27,7 +27,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.iucn.model.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
