@@ -369,7 +369,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
-	public Set<Qname> getHasMediaFilter() throws UnsupportedOperationException {
+	public Set<Qname> getHasMediaFilter() {
 		return cachedTaxaWithImages.get();
 	}
 
