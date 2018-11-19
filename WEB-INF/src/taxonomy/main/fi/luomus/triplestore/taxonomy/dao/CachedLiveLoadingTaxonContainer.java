@@ -158,7 +158,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
 				EditableTaxon taxon = createTaxon(model);
 				preloadSynonyms(taxon);
-				taxon.getChildren();
+				taxon.getChildren(); // preload all child models to cache 
 				return taxon;
 			} catch (NoSuchTaxonException e) {
 				throw e;
