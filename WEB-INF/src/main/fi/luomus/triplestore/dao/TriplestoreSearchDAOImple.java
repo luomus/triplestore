@@ -196,7 +196,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			if (subject.startsWith("http:")) {
 				query.append(" OR subjecturi = ? ");
 			} else {
-				query.append(" OR subjectname like ? ");	
+				query.append(" OR subjectname = ? ");	
 			}
 			values.add(subject);
 		}
