@@ -430,3 +430,7 @@ select.regionalOccurrence {
 .externalImpact, .possiblyRE {
 	color: red;
 }
+
+.scinameLink {
+	display: none;
+}
