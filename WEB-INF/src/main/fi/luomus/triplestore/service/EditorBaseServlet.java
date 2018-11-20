@@ -115,7 +115,6 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
-		log(req);
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 		SessionHandler session = getSession(req);
 		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {

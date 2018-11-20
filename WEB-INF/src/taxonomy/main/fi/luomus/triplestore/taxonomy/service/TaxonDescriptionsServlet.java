@@ -69,6 +69,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 		Qname taxonQname = new Qname(getQname(req));
 		if (!taxonQname.isSet()) {

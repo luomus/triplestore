@@ -18,12 +18,12 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
@@ -33,6 +33,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 		int selectedYear = selectedYear(req);
 		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();

@@ -22,6 +22,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 
 		if (getUser(req).isAdmin()) {
@@ -59,6 +60,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 	
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		boolean addNew = addNew(req);
 		boolean delete = delete(req);
 		

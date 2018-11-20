@@ -23,6 +23,7 @@ public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		startDownloadThread();
 		return redirectTo(getConfig().baseURL()+"/iucn");
 	}

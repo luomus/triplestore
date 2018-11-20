@@ -26,6 +26,7 @@ public class EditorsServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins.");
 		ResponseData responseData = initResponseData(req);
 		String groupQname = getQname(req);
@@ -42,6 +43,7 @@ public class EditorsServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins.");
 		String groupQname = getQname(req);
 		String groupEditorsQname = req.getParameter("editorsId");

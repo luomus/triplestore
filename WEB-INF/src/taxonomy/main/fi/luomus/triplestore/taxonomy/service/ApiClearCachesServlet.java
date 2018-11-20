@@ -13,6 +13,7 @@ public class ApiClearCachesServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins");
 		getTaxonomyDAO().clearCaches();
 		getTriplestoreDAO(req).clearCaches();

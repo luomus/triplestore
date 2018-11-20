@@ -20,6 +20,7 @@ public class ApiSaveOrderServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String order = req.getParameter("order");
 		String firstToOrder = order.split(",")[0];
 		firstToOrder = firstToOrder.trim().replace("MX", "MX.");

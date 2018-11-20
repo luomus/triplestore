@@ -31,6 +31,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = super.initResponseData(req);
 
 		History history = (History) getSession(req).getObject("history");
@@ -87,6 +88,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String qname = getQname(req);
 		try {
 			return saveAndRedirect(req, qname);

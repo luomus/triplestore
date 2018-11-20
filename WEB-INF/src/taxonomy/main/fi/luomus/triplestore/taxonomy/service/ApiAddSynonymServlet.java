@@ -60,6 +60,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		SynonymType synonymType = getSynonymType(req);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);

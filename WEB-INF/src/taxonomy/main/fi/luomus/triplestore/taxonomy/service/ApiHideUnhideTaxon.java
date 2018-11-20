@@ -20,6 +20,7 @@ public class ApiHideUnhideTaxon extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String taxonQname = getQname(req);
 		if (!given(taxonQname)) {
 			return status500(res);

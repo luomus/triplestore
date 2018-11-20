@@ -24,6 +24,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		boolean delete = "delete".equals(req.getParameter("action"));
 		
 		String taxonId = req.getParameter("taxonID");

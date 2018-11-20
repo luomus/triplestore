@@ -69,6 +69,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = new ResponseData().setViewName("api-taxoneditsubmit");
 		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
 		String newPublicationCitation = req.getParameter("newPublicationCitation");

@@ -16,6 +16,7 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String taxonQname = getQname(req).replace("MX", "MX.");
 		ResponseData responseData = initResponseData(req).setViewName("api-taxonedit");
 

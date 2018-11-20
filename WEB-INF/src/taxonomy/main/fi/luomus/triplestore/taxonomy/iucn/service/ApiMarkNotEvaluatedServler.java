@@ -11,11 +11,11 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
 
@@ -26,6 +26,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String speciesQname = req.getParameter("speciesQname");
 		String groupQname = req.getParameter("groupQname");
 		int year = Integer.valueOf(req.getParameter("year"));

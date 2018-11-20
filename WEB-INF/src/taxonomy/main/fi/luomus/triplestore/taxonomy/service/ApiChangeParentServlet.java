@@ -30,6 +30,7 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String taxonQname = req.getParameter("taxon").replace("MX", "MX.");
 		String newParentQname = req.getParameter("newParent").replace("MX", "MX.");
 

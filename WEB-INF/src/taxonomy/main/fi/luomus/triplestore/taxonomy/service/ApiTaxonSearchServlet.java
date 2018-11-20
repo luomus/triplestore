@@ -28,6 +28,7 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = new ResponseData().setViewName("api-taxonomy-search");
 		String searchword = req.getParameter("q");
 		if (!given(searchword)) {

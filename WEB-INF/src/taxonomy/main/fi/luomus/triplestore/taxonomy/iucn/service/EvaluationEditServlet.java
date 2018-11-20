@@ -20,16 +20,16 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
-import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 
@@ -43,6 +43,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return status404(res);
 
@@ -127,6 +128,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) throw new IllegalArgumentException("Species qname not given.");
 

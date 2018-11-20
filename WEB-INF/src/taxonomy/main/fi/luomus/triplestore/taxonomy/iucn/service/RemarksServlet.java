@@ -10,10 +10,10 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
@@ -24,6 +24,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());

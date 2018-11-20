@@ -19,6 +19,7 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req).setViewName("api-addchild");
 		
 		String checklistQname = req.getParameter("checklist");

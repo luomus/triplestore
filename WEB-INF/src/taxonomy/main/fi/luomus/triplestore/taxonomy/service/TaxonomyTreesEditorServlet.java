@@ -19,6 +19,7 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req).setViewName("taxonEditMain");
 
 		Qname root = getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(req); 

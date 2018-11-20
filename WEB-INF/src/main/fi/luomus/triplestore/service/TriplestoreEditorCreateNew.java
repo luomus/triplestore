@@ -23,6 +23,7 @@ public class TriplestoreEditorCreateNew extends TriplestoreEditorServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String qnamePrefix = getQname(req);
 		CreatableResource creatableResource = validPrefix(qnamePrefix);
 		
