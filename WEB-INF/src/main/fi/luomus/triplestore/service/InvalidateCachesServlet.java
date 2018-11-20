@@ -1,10 +1,10 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.services.ResponseData;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.services.ResponseData;
 
 @WebServlet(urlPatterns = {"/editor/invalidate-caches/*"})
 public class InvalidateCachesServlet extends TriplestoreEditorServlet {
@@ -13,6 +13,7 @@ public class InvalidateCachesServlet extends TriplestoreEditorServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		getTriplestoreDAO(req).clearCaches();
 		return super.processGet(req, res).setData("success", "Caches cleared.");
 	}

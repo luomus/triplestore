@@ -32,6 +32,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = super.initResponseData(req).setViewName("it-sixfold");
 
 		if ("dependency-graph".equals(req.getParameter("view"))) responseData.setViewName("it-dependency-graph");
