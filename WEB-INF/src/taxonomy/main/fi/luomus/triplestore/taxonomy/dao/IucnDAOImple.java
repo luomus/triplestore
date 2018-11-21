@@ -365,8 +365,6 @@ public class IucnDAOImple implements IucnDAO {
 		scheduler.scheduleAtFixedRate(
 				iucnContainerReinitializer, 
 				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
-
-		new Thread(iucnDataToTaxonDataSynchronizer).start();
 	}
 
 	private long calculateInitialDelayTill(int hour, int repeatPeriod24H) {
