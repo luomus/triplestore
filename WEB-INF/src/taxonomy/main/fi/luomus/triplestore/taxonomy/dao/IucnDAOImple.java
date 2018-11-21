@@ -229,7 +229,7 @@ public class IucnDAOImple implements IucnDAO {
 			Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
 			if (!given(typeOfOccurrenceInFinland)) return false;
 
-			updateTypeOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
+			updateTypesOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
 			return true;
 		}
 
@@ -237,7 +237,7 @@ public class IucnDAOImple implements IucnDAO {
 			Evaluation evaluation = getLatestReadyEvaluation(target);
 			if (evaluation == null) return false;
 			if (evaluation.getPrimaryHabitat() == null) return false;
-			
+
 			taxonomyDAO.addHabitats(taxon);
 			if (taxon.getPrimaryHabitat() != null && !isNewestPossible(evaluation)) {
 				return false; // don't override existing taxon data with old evaluation data
@@ -246,7 +246,7 @@ public class IucnDAOImple implements IucnDAO {
 			String taxonHabitats = habitatComparisonString(taxon.getPrimaryHabitat(), taxon.getSecondaryHabitats());
 			String evaluationHabitats = habitatComparisonString(evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
 			if (taxonHabitats.equals(evaluationHabitats)) return false;
-			
+
 			updateHabitats(taxon, evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
 			return true;
 		}
@@ -325,7 +325,7 @@ public class IucnDAOImple implements IucnDAO {
 			return b.toString();
 		}
 
-		private void updateTypeOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
+		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
 			UsedAndGivenStatements statements = new UsedAndGivenStatements();
 			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
 			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(typeOfOccurrenceInFinland)));
