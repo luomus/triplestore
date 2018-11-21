@@ -270,7 +270,6 @@ public class IucnDAOImple implements IucnDAO {
 			Evaluation latest =  null;
 			for (Evaluation evaluation : target.getEvaluations()) {
 				if (!evaluation.isReady()) continue;
-				if (evaluation.getPrimaryHabitat() == null) continue;
 				latest = evaluation;
 				break;
 			}
