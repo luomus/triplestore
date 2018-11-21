@@ -267,13 +267,11 @@ public class IucnDAOImple implements IucnDAO {
 		}
 
 		private Evaluation getLatestReadyEvaluation(EvaluationTarget target) {
-			Evaluation latest =  null;
 			for (Evaluation evaluation : target.getEvaluations()) {
 				if (!evaluation.isReady()) continue;
-				latest = evaluation;
-				break;
+				return evaluation;
 			}
-			return latest;
+			return null;
 		}
 
 		private boolean syncRedListStatuses(EvaluationTarget target, EditableTaxon taxon) throws Exception {
