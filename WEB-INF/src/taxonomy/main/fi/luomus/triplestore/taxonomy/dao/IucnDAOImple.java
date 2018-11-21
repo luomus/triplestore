@@ -578,14 +578,14 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public void completeLoading(Evaluation evaluation) throws Exception {
-		Model model = evaluation.getModel();
-		setOccurrences(model, evaluation);
-		setEndangermentReasons(model, evaluation);
-		setHabitatObjects(evaluation, model);
+		setOccurrences(evaluation);
+		setEndangermentReasons(evaluation);
+		setHabitatObjects(evaluation);
 		evaluation.setIncompletelyLoaded(false);
 	}
 
-	private void setHabitatObjects(Evaluation evaluation, Model model) throws Exception {
+	private void setHabitatObjects(Evaluation evaluation) throws Exception {
+		Model model = evaluation.getModel();
 		Set<Qname> habitatObjectIds = getHabitatObjectIds(model);
 		Map<String, Model> asMap = getModelsAsMap(habitatObjectIds);
 
@@ -634,7 +634,8 @@ public class IucnDAOImple implements IucnDAO {
 		return habitatObjectIds;
 	}
 
-	private void setEndangermentReasons(Model model, Evaluation evaluation) throws Exception {
+	private void setEndangermentReasons(Evaluation evaluation) throws Exception {
+		Model model = evaluation.getModel();
 		Map<String, Model> modelsAsMap = getEndangermentModels(model);
 		for (Statement s : model.getStatements(Evaluation.HAS_ENDANGERMENT_REASON)) {
 			Model endangermentModel = modelsAsMap.get(s.getObjectResource().getQname());
@@ -683,7 +684,8 @@ public class IucnDAOImple implements IucnDAO {
 		return endangermentObject;
 	}
 
-	private void setOccurrences(Model model, Evaluation evaluation) throws Exception {
+	private void setOccurrences(Evaluation evaluation) throws Exception {
+		Model model = evaluation.getModel();
 		Map<String, Model> asMap = getOccurrenceModels(model);
 
 		for (Statement hasOccurrence : model.getStatements(Evaluation.HAS_OCCURRENCE)) {

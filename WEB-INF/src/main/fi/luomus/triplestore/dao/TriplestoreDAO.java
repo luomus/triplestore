@@ -20,9 +20,10 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public interface TriplestoreDAO {
@@ -257,5 +258,12 @@ public interface TriplestoreDAO {
 	 * @throws Exception
 	 */
 	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
+
+	/**
+	 * Store habitat object
+	 * @param habitat
+	 * @throws Exception
+	 */
+	public void store(HabitatObject habitat) throws Exception;
 
 }

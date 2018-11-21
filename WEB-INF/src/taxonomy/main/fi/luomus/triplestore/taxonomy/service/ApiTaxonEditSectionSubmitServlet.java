@@ -29,6 +29,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
@@ -36,6 +37,9 @@ import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.service.EvaluationEditServlet;
+import fi.luomus.triplestore.taxonomy.iucn.service.EvaluationEditServlet.Habitats;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
@@ -77,7 +81,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String alteredScientificName = req.getParameter("alteredScientificName");
 		String alteredAuthor = req.getParameter("alteredAuthor");
 		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
-
+		boolean storeHabitats = storeHabitats(req);
+		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
@@ -112,8 +117,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 
-		if (storeBiogeographicalProvinceOccurrences && !editingDescriptionFields) {
+		if (editingDescriptionFields) {
+			dao.store(new Subject(taxonQname), usedAndGivenStatements);
+		} else if (storeBiogeographicalProvinceOccurrences) {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
+		} else if (storeHabitats) {
+			storeHabitats(req, dao, taxon);
 		} else {
 			dao.store(new Subject(taxonQname), usedAndGivenStatements);
 		}
@@ -137,6 +146,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return classes.contains("biogeographicalProvinceOccurrences");
 	}
 
+	private boolean storeHabitats(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return false;
+		return classes.contains("habitats");
+	}
+	
 	private static Set<Qname> supportedAreas = null;
 
 	private Set<Qname> getSupportedAreas(ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -224,6 +239,22 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 		return fieldQnames;
+	}
+
+	private void storeHabitats(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon) throws Exception {
+		Habitats habitats = EvaluationEditServlet.parseHabitats(req);
+		UsedAndGivenStatements statements = new UsedAndGivenStatements();
+		statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
+		statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
+		if (habitats.primaryHabitat != null) {
+			dao.store(habitats.primaryHabitat);
+			statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(habitats.primaryHabitat.getId())));
+			for (HabitatObject h : habitats.secondaryHabitats) {
+				dao.store(h);
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+			}
+		}
+		dao.store(new Subject(taxon.getQname()), statements);
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {

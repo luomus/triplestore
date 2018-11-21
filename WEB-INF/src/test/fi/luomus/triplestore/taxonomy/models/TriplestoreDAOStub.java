@@ -22,11 +22,12 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreSearchDAO;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 
 public class TriplestoreDAOStub implements TriplestoreDAO {
@@ -220,6 +221,12 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
 		// Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void store(HabitatObject habitat) throws Exception {
+		// Auto-generated method stub
+		
 	}
 
 }

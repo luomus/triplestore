@@ -142,13 +142,17 @@
 		<@labeledSelect "MX.occurrenceInFinland" />
 		
 		<table>
-			<tr>
-				<th><label>Type of occurrence</label></th>
-			</tr>
-			<#list taxon.typesOfOccurrenceInFinland as type>
+			<thead>
+				<tr>
+					<th><label>Type of occurrence</label></th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.typesOfOccurrenceInFinland as type>
+					<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
+				</#list>
 				<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
-			</#list>
-			<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
+			</tbody>
 		</table>
 		
 		<@label "MX.typeOfOccurrenceInFinlandNotes" "longtext" />
@@ -184,7 +188,132 @@
 		<textarea <@checkPermissions/> class="newPublicationInput" name="newOccurrenceInFinlandPublicationCitation" id="newOccurrenceInFinlandPublicationCitation" placeholder="For example 'Juutinen, R. & Ulvinen, T. 2015: Suomen sammalien levinneisyys eliömaakunnissa. – Suomen ympäristökeskus. 27.3.2015' "></textarea>
 	<@portletFooter />	
 	
-	<@portletHeader "Informal groups" />
+</div>
+</#if>
+
+<#if fullView>
+<div class="column">
+	
+	<#if taxon.alternativeVernacularNames.empty>
+		<@portletHeader "Other vernacular names" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "Other vernacular names" "" "multirowSection" />
+	</#if>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th> 
+					<th>Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list ["fi", "sv", "en"] as localeSelector>
+					<#list taxon.alternativeVernacularNames.forLocale(localeSelector) as alternativeVernaculaName>
+						<tr>
+							<td><@input "MX.alternativeVernacularName___${localeSelector}" "off" alternativeVernaculaName /></td>
+							<td><@languageSelector localeSelector /></td>
+						</tr>
+					</#list>
+				</#list>
+				<tr>
+					<td><@input "MX.alternativeVernacularName___fi" "off" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />	
+	
+	<#if taxon.obsoleteVernacularNames.empty>
+		<@portletHeader "Obsolete vernacular names" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "Obsolete vernacular names" "" "multirowSection" />
+	</#if>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th> 
+					<th>Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list ["fi", "sv", "en"] as localeSelector>
+					<#list taxon.obsoleteVernacularNames.forLocale(localeSelector) as obsoleteVernaculaName>
+						<tr>
+							<td><@input "MX.obsoleteVernacularName___${localeSelector}" "off" obsoleteVernaculaName /></td>
+							<td><@languageSelector localeSelector /></td>
+						</tr>
+					</#list>
+				</#list>
+				<tr>
+					<td><@input "MX.obsoleteVernacularName___fi" "off" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />	
+
+	<#if taxon.tradeNames.empty>
+		<@portletHeader "Trade names" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "Trade names" "" "multirowSection" />
+	</#if>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th> 
+					<th>Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list ["fi", "sv", "en"] as localeSelector>
+					<#list taxon.tradeNames.forLocale(localeSelector) as tradeName>
+						<tr>
+							<td><@input "MX.tradeName___${localeSelector}" "off" tradeName /></td>
+							<td><@languageSelector localeSelector /></td>
+						</tr>
+					</#list>
+				</#list>
+				<tr>
+					<td><@input "MX.tradeName___fi" "off" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />
+	
+	<#if user.isAdmin()>
+	<#if taxon.alsoKnownAsNames?has_content>
+		<@portletHeader "AKA names (Admin only)" "" "multirowSection" />
+	<#else>
+		<@portletHeader "AKA names (Admin only)" "initiallyClosed" "multirowSection" />
+	</#if>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th> 
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.alsoKnownAsNames as name>
+				<tr>
+					<td><@input "MX.alsoKnownAs" "off" name /></td>
+				</tr>
+				</#list>
+				<tr>
+					<td><@input "MX.alsoKnownAs" "off" "" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />	
+	</#if>
+
+	<@portletHeader "Species codes" "initiallyClosed" />
+		<@labeledInput "MX.euringCode" "off" />
+		<@labeledInput "MX.euringNumber" "off" />
+		<@labeledInput "MX.birdlifeCode" "off" />
+	<@portletFooter />	
+	
+	  	<@portletHeader "Informal groups" />
 		<#assign headerPrinted = false>
 		<#list taxon.informalTaxonGroups as groupQname>
 			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
@@ -210,100 +339,8 @@
 		</select>
 		
 		<p class="info">When adding a new informal group it is only required to add the 'lowest' group. 'Parent groups' are added automatically. (If you want to see them after saving, reload this view by clicking this taxon in the tree again.)</p>
-	<@portletFooter />				
-
-</div>
-</#if>
-
-<#if fullView>
-<div class="column">
-
-	<@portletHeader "Other vernacular names" "" "multirowSection" />
-		<table>
-			<tr>
-				<th>Name</th> 
-				<th>Language</th>
-			</tr>
-			<#list ["fi", "sv", "en"] as localeSelector>
-				<#list taxon.alternativeVernacularNames.forLocale(localeSelector) as alternativeVernaculaName>
-					<tr>
-						<td><@input "MX.alternativeVernacularName___${localeSelector}" "off" alternativeVernaculaName /></td>
-						<td><@languageSelector localeSelector /></td>
-					</tr>
-				</#list>
-			</#list>
-			<tr>
-				<td><@input "MX.alternativeVernacularName___fi" "off" "" /></td>
-				<td><@languageSelector "fi" /></td>
-			</tr>
-		</table>
-	<@portletFooter />	
-	
-	<@portletHeader "Obsolete vernacular names" "" "multirowSection" />
-		<table>
-			<tr>
-				<th>Name</th> 
-				<th>Language</th>
-			</tr>
-			<#list ["fi", "sv", "en"] as localeSelector>
-				<#list taxon.obsoleteVernacularNames.forLocale(localeSelector) as obsoleteVernaculaName>
-					<tr>
-						<td><@input "MX.obsoleteVernacularName___${localeSelector}" "off" obsoleteVernaculaName /></td>
-						<td><@languageSelector localeSelector /></td>
-					</tr>
-				</#list>
-			</#list>
-			<tr>
-				<td><@input "MX.obsoleteVernacularName___fi" "off" "" /></td>
-				<td><@languageSelector "fi" /></td>
-			</tr>
-		</table>
-	<@portletFooter />	
-
-	<@portletHeader "Trade names" "" "multirowSection" />
-		<table>
-			<tr>
-				<th>Name</th> 
-				<th>Language</th>
-			</tr>
-			<#list ["fi", "sv", "en"] as localeSelector>
-				<#list taxon.tradeNames.forLocale(localeSelector) as tradeName>
-					<tr>
-						<td><@input "MX.tradeName___${localeSelector}" "off" tradeName /></td>
-						<td><@languageSelector localeSelector /></td>
-					</tr>
-				</#list>
-			</#list>
-			<tr>
-				<td><@input "MX.tradeName___fi" "off" "" /></td>
-				<td><@languageSelector "fi" /></td>
-			</tr>
-		</table>
-	<@portletFooter />
-	
-	<#if user.isAdmin()>
-	<@portletHeader "AKA names (Admin only)" "" "multirowSection" />
-		<table>
-			<tr>
-				<th>Name</th> 
-			</tr>
-			<#list taxon.alsoKnownAsNames as name>
-			<tr>
-				<td><@input "MX.alsoKnownAs" "off" name /></td>
-			</tr>
-			</#list>
-			<tr>
-				<td><@input "MX.alsoKnownAs" "off" "" /></td>
-			</tr>
-		</table>
-	<@portletFooter />	
-	</#if>
-
-	<@portletHeader "Species codes" "initiallyClosed" />
-		<@labeledInput "MX.euringCode" "off" />
-		<@labeledInput "MX.euringNumber" "off" />
-		<@labeledInput "MX.birdlifeCode" "off" />
-	<@portletFooter />	
+    <@portletFooter />
+    
 </div>
 
 <div class="clear"></div>
@@ -351,10 +388,56 @@
 	<@portletFooter />
 	
 </div>
+
+<div class="column">
+  <#if taxon.primaryHabitat??>
+	<@portletHeader "Habitats" "" "habitats multirowSection"/>
+  <#else>
+	<@portletHeader "Habitats" "initiallyClosed" "habitats multirowSection"/>
+  </#if>
+  		<label>Primary habitat</label> <br />
+		<@habitatEdit "MKV.primaryHabitat___0" taxon.primaryHabitat /> <br />
+  		<label>Secondary habitats</label>
+  		<table>
+  			<tbody>
+				<#list taxon.secondaryHabitats as secondaryHabitat>
+					<tr><td><@habitatEdit "MKV.secondaryHabitat___"+secondaryHabitat_index secondaryHabitat /></td></tr>
+  				</#list>
+  				<tr><td><@habitatEdit "MKV.secondaryHabitat___"+taxon.secondaryHabitats?size/></td></tr>
+  			</tbody>
+  		</table>
+  <@portletFooter />
+</div>
+
+<#macro habitatEdit name habitat="">
+	<select name="${name}___MKV.habitat" <@checkPermissions/> class="chosen" data-placeholder="Select habitat">
+		<option value=""></option>
+		<#list habitatProperties.getProperty("MKV.habitat").range.values as prop>
+			<#if habitat != "" && habitat.habitat == prop.qname>
+				<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")!prop.qname}</option>
+			<#else>
+				<option value="${prop.qname}">${prop.label.forLocale("fi")!prop.qname}</option>
+			</#if>
+		</#list>
+	</select>
+	<select name="${name}___MKV.habitatSpecificType" <@checkPermissions/> multiple="multiple" class="chosen" data-placeholder="Select specifiers">
+		<option value=""></option>
+		<#list habitatProperties.getProperty("MKV.habitatSpecificType").range.values as prop>
+			<#if habitat != "" && habitat.habitatSpecificTypes?seq_contains(prop.qname)>
+				<option value="${prop.qname}" selected="selected">${prop.label.forLocale("fi")!prop.qname}</option>
+			<#else>
+				<option value="${prop.qname}">${prop.label.forLocale("fi")!prop.qname}</option>
+			</#if>
+		</#list>
+	</select>
+</#macro>
+
+<div class="clear"></div>
 </#if>
 
 <#if fullView>
 <div class="column">
+
   <#if taxon.explicitlySetExperts?has_content || taxon.explicitlySetEditors?has_content>
 	<@portletHeader "Editors and Experts" />
   <#else>
@@ -404,12 +487,10 @@
 		</div>
 		
 	<@portletFooter />	
-</div>
-</#if>
-
-<#if fullView>
-<div class="column">
 	
+</div>				
+<div class="column">
+
 	<@portletHeader "Red List Finland" />
 		<table class="redListTable">
 		<#list evaluationYears as year>
@@ -430,10 +511,12 @@
 	
 	<@portletHeader "Administrative statuses (Admin only)" "initiallyClosed" "multirowSection" />
 		<table>
-		<#list taxon.administrativeStatuses as status>
+		<tbody>
+			<#list taxon.administrativeStatuses as status>
+				<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
+			</#list>
 			<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
-		</#list>
-		<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
+		</tbody>
 		</table>
 	<@portletFooter />	 
 	

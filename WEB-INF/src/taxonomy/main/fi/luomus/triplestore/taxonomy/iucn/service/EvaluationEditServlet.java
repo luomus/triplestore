@@ -1,6 +1,8 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -237,19 +239,35 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		setTaxon(speciesQname, model);
 		setYear(year, model);
 
+		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
+			String parameterName = e.getKey();
+			if (!habitatPair(parameterName)) {
+				setValues(evaluation, iucnProperties, e);
+			} 
+		}
+		
+		setHabitatsToEvaluation(req, evaluation);
+
+		return evaluation;
+	}
+
+	private void setHabitatsToEvaluation(HttpServletRequest req, Evaluation evaluation) {
+		Habitats habitats = parseHabitats(req);
+		evaluation.setPrimaryHabitat(habitats.primaryHabitat);
+		for (HabitatObject h : habitats.secondaryHabitats) {
+			evaluation.addSecondaryHabitat(h);
+		}
+	}
+
+	public static Habitats parseHabitats(HttpServletRequest req) {
 		Map<String, Map<String, String[]>> habitatPairParameters = new HashMap<>();
 		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
 			if (habitatPair(parameterName)) {
 				addHabitatPairParameters(habitatPairParameters, e);
-			} else {
-				setValues(evaluation, iucnProperties, e);
-			}
+			} 
 		}
-
-		setHabitatsToEvaluation(evaluation, habitatPairParameters);
-
-		return evaluation;
+		return parseHabitats(habitatPairParameters);
 	}
 
 	private void setModifiedInfo(HttpServletRequest req, Model model) {
@@ -257,11 +275,17 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		model.addStatement(new Statement(new Predicate(Evaluation.LAST_MODIFIED_BY), new ObjectResource(getUser(req).getQname())));
 	}
 
-	private void setHabitatsToEvaluation(Evaluation evaluation, Map<String, Map<String, String[]>> habitatPairParameters) {
+	public static class Habitats {
+		public HabitatObject primaryHabitat;
+		public List<HabitatObject> secondaryHabitats = new ArrayList<>();
+	}
+	
+	private static Habitats parseHabitats(Map<String, Map<String, String[]>> habitatPairParameters) {
 		// Map of
 		// MKV.primaryHabitat___0 : { MKV.habitat: [MKV.habitatMk], MKV.habitatSpecificType : [MKV.habitatSpecificTypePAK] }
 		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... } 
 		// MKV.secondaryHabitat___1 : ...
+		Habitats habitats = new Habitats();
 		for (Map.Entry<String, Map<String, String[]>> e : habitatPairParameters.entrySet()) {
 			String[] predicateAndIndexParts = e.getKey().split(Pattern.quote("___"));
 			String predicate = predicateAndIndexParts[0];
@@ -281,15 +305,16 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			}
 			if (habitatObject.hasValues()) {
 				if (predicate.equals(Evaluation.PRIMARY_HABITAT)) {
-					evaluation.setPrimaryHabitat(habitatObject);
+					habitats.primaryHabitat = habitatObject;
 				} else {
-					evaluation.addSecondaryHabitat(habitatObject);
+					habitats.secondaryHabitats.add(habitatObject);
 				}
 			}
 		}
+		return habitats;
 	}
 
-	private void addHabitatPairParameters(Map<String, Map<String, String[]>> habitatPairs, Map.Entry<String, String[]> e) {
+	private static void addHabitatPairParameters(Map<String, Map<String, String[]>> habitatPairs, Map.Entry<String, String[]> e) {
 		// MKV.primaryHabitat___0___MKV.habitat : MKV.habitatMk
 		// MKV.primaryHabitat___0___MKV.habitatSpecificType : MKV.habitatSpecificTypePAK
 		// MKV.secondaryHabitat___0___MKV.habitat : MKV.habitatMk
@@ -306,7 +331,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		habitatPairs.get(commonPart).put(pairPredicate, e.getValue());
 	}
 
-	private boolean habitatPair(String parameterName) {
+	private static boolean habitatPair(String parameterName) {
 		return parameterName.startsWith(Evaluation.PRIMARY_HABITAT) || parameterName.startsWith(Evaluation.SECONDARY_HABITAT);
 	}
 

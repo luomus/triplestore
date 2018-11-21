@@ -34,6 +34,9 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.commons.utils.Cached.ResourceWrapper;
@@ -44,9 +47,6 @@ import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
-import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
@@ -927,7 +927,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private void store(HabitatObject habitat) throws Exception {
+	@Override
+	public void store(HabitatObject habitat) throws Exception {
 		Qname id = given(habitat.getId()) ? habitat.getId() : this.getSeqNextValAndAddResource(Evaluation.IUCN_EVALUATION_NAMESPACE);
 		habitat.setId(id);
 		Model model = new Model(new Subject(id));

@@ -377,8 +377,11 @@ span.indent { display: inline-block; }
   width: 600px;
 }
 
+#biogeographicalProvinceTable .status {
+	 width: 100px;
+}
 #biogeographicalProvinceTable .notes {
-  width: 320px;
+  width: 200px;
 }
 #biogeographicalProvinceTable .year {
   width: 40px;

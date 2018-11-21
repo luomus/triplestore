@@ -23,9 +23,6 @@ $(function() {
 	
 });
 	
-function editTaxon(e) {
-	editTaxon(e, false);
-}
 function editTaxon(e, fullEditMode) {
 	if ($("#taxonDragMode").prop('checked') === true) return;
 	if (toolsDisabled) return;
@@ -86,29 +83,37 @@ function initColumnsPortlets() {
 		addSaveButtonTo(this);
 	});
 	
-	<#if !(noPermissions??)>
 	$(".multirowSection").each(function() {
+		if ($(this).find('table').find(':input').first().attr('disabled') == 'disabled') return;
 		var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
 		$(this).find('table').after(addNewRowButton);
 		addNewRowButton.click(function() {
-			var tableToAddNewRow = $(this).parent().find('table'); 
-			var rowClone = $(tableToAddNewRow).find('tr').last().clone();
+			var tbodyToAddRow = $(this).parent().find('table tbody'); 
+			var rowClone = $(tbodyToAddRow).find('tr').first().clone();
 			rowClone.find('.chosen-container').remove();
-			var clonedInput = rowClone.find(':input').first().val('').show().removeAttr('display');
-			if (clonedInput.hasClass('chosen')) clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
-			rowClone.find('.chosen-container').removeAttr('style');
-			var name = clonedInput.attr("name");
-			if (name.indexOf("___") > -1) {
-				name = name.split("___")[0] + "___fi";
-				clonedInput.attr('name', name);
-				rowClone.find('select').val('fi');
-			}
-			tableToAddNewRow.append(rowClone);
+			rowClone.find(':input').each(function() {
+				var clonedInput = $(this).val('').show().removeAttr('display');
+				var name = clonedInput.attr('name');
+				if (name === undefined) return;
+				if (name.indexOf('___sv') > -1 || name.indexOf('___en') > -1) {
+					name = name.split("___")[0] + "___fi";
+					clonedInput.attr('name', name);
+				} else if (name.indexOf('___0') > -1) {
+					var countOfExisting = $(tbodyToAddRow).find('tr').size();
+					name = name.replace('___0', '___'+countOfExisting);
+					clonedInput.attr('name', name);
+				}
+				if (clonedInput.hasClass('chosen')) {
+					clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
+					rowClone.find('.chosen-container').removeAttr('style');
+				}
+			});
+			rowClone.find('.languageSelector').val('fi');
+			tbodyToAddRow.append(rowClone);
 			addSaveButtonTo(this);
 			return false;
 		});
 	});
-	</#if>
 	
 	function addSaveButtonTo(e) {
 		var section = $(e).closest(".taxonEditSection"); 
