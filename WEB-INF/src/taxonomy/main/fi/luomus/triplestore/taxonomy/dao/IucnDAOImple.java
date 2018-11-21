@@ -221,7 +221,7 @@ public class IucnDAOImple implements IucnDAO {
 		}
 
 		private boolean syncTypeOfOccurrence(EvaluationTarget target, EditableTaxon taxon) throws Exception {
-			if (!taxon.getTypesOfOccurrenceInFinland().isEmpty()) return false;
+			if (!taxon.getTypesOfOccurrenceInFinland().isEmpty()) return false; // Never override types already set to taxon
 
 			Evaluation evaluation = getLatestReadyEvaluation(target);
 			if (evaluation == null) return false;
@@ -229,7 +229,7 @@ public class IucnDAOImple implements IucnDAO {
 			Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
 			if (!given(typeOfOccurrenceInFinland)) return false;
 
-			updateTypesOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
+			updateTypeOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
 			return true;
 		}
 
@@ -325,7 +325,7 @@ public class IucnDAOImple implements IucnDAO {
 			return b.toString();
 		}
 
-		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
+		private void updateTypeOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
 			UsedAndGivenStatements statements = new UsedAndGivenStatements();
 			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
 			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(typeOfOccurrenceInFinland)));
