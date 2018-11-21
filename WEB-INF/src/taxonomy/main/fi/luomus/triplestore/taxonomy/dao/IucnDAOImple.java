@@ -188,7 +188,7 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	};
 
-	private final Runnable taxonDataSynchronizer = new Runnable() {
+	private final Runnable iucnDataToTaxonDataSynchronizer = new Runnable() {
 		@Override
 		public void run() {
 			System.out.println("Starting to synchronize taxon data with IUCN data...");
@@ -350,7 +350,7 @@ public class IucnDAOImple implements IucnDAO {
 		long intitialDelay6am = calculateInitialDelayTill(6, repeatPeriod24H);
 
 		scheduler.scheduleAtFixedRate(
-				taxonDataSynchronizer, 
+				iucnDataToTaxonDataSynchronizer, 
 				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
 
 		scheduler.scheduleAtFixedRate(iucnRedListTaxonGroupNameUpdater, 
