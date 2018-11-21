@@ -243,8 +243,27 @@ public class IucnDAOImple implements IucnDAO {
 				return false; // don't override existing taxon data with old evaluation data
 			}
 
+			String taxonHabitats = habitatComparisonString(taxon.getPrimaryHabitat(), taxon.getSecondaryHabitats());
+			String evaluationHabitats = habitatComparisonString(evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
+			if (taxonHabitats.equals(evaluationHabitats)) return false;
+			
 			updateHabitats(taxon, evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
 			return true;
+		}
+
+		private String habitatComparisonString(HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) {
+			StringBuilder b = new StringBuilder();
+			b.append(habitatComparisonString(primaryHabitat));
+			b.append("[");
+			for (HabitatObject h : secondaryHabitats) {
+				b.append(habitatComparisonString(h));
+			}
+			b.append("]");
+			return b.toString();
+		}
+
+		private String habitatComparisonString(HabitatObject h) {
+			return ""+h.getHabitat()+h.getHabitatSpecificTypes();
 		}
 
 		private boolean isNewestPossible(Evaluation evaluation) throws Exception {
