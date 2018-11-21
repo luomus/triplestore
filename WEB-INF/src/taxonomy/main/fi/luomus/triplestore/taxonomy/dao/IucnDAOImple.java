@@ -206,7 +206,7 @@ public class IucnDAOImple implements IucnDAO {
 						continue;
 					}
 					EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(speciesQname);
-					if (c++ % 5000 == 0) System.out.println(" ... syncing " + c);
+					if (c++ % 5000 == 0) System.out.println(" ... syncing " + (c-1));
 					boolean statusesChanged = syncRedListStatuses(target, taxon);
 					boolean habitatsChanged = syncHabitats(target, taxon);
 					boolean typeOfOccurrenceChanged = syncTypeOfOccurrence(target, taxon);
@@ -234,13 +234,18 @@ public class IucnDAOImple implements IucnDAO {
 		}
 
 		private boolean syncHabitats(EvaluationTarget target, EditableTaxon taxon) throws Exception {
-			Evaluation evaluation = getLatestReadyEvaluation(target);
+			Evaluation evaluation = getLatestReadyEvaluation(target); // TODO change to latest locked
 			if (evaluation == null) return false;
-			if (evaluation.getPrimaryHabitat() == null) return false;
+			
+			if (!evaluation.getModel().hasStatements(Evaluation.PRIMARY_HABITAT)) return false;
 
-			taxonomyDAO.addHabitats(taxon);
-			if (taxon.getPrimaryHabitat() != null && !isNewestPossible(evaluation)) {
+			if (taxon.getPrimaryHabitatId() != null && !isNewestPossible(evaluation)) {
 				return false; // don't override existing taxon data with old evaluation data
+			}
+			
+			taxonomyDAO.addHabitats(taxon);
+			if (evaluation.isIncompletelyLoaded()) {
+				completeLoading(evaluation);
 			}
 
 			String taxonHabitats = habitatComparisonString(taxon.getPrimaryHabitat(), taxon.getSecondaryHabitats());
@@ -263,7 +268,8 @@ public class IucnDAOImple implements IucnDAO {
 		}
 
 		private String habitatComparisonString(HabitatObject h) {
-			return ""+h.getHabitat()+h.getHabitatSpecificTypes();
+			if (h == null) return ";";
+			return ""+h.getHabitat()+h.getHabitatSpecificTypes()+";";
 		}
 
 		private boolean isNewestPossible(Evaluation evaluation) throws Exception {
@@ -359,6 +365,8 @@ public class IucnDAOImple implements IucnDAO {
 		scheduler.scheduleAtFixedRate(
 				iucnContainerReinitializer, 
 				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
+
+		new Thread(iucnDataToTaxonDataSynchronizer).start();
 	}
 
 	private long calculateInitialDelayTill(int hour, int repeatPeriod24H) {
