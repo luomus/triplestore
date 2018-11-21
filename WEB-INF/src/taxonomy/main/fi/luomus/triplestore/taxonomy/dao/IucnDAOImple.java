@@ -248,7 +248,11 @@ public class IucnDAOImple implements IucnDAO {
 		}
 
 		private boolean isNewestPossible(Evaluation evaluation) throws Exception {
-			return evaluation.getEvaluationYear().equals(getEvaluationYears().iterator().next());
+			return evaluation.getEvaluationYear().equals(newestEvaluationYear());
+		}
+
+		private Integer newestEvaluationYear() throws Exception {
+			return getEvaluationYears().iterator().next();
 		}
 
 		private void updateHabitats(EditableTaxon taxon, HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) throws Exception {
