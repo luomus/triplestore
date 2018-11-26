@@ -41,7 +41,7 @@ $(function() {
   		checked: false
 	});
 	
-	$("#taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
+	$("#taxonEditHeader, #taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
 		var value = $(this).attr('title');
 		if (!value) return false;
 		value = value.trim();
