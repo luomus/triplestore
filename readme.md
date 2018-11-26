@@ -293,7 +293,7 @@ TriplestorePassword =
 DwURL = https://../taxon-use
 
 #Used by IUCN editor
-TaxonomyAPIURL = http://laji.fi/api/taxonomy
+TaxonomyAPIURL = .. api/taxa
 
 ~~~
 

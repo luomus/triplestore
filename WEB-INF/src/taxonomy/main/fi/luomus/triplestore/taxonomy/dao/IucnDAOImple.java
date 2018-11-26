@@ -78,7 +78,7 @@ public class IucnDAOImple implements IucnDAO {
 	private static final String AREA_TYPE = "ML.areaType";
 	private static final String AREA = "ML.area";
 	private static final String BIOTA_QNAME = "MX.37600";
-	private static final String QNAME = "qname";
+	private static final String ID = "id";
 	private static final String ONLY_FINNISH = "onlyFinnish";
 	private static final String SELECTED_FIELDS = "selectedFields";
 	private static final String PAGE_SIZE = "pageSize";
@@ -192,7 +192,7 @@ public class IucnDAOImple implements IucnDAO {
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + BIOTA_QNAME + "/species")
 					.addParameter(ONLY_FINNISH, true)
 					.addParameter(INCLUDE_HIDDEN, true)
-					.addParameter(SELECTED_FIELDS, QNAME)
+					.addParameter(SELECTED_FIELDS, ID)
 					.addParameter(INFORMAL_GROUP_FILTERS, groupQname)
 					.addParameter(PAGE, "1")
 					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
@@ -240,7 +240,7 @@ public class IucnDAOImple implements IucnDAO {
 		synchronized (LOCK) { // To prevent too many request going out at once
 			URIBuilder uri = new URIBuilder(config.get("TaxonomyAPIURL") + "/" + taxonQname + "/species")
 					.addParameter(ONLY_FINNISH, true)
-					.addParameter(SELECTED_FIELDS, QNAME)
+					.addParameter(SELECTED_FIELDS, ID)
 					.addParameter(PAGE, 1)
 					.addParameter(PAGE_SIZE, PAGE_SIZE_TAXON_LIST);
 			while (true) {
@@ -261,7 +261,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private String getQname(JSONObject taxon) {
-		return taxon.getString(QNAME);
+		return taxon.getString(ID);
 	}
 
 	public EvaluationTarget loadTarget(String speciesQname) throws Exception {
@@ -272,7 +272,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private EvaluationTarget createTarget(String speciesQname) throws Exception {
 		EvaluationTarget target;
-		target = new EvaluationTarget(new Qname(speciesQname), container, taxonomyDAO.getTaxonContainer());
+		target = new EvaluationTarget(new Qname(speciesQname), container, taxonomyDAO);
 		container.addTarget(target);
 		return target;
 	}

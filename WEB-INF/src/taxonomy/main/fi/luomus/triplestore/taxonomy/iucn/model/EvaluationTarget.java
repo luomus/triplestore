@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonContainer;
+import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 public class EvaluationTarget {
@@ -26,12 +26,12 @@ public class EvaluationTarget {
 		}
 	});
 	private final Container container;
-	private final TaxonContainer taxonContainer;
+	private final TaxonomyDAO taxonomyDAO;
 
-	public EvaluationTarget(Qname taxonId, Container container, TaxonContainer taxonContainer) {
+	public EvaluationTarget(Qname taxonId, Container container, TaxonomyDAO taxonomyDAO) {
 		this.taxonId = taxonId;
 		this.container = container;
-		this.taxonContainer = taxonContainer;
+		this.taxonomyDAO = taxonomyDAO;
 	}
 
 	public List<String> getGroups() {
@@ -53,7 +53,11 @@ public class EvaluationTarget {
 	}
 
 	public Taxon getTaxon() {
-		return taxonContainer.getTaxon(taxonId);
+		try {
+			return taxonomyDAO.getTaxon(taxonId);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public String getSynonymNames() {
