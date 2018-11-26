@@ -32,7 +32,7 @@ import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
@@ -90,18 +90,18 @@ public class IucnDAOImple implements IucnDAO {
 
 	private final Config config;
 	private final TriplestoreDAO triplestoreDAO;
-	private final TaxonomyDAO taxonomyDAO;
+	private final TaxonContainer taxonContainer;
 	private Container container;
 	private final ErrorReporter errorReporter;
 	private final boolean devMode;
 	private boolean initialEvaluationsLoaded = false;
 
-	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonomyDAO taxonomyDAO, ErrorReporter errorReporter) {
+	public IucnDAOImple(Config config, boolean devMode, TriplestoreDAO triplestoreDAO, TaxonContainer taxonContainer, ErrorReporter errorReporter) {
 		System.out.println("Creating " +  IucnDAOImple.class.getName());
 		this.config = config;
 		this.devMode = devMode;
 		this.triplestoreDAO = triplestoreDAO;
-		this.taxonomyDAO = taxonomyDAO;
+		this.taxonContainer = taxonContainer;
 		this.container = new Container(this);
 		this.errorReporter = errorReporter;
 	}
@@ -214,7 +214,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public List<String> getFinnishSpecies(String taxonQname) throws Exception {
-		Taxon root = taxonomyDAO.getTaxon(new Qname(taxonQname));
+		Taxon root = taxonContainer.getTaxon(new Qname(taxonQname));
 		if (!root.hasChildren()) {
 			if (root.isFinnishSpecies()) {
 				return Utils.list(root.getQname().toString());
@@ -272,7 +272,7 @@ public class IucnDAOImple implements IucnDAO {
 
 	private EvaluationTarget createTarget(String speciesQname) throws Exception {
 		EvaluationTarget target;
-		target = new EvaluationTarget(new Qname(speciesQname), container, taxonomyDAO);
+		target = new EvaluationTarget(new Qname(speciesQname), container, taxonContainer);
 		container.addTarget(target);
 		return target;
 	}

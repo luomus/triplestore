@@ -11,7 +11,7 @@ import java.util.TreeMap;
 
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 public class EvaluationTarget {
@@ -26,12 +26,12 @@ public class EvaluationTarget {
 		}
 	});
 	private final Container container;
-	private final TaxonomyDAO taxonomyDAO;
+	private final TaxonContainer taxonContainer;
 
-	public EvaluationTarget(Qname taxonId, Container container, TaxonomyDAO taxonomyDAO) {
+	public EvaluationTarget(Qname taxonId, Container container, TaxonContainer taxonContainer) {
 		this.taxonId = taxonId;
 		this.container = container;
-		this.taxonomyDAO = taxonomyDAO;
+		this.taxonContainer = taxonContainer;
 	}
 
 	public List<String> getGroups() {
@@ -54,7 +54,7 @@ public class EvaluationTarget {
 
 	public Taxon getTaxon() {
 		try {
-			return taxonomyDAO.getTaxon(taxonId);
+			return taxonContainer.getTaxon(taxonId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -80,7 +80,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		this.dataSource = TaxonSearchDataSourceDefinition.initDataSource(config.connectionDescription());
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO, this);
-		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, this, errorReporter);
+		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter);
 		this.cachedTaxonSearches = new Cached<TaxonSearch, TaxonSearchResponse>(
 				new TaxonSearchLoader(),
 				60*60*3, 50000);
@@ -128,7 +128,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final Runnable iucnContainerReinitializer = new Runnable() {
 		@Override
 		public void run() {
-			iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, ExtendedTaxonomyDAOImple.this, errorReporter); // TODO refactor method createIucnDAO
+			iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter); // TODO refactor method createIucnDAO
 			try {
 				for (String groupQname : iucnDAO.getGroupEditors().keySet()) {
 					iucnDAO.getIUCNContainer().getTargetsOfGroup(groupQname);
