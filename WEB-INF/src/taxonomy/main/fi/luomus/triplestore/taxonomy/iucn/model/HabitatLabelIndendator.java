@@ -22,6 +22,14 @@ public class HabitatLabelIndendator {
 		}
 	}
 
+	public String indent(Qname qname) {
+		return labels.get(qname);
+	}
+
+	public int indentCount(Qname qname) {
+		return indents.get(qname);
+	}
+
 	private String doIndent(RdfProperty p) {
 		int indent = indents.get(p.getQname());
 		String label = p.getLabel().forLocale("fi");
@@ -63,14 +71,5 @@ public class HabitatLabelIndendator {
 	private String getLabelPrefix(RdfProperty p) {
 		return p.getLabel().forLocale("fi").split(Pattern.quote(" "))[0];
 	}
-
-	public String indent(Qname qname) {
-		return labels.get(qname);
-	}
-
-	public int indentCount(Qname qname) {
-		return indents.get(qname);
-	}
-
 
 }
