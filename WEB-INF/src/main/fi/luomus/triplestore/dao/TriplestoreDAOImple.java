@@ -508,7 +508,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		String minOccurs = getValue(XSD_MIN_OCCURS, model);
 		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
 		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);
-
+		String altParent = getValue("altParent", model);
 		Qname rangeQname = range == null ? null : new Qname(range); 
 		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
 
@@ -553,6 +553,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		property.setLabels(labels);
 		property.setComments(comments);
 
+		if (altParent != null) {
+			property.setAltParent(new Qname(altParent));
+		}
 		return property;
 	}
 
