@@ -70,7 +70,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				try {
 					return new InformalTaxonGroupContainer(taxonomyDAO.getInformalTaxonGroupsForceReload());
 				} catch (Exception e) {
-					throw new RuntimeException();
+					throw new RuntimeException(e);
 				}
 			}
 		}, 60);
