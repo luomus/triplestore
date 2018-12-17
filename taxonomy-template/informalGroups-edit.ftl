@@ -52,4 +52,13 @@ $(function() {
 	$("#groupForm").validate();
 });
 </script>
+
+<h2>Defining taxa</h2>
+<ul>
+<#list definingTaxa as t>
+	<ol>${t.scientificName!""} ${t.qname}</ol>
+</#list>
+</ul>
+<#if hasMore> [...]</#if>
+
 <#include "luomus-footer.ftl">

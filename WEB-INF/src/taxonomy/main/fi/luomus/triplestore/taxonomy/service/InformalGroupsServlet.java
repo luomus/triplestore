@@ -1,5 +1,10 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,25 +14,29 @@ import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*", "/taxonomy-editor/informalGroups/delete/*"})
 public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
+	private static final Qname FINBIF_MASTER_CHECKLIST = new Qname("MR.1");
 	private static final long serialVersionUID = -7740342063755041600L;
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		ResponseData responseData = initResponseData(req);
+		ExtendedTaxonomyDAO dao = getTaxonomyDAO();
 
 		if (getUser(req).isAdmin()) {
-			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload()); // for admin always reload; for others this is in initResponseData
+			responseData.setData("informalGroups", dao.getInformalTaxonGroupsForceReload()); // for admin always reload; for others this is in initResponseData
 		}
 
 		if (req.getRequestURI().endsWith("/informalGroups")) {
-			responseData.setData("roots", getTaxonomyDAO().getInformalTaxonGroupRoots());
+			responseData.setData("roots", dao.getInformalTaxonGroupRoots());
 			return responseData.setViewName("informalGroups");
 		}
 
@@ -37,12 +46,32 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			return responseData.setViewName("informalGroups-edit").setData("action", "add").setData("group", new InformalTaxonGroup());
 		}
 
-		String qname = getQname(req);
-		InformalTaxonGroup group = getTaxonomyDAO().getInformalTaxonGroupsForceReload().get(qname);
+		String groupId = getQname(req);
+		InformalTaxonGroup group = dao.getInformalTaxonGroupsForceReload().get(groupId);
 		if (group == null) {
 			return status404(res);
 		}
-		return responseData.setViewName("informalGroups-edit").setData("action", "modify").setData("group", group);
+
+		Set<Qname> definingTaxaIds = dao.getTaxonContainer().getInformalGroupFilter().getFilteredTaxons(new Qname(groupId));
+		List<Taxon> definingTaxa = new ArrayList<>();
+		int i = 0;
+		for (Qname id : definingTaxaIds) {
+			Taxon t = dao.getTaxon(id);
+			if (t != null) {
+				if (FINBIF_MASTER_CHECKLIST.equals(t.getChecklist())) {
+					definingTaxa.add(t);
+				}
+			}
+			if (i++ > 30) break; 
+		}
+		Collections.sort(definingTaxa);
+
+		return responseData
+				.setViewName("informalGroups-edit")
+				.setData("action", "modify")
+				.setData("group", group)
+				.setData("definingTaxa", definingTaxa)
+				.setData("hasMore", definingTaxa.size() < definingTaxaIds.size());
 	}
 
 	private boolean addNew(HttpServletRequest req) {

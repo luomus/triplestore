@@ -2,6 +2,7 @@ package fi.luomus.triplestore.taxonomy.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -355,7 +356,18 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	@Override
 	public Filter getInformalGroupFilter() {
-		throw new UnsupportedOperationException();
+		return new Filter() {
+
+			@Override
+			public Set<Qname> getFilteredTaxons(Qname groupId) {
+				try {
+					return triplestoreDAO.getSearchDAO().searchQnames(new SearchParams(100, 0).predicate("MX.isPartOfInformalTaxonGroup").object(groupId.toString()));
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return Collections.emptySet();
+				}
+			}
+		};
 	}
 
 	@Override
