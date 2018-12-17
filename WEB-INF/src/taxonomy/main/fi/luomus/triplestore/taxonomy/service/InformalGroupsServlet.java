@@ -23,7 +23,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		ResponseData responseData = initResponseData(req);
 
 		if (getUser(req).isAdmin()) {
-			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload()); // for admin always reload; for others this is et in initResponseData
+			responseData.setData("informalGroups", getTaxonomyDAO().getInformalTaxonGroupsForceReload()); // for admin always reload; for others this is in initResponseData
 		}
 
 		if (req.getRequestURI().endsWith("/informalGroups")) {
