@@ -70,7 +70,9 @@ public class IUCNLineDataTests {
 		data.secondaryHabitats = "Mktvp";
 
 		assertEquals(null, data.getPrimaryHabitat());
-		assertEquals("[null : MKV.habitatMl : null, null : MKV.habitatIp : null, null : MKV.habitatMkt : [MKV.habitatSpecificTypeV, MKV.habitatSpecificTypeP]]", data.getSecondaryHabitats().toString());
+		assertEquals(
+				"[null : MKV.habitatMl : null, null : MKV.habitatIp : null, null : MKV.habitatMkt : [MKV.habitatSpecificTypeP, MKV.habitatSpecificTypeV]]", 
+				data.getSecondaryHabitats().toString());
 
 		assertEquals("", data.getHabitatGeneralNotes());
 		assertEquals("Ensisijainen: Kk, Ml, Ip; Muut: Mktvp", data.getHabitatNotes());
