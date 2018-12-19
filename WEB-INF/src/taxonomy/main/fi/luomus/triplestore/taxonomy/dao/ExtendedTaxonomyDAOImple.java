@@ -393,6 +393,8 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public void clearCaches() {
 		super.clearCaches();
 		taxonContainer.clearCaches();
+		cachedTaxonSearches.invalidateAll();
+		cachedDwUses.invalidateAll();
 	}
 
 	@Override
