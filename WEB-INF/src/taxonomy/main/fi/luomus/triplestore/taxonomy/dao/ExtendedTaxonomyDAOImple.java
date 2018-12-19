@@ -21,7 +21,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -144,7 +144,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		public void run() {
 			System.out.println("Staring to update IUCN Red List Taxon Group names...");
 			try {
-				for (IucnRedListInformalTaxonGroup group : getIucnRedListInformalTaxonGroupsForceReload().values()) {
+				for (RedListEvaluationGroup group : getRedListEvaluationGroupsForceReload().values()) {
 					Model dbGroup = triplestoreDAO.get(group.getQname());
 					if (namesDoNotMatch(group, dbGroup)) {
 						triplestoreDAO.storeIucnRedListTaxonGroup(group);
@@ -157,7 +157,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			System.out.println("IUCN Red List Taxon Group names updated!");
 		}
 
-		private boolean namesDoNotMatch(IucnRedListInformalTaxonGroup group, Model dbGroup) {
+		private boolean namesDoNotMatch(RedListEvaluationGroup group, Model dbGroup) {
 			for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
 				String locale = e.getKey();
 				if (locale == null) locale = "";
@@ -548,7 +548,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public Set<String> getIucnRedListInformalGroupRoots() {
-		return getRoots(getIucnRedListInformalTaxonGroups());
+		return getRoots(getRedListEvaluationGroups());
 	}
 
 	private <T extends InformalTaxonGroup> Set<String> getRoots(Map<String, T> allGroups) {

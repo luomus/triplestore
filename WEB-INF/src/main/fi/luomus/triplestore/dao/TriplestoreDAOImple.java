@@ -16,9 +16,9 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -333,7 +333,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception {
 		Model model = new Model(group.getQname());
 		model.setType(MVL_IUCN_RED_LIST_TAXON_GROUP);
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {

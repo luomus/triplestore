@@ -7,9 +7,9 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -218,15 +218,15 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void store(HabitatObject habitat) throws Exception {
 		// Auto-generated method stub
 		
+	}
+
+	@Override
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception {
+		// Auto-generated method stub
+		return null;
 	}
 
 }

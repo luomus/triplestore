@@ -6,8 +6,8 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -63,7 +63,7 @@ public interface TriplestoreDAO {
 	 * @return the same group
 	 * @throws Exception
 	 */
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception;
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception;
 
 	/**
 	 * Add a taxon into db. Taxon must have Qname already set.

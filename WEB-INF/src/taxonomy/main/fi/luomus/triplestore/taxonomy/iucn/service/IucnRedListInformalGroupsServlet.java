@@ -6,8 +6,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
@@ -26,9 +26,9 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		ResponseData responseData = initResponseData(req);
 
 		if (getUser(req).isAdmin()) {
-			responseData.setData("groups", getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload());
+			responseData.setData("groups", getTaxonomyDAO().getRedListEvaluationGroupsForceReload());
 		} else {
-			responseData.setData("groups", getTaxonomyDAO().getIucnRedListInformalTaxonGroups());
+			responseData.setData("groups", getTaxonomyDAO().getRedListEvaluationGroups());
 		}
 		
 		if (req.getRequestURI().endsWith("/iucn-groups")) {
@@ -39,11 +39,11 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		if (!getUser(req).isAdmin()) throw new IllegalAccessException("Only for admins");
 
 		if (addNew(req)) {
-			return responseData.setViewName("iucnGroups-edit").setData("action", "add").setData("group", new IucnRedListInformalTaxonGroup());
+			return responseData.setViewName("iucnGroups-edit").setData("action", "add").setData("group", new RedListEvaluationGroup());
 		}
 		
 		String qname = getQname(req);
-		IucnRedListInformalTaxonGroup group = getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload().get(qname);
+		RedListEvaluationGroup group = getTaxonomyDAO().getRedListEvaluationGroupsForceReload().get(qname);
 		if (group == null) {
 			return status404(res);
 		}
@@ -70,7 +70,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		
 		if (delete) {
 			triplestoreDAO.delete(new Subject(qname));
-			getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload();
+			getTaxonomyDAO().getRedListEvaluationGroupsForceReload();
 			getSession(req).setFlashSuccess("IUCN group deleted");
 			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
@@ -90,7 +90,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 			names.set("sv", Utils.upperCaseFirst(nameSV));
 		}
 
-		IucnRedListInformalTaxonGroup group = new IucnRedListInformalTaxonGroup(qname, names);
+		RedListEvaluationGroup group = new RedListEvaluationGroup(qname, names);
 
 		if (req.getParameter("MVL.hasIucnSubGroup") != null) {
 			for (String subGroupQname : req.getParameterValues("MVL.hasIucnSubGroup")) {
@@ -116,7 +116,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		}
 
 		triplestoreDAO.storeIucnRedListTaxonGroup(group);
-		getTaxonomyDAO().getIucnRedListInformalTaxonGroupsForceReload();
+		getTaxonomyDAO().getRedListEvaluationGroupsForceReload();
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New IUCN group added");

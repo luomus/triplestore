@@ -20,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.Person;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -33,14 +33,14 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
-import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
-import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -208,10 +208,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			int selectedYear = evaluation.getEvaluationYear() == null ? years.get(0) : evaluation.getEvaluationYear();
 			Evaluation previous = target.getPreviousEvaluation(selectedYear);
 			List<String> data = new ArrayList<>();
-			List<IucnRedListInformalTaxonGroup> targetGroups = getGroups(target);
-			IucnRedListInformalTaxonGroup groupRoot = getGroupRoot(target);
-			IucnRedListInformalTaxonGroup group2 = null;
-			IucnRedListInformalTaxonGroup group3 = null;
+			List<RedListEvaluationGroup> targetGroups = getGroups(target);
+			RedListEvaluationGroup groupRoot = getGroupRoot(target);
+			RedListEvaluationGroup group2 = null;
+			RedListEvaluationGroup group3 = null;
 			if (groupRoot !=  null) {
 				group2 = getSubGroup(groupRoot, targetGroups);
 				if (group2 != null) {
@@ -344,40 +344,40 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return Utils.toCSV(data);
 		}
 
-		private String groupName(IucnRedListInformalTaxonGroup group) {
+		private String groupName(RedListEvaluationGroup group) {
 			if (group == null) return "";
 			return group.getName("fi");
 		}
 
-		private IucnRedListInformalTaxonGroup getSubGroup(IucnRedListInformalTaxonGroup of, List<IucnRedListInformalTaxonGroup> in) {
+		private RedListEvaluationGroup getSubGroup(RedListEvaluationGroup of, List<RedListEvaluationGroup> in) {
 			for (Qname subGroupId : of.getSubGroups()) {
-				IucnRedListInformalTaxonGroup g = getGroup(subGroupId, in); 
+				RedListEvaluationGroup g = getGroup(subGroupId, in); 
 				if (g != null) return g;
 			}
 			return null;
 		}
 
-		private IucnRedListInformalTaxonGroup getGroup(Qname subGroupId, List<IucnRedListInformalTaxonGroup> in) {
-			for (IucnRedListInformalTaxonGroup g : in) {
+		private RedListEvaluationGroup getGroup(Qname subGroupId, List<RedListEvaluationGroup> in) {
+			for (RedListEvaluationGroup g : in) {
 				if (g.getQname().equals(subGroupId)) return g;
 			}
 			return null;
 		}
 
-		private IucnRedListInformalTaxonGroup getGroupRoot(EvaluationTarget target) {
-			for (IucnRedListInformalTaxonGroup group : getGroups(target)) {
-				if (!group.hasParent()) return group;
+		private RedListEvaluationGroup getGroupRoot(EvaluationTarget target) {
+			for (RedListEvaluationGroup group : getGroups(target)) {
+				if (group.isRoot()) return group;
 			}
 			return null;
 		}
 
-		private List<IucnRedListInformalTaxonGroup> getGroups(EvaluationTarget target) {
-			Set<Qname> groupIds = target.getTaxon().getIucnRedListTaxonGroups();
+		private List<RedListEvaluationGroup> getGroups(EvaluationTarget target) {
+			Set<Qname> groupIds = target.getTaxon().getRedListEvaluationGroups();
 			if (groupIds.isEmpty()) return Collections.emptyList();
-			List<IucnRedListInformalTaxonGroup> groups = new ArrayList<>();
+			List<RedListEvaluationGroup> groups = new ArrayList<>();
 			for (Qname groupId : groupIds) {
 				try {
-					IucnRedListInformalTaxonGroup g = getGroup(groupId);
+					RedListEvaluationGroup g = getGroup(groupId);
 					groups.add(g);
 					addParentGroups(groups, g);
 				} catch (Exception e) {
@@ -387,17 +387,18 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return groups;
 		}
 
-		private void addParentGroups(List<IucnRedListInformalTaxonGroup> groups, IucnRedListInformalTaxonGroup group) throws Exception {
-			while (group.hasParent()) {
-				group = getGroup(group.getParent());
-				if (!groups.contains(group)) {
-					groups.add(group);
+		private void addParentGroups(List<RedListEvaluationGroup> groups, RedListEvaluationGroup group) throws Exception {
+			for (Qname parentId : group.getParents()) {
+				RedListEvaluationGroup parent = getGroup(parentId);
+				if (!groups.contains(parent)) {
+					groups.add(parent);
+					addParentGroups(groups, parent);
 				}
 			}
 		}
 
-		private IucnRedListInformalTaxonGroup getGroup(Qname groupId) throws Exception {
-			IucnRedListInformalTaxonGroup group = getTaxonomyDAO().getIucnRedListInformalTaxonGroups().get(groupId.toString());
+		private RedListEvaluationGroup getGroup(Qname groupId) throws Exception {
+			RedListEvaluationGroup group = getTaxonomyDAO().getRedListEvaluationGroups().get(groupId.toString());
 			if (group == null) throw new IllegalStateException("Missing group " + groupId);
 			return group;
 		}

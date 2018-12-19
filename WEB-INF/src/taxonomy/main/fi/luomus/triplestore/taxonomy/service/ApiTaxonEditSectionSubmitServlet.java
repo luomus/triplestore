@@ -1,8 +1,5 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -192,32 +189,38 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	private void addParentInformalGroupsIfGiven(UsedAndGivenStatements usedAndGivenStatements, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		List<Statement> newStatements = new ArrayList<>();
+		Set<String> definedGroupIds = new HashSet<>();
 		for (Statement s : usedAndGivenStatements.getGivenStatements()) {
 			if (s.getPredicate().toString().equals(IS_PART_OF_INFORMAL_TAXON_GROUP)) {
-				newStatements.addAll(parentInformalGroups(s, taxonomyDAO));
+				if (!s.isResourceStatement()) continue;
+				String id = s.getObjectResource().getQname(); 
+				if (given(id)) {
+					definedGroupIds.add(s.getObjectResource().getQname());
+				}
 			}
 		}
-		for (Statement s : newStatements) {
-			usedAndGivenStatements.addStatement(s);
+		if (definedGroupIds.isEmpty()) return;
+		
+		Set<String> parentGroupIds = getParentInformalGroupIds(definedGroupIds, taxonomyDAO);
+
+		for (String parentGroupId : parentGroupIds) {
+			usedAndGivenStatements.addStatement(new Statement(IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE, new ObjectResource(parentGroupId)));
 		}
 	}
 
-	private Collection<Statement> parentInformalGroups(Statement s, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		if (!s.isResourceStatement()) return Collections.emptyList();
-		if (!given(s.getObjectResource().getQname())) return Collections.emptyList();
-
-		List<Statement> parentStatements = new ArrayList<>();
-		String informalGroupId = s.getObjectResource().getQname();
-		InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(informalGroupId);
-		if (group == null) return Collections.emptyList();
-
-		while (group.hasParent()) {
-			parentStatements.add(new Statement(IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE, new ObjectResource(group.getParent())));
-			group = taxonomyDAO.getInformalTaxonGroups().get(group.getParent().toString());
-			if (group == null) break;
+	private Set<String> getParentInformalGroupIds(Set<String> groupIds, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		Set<String> parentIds = new HashSet<>();
+		for (String groupId : groupIds) {
+			InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(groupId);
+			if (group == null) continue;
+			if (!group.hasParents()) continue;
+			for (Qname parentId : group.getParents()) {
+				parentIds.add(parentId.toString());
+			}
 		}
-		return parentStatements;
+		if (parentIds.isEmpty()) return parentIds;
+		parentIds.addAll(getParentInformalGroupIds(parentIds, taxonomyDAO));
+		return parentIds;
 	}
 
 	private boolean editingDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {

@@ -11,11 +11,11 @@ import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.ContentContextDescription;
 import fi.luomus.commons.containers.ContentGroups;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.OccurrenceType;
 import fi.luomus.commons.containers.Person;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
@@ -29,7 +29,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	@Override
 	public void clearCaches() {
 		// Auto-generated method stub
-		
 	}
 
 	@Override
@@ -131,7 +130,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	@Override
 	public void addOccurrences(EditableTaxon taxon) {
 		// Auto-generated method stub
-		
 	}
 
 	@Override
@@ -189,18 +187,6 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public Map<String, IucnRedListInformalTaxonGroup> getIucnRedListInformalTaxonGroups() throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<String, IucnRedListInformalTaxonGroup> getIucnRedListInformalTaxonGroupsForceReload() throws Exception {
-		// Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Set<String> getIucnRedListInformalGroupRoots() {
 		// Auto-generated method stub
 		return null;
@@ -208,8 +194,19 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
 	@Override
 	public void addHabitats(EditableTaxon taxon) {
-		// sAuto-generated method stub
-		
+		// Auto-generated method stub
+	}
+
+	@Override
+	public Map<String, RedListEvaluationGroup> getRedListEvaluationGroups() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, RedListEvaluationGroup> getRedListEvaluationGroupsForceReload() throws Exception {
+		// Auto-generated method stub
+		return null;
 	}
 
 }
