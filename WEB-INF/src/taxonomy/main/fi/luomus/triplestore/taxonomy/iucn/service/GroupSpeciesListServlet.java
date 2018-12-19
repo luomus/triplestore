@@ -41,6 +41,7 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
@@ -165,7 +166,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		protected List<String> getDownloadRows(Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
-			List<Integer> years = new ArrayList<>(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
+			List<Integer> years = new ArrayList<>();
+			for (EvaluationYear e : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
+				years.add(e.getYear());
+			}
 			Collections.reverse(years);
 			List<String> rows = new ArrayList<>(targets.size()*4);
 			rows.add(fileDownloadHeaderRow(selectedYear, years));

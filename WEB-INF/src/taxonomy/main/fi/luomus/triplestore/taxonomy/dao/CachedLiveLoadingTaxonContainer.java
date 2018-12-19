@@ -439,5 +439,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public int getLatestLockedRedListEvaluationYear() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
+	}
+
 }
 

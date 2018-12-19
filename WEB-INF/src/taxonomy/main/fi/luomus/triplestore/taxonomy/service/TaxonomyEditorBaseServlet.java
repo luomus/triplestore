@@ -1,6 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,7 @@ import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
@@ -95,9 +98,17 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
-		responseData.setData("evaluationYears", taxonomyDAO.getIucnDAO().getEvaluationYears());
+		responseData.setData("evaluationYears", years(taxonomyDAO));
 		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
 		return responseData;
+	}
+
+	private List<Integer> years(ExtendedTaxonomyDAO dao) throws Exception {
+		List<Integer> years = new ArrayList<>();
+		for (EvaluationYear y : dao.getIucnDAO().getEvaluationYears()) {
+			years.add(y.getYear());
+		}
+		return years;
 	}
 
 	public static long getLastAllowedTaxonDeleteTimestamp() {

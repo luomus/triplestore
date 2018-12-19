@@ -6,10 +6,11 @@ import java.util.Map;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.triplestore.taxonomy.iucn.model.Container;
-import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 
 public interface IucnDAO {
 
@@ -25,7 +26,7 @@ public interface IucnDAO {
 	public static final Predicate EDIT_NOTES_PREDICATE = new Predicate(Evaluation.EDIT_NOTES);
 	public static final Predicate EVALUATED_TAXON_PREDICATE = new Predicate(Evaluation.EVALUATED_TAXON);
 	
-	public List<Integer> getEvaluationYears() throws Exception;
+	public List<EvaluationYear> getEvaluationYears() throws Exception;
 
 	public Map<String, Editors> getGroupEditors() throws Exception;
 

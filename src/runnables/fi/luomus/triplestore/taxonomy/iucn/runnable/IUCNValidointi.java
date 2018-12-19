@@ -19,6 +19,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.Utils;
@@ -27,8 +28,8 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 import fi.luomus.triplestore.taxonomy.iucn.service.GroupSpeciesListServlet;
@@ -145,7 +146,7 @@ public class IUCNValidointi {
 
 		List<String> statusChangeHeaders = new ArrayList<>(commonHeaders);
 		statusChangeHeaders.add("Muutoksen syy");
-		GroupSpeciesListServlet.appendRLIHeader(VALIDATION_YEAR, taxonomyDAO.getIucnDAO().getEvaluationYears(), statusChangeHeaders);
+		GroupSpeciesListServlet.appendRLIHeader(VALIDATION_YEAR, years(), statusChangeHeaders);
 
 		List<String> automatedChangesHeaders = new ArrayList<>(commonHeaders);
 		automatedChangesHeaders.add("Muutos");
@@ -160,6 +161,14 @@ public class IUCNValidointi {
 		report(missing2019File, commonHeaders);
 		report(notReadyFile, commonHeaders);
 		report(groupErrorsFile, groupErrorsHeaders);
+	}
+
+	private static List<Integer> years() throws Exception {
+		List<Integer> years = new ArrayList<>();
+		for (EvaluationYear y : taxonomyDAO.getIucnDAO().getEvaluationYears()) {
+			years.add(y.getYear());
+		}
+		return years;
 	}
 
 	private static final Set<String> EN_CR = Utils.set("MX.iucnEN", "MX.iucnCR");
@@ -215,7 +224,7 @@ public class IUCNValidointi {
 	private static void reportStatusChange(Evaluation evaluation, EvaluationTarget target) throws Exception {
 		List<String> values = new ArrayList<>();
 		values.add(evaluation.getValue("MKV.reasonForStatusChange"));
-		List<Integer> years = taxonomyDAO.getIucnDAO().getEvaluationYears();
+		List<Integer> years = years();
 		GroupSpeciesListServlet.appendRLIValues(target, years, VALIDATION_YEAR, values);
 		report(statusChangeFile, evaluation, values);
 	}

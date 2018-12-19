@@ -15,6 +15,7 @@ import fi.luomus.commons.utils.FileCompresser;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/download-all/*"})
 public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
@@ -100,8 +101,8 @@ public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
 
 	private int getMaxYear() throws Exception {
 		int max = 0;
-		for (int year : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
-			max = Math.max(max, year);
+		for (EvaluationYear y : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
+			max = Math.max(max, y.getYear());
 		}
 		return max;
 	}

@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -48,6 +49,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory.EditHistoryEntry;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 
 public class IucnDAOImple implements IucnDAO {
 
@@ -142,28 +144,37 @@ public class IucnDAOImple implements IucnDAO {
 		cachedGroupEditors.invalidate();
 	}
 
-	private final SingleObjectCache<List<Integer>> 
+	private final SingleObjectCache<List<EvaluationYear>> 
 	evaluationYearsCache = 
 	new SingleObjectCache<>(
-			new CacheLoader<List<Integer>>() {
+			new CacheLoader<List<EvaluationYear>>() {
 				@Override
-				public List<Integer> load() {
-					List<Integer> evaluationYears = new ArrayList<>();
+				public List<EvaluationYear> load() {
+					List<EvaluationYear> evaluationYears = new ArrayList<>();
 					try {
 						for (Model m : triplestoreDAO.getSearchDAO().search(new SearchParams().type(Evaluation.IUCN_RED_LIST_EVALUATION_YEAR_CLASS))) {
 							int year = Integer.valueOf(m.getStatements(Evaluation.EVALUATION_YEAR).get(0).getObjectLiteral().getContent());
-							evaluationYears.add(year);
+							boolean locked = false;
+							if (m.hasStatements(Evaluation.IS_LOCKED)) {
+								locked = "true".equals(m.getStatements(Evaluation.IS_LOCKED).get(0).getObjectLiteral().getContent());
+							}
+							evaluationYears.add(new EvaluationYear(year, locked));
 						}
 					} catch (Exception e) {
 						throw new RuntimeException("Evaluation years cache", e);
 					}
-					Collections.sort(evaluationYears);
+					Collections.sort(evaluationYears, new Comparator<EvaluationYear>() {
+						@Override
+						public int compare(EvaluationYear o1, EvaluationYear o2) {
+							return Integer.compare(o1.getYear(), o2.getYear());
+						}
+					});
 					return evaluationYears;
 				}
 			}, 60*10);
 
 	@Override
-	public List<Integer> getEvaluationYears() throws Exception {
+	public List<EvaluationYear> getEvaluationYears() throws Exception {
 		return evaluationYearsCache.get();
 	}
 

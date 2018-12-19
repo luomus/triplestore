@@ -52,6 +52,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
@@ -235,7 +236,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 			if (!evaluation.getModel().hasStatements(Evaluation.PRIMARY_HABITAT)) return false;
 
-			if (taxon.getPrimaryHabitatId() != null && !isNewestPossible(evaluation)) {
+			if (taxon.getPrimaryHabitatId() != null && !isLatestLocked(evaluation)) {
 				return false; // don't override existing taxon data with old evaluation data
 			}
 
@@ -268,12 +269,18 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			return ""+h.getHabitat()+h.getHabitatSpecificTypes()+";";
 		}
 
-		private boolean isNewestPossible(Evaluation evaluation) throws Exception {
-			return evaluation.getEvaluationYear().equals(newestEvaluationYear());
+		private boolean isLatestLocked(Evaluation evaluation) throws Exception {
+			return evaluation.getEvaluationYear().equals(latestLockedEvaluationYear());
 		}
 
-		private Integer newestEvaluationYear() throws Exception {
-			return iucnDAO.getEvaluationYears().iterator().next();
+		private Integer latestLockedEvaluationYear() throws Exception {
+			int max = 0;
+			for (EvaluationYear y : iucnDAO.getEvaluationYears()) {
+				if (y.isLocked()) {
+					max = Math.max(max, y.getYear());
+				}
+			}
+			return max;
 		}
 
 		private void updateHabitats(EditableTaxon taxon, HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) throws Exception {
