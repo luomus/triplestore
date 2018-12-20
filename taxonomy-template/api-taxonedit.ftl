@@ -70,7 +70,7 @@
 		<select id="nameDecidedBy" name="MX.nameDecidedBy" data-placeholder="Select person" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQname>
-				<option value="${personQname}" <#if same(taxon.nameDecidedBy, personQname)>selected="selected"</#if> >${persons[personQname].fullname}</option>
+				<option value="${personQname}" <#if same(taxon.nameDecidedBy, personQname)>selected="selected"</#if> >${persons[personQname].fullname} ${personQname}</option>
 			</#list>
 		</select>
 		<@labeledInput "MX.nameDecidedDate" "on" />
@@ -469,7 +469,7 @@
 		<select name="MX.taxonEditor" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}" <#if taxon.hasExplicitlySetEditor(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+				<option value="${personQnameString}" <#if taxon.hasExplicitlySetEditor(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname} ${personQnameString}</option>
 			</#list>
 		</select>
 
@@ -478,7 +478,7 @@
 		<select name="MX.taxonExpert" data-placeholder="Select person" multiple="multiple" class="chosen" <@checkPermissions/> >
 			<option value=""></option>
 			<#list persons?keys as personQnameString>
-				<option value="${personQnameString}" <#if taxon.hasExplicitlySetExpert(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname}</option>
+				<option value="${personQnameString}" <#if taxon.hasExplicitlySetExpert(personQnameString)>selected="selected"</#if> >${persons[personQnameString].fullname} ${personQnameString}</option>
 			</#list>
 		</select>
 		
