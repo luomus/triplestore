@@ -1,5 +1,7 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -110,7 +112,7 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		IucnDAO iucnDAO = getTaxonomyDAO().getIucnDAO();
 		Container iucnContainer = iucnDAO.getIUCNContainer();
 		if (iucnContainer.hasTarget(taxonId)) {
-			for (Evaluation e : iucnContainer.getTarget(taxonId).getEvaluations()) {
+			for (Evaluation e : new ArrayList<>(iucnContainer.getTarget(taxonId).getEvaluations())) {
 				if (e.isCriticalDataEvaluation()) {
 					throw new IllegalStateException("Critical data validation should prevent this. Deleting evaluation with status " + e.getIucnStatus());
 				}
