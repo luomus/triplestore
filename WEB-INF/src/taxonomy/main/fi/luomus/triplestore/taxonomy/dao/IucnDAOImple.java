@@ -341,17 +341,24 @@ public class IucnDAOImple implements IucnDAO {
 
 	@Override
 	public void completeLoading(Evaluation evaluation) throws Exception {
-		setOccurrences(evaluation);
-		setEndangermentReasons(evaluation);
-		setHabitatObjects(evaluation);
+		Map<String, Model> attachedObjects = getAttachedObjectModels(evaluation);
+		setOccurrences(evaluation, attachedObjects);
+		setEndangermentReasons(evaluation, attachedObjects);
+		setHabitatObjects(evaluation, attachedObjects);
 		evaluation.setIncompletelyLoaded(false);
 	}
 
-	private void setHabitatObjects(Evaluation evaluation) throws Exception {
+	private Map<String, Model> getAttachedObjectModels(Evaluation evaluation) throws Exception {
 		Model model = evaluation.getModel();
-		Set<Qname> habitatObjectIds = getHabitatObjectIds(model);
-		Map<String, Model> asMap = getModelsAsMap(habitatObjectIds);
+		Set<Qname> ids = getOccurrenceIds(model);
+		ids.addAll(getEndangermentIds(model));
+		ids.addAll(getHabitatObjectIds(model));
+		Map<String, Model> asMap = getModelsAsMap(ids);
+		return asMap;
+	}
 
+	private void setHabitatObjects(Evaluation evaluation, Map<String, Model> asMap) throws Exception {
+		Model model = evaluation.getModel();
 		if (model.hasStatements(Evaluation.PRIMARY_HABITAT)) {
 			String id = getPrimaryHabitatId(model);
 			Model habitatModel = asMap.get(id);
@@ -397,11 +404,10 @@ public class IucnDAOImple implements IucnDAO {
 		return habitatObjectIds;
 	}
 
-	private void setEndangermentReasons(Evaluation evaluation) throws Exception {
+	private void setEndangermentReasons(Evaluation evaluation, Map<String, Model> attatchedObjects) throws Exception {
 		Model model = evaluation.getModel();
-		Map<String, Model> modelsAsMap = getEndangermentModels(model);
 		for (Statement s : model.getStatements(Evaluation.HAS_ENDANGERMENT_REASON)) {
-			Model endangermentModel = modelsAsMap.get(s.getObjectResource().getQname());
+			Model endangermentModel = attatchedObjects.get(s.getObjectResource().getQname());
 			if (notGiven(endangermentModel)) {
 				errorReporter.report("Could not find endangerment reason " + s.getObjectResource().getQname() + " of " + model.getSubject().getQname());
 				continue;
@@ -410,7 +416,7 @@ public class IucnDAOImple implements IucnDAO {
 			evaluation.addEndangermentReason(endangermentObject);
 		}
 		for (Statement s : model.getStatements(Evaluation.HAS_THREAT)) {
-			Model endangermentModel = modelsAsMap.get(s.getObjectResource().getQname());
+			Model endangermentModel = attatchedObjects.get(s.getObjectResource().getQname());
 			if (notGiven(endangermentModel)) {
 				errorReporter.report("Could not find threat " + s.getObjectResource().getQname() + " of " + model.getSubject().getQname());
 				continue;
@@ -422,11 +428,6 @@ public class IucnDAOImple implements IucnDAO {
 
 	private boolean notGiven(Model model) {
 		return model == null || model.isEmpty();
-	}
-
-	private Map<String, Model> getEndangermentModels(Model model) throws Exception {
-		Set<Qname> endangermentObjectIds = getEndangermentIds(model);
-		return getModelsAsMap(endangermentObjectIds);
 	}
 
 	private Set<Qname> getEndangermentIds(Model model) {
@@ -447,12 +448,10 @@ public class IucnDAOImple implements IucnDAO {
 		return endangermentObject;
 	}
 
-	private void setOccurrences(Evaluation evaluation) throws Exception {
+	private void setOccurrences(Evaluation evaluation, Map<String, Model> attachedObjects) throws Exception {
 		Model model = evaluation.getModel();
-		Map<String, Model> asMap = getOccurrenceModels(model);
-
 		for (Statement hasOccurrence : model.getStatements(Evaluation.HAS_OCCURRENCE)) {
-			Model occurrenceModel = asMap.get(hasOccurrence.getObjectResource().getQname());
+			Model occurrenceModel = attachedObjects.get(hasOccurrence.getObjectResource().getQname());
 			if (notGiven(occurrenceModel)) {
 				errorReporter.report("Could not find occurrence " + hasOccurrence.getObjectResource().getQname() + " for evaluation " + evaluation.getId() + " of " + evaluation.getSpeciesQname());
 				continue;
@@ -460,11 +459,6 @@ public class IucnDAOImple implements IucnDAO {
 			Occurrence occurrence = getOccurrence(occurrenceModel);
 			evaluation.addOccurrence(occurrence);			
 		}
-	}
-
-	private Map<String, Model> getOccurrenceModels(Model model) throws Exception {
-		Set<Qname> occurrenceIds = getOccurrenceIds(model);
-		return getModelsAsMap(occurrenceIds);
 	}
 
 	private Map<String, Model> getModelsAsMap(Set<Qname> subjects) throws Exception {
