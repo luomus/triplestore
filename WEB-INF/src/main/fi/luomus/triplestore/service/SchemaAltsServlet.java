@@ -76,7 +76,9 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		JSONArray json = new JSONArray();
 		List<Statement> orderedStatements = getAltStatementsInOrder(model);
 		for (Statement s : orderedStatements) {
-			json.appendObject(parseAlt(s, models));
+			String altId = s.getObjectResource().getQname();
+			Model altModel = models.getOrDefault(altId, new Model(new Qname(altId)));
+			json.appendObject(parseAlt(altModel));
 		}
 		return json;
 	}
@@ -105,12 +107,18 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		return orderedStatements;
 	}
 
-	private JSONObject parseAlt(Statement s, Map<String, Model> models) {
+	private JSONObject parseAlt(Model model) {
 		JSONObject json = new JSONObject();
-		json.setString("id", s.getObjectResource().getQname());
-		Model objectResource = models.get(s.getObjectResource().getQname());
-		if (objectResource != null) {
-			json.setObject("value", labels(objectResource));
+		json.setString("id", model.getSubject().getQname());
+		if (model.hasStatements("rdfs:label")) {
+			json.setObject("value", labels(model));
+		}
+		for (Statement s : model) {
+			String predicate = s.getPredicate().getQname(); 
+			if (predicate.equals("rdfs:label")) continue;
+			if (s.isLiteralStatement()) {
+				json.getObject(shortName(predicate)).setString(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+			}
 		}
 		return json;
 	}
