@@ -205,11 +205,13 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 					EditableTaxon taxon = (EditableTaxon) getTaxon(speciesQname);
 					if (c++ % 5000 == 0) System.out.println(" ... syncing " + (c-1));
 					boolean statusesChanged = syncRedListStatuses(target, taxon);
-					boolean habitatsChanged = syncHabitats(target, taxon);
-					boolean typeOfOccurrenceChanged = syncTypeOfOccurrence(target, taxon);
-					if (statusesChanged || habitatsChanged || typeOfOccurrenceChanged) {
-						taxon.invalidateSelf();
-					}
+					// The following can be returned to use once new evaluation data is again generated for taxa -- unless if taxon database at that point already has extensive info, then this is not needed even then
+					//boolean habitatsChanged = syncHabitats(target, taxon);
+					//boolean typeOfOccurrenceChanged = syncTypeOfOccurrence(target, taxon);
+					//if (statusesChanged || habitatsChanged || typeOfOccurrenceChanged) {
+					//	taxon.invalidateSelf();
+					//}
+					if (statusesChanged) taxon.invalidateSelf();
 				}
 			} catch (Exception e) {
 				errorReporter.report("Syncing taxon data with IUCN data", e);
@@ -217,6 +219,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			System.out.println("Synchronizing taxon data with IUCN data completed!");
 		}
 
+		@SuppressWarnings("unused")
 		private boolean syncTypeOfOccurrence(EvaluationTarget target, EditableTaxon taxon) throws Exception {
 			if (!taxon.getTypesOfOccurrenceInFinland().isEmpty()) return false; // Never override types already set to taxon
 
@@ -230,6 +233,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			return true;
 		}
 
+		@SuppressWarnings("unused")
 		private boolean syncHabitats(EvaluationTarget target, EditableTaxon taxon) throws Exception {
 			Evaluation evaluation = getLatestReadyEvaluation(target); // TODO change to latest locked
 			if (evaluation == null) return false;
