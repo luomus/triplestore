@@ -109,7 +109,9 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		names.set("fi", Utils.upperCaseFirst(nameFI));
 		names.set("sv", Utils.upperCaseFirst(nameSV));
 
-		InformalTaxonGroup group = new InformalTaxonGroup(qname, names);
+		int order = getSortOrder(req);
+		
+		InformalTaxonGroup group = new InformalTaxonGroup(qname, names, order);
 
 		if (req.getParameter("MVL.hasSubGroup") != null) {
 			for (String subGroupQname : req.getParameterValues("MVL.hasSubGroup")) {
@@ -117,6 +119,10 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			}
 		}
 
+		if ("true".equals(req.getParameter("explicitlyDefinedRoot"))) {
+			group.setExplicitlyDefinedRoot(true);
+		}
+		
 		triplestoreDAO.storeInformalTaxonGroup(group);
 		getTaxonomyDAO().getInformalTaxonGroupsForceReload();
 
@@ -128,5 +134,12 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname);
 		}
 	}
-
+	
+	private int getSortOrder(HttpServletRequest req) {
+		try {
+			return Integer.valueOf(req.getParameter("sortOrder"));
+		} catch (Exception e) {}
+		return Integer.MAX_VALUE;
+	}
+	
 }

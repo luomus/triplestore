@@ -78,7 +78,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MZ_UNIT_OF_MEASUREMENT = "MZ.unitOfMeasurement";
 	private static final String XSD_MAX_OCCURS = "xsd:maxOccurs";
 	private static final String XSD_MIN_OCCURS = "xsd:minOccurs";
-	private static final String SORT_ORDER2 = "sortOrder";
+	private static final String SORT_ORDER = "sortOrder";
 	private static final String RDFS_RANGE = "rdfs:range";
 	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
@@ -92,7 +92,6 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String DC_URI = "dc:URI";
 	private static final String DC_BIBLIOGRAPHIC_CITATION = "dc:bibliographicCitation";
 	private static final String MP_PUBLICATION = "MP.publication";
-	private static final String SORT_ORDER = SORT_ORDER2;
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
@@ -328,6 +327,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname parent : group.getSubGroups()) {
 			model.addStatementIfObjectGiven(MVL_HAS_SUB_GROUP, parent);
 		}
+		model.addStatement(new Statement(SORT_ORDER_PREDICATE, group.getOrder()));
+		if (group.isExplicitlyDefinedRoot()) {
+			model.addStatement(new Statement(new Predicate("MVL.explicitlyDefinedRoot"), true));
+		}
 		store(model);
 		return group;
 	}
@@ -348,6 +351,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname groupId : group.getInformalGroups()) {
 			model.addStatementIfObjectGiven(MVL_INCLUDES_INFORMAL_TAXON_GROUP, groupId);
 		}
+		model.addStatement(new Statement(SORT_ORDER_PREDICATE, group.getOrder()));
 		store(model);
 		return group;
 	}
@@ -504,7 +508,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private RdfProperty createProperty(Model model) throws Exception {
 		String range = getValue(RDFS_RANGE, model);
-		String sortOrder = getValue(SORT_ORDER2, model);
+		String sortOrder = getValue(SORT_ORDER, model);
 		String minOccurs = getValue(XSD_MIN_OCCURS, model);
 		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
 		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);

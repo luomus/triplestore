@@ -7,13 +7,13 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -202,7 +202,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname + " for target " + target);
 						continue;
 					}
-					EditableTaxon taxon = (EditableTaxon) getTaxon(speciesQname);
+					EditableTaxon taxon = getTaxon(speciesQname);
 					if (c++ % 5000 == 0) System.out.println(" ... syncing " + (c-1));
 					boolean statusesChanged = syncRedListStatuses(target, taxon);
 					// The following can be returned to use once new evaluation data is again generated for taxa -- unless if taxon database at that point already has extensive info, then this is not needed even then
@@ -565,13 +565,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	private <T extends InformalTaxonGroup> Set<String> getRoots(Map<String, T> allGroups) {
-		Set<String> roots = new LinkedHashSet<>(allGroups.keySet());
-		for (T group : allGroups.values()) {
-			for (Qname subGroup : group.getSubGroups()) {
-				roots.remove(subGroup.toString());
-			}
-		}
-		return roots;
+		return allGroups.values().stream()
+				.filter(g -> g.isRoot())
+				.map(g -> g.getQname().toString())
+				.collect(Collectors.toSet());
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 

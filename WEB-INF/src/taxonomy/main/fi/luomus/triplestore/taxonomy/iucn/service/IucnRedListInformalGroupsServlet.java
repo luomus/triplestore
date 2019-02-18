@@ -30,7 +30,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		} else {
 			responseData.setData("groups", getTaxonomyDAO().getRedListEvaluationGroups());
 		}
-		
+
 		if (req.getRequestURI().endsWith("/iucn-groups")) {
 			responseData.setData("roots", getTaxonomyDAO().getIucnRedListInformalGroupRoots());
 			return responseData.setViewName("iucnGroups");
@@ -41,7 +41,7 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		if (addNew(req)) {
 			return responseData.setViewName("iucnGroups-edit").setData("action", "add").setData("group", new RedListEvaluationGroup());
 		}
-		
+
 		String qname = getQname(req);
 		RedListEvaluationGroup group = getTaxonomyDAO().getRedListEvaluationGroupsForceReload().get(qname);
 		if (group == null) {
@@ -57,24 +57,24 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 	private boolean delete(HttpServletRequest req) {
 		return req.getRequestURI().contains("/delete/");
 	}
-	
+
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		boolean addNew = addNew(req);
 		boolean delete = delete(req);
-		
+
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 
 		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
-		
+
 		if (delete) {
 			triplestoreDAO.delete(new Subject(qname));
 			getTaxonomyDAO().getRedListEvaluationGroupsForceReload();
 			getSession(req).setFlashSuccess("IUCN group deleted");
 			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
-		
+
 		String nameEN = req.getParameter("name_en");
 		String nameFI = req.getParameter("name_fi");
 		String nameSV = req.getParameter("name_sv");
@@ -90,7 +90,9 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 			names.set("sv", Utils.upperCaseFirst(nameSV));
 		}
 
-		RedListEvaluationGroup group = new RedListEvaluationGroup(qname, names);
+		int order = getSortOrder(req);
+
+		RedListEvaluationGroup group = new RedListEvaluationGroup(qname, names, order);
 
 		if (req.getParameter("MVL.hasIucnSubGroup") != null) {
 			for (String subGroupQname : req.getParameterValues("MVL.hasIucnSubGroup")) {
@@ -125,6 +127,13 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 			getSession(req).setFlashSuccess("IUCN group modified");
 			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
+	}
+
+	private int getSortOrder(HttpServletRequest req) {
+		try {
+			return Integer.valueOf(req.getParameter("sortOrder"));
+		} catch (Exception e) {}
+		return Integer.MAX_VALUE;
 	}
 
 }

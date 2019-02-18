@@ -26,6 +26,17 @@
 			<input type="text" name="name_sv" class="required checklistName" value="${(group.name.forLocale("sv")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
 		<li>
+			<label>Order (number 1-n)</label>
+			<input type="text" name="sortOrder" class="required" value="${(group.order?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
+		</li>
+		<li>
+			<label>Explicitly defined root (is root even if has parents)</label>
+			<select name="explicitlyDefinedRoot">	
+				<option value="">&nbsp;</option>
+				<option value="true" <#if group.explicitlyDefinedRoot>selected="selected"</#if> >Yes</option>
+			</select>
+		</li>
+		<li>
 			<label>Has sub groups</label>
 			<select name="MVL.hasSubGroup" data-placeholder="Select group" class="chosen" multiple="multiple">
 				<option value=""></option>
