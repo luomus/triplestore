@@ -364,7 +364,7 @@
  	<@iucnInput "MKV.criteriaForStatus" "MKV.criteriaForStatusNotes" />
 	<@iucnMinMax "Arvioinnin epävarmuuden vaihteluväli" "MKV.redListStatusMin" "MKV.redListStatusMax" />
 	
-	<@iucnInput "MKV.exteralPopulationImpactOnRedListStatus" "MKV.exteralPopulationImpactOnRedListStatusNotes" />
+	<@iucnInput "MKV.externalPopulationImpactOnRedListStatus" "MKV.externalPopulationImpactOnRedListStatusNotes" />
 	
 	<@iucnInput "MKV.reasonForStatusChange" "MKV.reasonForStatusChangeNotes" />
 	

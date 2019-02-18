@@ -12,8 +12,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
+import fi.luomus.commons.utils.Utils;
 
 public class IUCNLineData {
 
@@ -73,7 +73,7 @@ public class IUCNLineData {
 	public String groundsForEvaluationNotes;
 	public String redListStatus;
 	public String criteriaForStatus;
-	public String exteralPopulationImpactOnRedListStatus;
+	public String externalPopulationImpactOnRedListStatus;
 	public String reasonForStatusChange;
 	public String redListStatusRange;
 	public String possiblyRE;
@@ -222,7 +222,7 @@ public class IUCNLineData {
 		threats = s(8);
 		redListStatus = s(3);
 		criteriaForStatus = s(4);
-		exteralPopulationImpactOnRedListStatus = s(5);
+		externalPopulationImpactOnRedListStatus = s(5);
 		legacyInformalGroup = s(1);
 	}
 
@@ -915,14 +915,14 @@ public class IUCNLineData {
 		return taxonQname;
 	}
 
-	public Qname getExteralPopulationImpactOnRedListStatus() {
-		if (!given(exteralPopulationImpactOnRedListStatus)) {
+	public Qname getExternalPopulationImpactOnRedListStatus() {
+		if (!given(externalPopulationImpactOnRedListStatus)) {
 			return null;
 		}
-		if (exteralPopulationImpactOnRedListStatus.equals("-1")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1");
-		if (exteralPopulationImpactOnRedListStatus.equals("-2")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus2");
-		if (exteralPopulationImpactOnRedListStatus.equals("1")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumPlus1");
-		if (exteralPopulationImpactOnRedListStatus.equals("2")) return new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumPlus2");
+		if (externalPopulationImpactOnRedListStatus.equals("-1")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus1");
+		if (externalPopulationImpactOnRedListStatus.equals("-2")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus2");
+		if (externalPopulationImpactOnRedListStatus.equals("1")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumPlus1");
+		if (externalPopulationImpactOnRedListStatus.equals("2")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumPlus2");
 		return null;
 	}
 

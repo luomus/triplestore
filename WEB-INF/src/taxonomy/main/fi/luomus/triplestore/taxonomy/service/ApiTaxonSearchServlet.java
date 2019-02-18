@@ -35,12 +35,13 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 			return responseData;
 		}
 		Qname checklist = PublicTaxonSearchApiServlet.parseChecklist(req);
-		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
+		Boolean onlySpecies = null;
+		if ("true".equals(req.getParameter("onlySpecies"))) onlySpecies = true;
 		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
 		searchword = searchword.trim();
 		Document response =  getTaxonomyDAO()
 				.search(new TaxonSearch(searchword, 10, checklist)
-						.setOnlySpecies(onlySpecies)
+						.setSpecies(onlySpecies)
 						.setOnlyFinnish(onlyFinnish))
 				.getResultsAsDocument();
 		responseData.setData("response", response);

@@ -417,7 +417,7 @@ public class IUCN2010Sisaan {
 		model.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, data.getTypeOfOccurrenceInFinland());
 		model.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND+NOTES, data.getTypeOfOccurrenceInFinlandNotes());
 		model.addStatementIfObjectGiven("MKV.redListStatusAccuracyNotes", data.redListStatusAccuracyNotes);
-		model.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, data.getExteralPopulationImpactOnRedListStatus());
+		model.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, data.getExternalPopulationImpactOnRedListStatus());
 		String editNotes = "Ladattu tiedostosta";
 		if (data.editNotes != null) editNotes = data.editNotes;
 		model.addStatementIfObjectGiven(Evaluation.EDIT_NOTES, editNotes);

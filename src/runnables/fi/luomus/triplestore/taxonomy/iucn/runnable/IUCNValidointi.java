@@ -190,7 +190,7 @@ public class IUCNValidointi {
 			}
 		}
 		if (RE_DD_NA_NE.contains(evaluation.getIucnStatus())) {
-			if (evaluation.hasValue("MKV.exteralPopulationImpactOnRedListStatus")) {
+			if (evaluation.hasValue("MKV.externalPopulationImpactOnRedListStatus")) {
 				reportAutomaticChange(evaluation, "Poistetaan luokan alenn./korott., koska luokka on " + s(evaluation.getIucnStatus()));
 			}
 		}

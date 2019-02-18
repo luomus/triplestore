@@ -17,13 +17,13 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
-import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
-import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 
@@ -448,7 +448,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_A, new Qname("MX.iucnDD"));
 		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, new Qname("MX.iucnNA"));
 		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_C, new Qname("MX.iucnNE"));
-		givenModel.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, new Qname("MKV.exteralPopulationImpactOnRedListStatusEnumMinus1"));
+		givenModel.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus1"));
 
 		// Silence some other validations
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_A, "A1a");

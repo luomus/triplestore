@@ -330,7 +330,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(v(evaluation, "MKV.redListStatusAccuracyNotes"));
 			data.add(v(evaluation, "MKV.redListStatusNotes"));
 			data.add(v(evaluation, "MKV.criteriaForStatusNotes"));
-			data.add(v(evaluation, "MKV.exteralPopulationImpactOnRedListStatusNotes"));
+			data.add(v(evaluation, "MKV.externalPopulationImpactOnRedListStatusNotes"));
 			data.add(v(evaluation, "MKV.reasonForStatusChangeNotes"));
 			data.add(v(evaluation, "MKV.ddReasonNotes"));
 			data.add(v(evaluation, "MKV.possiblyRENotes"));

@@ -72,9 +72,10 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
 		boolean onlyExact = TRUE.equals(req.getParameter(ONLY_EXACT));
-		boolean onlySpecies = TRUE.equals(req.getParameter(ONLY_SPECIES));
+		Boolean onlySpecies = null;
 		boolean onlyFinnish = TRUE.equals(req.getParameter(ONLY_FINNISH));
-		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setOnlySpecies(onlySpecies);
+		if (TRUE.equals(req.getParameter(ONLY_SPECIES))) onlySpecies = true;
+		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setSpecies(onlySpecies);
 		for (Qname q : requiredInformalGroups) {
 			taxonSearch.addInformalTaxonGroup(q);
 		}
