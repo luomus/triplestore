@@ -3,7 +3,6 @@ package fi.luomus.triplestore.taxonomy.models;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import fi.luomus.commons.containers.AdministrativeStatus;
 import fi.luomus.commons.containers.Area;
@@ -145,7 +144,7 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public Set<String> getInformalTaxonGroupRoots() {
+	public List<String> getInformalTaxonGroupRoots() {
 		// Auto-generated method stub
 		return null;
 	}
@@ -187,7 +186,7 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 	}
 
 	@Override
-	public Set<String> getIucnRedListInformalGroupRoots() {
+	public List<String> getIucnRedListInformalGroupRoots() {
 		// Auto-generated method stub
 		return null;
 	}

@@ -555,20 +555,20 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public Set<String> getInformalTaxonGroupRoots() {
+	public List<String> getInformalTaxonGroupRoots() {
 		return getRoots(getInformalTaxonGroups());
 	}
 
 	@Override
-	public Set<String> getIucnRedListInformalGroupRoots() {
+	public List<String> getIucnRedListInformalGroupRoots() {
 		return getRoots(getRedListEvaluationGroups());
 	}
 
-	private <T extends InformalTaxonGroup> Set<String> getRoots(Map<String, T> allGroups) {
+	private <T extends InformalTaxonGroup> List<String> getRoots(Map<String, T> allGroups) {
 		return allGroups.values().stream()
-				.filter(g -> g.isRoot())
-				.map(g -> g.getQname().toString())
-				.collect(Collectors.toSet());
+				.filter(g->g.isRoot())
+				.map(g->g.getQname().toString())
+				.collect(Collectors.toList());
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 

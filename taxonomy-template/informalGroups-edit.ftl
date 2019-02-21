@@ -27,10 +27,10 @@
 		</li>
 		<li>
 			<label>Order (number 1-n)</label>
-			<input type="text" name="sortOrder" class="required" value="${(group.order?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
+			<input type="text" name="sortOrder" class="required" value="${group.order}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
 		<li>
-			<label>Explicitly defined root (is root even if has parents)</label>
+			<label>Explicitly defined root</label>
 			<select name="explicitlyDefinedRoot">	
 				<option value="">&nbsp;</option>
 				<option value="true" <#if group.explicitlyDefinedRoot>selected="selected"</#if> >Yes</option>

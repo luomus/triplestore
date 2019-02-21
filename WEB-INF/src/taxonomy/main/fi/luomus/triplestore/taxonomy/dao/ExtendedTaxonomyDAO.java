@@ -2,7 +2,6 @@ package fi.luomus.triplestore.taxonomy.dao;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -34,8 +33,8 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO {
 	 */
 	public EditableTaxon createTaxon() throws Exception;
 
-	public Set<String> getInformalTaxonGroupRoots();
-	public Set<String> getIucnRedListInformalGroupRoots();
+	public List<String> getInformalTaxonGroupRoots();
+	public List<String> getIucnRedListInformalGroupRoots();
 
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception;
 
