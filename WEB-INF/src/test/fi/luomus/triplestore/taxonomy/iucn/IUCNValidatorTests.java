@@ -148,7 +148,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnNE"));
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
-		assertEquals("Arvoa \"NE - Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
+		assertEquals("Arvoa \"NE – Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
 	}
 
 	@Test
@@ -169,7 +169,7 @@ public class IUCNValidatorTests {
 		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnLC"));
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
-		assertEquals("Arvovälin ala-arvo \"VU - Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC - Elinvoimaiset\"", result.listErrors().get(0));
+		assertEquals("Arvovälin ala-arvo \"VU – Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC – Elinvoimaiset\"", result.listErrors().get(0));
 	}
 
 	@Test
@@ -460,10 +460,10 @@ public class IUCNValidatorTests {
 		assertEquals(""+
 				"[Luokan alennusta/korotusta ei saa käyttää luokille DD, NA, NE, RE, EW, EX, " +
 				"DD syy on ilmoitettava, " + 
-				"Arvoa \"DD - Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
-				"Luokkaa \"DD - Puuttellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
-				"Luokkaa \"NA - Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
-				"Luokkaa \"NE - Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
+				"Arvoa \"DD – Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
+				"Luokkaa \"DD – Puuttellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
+				"Luokkaa \"NA – Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
+				"Luokkaa \"NE – Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
 	}
 
 	@Test
