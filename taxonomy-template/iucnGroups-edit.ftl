@@ -40,7 +40,7 @@
 		</li>
 		<li>
 			<label>Order (number 1-n)</label>
-			<input type="text" name="sortOrder" class="required" value="${(group.order?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
+			<input type="text" name="sortOrder" value="${group.order}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
 	</ul>
 	<hr>
