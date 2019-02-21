@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -58,8 +57,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String EN = "en";
 	private static final String SV = "sv";
 	private static final String FI = "fi";
-	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
-	private static final Predicate IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE = new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP);
 	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
 	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
@@ -85,8 +82,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 		RdfProperties properties = dao.getProperties(MX_TAXON);
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
-		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
-
+		
 		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
@@ -186,41 +182,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		}
 		usedAndGivenStatements.addStatement(new Statement(SCIENTIFICNAME_PREDICATE, new ObjectLiteral(alteredScientificName)));
 		usedAndGivenStatements.addStatement(new Statement(AUTHOR_PREDICATE, new ObjectLiteral(alteredAuthor)));
-	}
-
-	private void addParentInformalGroupsIfGiven(UsedAndGivenStatements usedAndGivenStatements, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		Set<String> definedGroupIds = new HashSet<>();
-		for (Statement s : usedAndGivenStatements.getGivenStatements()) {
-			if (s.getPredicate().toString().equals(IS_PART_OF_INFORMAL_TAXON_GROUP)) {
-				if (!s.isResourceStatement()) continue;
-				String id = s.getObjectResource().getQname(); 
-				if (given(id)) {
-					definedGroupIds.add(s.getObjectResource().getQname());
-				}
-			}
-		}
-		if (definedGroupIds.isEmpty()) return;
-		
-		Set<String> parentGroupIds = getParentInformalGroupIds(definedGroupIds, taxonomyDAO);
-
-		for (String parentGroupId : parentGroupIds) {
-			usedAndGivenStatements.addStatement(new Statement(IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE, new ObjectResource(parentGroupId)));
-		}
-	}
-
-	private Set<String> getParentInformalGroupIds(Set<String> groupIds, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		Set<String> parentIds = new HashSet<>();
-		for (String groupId : groupIds) {
-			InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(groupId);
-			if (group == null) continue;
-			if (!group.hasParents()) continue;
-			for (Qname parentId : group.getParents()) {
-				parentIds.add(parentId.toString());
-			}
-		}
-		if (parentIds.isEmpty()) return parentIds;
-		parentIds.addAll(getParentInformalGroupIds(parentIds, taxonomyDAO));
-		return parentIds;
 	}
 
 	private boolean editingDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
