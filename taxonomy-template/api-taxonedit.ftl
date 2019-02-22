@@ -74,6 +74,7 @@
 			</#list>
 		</select>
 		<@labeledInput "MX.nameDecidedDate" "on" />
+		<@labeledInput "MX.typeSpecimenURI" "off" />
 	<@portletFooter />
 	
 	<@portletHeader "Source of taxonomy" />
@@ -156,6 +157,9 @@
 				<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
 			</tbody>
 		</table>
+		
+		<@label "MX.occurrenceInFinlandSpecimenURI" "longtext" />
+		<@input "MX.occurrenceInFinlandSpecimenURI" "off" />
 		
 		<@label "MX.typeOfOccurrenceInFinlandNotes" "longtext" />
 		<@textarea "MX.typeOfOccurrenceInFinlandNotes" />
