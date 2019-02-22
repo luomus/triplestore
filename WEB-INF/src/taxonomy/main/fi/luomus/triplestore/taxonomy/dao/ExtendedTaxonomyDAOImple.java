@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -448,6 +449,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				Qname status = null;
 				String notes = null;
 				Integer year = null;
+				URI specimenURI = null;
 				for (Statement s : model.getStatements()) {
 					if (s.getPredicate().getQname().equals("MO.area")) {
 						area = q(s.getObjectResource());
@@ -459,11 +461,16 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 						try {
 							year = Integer.valueOf(s.getObjectLiteral().getContent());
 						} catch (Exception e) {}
+					} else if (s.getPredicate().getQname().equals("MO.specimenURI")) {
+						try {
+							specimenURI = new URI(s.getObjectLiteral().getContent());
+						} catch (Exception e) {}
 					}
 				}
 				Occurrence occurrence = new Occurrence(id, area, status);
 				occurrence.setNotes(notes);
 				occurrence.setYear(year);
+				occurrence.setSpecimenURI(specimenURI);
 				taxon.getOccurrences().setOccurrence(occurrence);
 			}
 		} catch (Exception e) {

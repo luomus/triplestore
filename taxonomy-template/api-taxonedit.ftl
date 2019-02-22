@@ -44,10 +44,10 @@
 			</div>
 			<div id="alteredNamesInputs" class="hidden">
 				<label>New scientific name</label>
-				<input type="text" name="alteredScientificName" id="alteredScientificName" />
+				<input type="text" name="alteredScientificName" id="alteredScientificName" autocomplete="off" />
 				<br />
 				<label>New authors</label>
-				<input type="text" name="alteredAuthor" id="alteredAuthor" />
+				<input type="text" name="alteredAuthor" id="alteredAuthor" autocomplete="off" />
 			</div>
 			<#if noPermissions??><#else>
 			<span id="scientificNameToolButtons">
@@ -387,6 +387,7 @@
 				<th>Status</th>
 				<th>Notes</th>
 				<th>Year</th>
+				<th>Specimen URI</th>
 			</tr>
 			<#list biogeographicalProvinces?values as area>
 				<tr>
@@ -404,10 +405,13 @@
 						</select>
 					</td>
 					<td>
-						<input class="notes" name="MO.occurrence___${area.qname}___notes" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).notes)!"")?html}">
+						<input class="notes" name="MO.occurrence___${area.qname}___notes" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).notes)!"")?html}" >
 					</td>
 					<td>
-						<input class="year" name="MO.occurrence___${area.qname}___year" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).year)!"")?html}">
+						<input class="year" name="MO.occurrence___${area.qname}___year" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).year)!"")?html}" autocomplete="off" >
+					</td>
+					<td>
+						<input class="specimenURI" name="MO.occurrence___${area.qname}___specimenURI" <@checkPermissions/> value="${((taxon.occurrences.getOccurrence(area.qname).specimenURI)!"")?html}" autocomplete="off" >
 					</td>
 				</tr>
 			</#list>

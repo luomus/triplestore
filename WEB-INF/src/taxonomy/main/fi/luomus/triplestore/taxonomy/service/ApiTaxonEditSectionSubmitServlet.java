@@ -1,5 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -76,13 +77,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String alteredAuthor = req.getParameter("alteredAuthor");
 		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
 		boolean storeHabitats = storeHabitats(req);
-		
+
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
 		RdfProperties properties = dao.getProperties(MX_TAXON);
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
-		
+
 		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
@@ -144,7 +145,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (!given(classes)) return false;
 		return classes.contains("habitats");
 	}
-	
+
 	private static Set<Qname> supportedAreas = null;
 
 	private Set<Qname> getSupportedAreas(ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -233,7 +234,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!given(value)) continue;
 			parseOccurrence(parameterName, value, occurrences);
 		}
-
 		taxonomyDAO.addOccurrences(taxon);
 		dao.store(taxon.getOccurrences(), occurrences, supportedAreas);
 	}
@@ -242,6 +242,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		// MO.occurrence___ML.xxx___status
 		// MO.occurrence___ML.xxx___notes
 		// MO.occurrence___ML.xxx___year
+		// MO.occurrence___ML.xxx___specimenURI
 		Qname areaQname = splitAreaQname(parameterName);
 		String field = splitField(parameterName);
 		Occurrence occurrence = occurrences.getOccurrence(areaQname);
@@ -254,8 +255,19 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			occurrence.setNotes(value);
 		} else if (field.equals("year")) {
 			occurrence.setYear(parseYear(value));
+		} else if (field.equals("specimenURI")) {
+			occurrence.setSpecimenURI(parseURI(value));
 		}
 		occurrences.setOccurrence(occurrence);
+	}
+
+	private URI parseURI(String value) {
+		if (!given(value)) return null;
+		try {
+			return new URI(value);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Integer parseYear(String value) {

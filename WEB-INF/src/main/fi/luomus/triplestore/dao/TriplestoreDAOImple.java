@@ -67,6 +67,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String RDF_LI_PREFIX = "rdf:_";
 	private static final String MO_THREATENED = "MO.threatened";
 	private static final String MO_NOTES = "MO.notes";
+	private static final String MO_SPECIMEN_URI = "MO.specimenURI";
 	private static final String MO_YEAR = "MO.year";
 	private static final String MO_AREA = "MO.area";
 	private static final String MO_STATUS = "MO.status";
@@ -782,6 +783,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MO_YEAR, s(occurrence.getYear()));
 		model.addStatementIfObjectGiven(MO_NOTES, occurrence.getNotes());
 		model.addStatementIfObjectGiven(MO_THREATENED, occurrence.getThreatened());
+		if (occurrence.getSpecimenURI() != null)
+			model.addStatementIfObjectGiven(MO_SPECIMEN_URI, occurrence.getSpecimenURI().toString());
 		this.store(model);
 		occurrence.setId(id);
 	}
