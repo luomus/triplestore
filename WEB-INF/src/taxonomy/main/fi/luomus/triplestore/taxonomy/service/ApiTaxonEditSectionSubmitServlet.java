@@ -210,10 +210,11 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		UsedAndGivenStatements statements = new UsedAndGivenStatements();
 		statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
 		statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
-		if (habitats.primaryHabitat != null) {
+		if (habitats.primaryHabitat != null && given(habitats.primaryHabitat.getHabitat())) {
 			dao.store(habitats.primaryHabitat);
 			statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(habitats.primaryHabitat.getId())));
 			for (HabitatObject h : habitats.secondaryHabitats) {
+				if (!given(h.getHabitat())) continue;
 				dao.store(h);
 				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
 			}
