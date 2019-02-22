@@ -74,7 +74,6 @@
 			</#list>
 		</select>
 		<@labeledInput "MX.nameDecidedDate" "on" />
-		<@labeledInput "MX.typeSpecimenURI" "off" />
 	<@portletFooter />
 	
 	<@portletHeader "Source of taxonomy" />
@@ -104,7 +103,19 @@
 		<br/>
 		<p><label class="">Add a new publication</label></p>
 		<textarea <@checkPermissions/> class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Hellén, W. 1940: Enumeratio Insectorum Fenniae II Hymenoptera 2. Terebrantia. - Helsinki, 32 s.' "></textarea>
+	<@portletFooter />
+	
+	<@portletHeader "Type specimen / Nomenclatural reference" />
+		<@labeledInput "MX.typeSpecimenURI" "off" />
 		
+		<@label "MX.originalDescription" "longtext" />
+		<input type="hidden" name="MX.originalDescription" value="" />
+		<select id="originalDescriptionSelector" name="MX.originalDescription" class="chosen" data-placeholder="Select publication" <@checkPermissions/> >
+			<option value=""></option>
+			<#list publications?keys as publicationQname>
+				<option value="${publicationQname}" <#if taxon.hasOriginalDescription(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+			</#list>
+		</select>
 	<@portletFooter />
 	
 	<@portletHeader "Notes" />

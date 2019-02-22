@@ -131,6 +131,11 @@ public class EditableTaxon extends Taxon {
 		return getExplicitlySetOccurrenceInFinlandPublications().contains(new Qname(qname));
 	}
 
+	public boolean hasOriginalDescription(String qname) {
+		if (super.getOriginalDescription() == null) return false;
+		return super.getOriginalDescription().toString().equals(qname);
+	}
+
 	public boolean hasExplicitlySetEditor(String qname) {
 		return getExplicitlySetEditors().contains(new Qname(qname));
 	}
@@ -195,6 +200,7 @@ public class EditableTaxon extends Taxon {
 		return !this.getAdministrativeStatuses().isEmpty();
 	}
 
+	@Override
 	public boolean hasDescriptions() {
 		return !this.getDescriptions().getContextsWithContentAndLocales().isEmpty();
 	}
