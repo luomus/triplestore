@@ -138,7 +138,9 @@
 	<@portletFooter />	
 	
 	
-	<@portletHeader "Occurrence in Finland" "" "multirowSection" />
+	<@portletHeader "Occurrence in Finland" "" "multirowSection finnishnessSection" />
+	    <@labeledSelect "MX.finnish" />
+	    
 		<@labeledSelect "MX.occurrenceInFinland" />
 		
 		<table>

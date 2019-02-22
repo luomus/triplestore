@@ -170,65 +170,36 @@ function submitTaxonEditSection(section, closeAfter) {
 
 function afterTaxonEditSectionSubmit(section, closeAfter) {
 	var section = $(section);
+	var updateTreeTaxon = false;
+	var reopen = false;
 	if (section.hasClass("scientificNameSection")) {
-		var qname = section.find("input.taxonQname").first().val();
-		var taxonRank = section.find("select.taxonRank").first().val();
-		var scientificName = section.find("input.scientificName").first().val();
-		var author = section.find("input.scientificNameAuthorship").first().val();
-		var alteredScientificName = $("#alteredScientificName").val();
-		var alteredAuthor = $("#alteredAuthor").val();
-		scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
-		author = (alteredAuthor) ? alteredAuthor : author;
-			
-       	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
-       	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
-        	
-       	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
-       	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
-        	
-   		var taxon = $("#"+qname.replace("MX.", "MX"));
+       	updateTreeTaxon = true;
+       	reopen = !closeAfter;
+       	closeAfter = true;
+    } 
+    else if (section.hasClass("primaryVernacularNameSection")) {
+      	updateTreeTaxon = true;
+    }
+    else if (section.hasClass("finnishnessSection")) {
+      	updateTreeTaxon = true;
+    }
+    if (closeAfter) {
+		$("#editTaxon").dialog("close");
+	}
+    if (updateTreeTaxon) {
+    	var qname = section.find("input.taxonQname").first().val();
+    	var taxon = $("#"+qname.replace("MX.", "MX"));
 		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
 			taxon.replaceWith(data);
 			taxon = $("#"+qname.replace("MX.", "MX"));
 			taxon.find('button, .button').button();
 			taxonTreeGraphs.repaintEverything();
-		});				
-    } 
-    else if (section.hasClass("primaryVernacularNameSection")) {
-      	var qname = section.find(".taxonQname").first().val();
-		var nameFi = section.find(".vernacularName___fi").first().val();
-		var nameSv = section.find(".vernacularName___sv").first().val();
-		var nameEn = section.find(".vernacularName___en").first().val();
-		updateVernacularNameToTree(qname, nameFi, 'FI');
-		updateVernacularNameToTree(qname, nameSv, 'SV');
-		updateVernacularNameToTree(qname, nameEn, 'EN');
+			if (reopen) {
+				editTaxon(taxon.find('.taxonInfo'));
+			}
+		});
     }
-    if (closeAfter) {
-		$("#editTaxon").dialog("close");
-	}
-}
-
-function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {
-   	$("#originalNamesView").find('.scientificName').first().text(scientificName);
-   	$("#originalNamesView").find('.author').first().text(author);
-}
-	
-function updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author) {
-	var taxon = $("#"+qname.replace("MX.", "MX"));
-	taxon.find(".taxonRank").first().text("["+taxonRank.replace("MX.", "")+"]");
-	taxon.find(".scientificName").first().text(scientificName);
-	taxon.find(".author").first().text(author);
-}
-	
-function updateVernacularNameToTree(qname, name, langcode) {
-	var taxon = $("#"+qname.replace("MX.", "MX"));
-	taxon.find(".vernacularName"+langcode).first().text(name);
-}
-
-function updateRankScientificNameAndAuthorToEditHeader(scientificName, author) {
-	var header = $("#taxonEditHeader");
-	header.find(".scientificName").first().text(scientificName);
-	header.find(".author").first().text(author);
+    
 }
 	
 function showSuccess(section, data) {
