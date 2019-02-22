@@ -262,7 +262,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Name</th> 
+					<th>Trade name</th> 
 					<th>Language</th>
 				</tr>
 			</thead>
@@ -283,16 +283,14 @@
 		</table>
 	<@portletFooter />
 	
-	<#if user.isAdmin()>
-	<#if taxon.alsoKnownAsNames?has_content>
-		<@portletHeader "AKA names (Admin only)" "" "multirowSection" />
-	<#else>
-		<@portletHeader "AKA names (Admin only)" "initiallyClosed" "multirowSection" />
-	</#if>
+	<@portletHeader "AKA names (observation names)" "initiallyClosed" "multirowSection" />
+		<p class="info">AKA names are names that for some reason have been used to report observations but are not valid names (not correct vernacular names, species codes, etc).
+		   For example 'jokin sieni' or 'talitintti'. Adding the name to one taxon as an AKA name allows those observations to be linked with that taxon. 
+		   Unlike other names, AKA names are not used for taxon search.</p>
 		<table>
 			<thead>
 				<tr>
-					<th>Name</th> 
+					<th>AKA name</th> 
 				</tr>
 			</thead>
 			<tbody>
@@ -307,8 +305,31 @@
 			</tbody>
 		</table>
 	<@portletFooter />	
-	</#if>
 
+	<@portletHeader "Observation linking override" "initiallyClosed" "multirowSection" />
+		<p class="info">This feature allows the taxon expert to specify how observations reported using a certain name are linked to the taxonomy.
+		   The name for example can be a valid species name in taxonomy and has had many other alternative meanings → The editor wants to define that the observations
+		   are linked with a higher taxon group instead of the species.
+		   Overriding names are not used for taxon search.</p>
+		<table>
+			<thead>
+				<tr>
+					<th>Overriding name</th> 
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.overridingTargetNames as name>
+				<tr>
+					<td><@input "MX.overridingTargetName" "off" name /></td>
+				</tr>
+				</#list>
+				<tr>
+					<td><@input "MX.overridingTargetName" "off" "" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />
+	
 	<@portletHeader "Species codes" "initiallyClosed" />
 		<@labeledInput "MX.euringCode" "off" />
 		<@labeledInput "MX.euringNumber" "off" />
