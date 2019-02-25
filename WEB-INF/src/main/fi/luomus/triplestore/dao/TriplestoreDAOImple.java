@@ -218,20 +218,20 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void deleteStatement(Statement s, PreparedStatement deleteStatement) throws SQLException {
-		deleteStatement.setInt(1, s.getId());
+		deleteStatement.setLong(1, s.getId());
 		int i = deleteStatement.executeUpdate();
 		if (i != 1) throw new IllegalStateException("Delete removed " + i + " rows instead of 1.");
 	}
 
 	@Override
-	public void deleteStatement(int statementId) throws SQLException {
+	public void deleteStatement(long statementId) throws SQLException {
 		TransactionConnection con = null;
 		PreparedStatement deleteStatement = null;
 		try {
 			con = openConnection();
 			con.startTransaction();
 			deleteStatement = con.prepareStatement(DELETE_FROM_RDF_STATEMENT_BY_ID_SQL);
-			deleteStatement.setInt(1, statementId);
+			deleteStatement.setLong(1, statementId);
 			deleteStatement.executeQuery();
 			con.commitTransaction();
 		} finally {
@@ -804,13 +804,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public int getUserFK(String userQname) throws SQLException {
-		Integer id = getResourceId(userQname);
+	public long getUserFK(String userQname) throws SQLException {
+		Long id = getResourceId(userQname);
 		if (id == null) throw new IllegalStateException("No user found " + userQname);
 		return id;
 	}
 
-	private Integer getResourceId(String resourceQname) throws SQLException {
+	private Long getResourceId(String resourceQname) throws SQLException {
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -820,7 +820,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			p.setString(1, resourceQname);
 			rs = p.executeQuery();
 			if (!rs.next()) return null;
-			return rs.getInt(1);
+			return rs.getLong(1);
 		} finally {
 			Utils.close(p, rs, con);
 		}

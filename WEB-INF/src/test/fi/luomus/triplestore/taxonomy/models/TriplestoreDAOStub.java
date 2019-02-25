@@ -122,7 +122,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public void deleteStatement(int id) throws Exception {
+	public void deleteStatement(long id) throws Exception {
 		// Auto-generated method stub
 		
 	}
@@ -170,7 +170,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public int getUserFK(String userQname) throws Exception {
+	public long getUserFK(String userQname) throws Exception {
 		// Auto-generated method stub
 		return 0;
 	}

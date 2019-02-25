@@ -149,7 +149,7 @@ public interface TriplestoreDAO {
 	 * @param id
 	 * @throws Exception
 	 */
-	public void deleteStatement(int id) throws Exception;
+	public void deleteStatement(long id) throws Exception;
 
 	/**
 	 * Deletes single predicates of the given resource from default context with no language
@@ -217,7 +217,7 @@ public interface TriplestoreDAO {
 	 * @return
 	 * @throws Exception 
 	 */
-	public int getUserFK(String userQname) throws Exception;
+	public long getUserFK(String userQname) throws Exception;
 
 	/**
 	 * Opens connection that should be closed.
