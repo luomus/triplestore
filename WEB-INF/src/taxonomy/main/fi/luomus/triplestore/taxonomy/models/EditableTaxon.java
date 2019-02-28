@@ -90,6 +90,14 @@ public class EditableTaxon extends Taxon {
 
 	private Boolean hasCritical = null;
 
+	public boolean allowsMoveAsSynonym() {
+		return this.getChecklist() == null;
+	}
+
+	public boolean allowsMoveAsChild() {
+		return this.getChecklist() != null && !hasTreeRelatedCriticalData();
+	}
+	
 	public boolean hasCriticalData() {
 		if (hasCritical == null) hasCritical = initHasCritical();
 		return hasCritical;
