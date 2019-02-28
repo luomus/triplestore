@@ -97,10 +97,14 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		dao.delete(new Subject(toSend.getQname()), ApiChangeParentServlet.IS_PART_OF_PREDICATE);
 	}
 
-	private void moveAsSynonym(EditableTaxon toSend, EditableTaxon newParent, SynonymType synonymType, TriplestoreDAO dao) throws Exception {
+	private void moveAsSynonym(EditableTaxon toSend, EditableTaxon newSynonymParent, SynonymType synonymType, TriplestoreDAO dao) throws Exception {
 		deleteNonCriticalIucnEvaluations(toSend);
-		dao.delete(new Subject(toSend.getQname()), ApiChangeParentServlet.NAME_ACCORDING_TO_PREDICATE);
-		dao.insert(new Subject(newParent.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(synonymType), new ObjectResource(toSend.getQname())));
+		Subject taxonToSendId = new Subject(toSend.getQname());
+		Subject newSynonymParentId = new Subject(newSynonymParent.getQname()); 
+		dao.delete(taxonToSendId, new Predicate("MX.taxonExpert"));
+		dao.delete(taxonToSendId, new Predicate("MX.taxonEditor"));
+		dao.delete(taxonToSendId, ApiChangeParentServlet.NAME_ACCORDING_TO_PREDICATE);
+		dao.insert(newSynonymParentId, new Statement(ApiAddSynonymServlet.getPredicate(synonymType), new ObjectResource(toSend.getQname())));
 	}
 
 	private void deleteNonCriticalIucnEvaluations(EditableTaxon toSend) throws Exception {
