@@ -2,7 +2,7 @@
 	<#return qname1 == qname2>
 </#function>
 
-<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span><span class="scinameLink" title="${taxon.qname} ${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname} ${taxon.scientificNameAuthorship!""}">C&P</span></#macro>
+<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
 <#macro printEditorExpert taxon><#if taxon.checklist?has_content><@printEditorExpertSpecific taxon.editors taxon.experts /></#if></#macro>
 
@@ -59,6 +59,7 @@
 			</#if>
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${properties.getProperty("MX.taxonRank").range.getValueFor(taxon.taxonRank).label.forLocale("en")}]</#if></span></#if> 
 			<@printScientificNameAndAuthor taxon />
+			<span class="scinameLink" title="${taxon.qname} ${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname} ${taxon.scientificNameAuthorship!""}">C&P</span>
 			<div class="icons">
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
