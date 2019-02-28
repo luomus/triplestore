@@ -46,12 +46,6 @@
 				<td><@actions/> <b>contact an admin</b></td>
 			</tr>		
 		</#if>
-		<#if taxon.hasExplicitlySetExpertsOrEditors()>
-			<tr>
-				<td>This taxon has explicitly set experts or editors:</td>
-				<td>Before you can do <span class="criticalAction">anything</span> you must <b>clear them</b> and make appropriate changes</td>
-			</tr>		
-		</#if>
 		<#if taxon.hasExplicitlySetHigherInformalTaxonGroup()>
 			<tr>
 				<td>This taxon is used to define root of an informal group:</td>

@@ -96,7 +96,6 @@ public class EditableTaxon extends Taxon {
 	}	
 
 	public boolean hasTreeRelatedCriticalData() {
-		if (this.hasExplicitlySetExpertsOrEditors()) return true;
 		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
 		return false;
 	}
