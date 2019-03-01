@@ -29,7 +29,7 @@ public class TaxonValidator {
 	private static final Qname GENUS = new Qname("MX.genus");
 
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
-
+	private static final Qname SPECIES_AGGREGATE = new Qname("MX.speciesAggregate");
 	private static final Qname SPECIES = new Qname("MX.species");
 
 	private final TriplestoreDAO triplestoreDAO;
@@ -162,6 +162,13 @@ public class TaxonValidator {
 		name = name.trim().toLowerCase(); 
 		if (name.isEmpty()) return;
 
+		if (SPECIES_AGGREGATE.equals(taxon.getTaxonRank())) {
+			if (!name.contains("/")) {
+				setError("Scientific name", "Species aggregate name must contain the character '/'");
+				return;
+			}
+		}
+		
 		if (SUBGENUS.equals(taxon.getTaxonRank())) {
 			if (!name.contains("(") && !name.contains(")") && !name.contains("subg.")) {
 				setError("Scientific name", "For subgenuses, use the following form \"Bombus (Bombus)\" or \"Carex subg. Carex\"");

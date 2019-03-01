@@ -206,6 +206,24 @@ public class TaxonValidatorTests {
 	}
 	
 	@Test
+	public void speciesAggregate() {
+		taxon.setScientificName("Larus fuscus/argentatus/marinus");
+		taxon.setTaxonRank(new Qname("MX.speciesAggregate"));
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[]", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
+	public void speciesAggregate_2() {
+		taxon.setScientificName("Larus aggr.");
+		taxon.setTaxonRank(new Qname("MX.speciesAggregate"));
+		ValidationData result = validator.validate(taxon);
+		assertEquals("[Scientific name : Species aggregate name must contain the character '/']", result.getErrors().toString());
+		assertEquals("[]", result.getWarnings().toString());
+	}
+	
+	@Test
 	public void test_vernacularName() {
 		taxon.addVernacularName("fi", "pussihukka");
 		ValidationData result = validator.validate(taxon);
