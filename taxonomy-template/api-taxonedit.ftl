@@ -165,7 +165,7 @@
 				<#list taxon.typesOfOccurrenceInFinland as type>
 					<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
 				</#list>
-				<tr><td><@select "MX.typeOfOccurrenceInFinland" type /></td></tr>
+				<tr><td><@select "MX.typeOfOccurrenceInFinland" "" /></td></tr>
 			</tbody>
 		</table>
 		
