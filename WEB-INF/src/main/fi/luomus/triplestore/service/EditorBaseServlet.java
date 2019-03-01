@@ -59,8 +59,6 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	@Override
 	protected ResponseData notAuthorizedRequest(HttpServletRequest req, HttpServletResponse res) {
 		log(req);
-		SessionHandler session = getSession(req, false);
-		if (session != null) session.invalidate();
 		URIBuilder uri = new URIBuilder(getConfig().get("LoginURL"));
 		String originalURL = getURL(req);
 		String next = originalURL.replace("/triplestore", "").replace("/taxonomy-editor", "");
@@ -117,7 +115,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 		SessionHandler session = getSession(req);
-		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
+		if (session.hasSession() && session.isAuthenticatedFor(getConfig().systemId())) {
 			User user = getUser(session);
 			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
@@ -175,7 +173,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
 		SessionHandler session = getSession(req);
-		return session.isAuthenticatedFor("triplestore");
+		return session.isAuthenticatedFor(getConfig().systemId());
 	}
 
 	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) throws IllegalAccessException {
@@ -244,7 +242,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	@Override
 	protected SessionHandler getSession(HttpServletRequest req) {
-		SessionHandler sessionHandler = new SessionHandlerImple(req.getSession(true), "triplestore");
+		SessionHandler sessionHandler = new SessionHandlerImple(req.getSession(true), getConfig().systemId());
 		return sessionHandler;
 	}
 

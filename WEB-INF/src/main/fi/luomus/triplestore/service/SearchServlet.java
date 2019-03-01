@@ -154,10 +154,6 @@ public class SearchServlet extends ApiServlet {
 		return !given(value);
 	}
 
-	private static boolean given(String value) {
-		return value != null && value.length() > 0;
-	}
-
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		throw new UnsupportedOperationException();

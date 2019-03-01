@@ -115,7 +115,7 @@ public class LoginUtil  {
 	}
 
 	public ResponseData processGet(HttpServletRequest req, SessionHandler session, ResponseData responseData) throws Exception {
-		if (session.isAuthenticatedFor("triplestore")) {
+		if (session.isAuthenticatedFor(config.systemId())) {
 			return responseData.setRedirectLocation(getFrontPage(session));
 		}
 		String next = req.getParameter("next");
@@ -180,7 +180,7 @@ public class LoginUtil  {
 	}
 
 	private void authenticateSession(SessionHandler session, AuthenticationResult authentication) throws Exception {
-		session.authenticateFor("triplestore");
+		session.authenticateFor(config.systemId());
 		session.setUserId(authentication.getUserId());
 		session.setUserName(authentication.getUserFullname());
 		session.put("user_qname", authentication.getUserQname());
@@ -220,7 +220,7 @@ public class LoginUtil  {
 		//Set<String> overridingRoles = Utils.set("MA.taxonEditorUserDescriptionWriterOnly");
 		//authenticationResponse.setRoles(overridingRoles);
 		
-		authenticationResponse.setUserId(userDetails.getEmail());
+		authenticationResponse.setUserId(userDetails.getQname().get());
 		authenticationResponse.setUserQname(userDetails.getQname().get());
 		authenticationResponse.setUserFullname(userDetails.getName());
 		authenticationResponse.setNext(authenticationEvent.getNext());

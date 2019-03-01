@@ -21,7 +21,7 @@ public class LogoutServlet extends EditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		SessionHandler sessionHandler = getSession(req);
 		if (sessionHandler.hasSession()) {
-			sessionHandler.removeAuthentication("triplestore");
+			sessionHandler.removeAuthentication(getConfig().systemId());
 		}
 		return redirectTo(getConfig().baseURL()+"/login");
 	}

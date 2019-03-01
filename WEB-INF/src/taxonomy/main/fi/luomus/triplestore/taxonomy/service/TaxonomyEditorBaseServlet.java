@@ -76,7 +76,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 
 		SessionHandler session = getSession(req);
-		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
+		if (session.hasSession() && session.isAuthenticatedFor(getConfig().systemId())) {
 			User user = getUser(session);
 			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
