@@ -244,8 +244,8 @@ function sortAlphabetically(e) {
 	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
     var listitems = $('li', list);
     listitems.sort(function (a, b) {
-		var compA = $(a).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
-        var compB = $(b).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
+		var compA = $(a).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö').replace('×', '').replace(' x ', '');
+        var compB = $(b).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö').replace('×', '').replace(' x ', '');
         return (compA < compB) ? -1 : 1;
     });
     list.append(listitems);
