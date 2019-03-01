@@ -601,7 +601,34 @@
 	</#if>
 </div>
 </#if>
-
+<div class="column">
+	<@portletHeader "Identifiers" "" "multirowSection" />
+		<label>Taxonid.org</label>
+		<#list taxon.taxonConceptIds as id>
+			<a target="_blank" href="${id.toURI()}">${id}</a>
+		</#list>
+		<#if !taxon.taxonConceptIds?has_content>
+			none
+		</#if>
+		<hr />
+		<table>
+			<thead>
+				<tr>
+					<th>Identifier</th> 
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.additionalIds as id>
+					<tr>
+						<td><@input "MX.additionalID" "off" id /></td>
+					</tr>
+				</#list>
+				<tr>
+					<td><@input "MX.additionalID" "off" "" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter /></div>
 <div class="clear"></div>
 
 
