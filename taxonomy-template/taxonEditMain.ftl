@@ -50,15 +50,19 @@
 		<form id="addNewTaxonDialogForm" onsubmit="addNewChildDialogSubmit(); return false;">
 			<input type="hidden" name="newTaxonParent" id="newTaxonParent" />
 			<input type="hidden" name="insertNewTaxonBellow" id="insertNewTaxonBellow" />
+			
 			<label>Parent</label>
 			<span id="newTaxonParentName">parent</span>
 			<br />
+			
 			<label for="newTaxonScientificName">Scientific name</label>
 			<input type="text" id="newTaxonScientificName" name="newTaxonScientificName" /> 
 			<br />
+			
 			<label for="newTaxonAuthor">Author</label>
 			<input type="text" id="newTaxonAuthor" name="newTaxonAuthor" />
 			<br />
+			
 			<label for="newTaxonTaxonrank">Taxon rank</label>
 			<select id="allTaxonRanksSelect" class="hidden"> 
 				<option value=""></option>
@@ -68,8 +72,31 @@
 			</select>
 			<span id="taxonRankSelectPlaceholder">&nbsp;</span>
 			<br />
+			
+			<hr />
+			Primary vernacular name <br />
+			<label for="newTaxonNameFi">FI</label>
+			<input type="text" id="newTaxonNameFi" name="newTaxonNameFi" />
+			<br />
+			
+			<label for="newTaxonNameSv">SV</label>
+			<input type="text" id="newTaxonNameSv" name="newTaxonNameSv" />
+			<br />
+			
+			<label for="newTaxonNameEn">EN</label>
+			<input type="text" id="newTaxonNameEn" name="newTaxonNameEn" />
+			<br />
+			
+			<hr />
+			
+			<@labeledSelect "MX.finnish" "" />
+			<@labeledSelect "MX.occurrenceInFinland" "" />
+			<@labeledSelect "MX.typeOfOccurrenceInFinland" "" />
+			
+			<hr />
+			
 			<input type="submit" class="button addButton" value="Add" />
-			<p class="important info">IMPORTANT: Before adding a new taxon into the checklist, make sure it is not present by some other name!</p>
+			<p class="important info">IMPORTANT: Before adding a new taxon into the checklist, make sure it is not present by some other name.</p>
 		</form>
 	</div>
 	

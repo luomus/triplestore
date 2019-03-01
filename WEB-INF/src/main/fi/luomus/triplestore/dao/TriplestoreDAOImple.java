@@ -83,6 +83,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String RDFS_RANGE = "rdfs:range";
 	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
+	private static final String MX_VERCACULAR_NAME = "MX.vernacularName";
+	private static final String MX_FINNISH = "MX.finnish";
+	private static final String MX_OCCURRENCE_IN_FINLAND = "MX.occurrenceInFinland";
+	private static final String MX_TYPE_OF_OCCURRENCE_IN_FINLAND = "MX.typeOfOccurrenceInFinland";
 	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
@@ -396,9 +400,16 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME, taxon.getScientificName());
 		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME_AUTHORSHIP, taxon.getScientificNameAuthorship());
 		model.addStatementIfObjectGiven(MX_TAXON_RANK, taxon.getTaxonRank());
-
 		model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
 		model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
+		for (Map.Entry<String, String> e : taxon.getVernacularName().getAllTexts().entrySet()) {
+			model.addStatementIfObjectGiven(MX_VERCACULAR_NAME, e.getValue(), e.getKey());
+		}
+		if (taxon.isFinnish()) model.addStatementIfObjectGiven(MX_FINNISH, true);
+		model.addStatementIfObjectGiven(MX_OCCURRENCE_IN_FINLAND, taxon.getOccurrenceInFinland());
+		for (Qname typeOfOcc : taxon.getTypesOfOccurrenceInFinland()) {
+			model.addStatementIfObjectGiven(MX_TYPE_OF_OCCURRENCE_IN_FINLAND, typeOfOcc);
+		}
 
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));

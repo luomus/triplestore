@@ -900,16 +900,26 @@ function moveEvaluationDialogSubmit(action) {
 
 function addNewChildDialogSubmit() {
 	if (!$("#addNewTaxonDialogForm").valid()) return false;
-	
-	var checklist = '<#if checklist??>${checklist.qname}</#if>';
 	var parent = $('#newTaxonParent').val();
-	var scientificName = $('#newTaxonScientificName').val();
-	var author = $('#newTaxonAuthor').val();
-	var taxonRank = $('.trimmedTaxonRankSelect').first().val();
-	
 	var taxaOfTaxonContainerOfParent = $("#"+parent+"Children");
 
-	$.post('${baseURL}/api/addchild?checklist='+encodeURIComponent(checklist)+'&parent='+encodeURIComponent(parent)+'&scientificName='+encodeURIComponent(scientificName)+'&author='+encodeURIComponent(author)+'&taxonRank='+encodeURIComponent(taxonRank), function(data) {
+	$.ajax({
+		url: '${baseURL}/api/addchild',
+		type: 'POST',
+		data: {
+			checklist:      '<#if checklist??>${checklist.qname}</#if>',
+			parent:         parent,
+			scientificName: $('#newTaxonScientificName').val(),
+			author:         $('#newTaxonAuthor').val(),
+			taxonRank:      $('.trimmedTaxonRankSelect').first().val(),
+			nameFi:         $('#newTaxonNameFi').val(),
+			nameSv:         $('#newTaxonNameSv').val(),
+			nameEn:         $('#newTaxonNameEn').val(),
+			finnish:        $('#addNewTaxonDialogForm .finnish').val(),
+			occurrenceInFinland:        $('#addNewTaxonDialogForm .occurrenceInFinland').val(),
+			typeOfoccurrenceInFinland:  $('#addNewTaxonDialogForm .typeOfOccurrenceInFinland').val()
+		}
+	}).done(function(data) {
 		var newTaxon = $('<li>'+data+'</li>');
 		var insertNewTaxonBellow = $("#insertNewTaxonBellow").val();
 		if (insertNewTaxonBellow) {
