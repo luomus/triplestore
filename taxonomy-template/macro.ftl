@@ -28,6 +28,7 @@
 				<button class="enableSortingButton" onclick="enableSorting(this);">Enable sorting</button>
 			</#if>
 			<a href="${baseURL}/${parentTaxon.qname}" class="button" onclick="changeRoot(this, '${baseURL}/${parentTaxon.qname}'); return false;">Use as work root</a>
+			<button class="addNewChildButton" onclick="addNewChild(this);">Add child</button>
 		</div>
 		<div class="clear"></div>
 		<div class="sortingControls ui-widget ui-widget-header"">
