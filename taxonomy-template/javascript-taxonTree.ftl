@@ -791,8 +791,8 @@ $(function() {
 	$(".taxonDialog").dialog({
  		autoOpen: false,
 		modal: true,
-		width: 550,
-		position: { my: "center", at: "top+30%" }
+		width: 880,
+		position: { my: "center", at: "top+50%" }
 	});
         
 	$("#editTaxon").dialog({

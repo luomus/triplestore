@@ -350,6 +350,9 @@ div.loading {
 #addNewSynonymDialog input {
   width: 150px;
 }
+#addNewSynonymDialog .addNewSynonymNotes {
+	width: 280px;
+}
 
 .taxonConcept {
 	font-size: 0.8em;

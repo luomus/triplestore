@@ -129,6 +129,7 @@
 						<th>Scientific name</th>
 						<th>Authors</th>
 						<th>Rank</th>
+						<th>Type of relationship notes</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -143,6 +144,7 @@
 								</#list>
 							</select>
 					 	</td>
+					 	<td><input placeholder="In english" name="notes___1" class="addNewSynonymNotes" /></td>
 					</tr>
 				</tbody>
 			</table>

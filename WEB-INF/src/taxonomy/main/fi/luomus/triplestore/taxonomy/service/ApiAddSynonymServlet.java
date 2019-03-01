@@ -104,6 +104,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 			if (taxonData.containsKey("rank")) {
 				taxon.setTaxonRank(new Qname(taxonData.get("rank")));
 			}
+			taxon.setNotes(taxonData.get("notes"));
 			dao.addTaxon(taxon);
 			taxons.add(taxon);
 		}

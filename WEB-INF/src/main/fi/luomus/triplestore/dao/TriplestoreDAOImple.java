@@ -91,6 +91,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
 	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
+	private static final String MX_NOTES = "MX.notes";
 	private static final String MX_TAXON = "MX.taxon";
 	private static final String RDFS_COMMENT = "rdfs:comment";
 	private static final String MR_CHECKLIST = "MR.checklist";
@@ -410,7 +411,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname typeOfOcc : taxon.getTypesOfOccurrenceInFinland()) {
 			model.addStatementIfObjectGiven(MX_TYPE_OF_OCCURRENCE_IN_FINLAND, typeOfOcc);
 		}
-
+		model.addStatementIfObjectGiven(MX_NOTES, taxon.getNotes());
+		
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
