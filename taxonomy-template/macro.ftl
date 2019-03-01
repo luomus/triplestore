@@ -32,7 +32,7 @@
 		</div>
 		<div class="clear"></div>
 		<div class="sortingControls ui-widget ui-widget-header"">
-			<button class="saveSortingButton" onclick="saveSorting(this);">Save order</button>
+			<button class="saveSortingButton" onclick="saveSorting(this, true);">Save order</button>
 			<button class="sortAlphabeticallyButton" onclick="sortAlphabetically(this);">ABC..</button> 
 			<button onclick="cancelSorting(this);">Cancel</button>
 		</div>

@@ -49,7 +49,7 @@
 	<div id="addNewTaxonDialog" class="taxonDialog" title="Add new taxon">
 		<form id="addNewTaxonDialogForm" onsubmit="addNewChildDialogSubmit(); return false;">
 			<input type="hidden" name="newTaxonParent" id="newTaxonParent" />
-			
+			<input type="hidden" name="insertNewTaxonBellow" id="insertNewTaxonBellow" />
 			<label>Parent</label>
 			<span id="newTaxonParentName">parent</span>
 			<br />

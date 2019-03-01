@@ -11,6 +11,7 @@
 			<li id="taxonToolMenuHide">Hide</li>
 		</#if>
 	</#if>
+	<li id="taxonToolMenuAddChildBellow">Add child bellow</li>
 	<#if taxon.deletable>
 		<li id="taxonToolMenuDelete"><span class="ui-icon ui-icon-trash"></span>Delete</li>
 	</#if>
