@@ -3,7 +3,7 @@
 
 <h4 class="errorMessage">Uups! An error has occured!</h4>
 
-<p>ICT-team has been notified by email. Bellow may be some useful error message (or not). The message has already been send to ICT-team.</p>
+<p>ICT-team has been notified by email. Below may be some useful error message (or not). The message has already been send to ICT-team.</p>
 
 <p>Message:</p>
 <div class="errorMessage">

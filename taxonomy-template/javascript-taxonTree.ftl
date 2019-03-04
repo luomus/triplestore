@@ -402,8 +402,8 @@ function addNewChild(e) {
 	var parentName = $("#"+parentID).find(".scientificName").first().text();
 	var parentRank = 'MX.' + $("#"+parentID).find(".taxonRank").first().text().replace('[', '').replace(']','');
 	$("#newTaxonParentName").text(parentName + " [" + parentRank.replace('MX.','') + ']');
-	var insertNewTaxonBellow = $(e).closest('.taxonWithTools').attr('id');	
-	if (insertNewTaxonBellow) $("#insertNewTaxonBellow").val(insertNewTaxonBellow);
+	var insertNewTaxonBelow = $(e).closest('.taxonWithTools').attr('id');	
+	if (insertNewTaxonBelow) $("#insertNewTaxonBelow").val(insertNewTaxonBelow);
 	
 	$(".trimmedTaxonRankSelect").remove();
 	$(".speciesQuickButton").remove();
@@ -412,12 +412,12 @@ function addNewChild(e) {
 	taxonRankSelect.addClass('trimmedTaxonRankSelect');
 	taxonRankSelect.show();
 	var showSpeciesQuickLink = false;
-	var bellowGenus = false;
+	var belowGenus = false;
 	if (parentRank !== 'MX.NO RANK!' && parentRank !== '') {
 		var remove = true;
 		taxonRankSelect.find('option').each(function() {
 			if ($(this).prop('value') === '') return true;
-			if ($(this).prop('value') === 'MX.genus') { showSpeciesQuickLink = true; bellowGenus = true; }
+			if ($(this).prop('value') === 'MX.genus') { showSpeciesQuickLink = true; belowGenus = true; }
 			if ($(this).prop('value') === 'MX.species') { showSpeciesQuickLink = false; }
 			if ($(this).prop('value') === parentRank || $(this).prop('value') === 'MX.species') {
 				$(this).remove();
@@ -428,7 +428,7 @@ function addNewChild(e) {
 	}
 	
 	$("#taxonRankSelectPlaceholder").append(taxonRankSelect);
-	if (bellowGenus) {
+	if (belowGenus) {
 		$("#newTaxonScientificName").val(parentName + ' ');
 	}
 	if (showSpeciesQuickLink) {
@@ -748,7 +748,7 @@ $(function() {
 				return false;
 			});
 			
-			$("#taxonToolMenuAddChildBellow").click(function() {
+			$("#taxonToolMenuAddChildBelow").click(function() {
 				addNewChild(this);
 				return false;
 			});
@@ -921,9 +921,9 @@ function addNewChildDialogSubmit() {
 		}
 	}).done(function(data) {
 		var newTaxon = $('<li>'+data+'</li>');
-		var insertNewTaxonBellow = $("#insertNewTaxonBellow").val();
-		if (insertNewTaxonBellow) {
-			$("#"+insertNewTaxonBellow).closest('li').after(newTaxon);
+		var insertNewTaxonBelow = $("#insertNewTaxonBelow").val();
+		if (insertNewTaxonBelow) {
+			$("#"+insertNewTaxonBelow).closest('li').after(newTaxon);
 			saveSorting(newTaxon, false);
 		} else {
 			taxaOfTaxonContainerOfParent.find('.childTaxonList').append(newTaxon);

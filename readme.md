@@ -22,7 +22,7 @@ Triplestore-API provides a way to query and modify contents of LuOnto database. 
 
 ### Common parameters
 
-For all requests defined bellow (except for taxon-search), you can use these common parameters:
+For all requests defined below (except for taxon-search), you can use these common parameters:
 
 * format - RDFXMLABBREV, RDFXML, JSON_RDFXMLABBREV, JSON_RDFXML (default is RDFXMLABBREV)
 * limit - integer (there is no hard coded maximum; default is 1000)
@@ -138,7 +138,7 @@ Returns all properties (type=rdf:Property) and their ranges ("deep search") in J
 
 ##Installation
 
-1. Create LuOnto DB user, grant needed privileges (see bellow)
+1. Create LuOnto DB user, grant needed privileges (see below)
 2. Add triplestore-v2.properties to  <catalina.base>/app-conf
 3. Place ojdbc6.jar to <catalina.base>/lib
 4. Add http basic authentication permissions to tomcat-users.xml
