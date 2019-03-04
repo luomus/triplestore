@@ -75,6 +75,13 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 		propertyJson.setBoolean("isEmbeddable", embeddable(model));
 		propertyJson.setBoolean("multiLanguage", multiLanguage(model));
 		shortName(propertyJson, model);
+
+		for (Statement s : model.getStatements("rdfs:comment")) {
+			if (s.isLiteralStatement()) {
+				propertyJson.getObject("comment").setString(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+			}
+		}
+
 		response.appendObject(propertyJson);
 	}
 
