@@ -89,7 +89,11 @@
 			
 			<hr />
 			
-			<@labeledSelect "MX.finnish" "" />
+			<@label "MX.finnish" />
+	    	<select class="finnish" name="MX.finnish">
+	    		<option value="">&nbsp;</option>
+	    		<option value="true" <#if taxon.finnish>selected="selected"</#if>>Yes</option>
+	    	</select>
 			<@labeledSelect "MX.occurrenceInFinland" "" />
 			<@labeledSelect "MX.typeOfOccurrenceInFinland" "" />
 			
