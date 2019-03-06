@@ -236,7 +236,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 		@SuppressWarnings("unused")
 		private boolean syncHabitats(EvaluationTarget target, EditableTaxon taxon) throws Exception {
-			Evaluation evaluation = getLatestReadyEvaluation(target); // TODO change to latest locked
+			Evaluation evaluation = getLatestReadyEvaluation(target); // change to latest locked
 			if (evaluation == null) return false;
 
 			if (!evaluation.getModel().hasStatements(Evaluation.PRIMARY_HABITAT)) return false;
@@ -314,10 +314,14 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		private boolean syncRedListStatuses(EvaluationTarget target, EditableTaxon taxon) throws Exception {
 			boolean modifiedTaxon = false;
 			for (Evaluation evaluation : target.getEvaluations()) {
-				if (!evaluation.isLocked()) continue;
+				if (!evaluation.isReady()) continue;
 				if (!evaluation.hasIucnStatus()) continue;
 
 				Integer year = evaluation.getEvaluationYear();
+
+				if (year == null) continue;
+				if (year.intValue() > latestLockedEvaluationYear().intValue()) continue;
+
 				Qname status = new Qname(evaluation.getIucnStatus());
 				Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
 
