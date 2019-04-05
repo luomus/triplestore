@@ -54,7 +54,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 public class IucnDAOImple implements IucnDAO {
 
 	private static final String TRUE = "true";
-	private static final int PAGE_SIZE_TAXON_LIST = 3000;
+	private static final int PAGE_SIZE_TAXON_LIST = 30000;
 	private static final String INFORMAL_GROUP_FILTERS = "informalGroupFilters";
 	private static final String INCLUDE_HIDDEN = "includeHidden";
 	private static final Set<String> DEV_LIMITED_TO_INFORMAL_GROUPS = Utils.set("MVL.301", "MVL.1");
