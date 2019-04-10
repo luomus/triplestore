@@ -87,7 +87,7 @@ label.longtext {
 
 label { 
 	display: inline-block;
-	width: 155px;
+	min-width: 155px;
 }
 #editTaxonDescriptions label {
 	width: auto;
@@ -148,7 +148,7 @@ form ul li {
 }
 
 #vernacularNameTable label {
-	width: auto;
+	min-width: 30px;
 }
 .languageSelector {
 	width: auto;

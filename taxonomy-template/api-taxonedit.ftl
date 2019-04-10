@@ -607,6 +607,10 @@
 </#if>
 <div class="column">
 	<@portletHeader "Identifiers" "" "multirowSection" />
+		<@labeledInput "MX.frequencyScoringPoints" />
+	<@portletFooter />
+	
+	<@portletHeader "Identifiers" "" "multirowSection" />
 		<label>Taxonid.org</label>
 		<#list taxon.taxonConceptIds as id>
 			<a target="_blank" href="${id.toURI()}">${id}</a>
@@ -632,7 +636,8 @@
 				</tr>
 			</tbody>
 		</table>
-	<@portletFooter /></div>
+	<@portletFooter />
+</div>
 <div class="clear"></div>
 
 
