@@ -606,7 +606,7 @@
 </div>
 </#if>
 <div class="column">
-	<@portletHeader "Identifiers" "" "multirowSection" />
+	<@portletHeader "Frequency scoring points" />
 		<@labeledInput "MX.frequencyScoringPoints" />
 	<@portletFooter />
 	
