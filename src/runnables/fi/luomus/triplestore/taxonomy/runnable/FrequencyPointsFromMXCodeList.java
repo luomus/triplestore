@@ -40,7 +40,7 @@ public class FrequencyPointsFromMXCodeList {
 		generateStatements(taxonId, points, additional);
 	}
 
-	private static void generateStatements(String taxonId, String points, String additional) {
+	public static void generateStatements(String taxonId, String points, String additional) {
 		if (points == null) return;
 		Integer i = toInt(points);
 		if (i == null) return;
@@ -60,7 +60,7 @@ public class FrequencyPointsFromMXCodeList {
 		System.out.println("exec addstatement('"+taxonId+"', 'MX.typeOfOccurrenceInFinland', '"+enumValue+"');");
 	}
 
-	public static String toEnumValue(int i) {
+	private static String toEnumValue(int i) {
 		if (i < 1) return null;
 		if (i < 30) return "MX.typeOfOccurrenceCommon";
 		if (i < 60) return "MX.typeOfOccurrenceRare";
@@ -75,7 +75,7 @@ public class FrequencyPointsFromMXCodeList {
 		}
 	}
 
-	private static String val(String[] parts, int i) {
+	public static String val(String[] parts, int i) {
 		try {
 			return parts[i];
 		} catch (Exception e) {
