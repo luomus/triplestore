@@ -127,11 +127,12 @@ public class EvaluationTarget {
 	private Integer getPreviousYear(int year) {
 		Integer prevYear = null;
 		for (Integer y : getYears()) {
-			if (y.intValue() >= year) break;
-			if (y.intValue() == year) {
-				return prevYear;
-			} else {
-				prevYear = y;
+			if (y.intValue() < year) {
+				if (prevYear == null) {
+					prevYear = y;
+				} else {
+					prevYear = Math.min(y, prevYear);
+				}
 			}
 		}
 		return prevYear;
