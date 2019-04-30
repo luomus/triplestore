@@ -884,7 +884,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
 		storeOccurrencesAndSetIdToModel(givenData);
-		storeEndangermentObjectsAdnSetIdToModel(givenData);
+		storeEndangermentObjectsAndSetIdToModel(givenData);
 		storeHabitatObjectsAndSetIdsToModel(givenData);
 		this.store(givenData.getModel());
 		if (existingEvaluation != null) {
@@ -894,7 +894,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private void storeEndangermentObjectsAdnSetIdToModel(Evaluation givenData) throws Exception {
+	private void storeEndangermentObjectsAndSetIdToModel(Evaluation givenData) throws Exception {
 		Model model = givenData.getModel();
 		for (EndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
 			this.store(endangermentObject);
