@@ -412,7 +412,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			model.addStatementIfObjectGiven(MX_TYPE_OF_OCCURRENCE_IN_FINLAND, typeOfOcc);
 		}
 		model.addStatementIfObjectGiven(MX_NOTES, taxon.getNotes());
-		
+
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
@@ -484,7 +484,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 
 
-	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> PROPERTIES_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties>(new PropertiesCacheLoader(), 60*60, 500);
+	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> PROPERTIES_CACHE = new Cached<>(new PropertiesCacheLoader(), 60*60, 500);
 
 	private static class PropertiesCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> {
 
@@ -557,7 +557,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 
 		if (property.hasRange() && !property.isLiteralProperty()) {
-			addRangeValues(property, model);
+			addRangeValues(property);
 		}
 
 		LocalizedText labels = new LocalizedText();
@@ -584,7 +584,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		return s.getObjectResource().getQname();
 	}
 
-	private void addRangeValues(RdfProperty property, Model model) throws Exception {
+	private void addRangeValues(RdfProperty property) throws Exception {
 		if (property.getRange().getQname().toString().equals(MA_PERSON)) {
 			addPersons(property);
 		} else {
@@ -599,7 +599,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		@Override
 		public List<RdfProperty> load(TriplestoreDAO dao) {
 			try {
-				List<RdfProperty> rangeValues = new ArrayList<RdfProperty>();
+				List<RdfProperty> rangeValues = new ArrayList<>();
 				Collection<Model> persons = dao.getSearchDAO().search(
 						new SearchParams(Integer.MAX_VALUE, 0)
 						.type(MA_PERSON)
@@ -621,7 +621,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}, 60*15);
 
-	private void addPersons(RdfProperty property) throws Exception {
+	private void addPersons(RdfProperty property) {
 		property.getRange().setRangeValues(CACHED_PERSONS.get(this));
 	}
 
@@ -649,11 +649,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public RdfProperties getProperties(String className) throws SQLException {
-		return PROPERTIES_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(className, this));
+	public RdfProperties getProperties(String className) {
+		return PROPERTIES_CACHE.get(new ResourceWrapper<>(className, this));
 	}
 
-	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> SINGLE_PROPETY_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty>(new SinglePropertyCacheLoader(), 60*60, 10000);
+	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> SINGLE_PROPETY_CACHE = new Cached<>(new SinglePropertyCacheLoader(), 60*60, 10000);
 
 	private static class SinglePropertyCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> {
 
@@ -672,8 +672,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	}
 	@Override
-	public RdfProperty getProperty(Predicate predicate) throws Exception {
-		return SINGLE_PROPETY_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(predicate.getQname(), this));
+	public RdfProperty getProperty(Predicate predicate) {
+		return SINGLE_PROPETY_CACHE.get(new ResourceWrapper<>(predicate.getQname(), this));
 	}
 
 	@Override
@@ -839,7 +839,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private static final SingleObjectCacheResourceInjected<List<ResourceListing>, TriplestoreDAO> CACHED_RESOURCE_STATS = new SingleObjectCacheResourceInjected<List<ResourceListing>, TriplestoreDAO>(new ResourceStatCacheLoader(), 60*15);
+	private static final SingleObjectCacheResourceInjected<List<ResourceListing>, TriplestoreDAO> CACHED_RESOURCE_STATS = new SingleObjectCacheResourceInjected<>(new ResourceStatCacheLoader(), 60*15);
 
 
 	private static class ResourceStatCacheLoader implements SingleObjectCacheResourceInjected.CacheLoader<List<ResourceListing>, TriplestoreDAO> {
@@ -852,7 +852,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				con = usingDAO.openConnection();
 				p = con.prepareStatement(" SELECT resourcename, resourcecount FROM " + SCHEMA + ".rdf_classview_materialized ORDER BY resourcecount DESC ");
 				rs = p.executeQuery();
-				List<ResourceListing> listing = new ArrayList<ResourceListing>();
+				List<ResourceListing> listing = new ArrayList<>();
 				while (rs.next()) {
 					listing.add(new ResourceListing(rs.getString(1), rs.getInt(2)));
 				}
@@ -864,10 +864,10 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				Utils.close(p, rs, con);
 			}
 		}
-	};
+	}
 
 	@Override
-	public List<ResourceListing> getResourceStats() throws Exception {
+	public List<ResourceListing> getResourceStats() {
 		return CACHED_RESOURCE_STATS.get(this);
 	}
 
@@ -920,6 +920,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void storeOccurrencesAndSetIdToModel(Evaluation givenData) throws Exception {
+		givenData.getModel().removeAll(IucnDAO.HAS_OCCURRENCE_PREDICATE);
 		for (Occurrence occurrence : givenData.getOccurrences()) {
 			this.store(new Qname(givenData.getSpeciesQname()), occurrence);
 			givenData.getModel().addStatement(new Statement(IucnDAO.HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
