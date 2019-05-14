@@ -93,6 +93,9 @@
 		<td>
 			<#if evaluation.ready>
 				<span class="state ready">Valmis</span>
+				<#if  permissions && draftYear != year && (evaluation.iucnStatus == "MX.iucnLC" || evaluation.iucnStatus == "MX.iucnNT")>
+				 	<a class=button regionalEvalButton" href="${baseURL}/iucn/regional/${target.qname}/${year}">Alueellinen uhanalaisuus</a>
+				</#if>
 			<#elseif evaluation.readyForComments>
 				<span class="state started">Valmis kommentoitavaksi</span>
 			<#else>
@@ -322,12 +325,6 @@
 		</td>
 		<td>
 			<#if permissions>
-				<#if areaQname = "ML.690">
-					<div class="buttonContainer"> 
-						<button id="markAllDoesNotOccurButton">Merkitse kaikkiin 'Ei havaintoja vyöhykkeeltä'</button>
-						<button id="revealRegionalThreatenedButton">Määritä alueellinen uhanalaisuus</button>
-					</div>
-				</#if>
 				<select name="MKV.hasOccurrence___${areaQname}___status" data-placeholder="..." class="regionalOccurrence">
 					<option value="" label=".."></option>
 					<#list regionalOccurrenceStatuses as prop>

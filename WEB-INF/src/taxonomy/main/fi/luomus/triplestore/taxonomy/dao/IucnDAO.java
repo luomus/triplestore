@@ -4,8 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import fi.luomus.commons.containers.Area;
+import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.containers.rdf.RdfProperties;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
@@ -42,6 +44,8 @@ public interface IucnDAO {
 
 	public Evaluation createEvaluation(String id) throws Exception;
 
+	public Evaluation createEvaluation(Model model) throws Exception;
+
 	public Qname getSeqNextValAndAddResource() throws Exception;
 
 	public EditHistory getEditHistory(Evaluation evaluation) throws Exception;
@@ -51,5 +55,7 @@ public interface IucnDAO {
 	public void moveEvaluation(String fromTaxonId, String toTaxonId, int year) throws Exception;
 	
 	public void deleteEvaluation(String fromTaxonId, int year) throws Exception;
+
+	public RdfProperties getEvaluationProperties() throws Exception;
 
 }

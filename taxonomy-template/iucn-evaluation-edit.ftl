@@ -324,7 +324,6 @@
 		<@iucnOccurrence areaQname />
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
-	<@iucnTextarea "MKV.regionallyThreatenedNotes" "regionalThreatened" "MKV.regionallyThreatenedPrivateNotes" />
 
 	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span> &nbsp;&nbsp; <a href=\"${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf\" target=\"_staticmap\">&raquo; Elinympäristöluokkien tulkintaohje</a> " /> 
 	
@@ -617,28 +616,11 @@ $(function() {
     		}
     	}
     });
-    
-    $("#markAllDoesNotOccurButton").on('click', function() {
-    	$("select.regionalOccurrence").each(function() {
-    		if ($(this).val() == '') {
-    			$(this).val('MX.doesNotOccur');
-    			$(this).trigger("chosen:updated").change();
-    		}
-    	});
-    }); 
-    
-    $("#revealRegionalThreatenedButton").on('click', function() {
-    	$(".regionalThreatened").show();
-    });
-    
+        
     $("#copyButton").on('click', function() {
     	$(this).prop('disabled','disabled');
     	window.location.href = '${baseURL}/iucn/species/${taxon.qname}/${selectedYear}?copy=true';
     });
-
-	<#if evaluation?? && evaluation.hasRegionalThreatenedData()>
-		$(".regionalThreatened").show();
-	</#if>
 
 });
 

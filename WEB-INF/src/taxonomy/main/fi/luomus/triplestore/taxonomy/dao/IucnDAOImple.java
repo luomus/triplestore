@@ -333,7 +333,8 @@ public class IucnDAOImple implements IucnDAO {
 		}
 	}
 
-	private Evaluation createEvaluation(Model model) throws Exception {
+	@Override
+	public Evaluation createEvaluation(Model model) throws Exception {
 		Evaluation evaluation = new Evaluation(model, getEvaluationProperties());
 		evaluation.setIncompletelyLoaded(true);
 		return evaluation;
@@ -500,7 +501,8 @@ public class IucnDAOImple implements IucnDAO {
 		return occurrence;
 	}
 
-	private RdfProperties getEvaluationProperties() throws Exception {
+	@Override
+	public RdfProperties getEvaluationProperties() throws Exception {
 		return triplestoreDAO.getProperties(Evaluation.EVALUATION_CLASS);
 	}
 

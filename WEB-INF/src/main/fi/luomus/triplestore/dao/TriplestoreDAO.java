@@ -260,10 +260,20 @@ public interface TriplestoreDAO {
 	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
 
 	/**
+	 * Store IUCN evaluation occurrences
+	 * @param givenData
+	 * @param existingEvaluation
+	 * @throws Exception
+	 */
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
+
+	/**
 	 * Store habitat object
 	 * @param habitat
 	 * @throws Exception
 	 */
 	public void store(HabitatObject habitat) throws Exception;
+
+
 
 }

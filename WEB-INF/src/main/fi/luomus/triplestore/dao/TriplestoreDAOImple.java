@@ -883,14 +883,27 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		storeEvaluation(givenData, existingEvaluation, false);
+	}
+
+	@Override
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		storeEvaluation(givenData, existingEvaluation, true);
+	}
+
+	private void storeEvaluation(Evaluation givenData, Evaluation existingEvaluation, boolean onlyOccurrences) throws Exception {
 		storeOccurrencesAndSetIdToModel(givenData);
-		storeEndangermentObjectsAndSetIdToModel(givenData);
-		storeHabitatObjectsAndSetIdsToModel(givenData);
+		if (!onlyOccurrences) {
+			storeEndangermentObjectsAndSetIdToModel(givenData);
+			storeHabitatObjectsAndSetIdsToModel(givenData);
+		}
 		this.store(givenData.getModel());
 		if (existingEvaluation != null) {
 			deleteOccurrences(existingEvaluation);
-			deleteEndangermentObjects(existingEvaluation);
-			deleteHabitatObjects(existingEvaluation);
+			if (!onlyOccurrences) {
+				deleteEndangermentObjects(existingEvaluation);
+				deleteHabitatObjects(existingEvaluation);
+			}
 		}
 	}
 

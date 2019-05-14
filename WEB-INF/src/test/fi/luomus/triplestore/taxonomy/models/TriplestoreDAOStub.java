@@ -229,4 +229,10 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 		return null;
 	}
 
+	@Override
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		// Auto-generated method stub
+		
+	}
+
 }
