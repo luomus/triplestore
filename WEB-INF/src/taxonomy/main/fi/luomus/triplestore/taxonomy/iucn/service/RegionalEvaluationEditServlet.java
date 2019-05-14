@@ -32,6 +32,7 @@ public class RegionalEvaluationEditServlet extends EvaluationEditServlet {
 
 	@Override
 	protected boolean permissions(HttpServletRequest req, EvaluationTarget target, Evaluation thisPeriodData) throws Exception {
+		if (thisPeriodData == null) return false;
 		boolean userHasPermissions = false;
 		for (String groupQname : target.getGroups()) {
 			if (hasIucnPermissions(groupQname, req)) {
