@@ -131,7 +131,7 @@ public class EvaluationTarget {
 				if (prevYear == null) {
 					prevYear = y;
 				} else {
-					prevYear = Math.min(y, prevYear);
+					prevYear = Math.max(y, prevYear);
 				}
 			}
 		}
