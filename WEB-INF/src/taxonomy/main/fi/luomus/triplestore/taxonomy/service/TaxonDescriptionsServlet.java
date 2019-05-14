@@ -30,7 +30,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	private static final long serialVersionUID = -2281661002076649983L;
 
 	private static final SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO> cachedDescriptionGroups = 
-			new SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO>(
+			new SingleObjectCacheResourceInjected<>(
 					new SingleObjectCacheResourceInjected.CacheLoader<List<RdfProperty>, TriplestoreDAO>() {
 						@Override
 						public List<RdfProperty> load(TriplestoreDAO dao) {
@@ -43,7 +43,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 					}, 10);
 	
 	public static final SingleObjectCacheResourceInjected<Map<String, List<RdfProperty>>, TriplestoreDAO> cachedDescriptionGroupVariables = 
-			new SingleObjectCacheResourceInjected<Map<String, List<RdfProperty>>, TriplestoreDAO>(
+			new SingleObjectCacheResourceInjected<>(
 					new SingleObjectCacheResourceInjected.CacheLoader<Map<String, List<RdfProperty>>, TriplestoreDAO>() {
 						@Override
 						public Map<String, List<RdfProperty>> load(TriplestoreDAO dao) {

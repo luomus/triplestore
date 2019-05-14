@@ -110,15 +110,15 @@ public class EvaluationTarget {
 		evaluations.put(evaluation.getEvaluationYear(), evaluation);
 	}
 
-	public Evaluation getEvaluation(int year) throws Exception {
+	public Evaluation getEvaluation(int year) {
 		return evaluations.get(year);
 	}
 
-	public boolean hasEvaluation(int year) throws Exception {
+	public boolean hasEvaluation(int year) {
 		return getEvaluation(year) != null;
 	}
 
-	public Evaluation getPreviousEvaluation(int year) throws Exception {
+	public Evaluation getPreviousEvaluation(int year) {
 		Integer prevYear = getPreviousYear(year);
 		if (prevYear == null) return null;
 		return getEvaluation(prevYear);
@@ -142,7 +142,7 @@ public class EvaluationTarget {
 		return Collections.unmodifiableList(new ArrayList<>(evaluations.keySet()));
 	}
 
-	public boolean hasPreviousEvaluation(int year) throws Exception {
+	public boolean hasPreviousEvaluation(int year) {
 		return getPreviousEvaluation(year) != null;
 	}
 
@@ -163,7 +163,7 @@ public class EvaluationTarget {
 		return "IUCNEvaluationTarget [getGroups()=" + getGroups() + ", getYears()=" + getYears() + "]";
 	}
 
-	public Evaluation getLatestEvaluation() throws Exception {
+	public Evaluation getLatestEvaluation() {
 		return getPreviousEvaluation(Integer.MAX_VALUE);
 	}
 

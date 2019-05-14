@@ -44,7 +44,7 @@ public class IUCNValidatorTests {
 	}
 
 	@AfterClass
-	public static void afterClass() throws Exception {
+	public static void afterClass() {
 		dataSource.close();
 	}
 

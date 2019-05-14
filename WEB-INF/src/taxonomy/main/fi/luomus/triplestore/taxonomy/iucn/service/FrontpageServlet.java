@@ -114,7 +114,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 	}
 
-	private int getDraftYear(List<Integer> allYears) throws Exception {
+	private int getDraftYear(List<Integer> allYears) {
 		return Iterables.getLast(allYears);
 	}
 

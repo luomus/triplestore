@@ -26,13 +26,13 @@ public class SchemaClassesServlet extends ApiServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
-			return processGetWithAccess(req, res);
+			return processGetWithAccess(res);
 		} finally {
 			access.release();
 		}
 	}
 
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData processGetWithAccess(HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdfs:Class"));
 		JSONArray response = parseClassResponse(models);

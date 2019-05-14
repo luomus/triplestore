@@ -129,10 +129,9 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		if (addNew) {
 			getSession(req).setFlashSuccess("New informal group added");
 			return redirectTo(getConfig().baseURL()+"/informalGroups");
-		} else {
-			getSession(req).setFlashSuccess("Informal group modified");
-			return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname);
 		}
+		getSession(req).setFlashSuccess("Informal group modified");
+		return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname);
 	}
 	
 	private int getSortOrder(HttpServletRequest req) {

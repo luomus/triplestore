@@ -61,7 +61,7 @@ public class IUCN_LC_generointi {
 			res = client.execute(post);
 			if (res.getStatusLine().getStatusCode() != 200) throw new Exception(""+ res.getStatusLine().getStatusCode());
 		} finally {
-			res.close();
+			if (res != null) res.close();
 		}
 	}
 

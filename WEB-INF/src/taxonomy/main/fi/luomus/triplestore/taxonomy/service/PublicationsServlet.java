@@ -56,10 +56,9 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		if (addNew) {
 			getSession(req).setFlashSuccess("New publication added");
 			return redirectTo(getConfig().baseURL()+"/publications");
-		} else {
-			getSession(req).setFlashSuccess("Publication modified");
-			return redirectTo(getConfig().baseURL()+"/publications/"+qname);
 		}
+		getSession(req).setFlashSuccess("Publication modified");
+		return redirectTo(getConfig().baseURL()+"/publications/"+qname);
 	}
 
 }

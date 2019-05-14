@@ -24,7 +24,7 @@ public class ServletTests {
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() {
 		if (client != null) {
 			client.close();
 		}
@@ -38,7 +38,6 @@ public class ServletTests {
 		}
 	}
 
-
 	@Test
 	public void test_authentication() throws Exception {
 		Document response = client.contentAsDocument(new HttpGet(TRIPLESTORE_URL + "/MA.5"));
@@ -46,7 +45,7 @@ public class ServletTests {
 	}
 
 	@Test
-	public void test_no_authentication() throws Exception {
+	public void test_no_authentication() {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
 			try {
@@ -55,7 +54,7 @@ public class ServletTests {
 				assertTrue(e.getMessage().startsWith("Request returned 401"));
 			}
 		} finally {
-			if (noAutenticationClient != null) noAutenticationClient.close();
+			noAutenticationClient.close();
 		}
 	}
 
@@ -66,10 +65,10 @@ public class ServletTests {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/login"));
 			assertTrue(response.contains("Use your organization's login"));
 		} finally {
-			if (noAutenticationClient != null) noAutenticationClient.close();
+			noAutenticationClient.close();
 		}
 	}
-	
+
 	@Test
 	public void test_taxon_search_not_require_authentication() throws Exception {
 		HttpClientService noAutenticationClient = new HttpClientService();
@@ -77,10 +76,10 @@ public class ServletTests {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/taxon-search/susi"));
 			assertTrue("No canis lupus in response: " + response, response.contains("scientificName=\"Canis lupus\""));
 		} finally {
-			if (noAutenticationClient != null) noAutenticationClient.close();
+			noAutenticationClient.close();
 		}
 	}
-	
+
 	@Test
 	public void test_taxon_search_from_orphan_taxa() throws Exception {
 		HttpClientService noAutenticationClient = new HttpClientService();
@@ -88,15 +87,15 @@ public class ServletTests {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/taxon-search/testi?checklist=null"));
 			assertTrue(response.contains("MX.210957"));
 		} finally {
-			if (noAutenticationClient != null) noAutenticationClient.close();
+			noAutenticationClient.close();
 		}
 	}
-		
-	
+
+
 	// TODO suurin osa näistä on testattuna ApiServiceTest:ssä, joten ei tartte testata Servlettinä, mutta joitakin kappaleita voisi
 	// esim yksi GET yksi /search yksi PUT yksi PUT single predicate
 	// TODO testaa etenkin default formaatit: none -> RDF-XML/ABBREV,  json -> JSON_RDF-XML
-	
+
 	//	public void test_taxon_search_json() throws Exception {
 	//		HttpGet request = new HttpGet("http://127.0.0.1:8081/triplestore-current-old/taxon-search/susi?format=json");
 	//		String response = client.contentAsString(request);
@@ -116,9 +115,9 @@ public class ServletTests {
 	//		String response = client.contentAsString(request);
 	//		assertEquals("clbk({ result: ['susi'] });", response);
 	//	}
-	
-	
-	
+
+
+
 	//	public void test_get_abbreviated_rdf() throws Exception {
 	//		HttpGet request = new HttpGet("http://127.0.0.1:8081/triplestore-current-old/MA.1");
 	//		String response = client.contentAsString(request);
@@ -143,7 +142,7 @@ public class ServletTests {
 	//		assertEquals("http://tun.fi/MA.1", json.getObject("rdf:RDF").getObject("MA.person").getString("rdf:about"));
 	//	}
 	//
-	
+
 	//	public void test_search_limit_and_offset() throws Exception {
 	//		String predicate = Utils.urlEncode("rdf:type");
 	//		String object = Utils.urlEncode("MA.person");
@@ -154,9 +153,9 @@ public class ServletTests {
 	//		assertEquals(10, n.getChildNodes().size());
 	//	}
 	//
-	
-	
-	
+
+
+
 	//
 	//	public void test__delete_put_delete() throws Exception {
 	//		HttpDelete delete = new HttpDelete("http://127.0.0.1:8081/triplestore-current-old/JA.123");
@@ -325,6 +324,6 @@ public class ServletTests {
 	//		assertEquals("bar", n.getNode("rdf:Description").getNode("rdfs:label_CONTEXT_JA.1").getContents());
 	//	}
 	//
-	
+
 
 }

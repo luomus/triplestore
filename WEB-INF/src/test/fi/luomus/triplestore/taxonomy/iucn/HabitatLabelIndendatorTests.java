@@ -15,7 +15,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 public class HabitatLabelIndendatorTests {
 	
 	@Test
-	public void indenting() throws Exception {
+	public void indenting() {
 		Collection<RdfProperty> properties = new ArrayList<>();
 		properties.add(new RdfProperty(new Qname("1")).setLabels(new LocalizedText().set("fi",  "A - xxx")));
 		properties.add(new RdfProperty(new Qname("2")).setLabels(new LocalizedText().set("fi",  "B - xxx")));

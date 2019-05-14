@@ -28,7 +28,7 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 
 		SynonymType synonymType = ApiAddSynonymServlet.getSynonymType(req);
 		String removedId = getRemovedId(req);
-		EditableTaxon synonymParent = ApiAddSynonymServlet.getSynonymParent(req, dao, taxonomyDAO);
+		EditableTaxon synonymParent = ApiAddSynonymServlet.getSynonymParent(req, taxonomyDAO);
 		
 		checkPermissionsToAlterTaxon(synonymParent, req);
 		

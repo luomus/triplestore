@@ -101,15 +101,13 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		if (jsonRequest(format)) {
 			if (version == 2) {
 				return jsonResponse(toJsonV2(response).toString(), res);
-			} else {
-				String xml = new XMLWriter(response).generateXML();
-				org.json.JSONObject jsonObject = XML.toJSONObject(xml);
-				String json = jsonObject.toString();
-				return jsonResponse(json, res);
 			}
-		} else {
-			return xmlResponse(response, res);
+			String xml = new XMLWriter(response).generateXML();
+			org.json.JSONObject jsonObject = XML.toJSONObject(xml);
+			String json = jsonObject.toString();
+			return jsonResponse(json, res);
 		}
+		return xmlResponse(response, res);
 	}
 
 	private JSONObject toJsonV2(Document response) {
@@ -257,7 +255,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		StringBuilder out = new StringBuilder();
 		out.append(callback + "({ result: [");
 
-		Set<String> matches = new LinkedHashSet<String>();
+		Set<String> matches = new LinkedHashSet<>();
 		for (Node matchType : results.getRootNode()) {
 			for (Node match : matchType) {
 				String name = match.getAttribute(MATCHING_NAME).replace("'", "\\'");

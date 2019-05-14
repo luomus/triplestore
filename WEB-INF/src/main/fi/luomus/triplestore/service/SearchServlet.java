@@ -69,9 +69,8 @@ public class SearchServlet extends ApiServlet {
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
 		}
+		return rdfResponse(response, res);
 	}
 
 	protected Set<String> getMultiParam(String fieldName, HttpServletRequest req) {
@@ -116,9 +115,8 @@ public class SearchServlet extends ApiServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private int getLimit(HttpServletRequest req) {

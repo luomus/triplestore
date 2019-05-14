@@ -281,7 +281,7 @@ public class IucnDAOImple implements IucnDAO {
 		return createTarget(speciesQname);
 	}
 
-	private EvaluationTarget createTarget(String speciesQname) throws Exception {
+	private EvaluationTarget createTarget(String speciesQname) {
 		EvaluationTarget target;
 		target = new EvaluationTarget(new Qname(speciesQname), container, taxonContainer);
 		container.addTarget(target);
@@ -507,7 +507,7 @@ public class IucnDAOImple implements IucnDAO {
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedEvaluationAreas = 
-			new SingleObjectCache<Map<String, Area>>(
+			new SingleObjectCache<>(
 					new CacheLoader<Map<String, Area>>() {
 						@Override
 						public Map<String, Area> load() {

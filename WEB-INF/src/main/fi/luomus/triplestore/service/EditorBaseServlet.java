@@ -176,7 +176,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return session.isAuthenticatedFor(getConfig().systemId());
 	}
 
-	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) throws IllegalAccessException {
+	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) {
 		DataSource datasource = getDataSource();
 		User user = getUser(req);
 		return new TriplestoreDAOImple(datasource, user.getQname());
@@ -256,11 +256,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	private static final Map<String, Format> formats;
 	static {
-		formats = new HashMap<String, Format>();
+		formats = new HashMap<>();
 		for (Format format : Format.values()) {
 			formats.put(format.toString().toUpperCase(), format);
 		}
-	};
+	}
 
 	protected Format getFormat(HttpServletRequest req) {
 		String format = req.getParameter("format");

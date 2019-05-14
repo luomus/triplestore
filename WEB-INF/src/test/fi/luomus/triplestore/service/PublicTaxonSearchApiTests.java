@@ -38,7 +38,7 @@ public class PublicTaxonSearchApiTests {
 	}
 
 	@AfterClass 
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() {
 		dataSource.close();
 		taxonomyDAO.close();
 	}

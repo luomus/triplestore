@@ -81,9 +81,8 @@ public class ApiServlet extends EditorBaseServlet {
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
 		}
+		return rdfResponse(response, res);
 	}
 
 	public static String get(Qname qname, ResultType resultType, Format format, TriplestoreDAO dao) throws Exception {
@@ -113,9 +112,8 @@ public class ApiServlet extends EditorBaseServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private static String specialResultTypeRDF(Set<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws TooManyResultsException, Exception {
@@ -142,7 +140,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	private static final Map<Format, String> FORMAT_TO_RDF_LANG_MAPPING; 
 	static {
-		FORMAT_TO_RDF_LANG_MAPPING = new HashMap<Format, String>();
+		FORMAT_TO_RDF_LANG_MAPPING = new HashMap<>();
 		for (Format format : Format.values()) {
 			if (format == Format.JSONP) continue;
 			if (format == Format.JSON) {
@@ -159,11 +157,11 @@ public class ApiServlet extends EditorBaseServlet {
 
 	private static final Map<String, ResultType> RESULT_TYPE_MAPPING;
 	static {
-		RESULT_TYPE_MAPPING = new HashMap<String, ResultType>();
+		RESULT_TYPE_MAPPING = new HashMap<>();
 		for (ResultType resultType : ResultType.values()) {
 			RESULT_TYPE_MAPPING.put(resultType.toString().toUpperCase(), resultType);
 		}
-	};
+	}
 
 	private ResultType getResultType(HttpServletRequest req) {
 		String resultType = req.getParameter("resulttype");
@@ -185,9 +183,8 @@ public class ApiServlet extends EditorBaseServlet {
 
 		if (jsonRequest(format)) {
 			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
 		}
+		return rdfResponse(response, res);
 	}
 
 	public static String delete(Qname qname, Format format, TriplestoreDAO dao) throws Exception {
@@ -199,9 +196,8 @@ public class ApiServlet extends EditorBaseServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private static String generateRdf(Model model, Format format) {

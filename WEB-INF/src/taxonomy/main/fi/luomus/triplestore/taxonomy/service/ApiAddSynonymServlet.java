@@ -56,7 +56,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	public static final String SYNONYM_OF_PARAMETER = "synonymOfTaxon";
 	private static final String SYNONYM_TYPE_PARAMETER = "synonymType";
 
-	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTHOGRAPHIC, ALTERNATIVE };
+	public static enum SynonymType { SYNONYM, MISAPPLIED, UNCERTAIN, MISSPELLED, BASIONYM, OBJECTIVE, SUBJECTIVE, HOMOTYPIC, HETEROTYPIC, ORTHOGRAPHIC, ALTERNATIVE }
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -66,7 +66,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
-		EditableTaxon synonymParent = getSynonymParent(req, dao, taxonomyDAO);
+		EditableTaxon synonymParent = getSynonymParent(req, taxonomyDAO);
 		try {
 			checkPermissionsToAlterTaxon(synonymParent, req);
 		} catch (IllegalAccessException noAccess) {
@@ -87,7 +87,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		return apiSuccessResponse(res);
 	}
 
-	public static EditableTaxon getSynonymParent(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+	public static EditableTaxon getSynonymParent(HttpServletRequest req, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
 		Qname synonymParentQname = new Qname(req.getParameter(SYNONYM_OF_PARAMETER).replace("MX", "MX."));
 		EditableTaxon synonymParent = (EditableTaxon) taxonomyDAO.getTaxon(synonymParentQname);
 		return synonymParent;

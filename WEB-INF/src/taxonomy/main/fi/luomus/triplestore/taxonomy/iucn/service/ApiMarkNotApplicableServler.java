@@ -9,9 +9,9 @@ import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-applicable/*"})
 public class ApiMarkNotApplicableServler extends ApiMarkNotEvaluatedServler {

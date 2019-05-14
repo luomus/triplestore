@@ -134,7 +134,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(new Qname("MX.7"), ResultType.CHILDREN, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
-		Set<String> taxonRanks = new HashSet<String>();
+		Set<String> taxonRanks = new HashSet<>();
 		for (Node child : n.getChildNodes()) {
 			taxonRanks.add(child.getNode("MX.taxonRank").getAttribute("rdf:resource"));
 		}
@@ -238,10 +238,10 @@ public class ApiServiceTests {
 
 		// Put    rdfs:label "changed" @ sv for null context
 		predicateQname = "rdfs:label";
-		objectResource = null;
+		//objectResource = null;
 		objectLiteral = "changed";
 		langCode = "sv";
-		contextQname = null;
+		//contextQname = null;
 
 		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
@@ -255,7 +255,7 @@ public class ApiServiceTests {
 
 		// Put  rdfs:label "added" @ sv for context JA.1
 		predicateQname = "rdfs:label";
-		objectResource = null;
+		//objectResource = null;
 		objectLiteral = "added";
 		langCode = "sv";
 		contextQname = "JA.1";

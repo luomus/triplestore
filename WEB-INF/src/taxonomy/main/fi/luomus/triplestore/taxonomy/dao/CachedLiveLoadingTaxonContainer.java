@@ -72,9 +72,9 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 			});
 
-	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
+	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<>(new TaxonLoader(), 3*60*60, 25000);
+	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<>(new ChildrenLoader(), 3*60*60, 25000);
+	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<>(new SynonymParentLoader(), 3*60*60, 25000);
 	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfInformalTaxonGroup; // informal taxon group id -> IUCN group ids
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
@@ -200,7 +200,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		}
 	}
 
-	private EditableTaxon createTaxon(Model model) throws Exception {
+	private EditableTaxon createTaxon(Model model) {
 		Qname qname = q(model.getSubject());
 		EditableTaxon taxon = new EditableTaxon(qname, this, taxonomyDAO);
 		for (Statement statement : model.getStatements()) {
@@ -270,7 +270,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 						.predicate(IS_PART_OF)
 						.objectresource(taxonQname));
 				if (models.isEmpty()) return Collections.emptySet();
-				Set<Qname> childIds = new HashSet<Qname>();
+				Set<Qname> childIds = new HashSet<>();
 				List<EditableTaxon> createdChildren = new ArrayList<>();
 				for (Model model : models) {
 					EditableTaxon child = createTaxon(model);

@@ -94,10 +94,9 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		if (addNew) {
 			getSession(req).setFlashSuccess("New checklist added");
 			return redirectTo(getConfig().baseURL()+"/checklists");
-		} else {
-			getSession(req).setFlashSuccess("Checklist modified");
-			return redirectTo(getConfig().baseURL()+"/checklists/"+qname);
 		}
+		getSession(req).setFlashSuccess("Checklist modified");
+		return redirectTo(getConfig().baseURL()+"/checklists/"+qname);
 	}
 
 	private void checkPermissions(Qname qname, HttpServletRequest req) throws Exception {

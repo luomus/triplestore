@@ -26,6 +26,9 @@ import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.LogUtils;
@@ -36,10 +39,7 @@ import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
-import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
-import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
@@ -51,7 +51,7 @@ public class IUCN2010Sisaan {
 	private static final String OCCURRENCES = "occurrences";
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
-		FILE_TO_INFORMAL_GROUP = new HashMap<String, Set<Qname>>();
+		FILE_TO_INFORMAL_GROUP = new HashMap<>();
 		FILE_TO_INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		FILE_TO_INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(new Qname("MVL.38")));
 		FILE_TO_INFORMAL_GROUP.put("Hamahakit_loput.csv", Utils.set(new Qname("MVL.38")));

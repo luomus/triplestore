@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
@@ -21,7 +20,7 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 	private static final long serialVersionUID = 6301235108157969958L;
 
 	@Override
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData processGetWithAccess(HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdf:Property"));
 		JSONArray response = parsePropertiesResponse(models);

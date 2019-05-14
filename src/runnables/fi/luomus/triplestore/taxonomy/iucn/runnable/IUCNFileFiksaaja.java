@@ -1,12 +1,12 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
-import fi.luomus.commons.utils.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 
+import fi.luomus.commons.utils.FileUtils;
+
 public class IUCNFileFiksaaja {
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		try {
 			main();
 		} catch (Exception e) {

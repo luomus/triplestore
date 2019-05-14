@@ -52,7 +52,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 				.setData("selectedYear", year);
 	}
 
-	protected Evaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO, HttpServletRequest req) throws Exception {
+	protected Evaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO, @SuppressWarnings("unused") HttpServletRequest req) throws Exception {
 		Evaluation evaluation = iucnDAO.createNewEvaluation();
 		Model model = evaluation.getModel();
 		model.addStatement(new Statement(new Predicate(Evaluation.EVALUATED_TAXON), new ObjectResource(speciesQname)));

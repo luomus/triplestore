@@ -123,10 +123,9 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New IUCN group added");
 			return redirectTo(getConfig().baseURL()+"/iucn-groups");
-		} else {
-			getSession(req).setFlashSuccess("IUCN group modified");
-			return redirectTo(getConfig().baseURL()+"/iucn-groups");
 		}
+		getSession(req).setFlashSuccess("IUCN group modified");
+		return redirectTo(getConfig().baseURL()+"/iucn-groups");
 	}
 
 	private int getSortOrder(HttpServletRequest req) {

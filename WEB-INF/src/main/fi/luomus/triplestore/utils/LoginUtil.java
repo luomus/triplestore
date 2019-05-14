@@ -157,14 +157,12 @@ public class LoginUtil  {
 				authenticateSession(session, authentication);
 				if (nextGiven(authentication)) {
 					return responseData.setRedirectLocation(config.baseURL() + authentication.getNext());
-				} else {
-					String frontpage = frontpageForRoles.get(authentication.getRoles().iterator().next());
-					return responseData.setRedirectLocation(frontpage);
 				}
-			} else {
-				responseData.setData("error", authentication.getErrorMessage());
-				return responseData;
+				String frontpage = frontpageForRoles.get(authentication.getRoles().iterator().next());
+				return responseData.setRedirectLocation(frontpage);
 			}
+			responseData.setData("error", authentication.getErrorMessage());
+			return responseData;
 		} catch (Exception e) {
 			errorReporter.report("Login data " + Utils.debugS(lajiAuthToken), e);
 			responseData.setData("error", "Something went wrong: " + e.getMessage());

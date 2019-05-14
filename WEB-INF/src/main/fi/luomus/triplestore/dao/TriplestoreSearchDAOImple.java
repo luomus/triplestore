@@ -59,7 +59,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	public Set<Qname> searchQnames(SearchParams searchParams) throws SQLException {
 		Set<Qname> results = new HashSet<>();
 
-		List<String> values = new ArrayList<String>();
+		List<String> values = new ArrayList<>();
 		String sql = buildSearchSQLAndSetValues(searchParams, values);
 
 		TransactionConnection con = null;
@@ -210,7 +210,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private Collection<Model> get(Set<Qname> qnames, ResultType resultType, Set<Qname> alreadyIncludedSubjects) throws TooManyResultsException, Exception {
-		List<Model> models = new ArrayList<Model>();
+		List<Model> models = new ArrayList<>();
 		for (Model model : get(qnames)) {
 			if (!model.isEmpty()) {
 				models.add(model);
@@ -240,7 +240,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			return Collections.emptyList();
 		}
 		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
-		List<Model> models = new ArrayList<Model>();
+		List<Model> models = new ArrayList<>();
 		Set<Qname> objects = new HashSet<>();
 		for (Statement s : model) {
 			if (s.isResourceStatement()) {
@@ -260,7 +260,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private Collection<Model> fetchTree(Model parent) throws TooManyResultsException, SQLException {
-		List<Model> models = new ArrayList<Model>();
+		List<Model> models = new ArrayList<>();
 		Predicate hasPart = new Predicate("MZ.hasPart");
 		Qname parentQname = qnameOf(parent);
 
@@ -298,7 +298,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	public Collection<Model> get(Set<Qname> subjects) throws SQLException {
 		if (subjects.isEmpty()) return Collections.emptyList();
 
-		List<Model> models = new ArrayList<Model>();
+		List<Model> models = new ArrayList<>();
 		TransactionConnection con = null;
 		try {
 			con = dao.openConnection();
@@ -361,7 +361,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		return splitted;
 	}
 
-	private String constructSelectQuery(Collection<Qname> results) throws SQLException {
+	private String constructSelectQuery(Collection<Qname> results) {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid, subjectname "); 
 		sql.append(" FROM    "+SCHEMA+".rdf_statementview ");
@@ -484,7 +484,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	@Override
 	public int count(SearchParams searchParams) throws Exception {
-		List<String> values = new ArrayList<String>();
+		List<String> values = new ArrayList<>();
 		StringBuilder query = new StringBuilder();
 		query.append(" SELECT  count(DISTINCT subjectname)     \n");
 		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 

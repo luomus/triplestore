@@ -407,7 +407,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return group;
 		}
 
-		public static void appendRLIValues(EvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) throws Exception {
+		public static void appendRLIValues(EvaluationTarget target, List<Integer> years, int selectedYear, List<String> data) {
 			for (Integer year : years) {
 				Evaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
@@ -458,7 +458,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			STATUS_CHANGE_NUMBER_CODES.put("MKV.reasonForStatusChangeOther", 8);
 		}
 
-		private String reasonForStatusChange(Evaluation evaluation) throws Exception {
+		private String reasonForStatusChange(Evaluation evaluation) {
 			if (!evaluation.hasValue("MKV.reasonForStatusChange")) return null;
 			List<String> values = new ArrayList<>();
 			for (String value : evaluation.getValues("MKV.reasonForStatusChange")) {
@@ -801,7 +801,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			List<EvaluationTarget> filtered = new ArrayList<>();
 			if (!given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) return targets;
 
-			Set<String> taxonQnames = null;
+			Set<String> taxonQnames = Collections.emptySet();
 			if (given(taxon)) {
 				try {
 					taxonQnames = getTaxons(taxon);

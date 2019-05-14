@@ -68,7 +68,7 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 		toSend.invalidateSelfAndLinking();
 
-		removeExistingLinkings(toSend, newParent, dao);
+		removeExistingLinkings(toSend, dao);
 		if ("CHILD".equals(sendAsType)) {
 			ApiChangeParentServlet.move(toSend, newParent, dao);
 			toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
@@ -82,7 +82,7 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		return apiSuccessResponse(res);
 	}
 
-	private void removeExistingLinkings(EditableTaxon toSend, EditableTaxon newParent, TriplestoreDAO dao) throws Exception {
+	private void removeExistingLinkings(EditableTaxon toSend, TriplestoreDAO dao) throws Exception {
 		Qname synonymParentId = getTaxonomyDAO().getTaxonContainer().getSynonymParent(toSend.getQname());
 		if (synonymParentId != null) {
 			Model synonymParentModel = dao.get(synonymParentId);

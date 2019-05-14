@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
@@ -31,7 +30,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 
 
 	@Override
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData processGetWithAccess(HttpServletResponse res) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);

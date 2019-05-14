@@ -83,10 +83,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO, this);
 		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter);
-		this.cachedTaxonSearches = new Cached<TaxonSearch, TaxonSearchResponse>(
+		this.cachedTaxonSearches = new Cached<>(
 				new TaxonSearchLoader(),
 				60*60*3, 50000);
-		this.cachedDwUses = new Cached<Qname, Boolean>(
+		this.cachedDwUses = new Cached<>(
 				new DwUseLoader(),
 				60*60*3, 50000);
 		this.config = config;
@@ -380,7 +380,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			} catch (Exception e) {
 				throw new RuntimeException("Dw use for " + taxonId, e);
 			} finally {
-				client.close();
+				if (client != null) client.close();
 			}
 		}
 	}
@@ -508,20 +508,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
-		List<Taxon> matches = new ArrayList<Taxon>();
+		List<Taxon> matches = new ArrayList<>();
 
-		Qname checklist = null;
-		if (given(taxon.getChecklist())) {
-			checklist = taxon.getChecklist();
-		} else {
-			Taxon synonymParent = taxon.getSynonymParent();
-			if (synonymParent != null) {
-				checklist = synonymParent.getChecklist();
-			}
-			if (!given(checklist)) {
-				checklist = new Qname("MR.1");
-			}
-		}
+		Qname checklist = getChecklistOrDefault(taxon);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -555,6 +544,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return matches;
 	}
 
+	private Qname getChecklistOrDefault(Taxon taxon) {
+		if (given(taxon.getChecklist())) {
+			return taxon.getChecklist();
+		}
+		Taxon synonymParent = taxon.getSynonymParent();
+		if (synonymParent != null && given(synonymParent.getChecklist())) {
+			return synonymParent.getChecklist();
+		}
+		return new Qname("MR.1");
+	}
+
 	private boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
@@ -583,7 +583,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 
-			new SingleObjectCache<Map<String, Area>>(
+			new SingleObjectCache<>(
 					new CacheLoader<Map<String, Area>>() {
 						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");
 						@Override

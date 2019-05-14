@@ -79,7 +79,7 @@ public class IUCNGlobaalitSisaan {
 		}
 	}
 
-	private static void process(String line, File f, int i, int total) throws Exception {
+	private static void process(String line, File f, int i, int total) {
 		String[] parts = line.split(Pattern.quote("|"));
 		IUCNLineData data = new IUCNLineData(Mode.GLOBAL, parts);
 		process(data, f, i, total);
@@ -162,7 +162,7 @@ public class IUCNGlobaalitSisaan {
 		return s.trim();
 	}
 
-	private static void process(IUCNLineData data, Match match, File f) throws Exception {
+	private static void process(IUCNLineData data, Match match, File f) {
 		System.out.println("Täsmäsi " + data.scientificName + " -> " + match.getTaxon().getQname());
 		File file = new File("c:/temp/iucn/global_" + f.getName().replace(".csv", "_" + DateUtils.getCurrentDate() +".txt"));
 		try {

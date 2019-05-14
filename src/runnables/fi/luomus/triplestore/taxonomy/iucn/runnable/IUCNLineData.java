@@ -792,12 +792,12 @@ public class IUCNLineData {
 		String s = lsaRecommendation.toLowerCase();
 		if (s.equals("e") || s.equals("e*")) return true;
 		return null;
-	};
+	}
 
 	public String getLsaRecommendationNotes() {
 		if (lsaRecommendationNotes != null) return lsaRecommendationNotes;
 		return lsaRecommendation;
-	};
+	}
 
 	public String getLegacyPublications() {
 		return legacyPublications;
