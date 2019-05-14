@@ -39,7 +39,7 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
 
-		Evaluation evaluation = new Evaluation(model, dao.getProperties(Evaluation.EVALUATION_CLASS));
+		Evaluation evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 		String speciesQname = evaluation.getSpeciesQname();
 		Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
 		EvaluationTarget target = container.getTarget(speciesQname);
@@ -85,7 +85,6 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		model.addStatement(lastModifiedStatement);
 		model.addStatement(lastModifiedByStatement);
 
-		evaluation.setIncompletelyLoaded(true);
 		container.setEvaluation(evaluation);
 
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");

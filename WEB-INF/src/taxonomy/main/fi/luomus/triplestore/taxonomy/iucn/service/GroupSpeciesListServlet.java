@@ -153,7 +153,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData("prevRedListStatuses", prevRedListStatuses)
 					.setData("permissions", hasIucnPermissions(groupQname, req))
 					.setData(ORDER_BY, orderBy)
-					.setData("evaluationProperties", dao.getProperties(Evaluation.EVALUATION_CLASS))
+					.setData("evaluationProperties", getTaxonomyDAO().getIucnDAO().getEvaluationProperties())
 					.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
 					.setData("occurrenceStatuses", getOccurrenceStatuses())
 					.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
@@ -609,7 +609,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private RdfProperties getIUCNProperties() throws Exception {
-			return getTriplestoreDAO().getProperties(Evaluation.EVALUATION_CLASS);
+			return getTaxonomyDAO().getIucnDAO().getEvaluationProperties();
 		}
 
 		private String enumValue(Evaluation evaluation, String predicate, Collection<RdfProperty> range) {

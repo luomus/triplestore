@@ -49,7 +49,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("taxonGroups", taxonomyDAO.getInformalTaxonGroups())
 				.setData("taxonGroupRoots", taxonomyDAO.getInformalTaxonGroupRoots())
 				.setData("taxonGroupEditors", groupEditors)
-				.setData("evaluationProperties", dao.getProperties(Evaluation.EVALUATION_CLASS))
+				.setData("evaluationProperties", iucnDAO.getEvaluationProperties())
 				.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
 				.setData("endangermentObjectProperties", dao.getProperties(Evaluation.ENDANGERMENT_OBJECT_CLASS))
 				.setData("areas", iucnDAO.getEvaluationAreas())

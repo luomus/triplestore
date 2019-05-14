@@ -33,7 +33,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
 
-		Evaluation evaluation = new Evaluation(model, dao.getProperties(Evaluation.EVALUATION_CLASS));
+		Evaluation evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 		String speciesQname = evaluation.getSpeciesQname();
 		Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
 		EvaluationTarget target = container.getTarget(speciesQname);
@@ -48,8 +48,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			dao.insert(subject, statement);
 
 			model = dao.get(evaluationId); // must get model again for added statement to have a statement id
-			evaluation = new Evaluation(model, dao.getProperties(Evaluation.EVALUATION_CLASS));
-			evaluation.setIncompletelyLoaded(true);
+			evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 			container.setEvaluation(evaluation);
 			container.addRemark(target, evaluation);
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
@@ -60,7 +59,6 @@ public class RemarksServlet extends EvaluationEditServlet {
 			if (found) {
 				// important not to delete statements that are not found from the model.. they could be any statements
 				dao.deleteStatement(id);
-				evaluation.setIncompletelyLoaded(true);
 				container.setEvaluation(evaluation);
 				container.removeRemark(target, id);
 				getSession(req).setFlashSuccess("Kommentti poistettu!");
