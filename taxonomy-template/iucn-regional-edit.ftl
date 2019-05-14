@@ -7,7 +7,7 @@
 	</a><br />
 </#list>
 
-<@toolbox/>		
+<@toolbox "iucnRegionalEdit" />		
 
 <div id="evaluationEdit">
 

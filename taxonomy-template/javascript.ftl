@@ -45,12 +45,18 @@ function searchTaxon(taxonSearchForm, onlySpecies, onlyFinnish) {
 		taxonpageBaseLinkURL = '${(baseURL + "/taxon-descriptions")?url}';
 	} else if (taxonpageBaseLinkType === "iucnEdit") {
 		taxonpageBaseLinkURL = '${(baseURL + "/iucn/species")?url}';
+	} else if (taxonpageBaseLinkType === "iucnRegionalEdit") {
+		taxonpageBaseLinkURL = '${(baseURL + "/iucn/regional")?url}';
+	}
+	var taxonpageURLPostfix = '';
+	if ($(taxonSearchForm).attr('taxonpageLinkPostfix')) {
+		taxonpageURLPostfix = $(taxonSearchForm).attr('taxonpageLinkPostfix');
 	}
 	var resultViewContainer = $(taxonSearchForm).find('div:first');
 	resultViewContainer.html('').removeClass('collapse');
 	resultViewContainer.hide();
 	$("body").css("cursor", "progress");
-	$.get('${baseURL}/api/taxonomy-search-content/?q='+encodeURIComponent(taxon)+'&onlySpecies='+onlySpecies+'&onlyFinnish='+onlyFinnish+'&locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL, function(data) {
+	$.get('${baseURL}/api/taxonomy-search-content/?q='+encodeURIComponent(taxon)+'&onlySpecies='+onlySpecies+'&onlyFinnish='+onlyFinnish+'&locale=en<#if checklist??>&checklist=${checklist.qname}</#if>&taxonpageBaseLinkURL='+taxonpageBaseLinkURL+'&taxonpageURLPostfix='+taxonpageURLPostfix, function(data) {
 		resultViewContainer.html(data);
 		if (data.length > 5000){
 			resultViewContainer.collapse({showMoreText: '+ Show more'});

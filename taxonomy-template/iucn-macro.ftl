@@ -1,4 +1,4 @@
-<#macro toolbox>
+<#macro toolbox taxonpageBaseLinkType="iucnEdit">
 		<div id="toolbox" class="iucnToolbox ui-widget ui-corner-all">
 			<div class="ui-widget-header noselect" id="toolboxToggle">Työkalut</div>
 			<div id="toolBoxContent" class="ui-widget-content">
@@ -16,7 +16,7 @@
 			
 			<div id="taxonSearch">
 				Etsi lajilla:
-				<form onsubmit="searchTaxon(this, true, true); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="iucnEdit">
+				<form onsubmit="searchTaxon(this, true, true); return false;" class="taxonomySearchForm" taxonpageBaseLinkType="${taxonpageBaseLinkType}" taxonpageLinkPostfix="/${selectedYear}">
 					<input type="text" placeholder="Kirjoita nimi tai nimen osa"/> <input type="submit" value="Hae" />
 					<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 				</form>

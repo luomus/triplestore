@@ -20,12 +20,12 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 	private static final long serialVersionUID = -3382868354885463547L;
 
 	private static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
-	
+
 	@Override
 	protected Set<User.Role> allowedRoles() {
 		return ALLOWED;
 	}
-	
+
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
@@ -44,8 +44,10 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 						.setSpecies(onlySpecies)
 						.setOnlyFinnish(onlyFinnish))
 				.getResultsAsDocument();
-		responseData.setData("response", response);
-		responseData.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"));
+		responseData
+		.setData("response", response)
+		.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"))
+		.setData("taxonpageURLPostfix", req.getParameter("taxonpageURLPostfix"));
 		return responseData;
 	}
 
