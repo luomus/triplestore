@@ -133,7 +133,8 @@
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
-	
+	<@iucnTextarea "MKV.regionallyThreatenedNotes" />
+
 	</tbody>
 </table>
 
