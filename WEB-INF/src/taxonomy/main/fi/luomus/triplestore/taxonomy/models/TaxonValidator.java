@@ -116,7 +116,7 @@ public class TaxonValidator {
 
 	private static final Set<Character> ALPHAS = Utils.set(
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
-			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë');
+			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë', '×');
 
 	private static final Set<Character> VERNACULAR_ALLOWED = Utils.set('-', ' ');
 
@@ -154,7 +154,7 @@ public class TaxonValidator {
 		return taxon.isSpecies() && !SPECIES.equals(taxon.getTaxonRank());
 	}
 
-	private static final Set<Character> SCIENTIFIC_ALLOWED_FOR_SPECIES = Utils.set('.', '/', '-', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'); // numbers are for viruses
+	private static final Set<Character> SCIENTIFIC_ALLOWED_FOR_SPECIES = Utils.set('.', '/', '-', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\''); // numbers are for viruses
 
 	private void validateScientificName(Taxon taxon) {
 		String name = taxon.getScientificName();
