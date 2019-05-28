@@ -220,7 +220,7 @@
 			<select class="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
 				<option value=""></option>
 				<#list property.range.values as optionValue>
-					<#if cleanedName == 'typeOfOccurrenceInFinland' && optionValue.qname == 'MX.typeOfOccurrenceOccurs'>
+					<#if cleanedName == 'typeOfOccurrenceInFinland' && (optionValue.qname == 'MX.typeOfOccurrenceOccurs' || optionValue.qname == 'MX.doesNotOccur')>
 						<#--  skip  -->
 					<#else>
 						<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
