@@ -27,7 +27,6 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
-import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
@@ -58,8 +57,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String EN = "en";
 	private static final String SV = "sv";
 	private static final String FI = "fi";
-	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
-	private static final Set<String> FI_SV = Utils.set(FI, SV);
 
 	@Override
 	protected Set<User.Role> allowedRoles() {
@@ -335,7 +332,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			for (String value : values) {
 				if (!given(value)) continue;
 				if (predicateProperty.isLiteralProperty()) {
-					value = cleanPossibleVernacularName(parameterName, langcode, value);
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value, langcode), context));
 				} else {
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value), context));
@@ -343,17 +339,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 		return usedAndGivenStatements;
-	}
-
-	private String cleanPossibleVernacularName(String parameterName, String langcode, String value) {
-		if (VERNACULAR_NAMES.contains(parameterName)) {
-			if (FI_SV.contains(langcode)) {
-				return value.toLowerCase();
-			} else if (EN.equals(langcode)) {
-				return Utils.upperCaseFirst(value);
-			}
-		}
-		return value;
 	}
 
 }
