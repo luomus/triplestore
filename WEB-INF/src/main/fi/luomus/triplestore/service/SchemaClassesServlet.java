@@ -81,6 +81,7 @@ public class SchemaClassesServlet extends ApiServlet {
 	protected JSONObject labels(Model model) {
 		JSONObject labelJson = new JSONObject();
 		for (Statement label : model.getStatements("rdfs:label")) {
+			if (!label.isForDefaultContext()) continue;
 			if (label.isLiteralStatement()) {
 				labelJson.setString(label.getObjectLiteral().getLangcode(), label.getObjectLiteral().getContent());
 			}

@@ -113,6 +113,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 			json.setObject("value", labels(model));
 		}
 		for (Statement s : model) {
+			if (!s.isForDefaultContext()) continue;
 			String predicate = s.getPredicate().getQname(); 
 			if (predicate.equals("rdfs:label")) continue;
 			if (s.isLiteralStatement()) {
