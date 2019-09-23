@@ -518,7 +518,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		try {
 			con = triplestoreDAO.openConnection();
 			p = con.prepareStatement("" +
-					" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
+					" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized_v2 " +
 					" WHERE checklist = ? AND name = ? AND qname != ? ");
 			p.setString(1, checklist.toString());
 			p.setString(2, name.toUpperCase());
