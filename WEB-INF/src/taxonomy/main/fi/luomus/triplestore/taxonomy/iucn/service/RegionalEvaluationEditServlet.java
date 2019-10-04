@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
@@ -72,6 +73,7 @@ public class RegionalEvaluationEditServlet extends EvaluationEditServlet {
 		Model existingModelCopy = dao.get(existingEvaluation.getId());
 		Evaluation modifiedEvaluation = iucnDAO.createEvaluation(existingModelCopy);
 		existingModelCopy.removeAll(IucnDAO.HAS_OCCURRENCE_PREDICATE);
+		existingModelCopy.removeAll(new Predicate("MKV.regionallyThreatenedNotes"));
 		iucnDAO.completeLoading(modifiedEvaluation);
 
 		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
