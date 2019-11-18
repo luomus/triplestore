@@ -46,6 +46,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/group/*"})
 public class GroupSpeciesListServlet extends FrontpageServlet {
 
+	private static final String MISSING_VALUE = "--";
 	private static final String PAGE_SIZE = "pageSize";
 	private static final String ORDER_BY = "orderBy";
 	private static final String TAXON = "taxon";
@@ -172,14 +173,14 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			}
 			Collections.reverse(years);
 			List<String> rows = new ArrayList<>(targets.size()*4);
-			rows.add(fileDownloadHeaderRow(selectedYear, years));
+			rows.add(tsv(fileDownloadHeaderRow(selectedYear, years)));
 			appendDownloadDataRows(container, selectedYear, targets, years, rows);
 			return rows;
 		}
 
 		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, List<String> rows) throws IOException {
-			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".csv");
-			res.setContentType("text/csv; charset=utf-8");
+			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".tsv");
+			res.setContentType("text/tab-separated-values; charset=utf-8");
 			PrintWriter writer = res.getWriter();
 			int i = 0;
 			for (String row : rows) {
@@ -201,14 +202,18 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 						container.complateLoading(evaluation);
 					}
 
-					rows.add(fileDownloadDataRow(evaluation, target, years));
+					rows.add(tsv(fileDownloadDataRow(evaluation, target, years)));
 				} else {
-					rows.add(fileDownloadDataRow(new Evaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years));
+					rows.add(tsv(fileDownloadDataRow(new Evaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years)));
 				}
 			}
 		}
 
-		private String fileDownloadDataRow(Evaluation evaluation, EvaluationTarget target, List<Integer> years) throws Exception {
+		private String tsv(List<String> data) {
+			return Utils.toTSV(data);
+		}
+
+		private List<String> fileDownloadDataRow(Evaluation evaluation, EvaluationTarget target, List<Integer> years) throws Exception {
 			int selectedYear = evaluation.getEvaluationYear() == null ? years.get(0) : evaluation.getEvaluationYear();
 			Evaluation previous = target.getPreviousEvaluation(selectedYear);
 			List<String> data = new ArrayList<>();
@@ -241,15 +246,15 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(lastModifiedBy(evaluation));
 			data.add(statusWithSymbols(evaluation));
 			if (previous == null) {
-				data.add("--");
-				data.add("--");
+				data.add(MISSING_VALUE);
+				data.add(MISSING_VALUE);
 			} else {
 				data.add(statusWithSymbols(previous) + " (" + previous.getEvaluationYear()+")");
 				String corrected = previous.getCorrectedStatusForRedListIndex();
 				if (corrected != null) {
 					data.add(status(corrected) + " (" + previous.getEvaluationYear()+")");
 				} else {
-					data.add("--");
+					data.add(MISSING_VALUE);
 				}
 			}
 			data.add(evaluation.getRemarks());
@@ -345,11 +350,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(" -> ");
 
 			appendRLIValues(target, years, selectedYear, data);
-			return Utils.toCSV(data);
+			return data;
 		}
 
 		private String groupName(RedListEvaluationGroup group) {
-			if (group == null) return "";
+			if (group == null) return MISSING_VALUE;
 			return group.getName("fi");
 		}
 
@@ -411,10 +416,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			for (Integer year : years) {
 				Evaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
-					data.add("--");
-					data.add("--");
-					data.add("--");
-					data.add("--");
+					data.add(MISSING_VALUE);
+					data.add(MISSING_VALUE);
+					data.add(MISSING_VALUE);
+					data.add(MISSING_VALUE);
 				} else {
 					data.add(statusWithSymbols(yearEval));
 					if (yearEval.hasCorrectedStatusForRedListIndex()) {
@@ -438,7 +443,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				if (year >= selectedYear) continue;
 				Evaluation yearEval = target.getEvaluation(year);
 				if (yearEval == null) {
-					data.add("--");
+					data.add(MISSING_VALUE);
 				} else {
 					data.add(v(yearEval, "MKV.redListIndexCorrectionNotes"));
 				}
@@ -629,14 +634,14 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private String lastModifiedBy(Evaluation evaluation) throws Exception {
-			if (!given(evaluation.getLastModifiedBy())) return "--";
+			if (!given(evaluation.getLastModifiedBy())) return MISSING_VALUE;
 			Person person = getTaxonomyDAO().getPersons().get(evaluation.getLastModifiedBy());
-			if (person == null) return "--";
+			if (person == null) return MISSING_VALUE;
 			return person.getFullname();
 		}
 
 		private String lastModified(Evaluation evaluation) throws Exception {
-			if (evaluation.getLastModified() == null) return "--";
+			if (evaluation.getLastModified() == null) return MISSING_VALUE;
 			return DateUtils.format(evaluation.getLastModified(), "d.M.yyyy");
 		}
 
@@ -668,7 +673,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return rank.toString().replace("MX.", "");
 		}
 
-		private String fileDownloadHeaderRow(int selectedYear, List<Integer> years) throws Exception {
+		private List<String> fileDownloadHeaderRow(int selectedYear, List<Integer> years) throws Exception {
 			List<String> header = new ArrayList<>();
 			header.add("Ryhmä 1");
 			header.add("Ryhmä 2");
@@ -763,7 +768,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Muut lähteet");
 			header.add("RLI TIEDOT ALKAVAT");
 			appendRLIHeader(selectedYear, years, header);
-			return Utils.toCSV(header);
+			return header;
 		}
 
 		public static void appendRLIHeader(int selectedYear, List<Integer> years, List<String> header) {
@@ -786,7 +791,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceExtirpated"), "RE");
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceAnthropogenic"), "NA");
 			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceUncertain"), "p");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), "--");
+			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), MISSING_VALUE);
 		}
 
 		private boolean isFileDownload(HttpServletRequest req) {
