@@ -194,6 +194,10 @@ public class ChecklistComparison {
 
 	private static class ChecklistRow {
 		@FieldInfo(order=0, cols={"TAXON_QNAME", "ID"}) public String taxonId;
+		@FieldInfo(order=1.1, cols={"SCIENTIFICNAME", "Scientific name"}, useInCompare=true) public String scientificName;
+		@FieldInfo(order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
+		@FieldInfo(order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
+		@FieldInfo(order=2.2, cols={"SWEDISHNAME", "Swedish name"}, useInCompare=true) public String swedishName;
 		@FieldInfo(order=3.01, cols={"DOMAINNAME", "MX.domain, MX.scientificName"}) public String domainName;
 		@FieldInfo(order=3.02, cols={"KINGDOMNAME", "MX.kingdom, MX.scientificName"}) public String kingdomName;
 		@FieldInfo(order=3.03, cols={"PHYLUMNAME", "MX.phylum, MX.scientificName"}) public String phylumName;
@@ -209,10 +213,6 @@ public class ChecklistComparison {
 		@FieldInfo(order=3.13, cols={"SUBTRIBENAME", "MX.subtribe, MX.scientificName"}) public String subtribeName;
 		@FieldInfo(order=3.14, cols={"GENUSNAME", "MX.genus, MX.scientificName"}) public String genusName;
 		@FieldInfo(order=3.15, cols={"SUBGENUSNAME", "MX.subgenus, MX.scientificName"}) public String subgenusName;
-		@FieldInfo(order=1.1, cols={"SCIENTIFICNAME", "Scientific name"}, useInCompare=true) public String scientificName;
-		@FieldInfo(order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
-		@FieldInfo(order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
-		@FieldInfo(order=2.2, cols={"SWEDISHNAME", "Swedish name"}, useInCompare=true) public String swedishName;
 
 		private final Collection<Field> COMPARISON_FIELDS = FIELDS.keySet().stream().filter(f->f.getAnnotation(FieldInfo.class).useInCompare()).collect(Collectors.toList());
 
