@@ -228,20 +228,6 @@ Taxon editor responds from /triplestore/taxonomy-editor
 2. Add triplestore-v2-taxonomyeditor.properties to  <catalina.base>/app-conf
 3. Production enviroment may require allowing cross domain access to Taxon Editor fonts
 
-### tomcat/conf/web.xml - allow cors
-~~~
-   <!-- Allow cross domain access to fonts - This is for taxon editor -->
-    <filter>
-       <filter-name>CorsFilter</filter-name>
-       <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
-     </filter>
-     <filter-mapping>
-       <filter-name>CorsFilter</filter-name>
-       <url-pattern>*.ttf</url-pattern>
-       <url-pattern>*.woff</url-pattern>
-     </filter-mapping>
-~~~
-
 
 ###Example configuration file
 ~~~
