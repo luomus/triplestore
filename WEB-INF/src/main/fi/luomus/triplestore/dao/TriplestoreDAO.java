@@ -2,6 +2,7 @@ package fi.luomus.triplestore.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
@@ -274,6 +275,24 @@ public interface TriplestoreDAO {
 	 */
 	public void store(HabitatObject habitat) throws Exception;
 
+	/**
+	 * Report and throw
+	 * @param message
+	 * @param e
+	 * @return runtime exception that wraps the original exception, with the same message
+	 */
+	public RuntimeException exception(String message, Exception e);
 
+	/**
+	 * Get list of properties of description groups. Keys are qnames of the groups.
+	 * @return
+	 */
+	public Map<String, List<RdfProperty>> getDescriptionGroupVariables();
+
+	/**
+	 * Get ids, names of description groups
+	 * @return
+	 */
+	public List<RdfProperty> getDescriptionGroups();
 
 }

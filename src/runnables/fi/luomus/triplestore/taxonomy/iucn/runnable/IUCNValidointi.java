@@ -65,7 +65,7 @@ public class IUCNValidointi {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReporingToSystemErr());
 
 		// all data mode XXX
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());

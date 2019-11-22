@@ -179,12 +179,12 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) {
 		DataSource datasource = getDataSource();
 		User user = getUser(req);
-		return new TriplestoreDAOImple(datasource, user.getQname());
+		return new TriplestoreDAOImple(datasource, user.getQname(), getErrorReporter());
 	}
 
 	protected TriplestoreDAO getTriplestoreDAO() {
 		DataSource datasource = getDataSource();
-		return new TriplestoreDAOImple(datasource, TriplestoreDAO.SYSTEM_USER);
+		return new TriplestoreDAOImple(datasource, TriplestoreDAO.SYSTEM_USER, getErrorReporter());
 	}
 
 	private static DataSource dataSource = null;

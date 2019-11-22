@@ -85,10 +85,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter);
 		this.cachedTaxonSearches = new Cached<>(
 				new TaxonSearchLoader(),
-				60*60*3, 50000);
+				3, TimeUnit.HOURS, 50000);
 		this.cachedDwUses = new Cached<>(
 				new DwUseLoader(),
-				60*60*3, 50000);
+				3, TimeUnit.HOURS, 50000);
 		this.config = config;
 		this.devMode = devMode;
 		this.errorReporter = errorReporter;
@@ -378,7 +378,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				}
 				throw new Exception(dwUri + " returned unknown response");
 			} catch (Exception e) {
-				throw new RuntimeException("Dw use for " + taxonId, e);
+				throw triplestoreDAO.exception("Dw use for " + taxonId, e);
 			} finally {
 				if (client != null) client.close();
 			}
@@ -391,7 +391,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			try {
 				return uncachedTaxonSearch(key);
 			} catch (Exception e) {
-				throw new RuntimeException("Taxon search with terms " + key.toString(), e);
+				throw triplestoreDAO.exception("Taxon search with terms " + key.toString(), e);
 			}
 		}
 	}
@@ -597,10 +597,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 								}
 								return areas;
 							} catch (Exception e) {
-								throw new RuntimeException("Loading biogeographical provinces", e);
+								throw triplestoreDAO.exception("Loading biogeographical provinces", e);
 							}
 						}
-					}, 60*60*7);
+					}, 7, TimeUnit.HOURS);
 
 	@Override
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {

@@ -38,7 +38,7 @@ public class IUCNValidatorTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
 		ErrorReporter errorReporter = new ErrorReporingToSystemErr();
 		validator = new Validator(dao, errorReporter);
 	}
@@ -460,8 +460,8 @@ public class IUCNValidatorTests {
 		assertEquals(""+
 				"[Luokan alennusta/korotusta ei saa käyttää luokille DD, NA, NE, RE, EW, EX, " +
 				"DD syy on ilmoitettava, " + 
-				"Arvoa \"DD – Puuttellisesti tunnetut\" ei voi käyttää arvovälinä, "+
-				"Luokkaa \"DD – Puuttellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
+				"Arvoa \"DD – Puutteellisesti tunnetut\" ei voi käyttää arvovälinä, "+
+				"Luokkaa \"DD – Puutteellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
 				"Luokkaa \"NA – Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
 				"Luokkaa \"NE – Arvioimatta jätetyt\" ei voi käyttää kriteerin aiheuttamana luokkana]", result.listErrors().toString());
 	}

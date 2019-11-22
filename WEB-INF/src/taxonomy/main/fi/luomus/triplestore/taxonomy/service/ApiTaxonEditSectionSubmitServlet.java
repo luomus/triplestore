@@ -194,7 +194,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	private Set<String> getDescriptionFields(TriplestoreDAO dao) {
 		Set<String> fieldQnames = new HashSet<>();
-		Map<String, List<RdfProperty>> descriptionVariables = TaxonDescriptionsServlet.cachedDescriptionGroupVariables.get(dao);
+		Map<String, List<RdfProperty>> descriptionVariables = dao.getDescriptionGroupVariables();
 		for (List<RdfProperty> properties : descriptionVariables.values()) {
 			for (RdfProperty p : properties) {
 				fieldQnames.add(p.getQname().toString());

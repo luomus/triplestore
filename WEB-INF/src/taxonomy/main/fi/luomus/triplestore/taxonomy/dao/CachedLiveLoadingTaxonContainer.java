@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Optional;
 
@@ -72,40 +73,40 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 			});
 
-	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<>(new TaxonLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<>(new ChildrenLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<>(new SynonymParentLoader(), 3*60*60, 25000);
-	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
+	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<>(new TaxonLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<>(new ChildrenLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<>(new SynonymParentLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12, TimeUnit.HOURS);
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfInformalTaxonGroup; // informal taxon group id -> IUCN group ids
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
 	private final SingleObjectCache<InformalTaxonGroupContainer> cachedInformalTaxonGroupContainer;
 	private final SingleObjectCache<InformalTaxonGroupContainer> cachedRedListEvaluationGroupContainer;
-	
+
 	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, final ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
-		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3*60*60);
-		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3*60*60);
+		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3, TimeUnit.HOURS);
+		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3, TimeUnit.HOURS);
 		this.cachedInformalTaxonGroupContainer = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<InformalTaxonGroupContainer>() {
 			@Override
 			public InformalTaxonGroupContainer load() {
 				try {
 					return new InformalTaxonGroupContainer(taxonomyDAO.getInformalTaxonGroupsForceReload());
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					throw triplestoreDAO.exception("Informal taxon group loader", e);
 				}
 			}
-		}, 60);
+		}, 5, TimeUnit.MINUTES);
 		this.cachedRedListEvaluationGroupContainer = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<InformalTaxonGroupContainer>() {
 			@Override
 			public InformalTaxonGroupContainer load() {
 				try {
 					return new InformalTaxonGroupContainer(taxonomyDAO.getRedListEvaluationGroupsForceReload());
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					throw triplestoreDAO.exception("Red list evaluation group container loader", e);
 				}
 			}
-		}, 60);
+		}, 5, TimeUnit.MINUTES);
 	}
 
 	private class IucnGroupsOfInformalTaxonGroupLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
@@ -127,7 +128,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return map;
 			} catch (Exception e) {
-				throw new RuntimeException("Loading iucn groups of informal taxon groups", e);
+				throw triplestoreDAO.exception("Loading iucn groups of informal taxon groups", e);
 			}
 		}		
 	}
@@ -151,7 +152,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return map;
 			} catch (Exception e) {
-				throw new RuntimeException("Loading iucn groups of taxons", e);
+				throw triplestoreDAO.exception("Loading iucn groups of taxons", e);
 			}
 		}		
 	}
@@ -175,7 +176,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				System.out.println("Taxa with media loaded.");
 				return taxonIds;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Taxa with media", e);
 			} finally {
 				Utils.close(p, rs, con);
 			}
@@ -190,12 +191,10 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
 				EditableTaxon taxon = createTaxon(model);
 				preloadSynonyms(taxon);
-				taxon.getChildren(); // preload all child models to cache 
+				taxon.getChildren(); // preload all child models to cache
 				return taxon;
-			} catch (NoSuchTaxonException e) {
-				throw e;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Load taxon: " + taxonQname, e);
 			}
 		}
 	}
@@ -224,7 +223,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				synonymIds.addAll(taxon.getSynonymsContainer().getAll());
 			}
 		}
-
 		if (synonymIds.isEmpty()) return;
 
 		for (Model synonymModel : triplestoreDAO.getSearchDAO().get(synonymIds)) {
@@ -281,7 +279,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				preloadSynonyms(createdChildren);
 				return childIds;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Children loader: " + taxonQname, e);
 			}
 		}
 	}
@@ -300,7 +298,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return Optional.absent();
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Synonym parent loader: " + synonymTaxonId, e);
 			}
 		}
 	}
@@ -315,7 +313,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		try {
 			cachedTaxons.get(taxonId);
 			return true;
-		} catch (Exception e) {
+		} catch (NoSuchTaxonException e) {
 			return false;
 		}
 	}
@@ -449,7 +447,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	public Set<Qname> getParentRedListEvaluationGroups(Qname groupId) {
 		return cachedRedListEvaluationGroupContainer.get().getParents(groupId);
 	}
-	
+
 	@Override
 	public Collection<Taxon> getAll() {
 		throw new UnsupportedOperationException();

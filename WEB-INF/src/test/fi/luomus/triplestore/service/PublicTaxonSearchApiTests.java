@@ -33,7 +33,7 @@ public class PublicTaxonSearchApiTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
 	}
 

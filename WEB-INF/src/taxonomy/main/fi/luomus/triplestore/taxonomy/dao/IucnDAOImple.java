@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.methods.HttpGet;
 
@@ -129,10 +130,10 @@ public class IucnDAOImple implements IucnDAO {
 						}
 						return map;
 					} catch (Exception e) {
-						throw new RuntimeException("Cached group editors", e);
+						throw triplestoreDAO.exception("Cached group editors", e);
 					}
 				}
-			}, 5*60);
+			}, 5, TimeUnit.MINUTES);
 
 	@Override
 	public Map<String, Editors> getGroupEditors() throws Exception {
@@ -171,7 +172,7 @@ public class IucnDAOImple implements IucnDAO {
 					});
 					return evaluationYears;
 				}
-			}, 60*10);
+			}, 10, TimeUnit.MINUTES);
 
 	@Override
 	public List<EvaluationYear> getEvaluationYears() throws Exception {
@@ -529,12 +530,12 @@ public class IucnDAOImple implements IucnDAO {
 									areas.put(id, area);
 								}
 							} catch (Exception e) {
-								throw new RuntimeException("Loading evaluation areas", e);
+								throw triplestoreDAO.exception("Loading evaluation areas", e);
 							}
 							return areas;
 						}
 
-					}, 60*60);
+					}, 1, TimeUnit.HOURS);
 
 	@Override
 	public Map<String, Area> getEvaluationAreas() throws Exception {
