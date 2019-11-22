@@ -254,10 +254,7 @@ $(function() {
 		var defaultPageSize = ${defaultPageSize};
 		var page = $("#pageSelector").val();
 		var pageSize = $("#pageSizeSelector").val();
-		url = "?page=" + page;
-		if (pageSize != defaultPageSize) {
-			url += "&pageSize=" + pageSize;
-		}
+		url = "?page=" + page + "&pageSize=" + pageSize;
 		window.location.href = url+"#species";
 	});
 	
