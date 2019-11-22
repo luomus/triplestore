@@ -53,8 +53,6 @@ public class EvaluationTarget {
 	}
 
 	public Taxon getTaxon() {
-		System.out.println("gettaxon " + taxonId);
-		System.out.println("gettaxon " + taxonId + " -> " + taxonContainer.hasTaxon(taxonId));
 		try {
 			return taxonContainer.getTaxon(taxonId);
 		} catch (Exception e) {
