@@ -9,7 +9,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -23,7 +22,6 @@ import org.apache.commons.csv.CSVRecord;
 
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
-import fi.luomus.commons.utils.Utils;
 
 public class ChecklistComparison {
 
@@ -48,7 +46,7 @@ public class ChecklistComparison {
 		String s = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
 				new ChecklistReader().read(previous));
-		FileUtils.writeToFile(new File("c:/temp/Lajiluettelo2018/checklist_comparison_+"+DateUtils.getFilenameDatetime()+".tsv"), s);
+		FileUtils.writeToFile(new File("c:/temp/Lajiluettelo2018/checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), s);
 	}
 
 	private static class ChecklistComparator {
@@ -66,7 +64,10 @@ public class ChecklistComparison {
 					b.append(NEWLINE);
 					b.append(PREV_YEAR).append(TAB);
 					if (prevRow != null) {
-						b.append(prevRow.toString());
+						b.append(prevRow.toString()).append(NEWLINE);
+						b.append("Differences:").append(TAB).append(differences(row, prevRow));
+					} else {
+						b.append("new taxon");
 					}
 					b.append(NEWLINE).append(NEWLINE);
 				}
@@ -85,22 +86,34 @@ public class ChecklistComparison {
 			return b.toString();
 		}
 
+		private String differences(ChecklistRow latest, ChecklistRow prevRow) {
+			List<String> differences = new ArrayList<>();
+			for (Field f : FIELDS.keySet()) {
+				try {
+					String valueOfLatest = (String) f.get(latest);
+					String valueOfPrev = (String) f.get(prevRow);
+					if (valueOfLatest == null) valueOfLatest = "";
+					if (valueOfPrev == null) valueOfPrev = "";
+					if (!valueOfLatest.equals(valueOfPrev)) {
+						String colname = colName(f);
+						if (!f.getAnnotation(FieldInfo.class).useInCompare()) colname = "(" + colname + ")";
+						differences.add(colname);
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+			return differences.stream().collect(Collectors.joining(", "));
+		}
 		private void colHeaders(StringBuilder b) {
 			b.append("Year").append(TAB);
 			for (Field f : FIELDS.keySet()) {
-				b.append(colName(f.getName())).append(TAB);
+				b.append(colName(f)).append(TAB);
 			}
 		}
 
-		private Object colName(String name) {
-			return Utils.upperCaseFirst(name.replaceAll(
-					String.format("%s|%s|%s",
-							"(?<=[A-Z])(?=[A-Z][a-z])",
-							"(?<=[^A-Z])(?=[A-Z])",
-							"(?<=[A-Za-z])(?=[^A-Za-z])"
-							),
-					" "
-					));
+		private String colName(Field f) {
+			return f.getAnnotation(FieldInfo.class).name();
 		}
 	}
 
@@ -193,39 +206,66 @@ public class ChecklistComparison {
 	}
 
 	private static class ChecklistRow {
-		@FieldInfo(order=0, cols={"TAXON_QNAME", "ID"}) public String taxonId;
-		@FieldInfo(order=1.1, cols={"SCIENTIFICNAME", "Scientific name"}, useInCompare=true) public String scientificName;
-		@FieldInfo(order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
-		@FieldInfo(order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
-		@FieldInfo(order=2.2, cols={"SWEDISHNAME", "Swedish name"}, useInCompare=true) public String swedishName;
-		@FieldInfo(order=3.01, cols={"DOMAINNAME", "MX.domain, MX.scientificName"}) public String domainName;
-		@FieldInfo(order=3.02, cols={"KINGDOMNAME", "MX.kingdom, MX.scientificName"}) public String kingdomName;
-		@FieldInfo(order=3.03, cols={"PHYLUMNAME", "MX.phylum, MX.scientificName"}) public String phylumName;
-		@FieldInfo(order=3.04, cols={"", "MX.division, MX.scientificName"}) public String divisionName;
-		@FieldInfo(order=3.05, cols={"CLASSNAME", "MX.class, MX.scientificName"}) public String className;
-		@FieldInfo(order=3.06, cols={"SUBCLASSNAME", "MX.subclass, MX.scientificName"}) public String subclassName;
-		@FieldInfo(order=3.07, cols={"ORDERNAME", "MX.order, MX.scientificName"}) public String orderName;
-		@FieldInfo(order=3.08, cols={"SUBORDERNAME", "MX.suborder, MX.scientificName"}) public String suborderName;
-		@FieldInfo(order=3.09, cols={"SUPERFAMILYNAME", "MX.superfamily, MX.scientificName"}) public String superfamilyName;
-		@FieldInfo(order=3.10, cols={"FAMILYNAME", "MX.family, MX.scientificName"}, useInCompare=true) public String familyName;
-		@FieldInfo(order=3.11, cols={"SUBFAMILYNAME", "MX.subfamily, MX.scientificName"}) public String subfamilyName;
-		@FieldInfo(order=3.12, cols={"TRIBENAME", "MX.tribe, MX.scientificName"}) public String tribeName;
-		@FieldInfo(order=3.13, cols={"SUBTRIBENAME", "MX.subtribe, MX.scientificName"}) public String subtribeName;
-		@FieldInfo(order=3.14, cols={"GENUSNAME", "MX.genus, MX.scientificName"}) public String genusName;
-		@FieldInfo(order=3.15, cols={"SUBGENUSNAME", "MX.subgenus, MX.scientificName"}) public String subgenusName;
+		@FieldInfo(name="Id", order=0, cols={"TAXON_QNAME", "ID"}) public String taxonId;
+		@FieldInfo(name="Scientific name", order=1.1, cols={"SCIENTIFICNAME", "Scientific name"}, useInCompare=true) public String scientificName;
+		@FieldInfo(name="Author", order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
+		@FieldInfo(name="Finnish name", order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
+		@FieldInfo(name="Swedish name", order=2.2, cols={"SWEDISHNAME", "Swedish name"}, useInCompare=true) public String swedishName;
+		@FieldInfo(name="Domain", order=3.01, cols={"DOMAINNAME", "MX.domain, MX.scientificName"}) public String domainName;
+		@FieldInfo(name="Kingdom", order=3.02, cols={"KINGDOMNAME", "MX.kingdom, MX.scientificName"}) public String kingdomName;
+		@FieldInfo(name="Phylum", order=3.031, cols={"PHYLUMNAME", "MX.phylum, MX.scientificName"}) public String phylumName;
+		@FieldInfo(name="Subphylum", order=3.032, cols={"MX.subphylum, MX.scientificName"}) public String subphylumName;
+		@FieldInfo(name="Division", order=3.04, cols={"", "MX.division, MX.scientificName"}) public String divisionName;
+		@FieldInfo(name="Class", order=3.05, cols={"CLASSNAME", "MX.class, MX.scientificName"}) public String className;
+		@FieldInfo(name="Subclass", order=3.06, cols={"SUBCLASSNAME", "MX.subclass, MX.scientificName"}) public String subclassName;
+		@FieldInfo(name="Order", order=3.07, cols={"ORDERNAME", "MX.order, MX.scientificName"}) public String orderName;
+		@FieldInfo(name="Suborder", order=3.08, cols={"SUBORDERNAME", "MX.suborder, MX.scientificName"}) public String suborderName;
+		@FieldInfo(name="Syperfamily", order=3.09, cols={"SUPERFAMILYNAME", "MX.superfamily, MX.scientificName"}) public String superfamilyName;
+		@FieldInfo(name="Family", order=3.10, cols={"FAMILYNAME", "MX.family, MX.scientificName"}, useInCompare=true) public String familyName;
+		@FieldInfo(name="Subfamily", order=3.11, cols={"SUBFAMILYNAME", "MX.subfamily, MX.scientificName"}) public String subfamilyName;
+		@FieldInfo(name="Tribe", order=3.12, cols={"TRIBENAME", "MX.tribe, MX.scientificName"}) public String tribeName;
+		@FieldInfo(name="Subtribe", order=3.13, cols={"SUBTRIBENAME", "MX.subtribe, MX.scientificName"}) public String subtribeName;
+		@FieldInfo(name="Genus", order=3.14, cols={"GENUSNAME", "MX.genus, MX.scientificName"}) public String genusName;
+		@FieldInfo(name="Subgenus", order=3.15, cols={"SUBGENUSNAME", "MX.subgenus, MX.scientificName"}) public String subgenusName;
 
-		private final Collection<Field> COMPARISON_FIELDS = FIELDS.keySet().stream().filter(f->f.getAnnotation(FieldInfo.class).useInCompare()).collect(Collectors.toList());
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ChecklistRow other = (ChecklistRow) obj;
+			if (author == null) {
+				if (other.author != null)
+					return false;
+			} else if (!author.equals(other.author))
+				return false;
+			if (finnishName == null) {
+				if (other.finnishName != null)
+					return false;
+			} else if (!finnishName.equals(other.finnishName))
+				return false;
+			if (scientificName == null) {
+				if (other.scientificName != null)
+					return false;
+			} else if (!scientificName.equals(other.scientificName))
+				return false;
+			if (swedishName == null) {
+				if (other.swedishName != null)
+					return false;
+			} else if (!swedishName.equals(other.swedishName))
+				return false;
+			if (given(this.familyName) && given(other.familyName)) { // note family comparison only if both have family 
+				if (!this.familyName.equals(other.familyName))
+					return false;
+			}
+			return true;
+		}
 
-		public boolean equals(ChecklistRow other) {
-			if (other == null) return false;
-			return this.comparisonString().equals(other.comparisonString());
-		}
-		private String comparisonString = null;
-		public String comparisonString() {
-			if (comparisonString == null) comparisonString = toString(COMPARISON_FIELDS); 
-			return comparisonString;
-		}
-		public String toString(Collection<Field> fields) {
+		@Override
+		public String toString() {
 			try {
 				StringBuilder b = new StringBuilder();
 				for (Field f : FIELDS.keySet()) {
@@ -238,16 +278,16 @@ public class ChecklistComparison {
 				throw new RuntimeException(e);
 			}
 		}
-		private String toString = null;
+
 		@Override
-		public String toString() {
-			if (toString == null) toString = toString(FIELDS.keySet()); 
-			return toString;
+		public int hashCode() {
+			return toString().hashCode();
 		}
 	}
 
 	@Retention(RetentionPolicy.RUNTIME)
 	public @interface FieldInfo {
+		public String name();
 		public double order();
 		public String[] cols();
 		public boolean useInCompare() default false;
