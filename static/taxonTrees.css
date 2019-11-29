@@ -120,7 +120,6 @@ div.taxonLevel {
 
 div.taxonChilds {
 	border: 1px dotted grey;
-	border-radius: 5px;
 	background-color: rgb(220,240,255);
 	padding: 0;
 	margin: 1px;
@@ -214,7 +213,6 @@ div.taxonChildTools button, div.taxonChildTools .button {
 	float: right;
 	margin-left: 5px;
 	margin-right: 5px;
-	border-radius: 4px;
 }
 div.taxonChildToolsBottom button, div.taxonChildToolsBottom .button {
 	float: none;
@@ -362,7 +360,6 @@ div.loading {
 #menu {
 	background-color: white;
 	border: 1px solid #999;
-	border-radius: 3px;
 	position: absolute;
 	z-index: 12;
 	padding: 5px;
@@ -437,6 +434,5 @@ div.simply-toast {
 	border: 1px solid #7ec77e;
 	font-size: 120%;
 	padding: 1em;
-	border-radius: 6px;
 }
 
