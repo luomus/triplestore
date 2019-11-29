@@ -59,7 +59,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String SV = "sv";
 	private static final String FI = "fi";
 	private static final String RU = "ru";
-	public static final Set<String> SUPPORTED_LANGUAGES = Utils.set(EN, FI, SV, RU);
+	public static final Set<String> SUPPORTED_LOCALES = Utils.set(EN, FI, SV, RU);
 
 	@Override
 	protected Set<User.Role> allowedRoles() {
@@ -136,7 +136,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private String savedLocale(HttpServletRequest req) {
 		String classes = req.getParameter("classes");
 		if (!given(classes)) return null;
-		for (String locale : SUPPORTED_LANGUAGES) {
+		for (String locale : SUPPORTED_LOCALES) {
 			if (classes.contains("locale___"+locale)) return locale;
 		}
 		return null;
@@ -337,9 +337,9 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (savedLocale != null) {
 				usedAndGivenStatements.addUsed(predicate, context, savedLocale);
 			} else {
-				// The UI should submit all information for this predicate in this context for all languages
+				// The UI should submit all information for this predicate in this context for all locales
 				usedAndGivenStatements.addUsed(predicate, context, null);
-				for (String locale : SUPPORTED_LANGUAGES) {
+				for (String locale : SUPPORTED_LOCALES) {
 					usedAndGivenStatements.addUsed(predicate, context, locale);
 				}
 			}
