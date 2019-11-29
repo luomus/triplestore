@@ -44,7 +44,9 @@
 
 <#macro printGroup group initiallyClosed index>
 	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("sv") + " &mdash; " + group.label.forLocale("en") />
-	<@portletHeader headerLabel initiallyClosed />
+	<div class="portlet">
+	<div class="portlet-header ${initiallyClosed}">${headerLabel}</div>
+	<div class="portlet-content">
 		<table>
 			<#list variables[group.qname.toString()] as descriptionVariable>
 				<#assign qname = descriptionVariable.qname.toString() />
@@ -56,22 +58,25 @@
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
 						<td>
-							<h2>${property.label.forLocale(locale)!locale}</h2>
-							<div class="content">
-								<#if existingValue?has_content>
-									${existingValue}
-								<#else><p class="info emptyContent">Click to add content</p></#if>
-							</div>
-							<div class="textareaContainer hidden">
-								<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
-								<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
-							</div>
+							<#assign portletLabel = property.label.forLocale(locale)!locale />
+							<@portletHeader portletLabel "" "locale___"+locale />
+								<div class="content">
+									<#if existingValue?has_content>
+										${existingValue}
+									<#else><p class="info emptyContent">Click to add content</p></#if>
+								</div>
+								<div class="textareaContainer hidden">
+									<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
+									<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
+								</div>
+							<@portletFooter />
 						</td>
 					</#list>
 				</tr>
 			</#list>
 		</table>
-	<@portletFooter />
+	</div>
+	</div>
 </#macro>
 
 <div class="clear"></div>

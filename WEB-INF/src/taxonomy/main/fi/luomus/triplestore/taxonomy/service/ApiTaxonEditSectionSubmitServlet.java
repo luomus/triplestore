@@ -27,6 +27,7 @@ import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
@@ -57,6 +58,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String EN = "en";
 	private static final String SV = "sv";
 	private static final String FI = "fi";
+	private static final String RU = "ru";
+	public static final Set<String> SUPPORTED_LANGUAGES = Utils.set(EN, FI, SV, RU);
 
 	@Override
 	protected Set<User.Role> allowedRoles() {
@@ -74,12 +77,13 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String alteredAuthor = req.getParameter("alteredAuthor");
 		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
 		boolean storeHabitats = storeHabitats(req);
+		String savedLocale = savedLocale(req);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
 		RdfProperties properties = dao.getProperties(MX_TAXON);
-		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
+		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties, savedLocale);
 
 		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
@@ -108,9 +112,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 
-		if (editingDescriptionFields) {
-			dao.store(new Subject(taxonQname), usedAndGivenStatements);
-		} else if (storeBiogeographicalProvinceOccurrences) {
+		if (storeBiogeographicalProvinceOccurrences) {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
 		} else if (storeHabitats) {
 			storeHabitats(req, dao, taxon);
@@ -129,6 +131,15 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		}
 
 		return responseData.setData(VALIDATION_RESULTS, validationData);
+	}
+
+	private String savedLocale(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return null;
+		for (String locale : SUPPORTED_LANGUAGES) {
+			if (classes.contains("locale___"+locale)) return locale;
+		}
+		return null;
 	}
 
 	private boolean storeBiogeographicalProvinceOccurrences(HttpServletRequest req) {
@@ -298,7 +309,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return publication;
 	}
 
-	private UsedAndGivenStatements parseUsedAndGivenStatements(HttpServletRequest req, RdfProperties properties) {
+	private UsedAndGivenStatements parseUsedAndGivenStatements(HttpServletRequest req, RdfProperties properties, String savedLocale) {
 		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
@@ -323,11 +334,15 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!properties.hasProperty(predicate.getQname())) continue;
 			RdfProperty predicateProperty = properties.getProperty(predicate);
 
-			// The UI should submit all information for this predicate in this context for all languages
-			usedAndGivenStatements.addUsed(predicate, context, null);
-			usedAndGivenStatements.addUsed(predicate, context, FI);
-			usedAndGivenStatements.addUsed(predicate, context, SV);
-			usedAndGivenStatements.addUsed(predicate, context, EN);
+			if (savedLocale != null) {
+				usedAndGivenStatements.addUsed(predicate, context, savedLocale);
+			} else {
+				// The UI should submit all information for this predicate in this context for all languages
+				usedAndGivenStatements.addUsed(predicate, context, null);
+				for (String locale : SUPPORTED_LANGUAGES) {
+					usedAndGivenStatements.addUsed(predicate, context, locale);
+				}
+			}
 
 			for (String value : values) {
 				if (!given(value)) continue;

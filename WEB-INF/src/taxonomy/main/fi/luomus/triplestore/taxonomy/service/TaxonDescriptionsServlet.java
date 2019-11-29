@@ -77,17 +77,13 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private boolean hasContent(Taxon taxon, List<RdfProperty> descriptionVariables) {
-		Context defaultContext = taxon.getDescriptions().getDefaultContext();
-		if (defaultContext == null) return false;
+		Context descriptions = taxon.getDescriptions().getDefaultContext();
+		if (descriptions == null) return false;
 
 		for (RdfProperty descriptionVariable : descriptionVariables) {
 			String property = descriptionVariable.getQname().toString();
-			if (given(defaultContext.getText(property, "fi"))) {
-				return true;
-			} else if (given(defaultContext.getText(property, "sv"))) {
-				return true;
-			} else if (given(defaultContext.getText(property, "en"))) {
-				return true;
+			for (String locale : ApiTaxonEditSectionSubmitServlet.SUPPORTED_LANGUAGES) {
+				if (given(descriptions.getText(property, locale))) return true;
 			}
 		}
 		return false;
