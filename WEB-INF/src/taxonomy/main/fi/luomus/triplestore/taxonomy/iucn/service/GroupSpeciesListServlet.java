@@ -99,8 +99,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				states = (String[]) session.getObject(STATE);
 				redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);
 				prevRedListStatuses = (String[]) session.getObject(PREV_RED_LIST_STATUS);
-
 			}
+
 			if (pageSize == null) {
 				pageSize = (Integer) session.getObject(PAGE_SIZE);
 				if (pageSize == null) {
