@@ -87,7 +87,7 @@ label.longtext {
 
 label { 
 	display: inline-block;
-	min-width: 155px;
+	min-width: 200px;
 }
 #editTaxonDescriptions label {
 	width: auto;
