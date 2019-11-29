@@ -56,7 +56,7 @@
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
 						<td>
-							<h2>${property.label.forLocale(locale)!field}</h2>
+							<h2>${property.label.forLocale(locale)!locale}</h2>
 							<div class="content">
 								<#if existingValue?has_content>
 									${existingValue}
@@ -136,27 +136,8 @@ $(function() {
 		return doSave;  
 	});
 	
-	$("#imagesButton").on('click', function() {
-		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
-		$("body").append(container);
-		var windowHeight = $(window).height();
-        var dialogHeight = windowHeight * 0.9;
-		container.dialog({
-			title: 'Add/modify taxon images',
-			autoOpen: true,
-      		height: dialogHeight,
-      		width: "95%",
-      		modal: true,
-      		buttons: {
-        		"Close": function() {
-          			container.dialog("close");
-        		}
-			},
-      		close: function() {
-				container.remove();
-      		}
-    	});
-	});
+	<@taxonImageButton />
+	
 });
 
 function updateOriginal(e) {

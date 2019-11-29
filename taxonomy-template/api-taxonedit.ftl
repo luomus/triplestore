@@ -646,27 +646,7 @@ $(function() {
 
 	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
 	
-	$("#imagesButton").on('click', function() {
-		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
-		$("body").append(container);
-		var windowHeight = $(window).height();
-        var dialogHeight = windowHeight * 0.9;
-		container.dialog({
-			title: 'Add/modify taxon images',
-			autoOpen: true,
-      		height: dialogHeight,
-      		width: "95%",
-      		modal: true,
-      		buttons: {
-        		"Close": function() {
-          			container.dialog("close");
-        		}
-			},
-      		close: function() {
-				container.remove();
-      		}
-    	});
-	});
+	<@taxonImageButton />
 	
 });
 </script>
