@@ -10,6 +10,14 @@
 			</form>
 		</div>
 		<button id="imagesButton">Images</button>
+		<div>
+			Change languages:
+			<select id="descriptionLocalesSelector" multiple="multiple" class="chosen">
+				<#list supportedLocales as l>
+					<option value="${l}" <#if locales?seq_contains(l)>selected="selected"</#if>>${l?upper_case}</option>
+				</#list>
+			</select>
+		</div>
 	</div>
 </div>
 
@@ -28,9 +36,6 @@
 	${taxon.qname}
 </h5>
 
-
-<#assign locales = ["fi","sv","en"] />
-
 <#list groups as group>
 	<#if groupsWithContent?seq_contains(group.qname.toString())>
 		<@printGroup group "" group_index />
@@ -43,7 +48,11 @@
 </#list>
 
 <#macro printGroup group initiallyClosed index>
-	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("sv") + " &mdash; " + group.label.forLocale("en") />
+	<#assign headerLabel = "" />
+	<#list locales as locale>
+		<#assign headerLabel = headerLabel + (group.label.forLocale(locale)!group.label.forLocale("en")) + " ("+locale+")" />
+		<#if locale_has_next> <#assign headerLabel  = headerLabel + " &mdash; " /></#if>
+	</#list>
 	<div class="portlet">
 	<div class="portlet-header ${initiallyClosed}">${headerLabel}</div>
 	<div class="portlet-content">
@@ -58,7 +67,7 @@
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
 						<td>
-							<#assign portletLabel = property.label.forLocale(locale)!locale />
+							<#assign portletLabel = (property.label.forLocale(locale)!property.label.forLocale("en")) + " ("+locale+")" />
 							<@portletHeader portletLabel "" "locale___"+locale />
 								<div class="content">
 									<#if existingValue?has_content>
@@ -139,6 +148,16 @@ $(function() {
 		$(".saveButton").remove();
 		
 		return doSave;  
+	});
+	
+	$('#descriptionLocalesSelector').on('change', function() {
+		var url = window.location.href.split('?')[0];
+		if (!$(this).val()) window.location.href = url;
+		url += '?descriptionLocales=';
+		$.each($(this).val(), function(index,value) {
+			url += value+',';
+		});
+		window.location.href = url;
 	});
 	
 	<@taxonImageButton />
