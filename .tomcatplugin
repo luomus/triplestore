@@ -6,7 +6,8 @@
     <reloadable>true</reloadable>
     <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
-    <warLocation>e:/war/triplestore.war</warLocation>
+    <warLocation>c:/esko-local/triplestore.war</warLocation>
     <extraInfo></extraInfo>
+    <mavenClasspath>false</mavenClasspath>
     <webPath></webPath>
 </tomcatProjectProperties>
