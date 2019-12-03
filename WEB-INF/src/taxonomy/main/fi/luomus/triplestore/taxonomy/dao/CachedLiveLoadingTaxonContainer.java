@@ -187,15 +187,21 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		@Override
 		public EditableTaxon load(Qname taxonQname) {
 			try {
-				Model model = triplestoreDAO.get(taxonQname);
-				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
-				EditableTaxon taxon = createTaxon(model);
-				preloadSynonyms(taxon);
-				taxon.getChildren(); // preload all child models to cache
-				return taxon;
+				EditableTaxon taxon = getOrNull(taxonQname);
+				if (taxon != null) return taxon;
 			} catch (Exception e) {
 				throw triplestoreDAO.exception("Load taxon: " + taxonQname, e);
 			}
+			throw new NoSuchTaxonException(taxonQname);
+		}
+
+		private EditableTaxon getOrNull(Qname taxonQname) throws Exception {
+			Model model = triplestoreDAO.get(taxonQname);
+			if (model.isEmpty()) return null;
+			EditableTaxon taxon = createTaxon(model);
+			preloadSynonyms(taxon);
+			taxon.getChildren(); // preload all child models to cache
+			return taxon;
 		}
 	}
 
