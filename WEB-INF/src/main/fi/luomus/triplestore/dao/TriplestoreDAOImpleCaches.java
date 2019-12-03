@@ -167,7 +167,7 @@ class TriplestoreDAOImpleCaches {
 								throw dao.exception("Loading desc groups", e);
 							}
 						}
-					}, 1, TimeUnit.MINUTES);
+					}, 1, TimeUnit.HOURS);
 
 	final SingleObjectCache<Map<String, List<RdfProperty>>> descriptionGroupVariables = 
 			new SingleObjectCache<>(
@@ -184,7 +184,7 @@ class TriplestoreDAOImpleCaches {
 								throw dao.exception("Loading desc variables", e);
 							}
 						}
-					}, 1, TimeUnit.MINUTES);
+					}, 1, TimeUnit.HOURS);
 	
 	public void invalidateAll() {
 		properties.invalidateAll();
