@@ -59,7 +59,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String SV = "sv";
 	private static final String FI = "fi";
 	private static final String RU = "ru";
-	public static final Set<String> SUPPORTED_LOCALES = Utils.set(FI, SV, EN, RU);
+	private static final String SE = "se";
+	public static final Set<String> SUPPORTED_LOCALES = Utils.set(FI, SV, EN, RU, SE);
 
 	@Override
 	protected Set<User.Role> allowedRoles() {
