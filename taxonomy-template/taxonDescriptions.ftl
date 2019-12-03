@@ -50,7 +50,7 @@
 <#macro printGroup group initiallyClosed index>
 	<#assign headerLabel = "" />
 	<#list locales as locale>
-		<#assign headerLabel = headerLabel + (group.label.forLocale(locale)!group.label.forLocale("en")) + " ("+locale+")" />
+		<#assign headerLabel = headerLabel + (group.label.forLocale(locale)!group.label.forLocale("en")!group.qname) + " ("+locale+")" />
 		<#if locale_has_next> <#assign headerLabel  = headerLabel + " &mdash; " /></#if>
 	</#list>
 	<div class="portlet">
@@ -67,7 +67,7 @@
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
 						<td>
-							<#assign portletLabel = (property.label.forLocale(locale)!property.label.forLocale("en")) + " ("+locale+")" />
+							<#assign portletLabel = (property.label.forLocale(locale)!property.label.forLocale("en")!property.qname) + " ("+locale+")" />
 							<@portletHeader portletLabel "" "locale___"+locale />
 								<div class="content">
 									<#if existingValue?has_content>
