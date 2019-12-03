@@ -183,6 +183,7 @@
 		<option value="fi" <#if selectedLangcode == "fi">selected="selected"</#if>>FI</option>
 		<option value="sv" <#if selectedLangcode == "sv">selected="selected"</#if>>SV</option>
 		<option value="en" <#if selectedLangcode == "en">selected="selected"</#if>>EN</option>
+		<option value="ru" <#if selectedLangcode == "ru">selected="selected"</#if>>RU</option>
 	</select>
 </#macro>
 

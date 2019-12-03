@@ -146,6 +146,10 @@
 				<td> <label for="vernacularName___en">EN</label> </td>
 				<td> <@input "MX.vernacularName___en" "off" taxon.vernacularName.forLocale("en")!"" /> </td>
 			</tr>
+			<tr>
+				<td> <label for="vernacularName___ru">RU</label> </td>
+				<td> <@input "MX.vernacularName___ru" "off" taxon.vernacularName.forLocale("ru")!"" /> </td>
+			</tr>
 		</table>
 	<@portletFooter />	
 	
@@ -228,7 +232,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<#list ["fi", "sv", "en"] as localeSelector>
+				<#list ["fi", "sv", "en", "ru"] as localeSelector>
 					<#list taxon.alternativeVernacularNames.forLocale(localeSelector) as alternativeVernaculaName>
 						<tr>
 							<td><@input "MX.alternativeVernacularName___${localeSelector}" "off" alternativeVernaculaName /></td>
