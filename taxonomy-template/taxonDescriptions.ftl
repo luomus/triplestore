@@ -13,7 +13,7 @@
 		<div>
 			Change languages:
 			<select id="descriptionLocalesSelector" multiple="multiple" class="chosen">
-				<#list supportedLocales as l>
+				<#list ["fi", "sv", "en", "ru"] as l>
 					<option value="${l}" <#if locales?seq_contains(l)>selected="selected"</#if>>${l?upper_case}</option>
 				</#list>
 			</select>
