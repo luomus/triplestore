@@ -89,6 +89,9 @@ label {
 	display: inline-block;
 	min-width: 200px;
 }
+#editTaxonDescriptions .info {
+	color: #777;
+}
 #editTaxonDescriptions label {
 	width: auto;
 	text-align: left;
@@ -263,9 +266,6 @@ tr.errorMessage td {
 #editTaxonDescriptions a:hover,
 #editTaxonDescriptions a:visited {
 	color: blue;
-}
-#editTaxonDescriptions table td .info {
-	color: rgb(200,200,200);
 }
 .emptyContent {
 	margin: 0;

@@ -77,6 +77,8 @@
 								<div class="textareaContainer hidden">
 									<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
 									<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
+									<p class="info">You can provide links to other taxa by using syntaxt: <b>[MX.1234]</b> </p>
+									<p class="info">The above is replaced with [scientific name] [author] ([vernacular name]) of the taxon by laji.fi portal and links to taxon card of the taxon.</p>
 								</div>
 							<@portletFooter />
 						</td>
