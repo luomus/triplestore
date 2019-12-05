@@ -40,6 +40,11 @@ public class EditableTaxon extends Taxon {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public boolean isHidden() {
+		return super.isMarkedHidden(); // super implementation marks all higher taxa that do not have species as hidden
+	}
+	
 	public boolean allowsAlterationsBy(User user) {
 		if (user.isAdmin()) {
 			return true;
