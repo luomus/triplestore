@@ -35,7 +35,12 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		if (!taxonToSendID.contains("MX.")) taxonToSendID = taxonToSendID.replace("MX", "MX.");
 		if (!newParentID.contains("MX.")) newParentID = newParentID.replace("MX", "MX.");
 		String sendAsType = req.getParameter("sendAsType");
-
+		
+		notNull(taxonToSendID, newParentID, sendAsType);
+		if(taxonToSendID.equals(newParentID)) {
+			return apiErrorResponse("Sending taxon as child of itself is not allowed", res);
+		}
+		
 		Utils.debug(taxonToSendID, newParentID, sendAsType);
 
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
@@ -80,6 +85,13 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		}
 
 		return apiSuccessResponse(res);
+	}
+
+	
+	private void notNull(String ... strings) {
+		for (String s : strings) {
+			if (!given(s)) throw new IllegalArgumentException("Empty given");
+		}
 	}
 
 	private void removeExistingLinkings(EditableTaxon toSend, TriplestoreDAO dao) throws Exception {
