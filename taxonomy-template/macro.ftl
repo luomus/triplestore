@@ -65,7 +65,13 @@
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
 				</#if>
-				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
+				<#if !taxon.synonym && taxon.finnish>
+					<#if taxon.markedAsFinnishTaxon>
+						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" />
+					<#else>
+						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Contains finnish" style="opacity: 0.4" />
+					</#if>
+				</#if>
 			</div>
 			<#if !taxon.vernacularName.empty>
 				<div class="vernacularNames">

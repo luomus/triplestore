@@ -76,8 +76,8 @@ public class EditableTaxon extends Taxon {
 	}
 
 	@Override
-	public Synonyms getSynonymsContainer() {
-		return super.getSynonymsContainer();
+	public Synonyms getSynonymsContainer() { // change visibility to public
+		return super.getSynonymsContainer(); 
 	}
 
 	public void invalidateSelfAndLinking() {
@@ -153,11 +153,6 @@ public class EditableTaxon extends Taxon {
 
 	public boolean hasExplicitlySetInformalTaxonGroup(String qname) {
 		return getExplicitlySetInformalTaxonGroups().contains(new Qname(qname));
-	}
-
-	@Override
-	public boolean isFinnish() {
-		return this.isMarkedAsFinnishTaxon();
 	}
 
 	public boolean isDeletable() {
