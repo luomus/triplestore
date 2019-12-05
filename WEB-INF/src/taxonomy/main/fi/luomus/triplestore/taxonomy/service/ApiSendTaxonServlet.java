@@ -65,13 +65,18 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 				return apiErrorResponse("Can not send a checklist taxon into other checklist", res);
 			}
 		}
+		if (moveAsChild(sendAsType)) {
+			if (!newParent.getChecklist().equals(toSend.getChecklist())) {
+				return apiErrorResponse("Moving as child is allowed only within the same checklist", res);
+			}
+		}
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
 		toSend.invalidateSelfAndLinking();
 
 		removeExistingLinkings(toSend, dao);
-		if ("CHILD".equals(sendAsType)) {
+		if (moveAsChild(sendAsType)) {
 			ApiChangeParentServlet.move(toSend, newParent, dao);
 			toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
 			toSend.invalidateSelfAndLinking();
@@ -82,6 +87,11 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		}
 
 		return apiSuccessResponse(res);
+	}
+
+
+	private boolean moveAsChild(String sendAsType) {
+		return "CHILD".equals(sendAsType);
 	}
 
 
