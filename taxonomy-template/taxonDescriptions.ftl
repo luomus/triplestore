@@ -42,7 +42,7 @@
 	</#if>
 </#list>
 <#list groups as group>
-	<#if !groupsWithContent?seq_contains(group.qname.toString())>
+	<#if !groupsWithContent?seq_contains(group.qname.toString()) && !hiddenGroups?seq_contains(group.qname.toString())>
 		<@printGroup group "initiallyClosed" group_index />
 	</#if>
 </#list>
