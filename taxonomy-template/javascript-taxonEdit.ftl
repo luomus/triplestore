@@ -7,15 +7,17 @@ $(function() {
 	
     $(document).ajaxError(function(event, response, settings, thrownError) {
     	if (settings.suppressErrors) {
-        	return;
+			return;
     	}
     	if (!response.status) {
-    		return; // ignore, cancelled request
+			return; // ignore, cancelled request
     	} 
     	if (response.status == 403) {
-        	document.location.href = document.location.href;
+			document.location.href = document.location.href;
 		} else {
-			document.location.href = '${baseURL}/error?error='+encodeURIComponent(settings.url + ': ' + response.status + ' : ' + response.responseText);
+			var errorMessage = settings.url + ': ' + response.status + ': ' + response.responseText;
+			if (errorMessage.length > 300) errorMessage = errorMessage.substring(0, 300) + '...';
+			document.location.href = '${baseURL}/error?error='+encodeURIComponent(errorMessage);
 		}
 	});
 	
