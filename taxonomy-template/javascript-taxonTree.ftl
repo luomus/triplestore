@@ -326,7 +326,7 @@ function changeTaxonDragMode() {
 			$(this).append(dropContainer);
 		});
 		taxonTreeGraphs.repaintEverything();
-		$(".taxonWithTools").not(".rootTaxon").draggable({ revert: "invalid", helper: "clone", cursor: 'move' });
+		$(".taxonWithTools").not(".rootTaxon, .synonym").draggable({ revert: "invalid", helper: "clone", cursor: 'move' });
 	} else {
 		$("#taxonTree").find("button, .button, .ui-button").prop("disabled", false).removeClass("ui-state-disabled");
 		$(".taxonDropArea").remove();
