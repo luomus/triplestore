@@ -10,8 +10,8 @@
 		<#else>
 			<li id="taxonToolMenuHide">Hide</li>
 		</#if>
+		<li id="taxonToolMenuAddChildBelow">Add sibling after this taxon</li>
 	</#if>
-	<li id="taxonToolMenuAddChildBelow">Add sibling after this taxon</li>
 	<#if taxon.deletable>
 		<li id="taxonToolMenuDelete"><span class="ui-icon ui-icon-trash"></span>Delete</li>
 	</#if>
