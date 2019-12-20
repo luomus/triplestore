@@ -29,7 +29,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 
 	private static final String DESCRIPTION_LOCALES = "descriptionLocales";
 	private static final String[] DEFAULT_LOCALES = new String[] {"fi"};
-	private static final Set<String> HIDDEN_GROUPS = Utils.set("MX.SDVG14", "MX.SDVG11", "MX.SDVG8");
+	private static final Set<String> HIDDEN_GROUPS = Utils.set("MX.SDVG11", "MX.SDVG8");
 	public static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
 
 	@Override
