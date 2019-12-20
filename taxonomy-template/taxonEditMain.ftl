@@ -112,7 +112,7 @@
 			<br />
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
-				<option value="BASIONYM">Basionym</option>
+				<option value="BASIONYM">Basionym / Original combination</option>
 				<option value="OBJECTIVE">Objective synonym</option>
 				<option value="SUBJECTIVE">Subjective synonym</option>
 				<option value="HOMOTYPIC">Homotypic synonym</option>
@@ -157,7 +157,7 @@
 			<input type="submit" class="button addButton" value="Add synonyms"  />
 			<br /><br />
 			<ul class="info">
-				<li><b>Basionym:</b> The first name under which this taxon was described.</li>
+				<li><b>Basionym / Original combination:</b> The first name under which this taxon was described.</li>
 				<li><b>Objective/Homotypic:</b> Name based on same type specimen.</li>
 				<li><b>Subjective/Heterotypic:</b> Name not based on same type specimen.</li>
 				<li><b>Alternative:</b> Alternative valid name (not synonym).</li>

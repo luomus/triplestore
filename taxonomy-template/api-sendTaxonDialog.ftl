@@ -25,7 +25,7 @@
 				</#if>
 				
 				<#if taxon.allowsMoveAsSynonym()>
-				<option value="BASIONYM">Basionym</option>
+				<option value="BASIONYM">Basionym / Original combination</option>
 				<option value="OBJECTIVE">Objective synonym</option>
 				<option value="SUBJECTIVE">Subjective synonym</option>
 				<option value="HOMOTYPIC">Homotypic synonym</option>
