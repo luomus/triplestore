@@ -206,7 +206,7 @@ public class ChecklistComparison {
 	}
 
 	private static class ChecklistRow {
-		@FieldInfo(name="Id", order=0, cols={"TAXON_QNAME", "ID"}) public String taxonId;
+		@FieldInfo(name="Id", order=0, cols={"TAXON_QNAME", "ID", "Identifier"}) public String taxonId;
 		@FieldInfo(name="Scientific name", order=1.1, cols={"SCIENTIFICNAME", "Scientific name"}, useInCompare=true) public String scientificName;
 		@FieldInfo(name="Author", order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
 		@FieldInfo(name="Finnish name", order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
