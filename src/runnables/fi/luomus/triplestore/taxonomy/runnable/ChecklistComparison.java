@@ -41,7 +41,7 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File("C:/temp/Lajiluettelo2018/2019-11-21-taxon-export.tsv");
+		File latest = new File("C:/temp/Lajiluettelo2018/Lajiluettelo2019.txt");
 		File previous = new File("C:/temp/Lajiluettelo2018/Lajiluettelo2018.txt");
 		String s = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
@@ -211,22 +211,21 @@ public class ChecklistComparison {
 		@FieldInfo(name="Author", order=1.2, cols={"AUTHORS", "Author"}, useInCompare=true) public String author;
 		@FieldInfo(name="Finnish name", order=2.1, cols={"FINNISHNAME", "Finnish name"}, useInCompare=true) public String finnishName;
 		@FieldInfo(name="Swedish name", order=2.2, cols={"SWEDISHNAME", "Swedish name"}, useInCompare=true) public String swedishName;
-		@FieldInfo(name="Domain", order=3.01, cols={"DOMAINNAME", "MX.domain, MX.scientificName"}) public String domainName;
-		@FieldInfo(name="Kingdom", order=3.02, cols={"KINGDOMNAME", "MX.kingdom, MX.scientificName"}) public String kingdomName;
-		@FieldInfo(name="Phylum", order=3.031, cols={"PHYLUMNAME", "MX.phylum, MX.scientificName"}) public String phylumName;
-		@FieldInfo(name="Subphylum", order=3.032, cols={"MX.subphylum, MX.scientificName"}) public String subphylumName;
-		@FieldInfo(name="Division", order=3.04, cols={"", "MX.division, MX.scientificName"}) public String divisionName;
-		@FieldInfo(name="Class", order=3.05, cols={"CLASSNAME", "MX.class, MX.scientificName"}) public String className;
-		@FieldInfo(name="Subclass", order=3.06, cols={"SUBCLASSNAME", "MX.subclass, MX.scientificName"}) public String subclassName;
-		@FieldInfo(name="Order", order=3.07, cols={"ORDERNAME", "MX.order, MX.scientificName"}) public String orderName;
-		@FieldInfo(name="Suborder", order=3.08, cols={"SUBORDERNAME", "MX.suborder, MX.scientificName"}) public String suborderName;
-		@FieldInfo(name="Syperfamily", order=3.09, cols={"SUPERFAMILYNAME", "MX.superfamily, MX.scientificName"}) public String superfamilyName;
-		@FieldInfo(name="Family", order=3.10, cols={"FAMILYNAME", "MX.family, MX.scientificName"}, useInCompare=true) public String familyName;
-		@FieldInfo(name="Subfamily", order=3.11, cols={"SUBFAMILYNAME", "MX.subfamily, MX.scientificName"}) public String subfamilyName;
-		@FieldInfo(name="Tribe", order=3.12, cols={"TRIBENAME", "MX.tribe, MX.scientificName"}) public String tribeName;
-		@FieldInfo(name="Subtribe", order=3.13, cols={"SUBTRIBENAME", "MX.subtribe, MX.scientificName"}) public String subtribeName;
-		@FieldInfo(name="Genus", order=3.14, cols={"GENUSNAME", "MX.genus, MX.scientificName"}) public String genusName;
-		@FieldInfo(name="Subgenus", order=3.15, cols={"SUBGENUSNAME", "MX.subgenus, MX.scientificName"}) public String subgenusName;
+		@FieldInfo(name="Domain", order=3.01, cols={"DOMAINNAME", "Domain"}) public String domainName;
+		@FieldInfo(name="Kingdom", order=3.02, cols={"KINGDOMNAME", "Kingdom"}) public String kingdomName;
+		@FieldInfo(name="Phylum", order=3.031, cols={"PHYLUMNAME", "Phylum"}) public String phylumName;
+		@FieldInfo(name="Division", order=3.04, cols={"Division"}) public String divisionName;
+		@FieldInfo(name="Class", order=3.05, cols={"CLASSNAME", "Class"}) public String className;
+		@FieldInfo(name="Subclass", order=3.06, cols={"SUBCLASSNAME", "Subclass"}) public String subclassName;
+		@FieldInfo(name="Order", order=3.07, cols={"ORDERNAME", "Order"}) public String orderName;
+		@FieldInfo(name="Suborder", order=3.08, cols={"SUBORDERNAME", "Suborder"}) public String suborderName;
+		@FieldInfo(name="Syperfamily", order=3.09, cols={"SUPERFAMILYNAME", "Syperfamily"}) public String superfamilyName;
+		@FieldInfo(name="Family", order=3.10, cols={"FAMILYNAME", "Family"}, useInCompare=true) public String familyName;
+		@FieldInfo(name="Subfamily", order=3.11, cols={"SUBFAMILYNAME", "Subfamily"}) public String subfamilyName;
+		@FieldInfo(name="Tribe", order=3.12, cols={"TRIBENAME", "Tribe"}) public String tribeName;
+		@FieldInfo(name="Subtribe", order=3.13, cols={"SUBTRIBENAME", "Subtribe"}) public String subtribeName;
+		@FieldInfo(name="Genus", order=3.14, cols={"GENUSNAME", "Genus"}) public String genusName;
+		@FieldInfo(name="Subgenus", order=3.15, cols={"SUBGENUSNAME", "Subgenus"}) public String subgenusName;
 
 		@Override
 		public boolean equals(Object obj) {
