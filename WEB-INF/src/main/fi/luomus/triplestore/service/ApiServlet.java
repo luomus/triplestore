@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.riot.RDFFormat;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -80,9 +81,9 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
+			return jsonResponse(response);
 		}
-		return rdfResponse(response, res);
+		return rdfResponse(response);
 	}
 
 	public static String get(Qname qname, ResultType resultType, Format format, TriplestoreDAO dao) throws Exception {
@@ -131,26 +132,26 @@ public class ApiServlet extends EditorBaseServlet {
 	}
 
 	protected static String generateRdf(Collection<Model> models, Format format) {
-		String language = FORMAT_TO_RDF_LANG_MAPPING.get(format);
+		RDFFormat language = FORMAT_TO_RDF_LANG_MAPPING.get(format);
 		if (language == null) throw new UnsupportedOperationException("Unknown language for " + format);
-		com.hp.hpl.jena.rdf.model.Model jenaModel = new InternalModelToJenaModelConverter(models).getJenaModel();
-		String rdfXml = JenaUtils.getRdf(jenaModel, language);
+		org.apache.jena.rdf.model.Model jenaModel = new InternalModelToJenaModelConverter(models).getJenaModel();
+		String rdfXml = JenaUtils.getSerialized(jenaModel, language);
 		return rdfXml;
 	}
 
-	private static final Map<Format, String> FORMAT_TO_RDF_LANG_MAPPING; 
+	private static final Map<Format, RDFFormat> FORMAT_TO_RDF_LANG_MAPPING; 
 	static {
 		FORMAT_TO_RDF_LANG_MAPPING = new HashMap<>();
 		for (Format format : Format.values()) {
 			if (format == Format.JSONP) continue;
 			if (format == Format.JSON) {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML-ABBREV");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_ABBREV);
 				continue;
 			}
 			if (format.toString().endsWith("ABBREV")) {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML-ABBREV");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_ABBREV);
 			} else {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_PLAIN);
 			}
 		}
 	}
@@ -182,9 +183,9 @@ public class ApiServlet extends EditorBaseServlet {
 		String response = delete(qname, format, getTriplestoreDAO());
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
+			return jsonResponse(response);
 		}
-		return rdfResponse(response, res);
+		return rdfResponse(response);
 	}
 
 	public static String delete(Qname qname, Format format, TriplestoreDAO dao) throws Exception {
@@ -261,7 +262,7 @@ public class ApiServlet extends EditorBaseServlet {
 	public static void put(Qname qname, String data, Format format, TriplestoreDAO dao) throws Exception {
 		Model model = null;
 		if (format == Format.RDFXMLABBREV || format == Format.RDFXML) {
-			model = new Model(data);
+			model = Model.fromRdf(data);
 		} else {
 			throw new UnsupportedOperationException("Not yet implemented for format: " + format.toString());
 		}

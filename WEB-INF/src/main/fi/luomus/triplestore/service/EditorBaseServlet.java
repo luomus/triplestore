@@ -1,6 +1,5 @@
 package fi.luomus.triplestore.service;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -246,8 +245,8 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return sessionHandler;
 	}
 
-	protected ResponseData rdfResponse(String xml, HttpServletResponse res) throws IOException {
-		return response(xml, "application/rdf+xml", res);
+	protected ResponseData rdfResponse(String xml) {
+		return response(xml, "application/rdf+xml");
 	}
 
 	protected static boolean jsonRequest(Format format) {

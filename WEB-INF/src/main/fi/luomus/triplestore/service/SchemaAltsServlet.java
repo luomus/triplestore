@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -28,15 +27,14 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = -7921975069788844624L;
 
-
 	@Override
-	protected ResponseData processGetWithAccess(HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData processGetWithAccess() throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
 		Map<String, Model> asMap = asMap(models);
 		JSONObject response = parseAltsResponse(asMap); 
-		return jsonResponse(response, res);
+		return jsonResponse(response);
 	}
 
 	private Map<String, Model> asMap(Collection<Model> models) {

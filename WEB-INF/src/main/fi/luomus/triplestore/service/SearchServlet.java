@@ -51,13 +51,13 @@ public class SearchServlet extends ApiServlet {
 
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
-			return processGetWithAccess(req, res, format, searchParams);
+			return processGetWithAccess(req, format, searchParams);
 		} finally {
 			access.release();
 		}
 	}
 
-	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, Format format, SearchParams searchParams) throws Exception, IOException {
+	private ResponseData processGetWithAccess(HttpServletRequest req, Format format, SearchParams searchParams) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 
 		String response = null;
@@ -68,9 +68,9 @@ public class SearchServlet extends ApiServlet {
 		}
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
+			return jsonResponse(response);
 		}
-		return rdfResponse(response, res);
+		return rdfResponse(response);
 	}
 
 	protected Set<String> getMultiParam(String fieldName, HttpServletRequest req) {

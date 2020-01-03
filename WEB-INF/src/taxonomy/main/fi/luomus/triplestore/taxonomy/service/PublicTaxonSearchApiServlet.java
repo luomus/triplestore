@@ -100,14 +100,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		}
 		if (jsonRequest(format)) {
 			if (version == 2) {
-				return jsonResponse(toJsonV2(response).toString(), res);
+				return jsonResponse(toJsonV2(response).toString());
 			}
 			String xml = new XMLWriter(response).generateXML();
 			org.json.JSONObject jsonObject = XML.toJSONObject(xml);
 			String json = jsonObject.toString();
-			return jsonResponse(json, res);
+			return jsonResponse(json);
 		}
-		return xmlResponse(response, res);
+		return xmlResponse(response);
 	}
 
 	private JSONObject toJsonV2(Document response) {
