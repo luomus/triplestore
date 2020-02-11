@@ -2,6 +2,7 @@ package fi.luomus.triplestore.service;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
@@ -13,26 +14,41 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.json.JSONArray;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.Cached;
+import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
 
 @WebServlet(urlPatterns = {"/schema/class/*"})
 public class SchemaClassesServlet extends ApiServlet {
 
 	private static final long serialVersionUID = 4677047722583381696L;
 
+	private CacheLoader<String, ResponseData> loader = new CacheLoader<String, ResponseData>() {
+		
+		@Override
+		public ResponseData load(String type) {
+			try {
+				return generateResponse();
+			} catch (Exception e) {
+				getErrorReporter().report("Loading " + type, e);
+				throw new RuntimeException(e);
+			}
+		}
+	};
+	
+	private final Cached<String, ResponseData> cache = new Cached<>(loader, 15, TimeUnit.MINUTES, 3);  
+	
+	protected String type() {
+		return "class";
+	}
+	
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
-		try {
-			return processGetWithAccess();
-		} finally {
-			access.release();
-		}
+		return cache.get(type());
 	}
 
-	protected ResponseData processGetWithAccess() throws Exception, IOException {
+	protected ResponseData generateResponse() throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdfs:Class"));
 		JSONArray response = parseClassResponse(models);

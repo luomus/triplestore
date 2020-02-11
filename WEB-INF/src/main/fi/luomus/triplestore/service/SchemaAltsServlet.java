@@ -27,8 +27,12 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = -7921975069788844624L;
 
+	protected String type() {
+		return "alt";
+	}
+
 	@Override
-	protected ResponseData processGetWithAccess() throws Exception, IOException {
+	protected ResponseData generateResponse() throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);

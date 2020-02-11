@@ -41,8 +41,8 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File("C:/temp/Lajiluettelo2018/Lajiluettelo2019.txt");
-		File previous = new File("C:/temp/Lajiluettelo2018/Lajiluettelo2018.txt");
+		File latest = new File("c:/temp/Lajiluettelo2018/Lajiluettelo2019_2020_01_10_korjattu.txt");
+		File previous = new File("c:/temp/Lajiluettelo2018/Lajiluettelo2018.txt");
 		String s = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
 				new ChecklistReader().read(previous));
