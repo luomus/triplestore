@@ -25,8 +25,8 @@ import fi.luomus.commons.utils.FileUtils;
 
 public class ChecklistComparison {
 
-	private static final String PREV_YEAR = "2018";
-	private static final String LATEST_YEAR = "2019";
+	private static final String PREV_YEAR = "2019";
+	private static final String LATEST_YEAR = "2020";
 
 	private static final String TAB = "\t";
 	private static final String NEWLINE = "\n";
@@ -41,8 +41,8 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File("c:/temp/Lajiluettelo2018/Lajiluettelo2019_2020_01_10_korjattu.txt");
-		File previous = new File("c:/temp/Lajiluettelo2018/Lajiluettelo2018.txt");
+		File latest = new File("c:/temp/Lajiluettelo/Lajiluettelo2020.txt");
+		File previous = new File("c:/temp/Lajiluettelo/Lajiluettelo2019.txt");
 		String s = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
 				new ChecklistReader().read(previous));
