@@ -266,6 +266,9 @@ public class ApiServlet extends EditorBaseServlet {
 		} else {
 			throw new UnsupportedOperationException("Not yet implemented for format: " + format.toString());
 		}
+		if (!model.getSubject().getQname().equals(qname.toString())) {
+			throw new IllegalArgumentException("Request qname and data subject do not match");
+		}
 		if (!qname.toString().contains(":")) {
 			dao.addResource(qname);
 		}
