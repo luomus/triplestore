@@ -1,6 +1,8 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -20,18 +22,18 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
+import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -40,41 +42,45 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private static final String EVALUATION_ID = "evaluationId";
 	private static final String NEW_IUCN_PUBLICATION_CITATION = "newIucnPublicationCitation";
+	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED_BY);
+	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED);
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String speciesQname = speciesQname(req);
-		if (!given(speciesQname)) return redirectTo404(res);
+		if (!given(speciesQname)) return status404(res);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 
-		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
+		EvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
 		int year = selectedYear(req);
-		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
-		IUCNEvaluation thisPeriodData = target.getEvaluation(year);
+		Evaluation comparisonData = target.getPreviousEvaluation(year);
+		Evaluation thisPeriodData = target.getEvaluation(year);
+
 		complete(comparisonData);
 		complete(thisPeriodData);
 		if (isCopyRequest(req) && thisPeriodData == null && comparisonData != null) {
 			thisPeriodData = iucnDAO.createNewEvaluation();
 			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
-			
+
 			Model model = thisPeriodData.getModel();
 			setModifiedInfo(req, model);
 			setTaxon(speciesQname, model);
 			setYear(year, model);
-			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
-			model.addStatement(new Statement(new Predicate(IUCNEvaluation.STATE), new ObjectResource(IUCNEvaluation.STATE_STARTED)));
-			
-			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, thisPeriodData, new IUCNValidationResult());
+			model.addStatement(new Statement(new Predicate(Evaluation.STATE), new ObjectResource(Evaluation.STATE_STARTED)));
+
+			return storeAndRedirectToGet(req, dao, taxonomyDAO, iucnDAO, target.getEvaluation(year), thisPeriodData);
 		}
-		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
+		return showView(req, res, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
 	}
 
-	private void complete(IUCNEvaluation evaluation) throws Exception {
+	protected void complete(Evaluation evaluation) throws Exception {
 		if (evaluation == null) return;
 		if (evaluation.isIncompletelyLoaded()) {
 			getTaxonomyDAO().getIucnDAO().getIUCNContainer().complateLoading(evaluation);
@@ -86,7 +92,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return copyParam != null && copyParam.equals("true");
 	}
 
-	private ResponseData showView(HttpServletRequest req, HttpServletResponse res, TriplestoreDAO dao, TaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation comparisonData, IUCNEvaluation thisPeriodData) throws Exception {
+	protected ResponseData showView(HttpServletRequest req, HttpServletResponse res, TaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, EvaluationTarget target, Evaluation comparisonData, Evaluation thisPeriodData) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
 
 		if (thisPeriodData != null) {
@@ -104,7 +110,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("habitatLabelIndentator", getHabitatLabelIndentaror());
 	}
 
-	protected boolean permissions(HttpServletRequest req, IUCNEvaluationTarget target, IUCNEvaluation thisPeriodData) throws Exception {
+	protected boolean permissions(HttpServletRequest req, EvaluationTarget target, Evaluation thisPeriodData) throws Exception {
 		boolean userHasPermissions = false;
 		for (String groupQname : target.getGroups()) {
 			if (hasIucnPermissions(groupQname, req)) {
@@ -116,7 +122,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return !thisPeriodData.isLocked();
 	}
 
-	private String speciesQname(HttpServletRequest req) {
+	protected String speciesQname(HttpServletRequest req) {
 		try {
 			String speciesQname = req.getRequestURI().split(Pattern.quote("/species/"))[1].split(Pattern.quote("/"))[0];
 			return speciesQname;
@@ -127,50 +133,51 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) throw new IllegalArgumentException("Species qname not given.");
 
 		int year = selectedYearFailForNoneGiven(req);
 
-		String state = req.getParameter(IUCNEvaluation.STATE);
+		String state = req.getParameter(Evaluation.STATE);
 		if (invalidState(state)) throw new IllegalArgumentException("Invalid state: " + state);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
-		IUCNEvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
+		EvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
 		if (!permissions(req, target, target.getEvaluation(year))) throw new IllegalAccessException();
 
-		IUCNEvaluation comparisonData = target.getPreviousEvaluation(year);
+		Evaluation comparisonData = target.getPreviousEvaluation(year);
 		complete(comparisonData);
-		IUCNEvaluation givenData = buildEvaluation(req, speciesQname, year, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		Evaluation givenData = buildEvaluation(req, speciesQname, year, iucnDAO.getEvaluationProperties());
 		cleanCriteriaFormats(givenData);
-		
-		IUCNValidationResult validationResult = new IUCNValidator(dao, getErrorReporter()).validate(givenData, comparisonData);
+
+		ValidationResult validationResult = new Validator(dao, getErrorReporter()).validate(givenData, comparisonData);
 
 		if (!validationResult.hasErrors()) {
-			return storeAndRedirectToGet(req, res, speciesQname, year, dao, taxonomyDAO, iucnDAO, target, givenData, validationResult);
+			return storeAndRedirectToGet(req, dao, taxonomyDAO, iucnDAO, target.getEvaluation(year), givenData);
 		}
 
 		givenData.getModel().removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
 
-		return showView(req, res, dao, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
+		return showView(req, res, taxonomyDAO, iucnDAO, target, comparisonData, givenData)
 				.setData("errorMessage", validationResult.getErrors())
 				.setData("erroreousFields", validationResult.getErroreousFields())
-				.setData("editNotes", req.getParameter(IUCNEvaluation.EDIT_NOTES));
+				.setData("editNotes", req.getParameter(Evaluation.EDIT_NOTES));
 	}
 
-	private void cleanCriteriaFormats(IUCNEvaluation givenData) {
-		String criteriaForStatus = givenData.getValue(IUCNEvaluation.CRITERIA_FOR_STATUS);
-		cleanAndReplaceCriteria(criteriaForStatus, IUCNEvaluation.CRITERIA_FOR_STATUS, givenData);
-		for (String criteriaPrefix : IUCNEvaluation.CRITERIAS) {
+	private void cleanCriteriaFormats(Evaluation givenData) {
+		String criteriaForStatus = givenData.getValue(Evaluation.CRITERIA_FOR_STATUS);
+		cleanAndReplaceCriteria(criteriaForStatus, Evaluation.CRITERIA_FOR_STATUS, givenData);
+		for (String criteriaPrefix : Evaluation.CRITERIAS) {
 			String criteria = givenData.getValue("MKV.criteria"+criteriaPrefix);
 			cleanAndReplaceCriteria(criteria, "MKV.criteria"+criteriaPrefix, givenData);
 		}
 	}
 
-	private void cleanAndReplaceCriteria(String criteria, String predicateQname, IUCNEvaluation givenData) {
+	private void cleanAndReplaceCriteria(String criteria, String predicateQname, Evaluation givenData) {
 		if (!given(criteria)) return;
 		String clanedCriteria = cleanCriteria(criteria);
 		Predicate p = new Predicate(predicateQname);
@@ -179,14 +186,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private String cleanCriteria(String criteria) {
-		criteria = Utils.removeWhitespace(criteria);
-		criteria = criteria.replace(";", "; ");
-		return criteria;
+		return Utils.removeWhitespace(criteria).replace(";", "; ");
 	}
 
-	private ResponseData storeAndRedirectToGet(HttpServletRequest req, HttpServletResponse res, String speciesQname, int year, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, IUCNEvaluationTarget target, IUCNEvaluation givenData, IUCNValidationResult validationResult) throws Exception {
-		IUCNEvaluation existingEvaluation = target.getEvaluation(year);
-		
+	private ResponseData storeAndRedirectToGet(HttpServletRequest req, TriplestoreDAO dao, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, Evaluation existingEvaluation, Evaluation givenData) throws Exception {
 		String newPublicationCitation = req.getParameter(NEW_IUCN_PUBLICATION_CITATION);
 		if (given(newPublicationCitation)) {
 			insertPublicationAndSetToModel(dao, givenData, newPublicationCitation);
@@ -195,16 +198,16 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		setEditNotes(givenData);
 		setRemarks(givenData, existingEvaluation);
-		
+
 		dao.store(givenData, existingEvaluation);
-		
+
 		iucnDAO.getIUCNContainer().setEvaluation(givenData);
 
-		setFlashMessage(req, givenData, validationResult);
-		return redirectTo(getConfig().baseURL() + "/iucn/species/" + speciesQname + "/" + year , res);
+		setFlashMessage(req, givenData);
+		return redirectTo(getConfig().baseURL() + "/iucn/species/" + givenData.getSpeciesQname() + "/" + givenData.getEvaluationYear());
 	}
 
-	private void setRemarks(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) {
+	private void setRemarks(Evaluation givenData, Evaluation existingEvaluation) {
 		if (existingEvaluation == null) return;
 		for (Statement s : existingEvaluation.getRemarkSatements()) {
 			givenData.getModel().addStatement(s);
@@ -212,10 +215,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private boolean invalidState(String state) {
-		return !IUCNEvaluation.STATE_READY.equals(state) && !IUCNEvaluation.STATE_STARTED.equals(state) && !IUCNEvaluation.STATE_READY_FOR_COMMENTS.equals(state);
+		return !Evaluation.STATE_READY.equals(state) && !Evaluation.STATE_STARTED.equals(state) && !Evaluation.STATE_READY_FOR_COMMENTS.equals(state);
 	}
 
-	private void setFlashMessage(HttpServletRequest req, IUCNEvaluation givenData, IUCNValidationResult validationResult) {
+	private void setFlashMessage(HttpServletRequest req, Evaluation givenData) {
 		if (isCopyRequest(req)) {
 			getSession(req).setFlashSuccess("Kopioitu onnistuneesti!");
 		} else if (givenData.isReady()) {
@@ -227,49 +230,72 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 	}
 
-	private IUCNEvaluation buildEvaluation(HttpServletRequest req, String speciesQname, int year, RdfProperties iucnProperties) throws Exception {
-		IUCNEvaluation evaluation = createEvaluationWithExistingIdOrNewId(req);
+	private Evaluation buildEvaluation(HttpServletRequest req, String speciesQname, int year, RdfProperties iucnProperties) throws Exception {
+		Evaluation evaluation = createEvaluationWithExistingIdOrNewId(req);
 
 		Model model = evaluation.getModel();
 		setModifiedInfo(req, model);
 		setTaxon(speciesQname, model);
 		setYear(year, model);
 
+		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
+			String parameterName = e.getKey();
+			if (!habitatPair(parameterName)) {
+				setValues(evaluation, iucnProperties, e);
+			} 
+		}
+
+		setHabitatsToEvaluation(req, evaluation);
+
+		return evaluation;
+	}
+
+	private void setHabitatsToEvaluation(HttpServletRequest req, Evaluation evaluation) {
+		Habitats habitats = parseHabitats(req);
+		evaluation.setPrimaryHabitat(habitats.primaryHabitat);
+		for (HabitatObject h : habitats.secondaryHabitats) {
+			evaluation.addSecondaryHabitat(h);
+		}
+	}
+
+	public static Habitats parseHabitats(HttpServletRequest req) {
 		Map<String, Map<String, String[]>> habitatPairParameters = new HashMap<>();
 		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
 			if (habitatPair(parameterName)) {
 				addHabitatPairParameters(habitatPairParameters, e);
-			} else {
-				setValues(evaluation, iucnProperties, e);
-			}
+			} 
 		}
-
-		setHabitatsToEvaluation(evaluation, habitatPairParameters);
-
-		return evaluation;
+		return parseHabitats(habitatPairParameters);
+	}
+	protected void setModifiedInfo(HttpServletRequest req, Model model) {
+		model.removeAll(LAST_MODIFIED_PREDICATE);
+		model.removeAll(LAST_MODIFIED_BY_PREDICATE);
+		model.addStatement(new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate())));
+		model.addStatement(new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(getUser(req).getQname())));
 	}
 
-	private void setModifiedInfo(HttpServletRequest req, Model model) {
-		model.addStatement(new Statement(new Predicate(IUCNEvaluation.LAST_MODIFIED), new ObjectLiteral(DateUtils.getCurrentDate())));
-		model.addStatement(new Statement(new Predicate(IUCNEvaluation.LAST_MODIFIED_BY), new ObjectResource(getUser(req).getQname())));
+	public static class Habitats {
+		public HabitatObject primaryHabitat;
+		public List<HabitatObject> secondaryHabitats = new ArrayList<>();
 	}
 
-	private void setHabitatsToEvaluation(IUCNEvaluation evaluation, Map<String, Map<String, String[]>> habitatPairParameters) {
+	private static Habitats parseHabitats(Map<String, Map<String, String[]>> habitatPairParameters) {
 		// Map of
 		// MKV.primaryHabitat___0 : { MKV.habitat: [MKV.habitatMk], MKV.habitatSpecificType : [MKV.habitatSpecificTypePAK] }
 		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... } 
-		// MKV.primaryHabitat___1 : ...
+		// MKV.secondaryHabitat___1 : ...
+		Habitats habitats = new Habitats();
 		for (Map.Entry<String, Map<String, String[]>> e : habitatPairParameters.entrySet()) {
 			String[] predicateAndIndexParts = e.getKey().split(Pattern.quote("___"));
 			String predicate = predicateAndIndexParts[0];
 			int order = Integer.valueOf(predicateAndIndexParts[1]);
 			Qname habitat = null;
-			if (e.getValue().containsKey(IUCNEvaluation.HABITAT)) {
-				habitat = new Qname(e.getValue().get(IUCNEvaluation.HABITAT)[0]);
+			if (e.getValue().containsKey(Evaluation.HABITAT)) {
+				habitat = new Qname(e.getValue().get(Evaluation.HABITAT)[0]);
 			}
-			String[] habitatSpecificTypes = e.getValue().get(IUCNEvaluation.HABITAT_SPECIFIC_TYPE);
-			IUCNHabitatObject habitatObject = new IUCNHabitatObject(null, habitat, order);
+			String[] habitatSpecificTypes = e.getValue().get(Evaluation.HABITAT_SPECIFIC_TYPE);
+			HabitatObject habitatObject = new HabitatObject(null, habitat, order);
 			if (habitatSpecificTypes != null) {
 				for (String type : habitatSpecificTypes) {
 					if (given(type)) {
@@ -278,16 +304,17 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				}
 			}
 			if (habitatObject.hasValues()) {
-				if (predicate.equals(IUCNEvaluation.PRIMARY_HABITAT)) {
-					evaluation.setPrimaryHabitat(habitatObject);
+				if (predicate.equals(Evaluation.PRIMARY_HABITAT)) {
+					habitats.primaryHabitat = habitatObject;
 				} else {
-					evaluation.addSecondaryHabitat(habitatObject);
+					habitats.secondaryHabitats.add(habitatObject);
 				}
 			}
 		}
+		return habitats;
 	}
 
-	private void addHabitatPairParameters(Map<String, Map<String, String[]>> habitatPairs, Map.Entry<String, String[]> e) {
+	private static void addHabitatPairParameters(Map<String, Map<String, String[]>> habitatPairs, Map.Entry<String, String[]> e) {
 		// MKV.primaryHabitat___0___MKV.habitat : MKV.habitatMk
 		// MKV.primaryHabitat___0___MKV.habitatSpecificType : MKV.habitatSpecificTypePAK
 		// MKV.secondaryHabitat___0___MKV.habitat : MKV.habitatMk
@@ -304,17 +331,17 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		habitatPairs.get(commonPart).put(pairPredicate, e.getValue());
 	}
 
-	private boolean habitatPair(String parameterName) {
-		return parameterName.startsWith(IUCNEvaluation.PRIMARY_HABITAT) || parameterName.startsWith(IUCNEvaluation.SECONDARY_HABITAT);
+	private static boolean habitatPair(String parameterName) {
+		return parameterName.startsWith(Evaluation.PRIMARY_HABITAT) || parameterName.startsWith(Evaluation.SECONDARY_HABITAT);
 	}
 
-	private void setEditNotes(IUCNEvaluation givenData) {
+	private void setEditNotes(Evaluation givenData) {
 		String notes = givenData.isReady() ? "Merkitty valmiiksi" : givenData.isReadyForComments() ? "Valmis kommentoitavaksi" : "Tallennettu";
 		Model model = givenData.getModel();
 		if (model.hasStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname())) {
 			notes += ": " + model.getStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
 		}
-		notes += IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
+		notes += Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
 		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
 		model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 	}
@@ -329,7 +356,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		model.addStatement(new Statement(IucnDAO.EVALUATED_TAXON_PREDICATE, new ObjectResource(speciesQname)));
 	}
 
-	private IUCNEvaluation createEvaluationWithExistingIdOrNewId(HttpServletRequest req) throws Exception {
+	private Evaluation createEvaluationWithExistingIdOrNewId(HttpServletRequest req) throws Exception {
 		String evaluationId = req.getParameter(EVALUATION_ID);
 		if (given(evaluationId)) {
 			return getTaxonomyDAO().getIucnDAO().createEvaluation(evaluationId);
@@ -337,7 +364,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		return getTaxonomyDAO().getIucnDAO().createNewEvaluation();
 	}
 
-	private void setValues(IUCNEvaluation evaluation, RdfProperties iucnProperties, Map.Entry<String, String[]> e) {
+	protected void setValues(Evaluation evaluation, RdfProperties iucnProperties, Map.Entry<String, String[]> e) {
 		String parameterName = e.getKey();
 		if (parameterName.equals(EVALUATION_ID)) return;
 		if (parameterName.startsWith("MX.")) return;
@@ -352,42 +379,52 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 	}
 
-	private void setValue(IUCNEvaluation evaluation, RdfProperties iucnProperties, String parameterName, String value) {
-		if (parameterName.startsWith(IUCNEvaluation.HAS_OCCURRENCE)) {
-			// MKV.hasOccurrence___ML.xxx___status
-			// MKV.hasOccurrence___ML.xxx___threatened
-			String areaQname = splitAreaQname(parameterName);
-			String field = splitField(parameterName);
-			if (evaluation.hasOccurrence(areaQname)) {
-				if (field.equals("status")) {
-					evaluation.getOccurrence(areaQname).setStatus(new Qname(value));
-				} else if ("RT".equals(value)) {
-					evaluation.getOccurrence(areaQname).setThreatened(true);
-				}
-			} else {
-				if (field.equals("status")) {
-					evaluation.addOccurrence(new Occurrence(null, new Qname(areaQname), new Qname(value)));
-				} else if ("RT".equals(value)){
-					Occurrence o = new Occurrence(null, new Qname(areaQname), null);
-					o.setThreatened(true);
-					evaluation.addOccurrence(o);
-				}
+	private void setValue(Evaluation evaluation, RdfProperties iucnProperties, String parameterName, String value) {
+		if (parameterName.startsWith(Evaluation.HAS_OCCURRENCE)) {
+			setOccurrenceValue(evaluation, parameterName, value);
+		}
+		else if (parameterName.startsWith(Evaluation.HAS_ENDANGERMENT_REASON)) {
+			setEndangermentReasonValue(evaluation, parameterName, value);
+		}
+		else if (parameterName.startsWith(Evaluation.HAS_THREAT)) {
+			setThreatValue(evaluation, parameterName, value);
+		} else {
+			setToModel(evaluation.getModel(), iucnProperties, parameterName, value);
+		}
+	}
+
+	private void setThreatValue(Evaluation evaluation, String parameterName, String value) {
+		// MKV.hasThreat___1   <2,3...>
+		int order = splitOrder(parameterName);
+		evaluation.addThreat(new EndangermentObject(null, new Qname(value), order));
+	}
+
+	private void setEndangermentReasonValue(Evaluation evaluation, String parameterName, String value) {
+		// MKV.hasEndangermentReason___1   <2,3...>
+		int order = splitOrder(parameterName);
+		evaluation.addEndangermentReason(new EndangermentObject(null, new Qname(value), order));
+	}
+
+	private void setOccurrenceValue(Evaluation evaluation, String parameterName, String value) {
+		// MKV.hasOccurrence___ML.xxx___status
+		// MKV.hasOccurrence___ML.xxx___threatened
+		String areaQname = splitAreaQname(parameterName);
+		String field = splitField(parameterName);
+		if (evaluation.hasOccurrence(areaQname)) {
+			if (field.equals("status")) {
+				evaluation.getOccurrence(areaQname).setStatus(new Qname(value));
+			} else if ("RT".equals(value)) {
+				evaluation.getOccurrence(areaQname).setThreatened(true);
 			}
-			return;
+		} else {
+			if (field.equals("status")) {
+				evaluation.addOccurrence(new Occurrence(null, new Qname(areaQname), new Qname(value)));
+			} else if ("RT".equals(value)){
+				Occurrence o = new Occurrence(null, new Qname(areaQname), null);
+				o.setThreatened(true);
+				evaluation.addOccurrence(o);
+			}
 		}
-		if (parameterName.startsWith(IUCNEvaluation.HAS_ENDANGERMENT_REASON)) {
-			// MKV.hasEndangermentReason___1   <2,3...>
-			int order = splitOrder(parameterName);
-			evaluation.addEndangermentReason(new IUCNEndangermentObject(null, new Qname(value), order));
-			return;
-		}
-		if (parameterName.startsWith(IUCNEvaluation.HAS_THREAT)) {
-			// MKV.hasThreat___1   <2,3...>
-			int order = splitOrder(parameterName);
-			evaluation.addThreat(new IUCNEndangermentObject(null, new Qname(value), order));
-			return;
-		}
-		setToModel(evaluation.getModel(), iucnProperties, parameterName, value);
 	}
 
 	private int splitOrder(String parameterName) {
@@ -398,7 +435,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private String splitField(String parameterName) {
 		return parameterName.split(Pattern.quote("___"))[2];
 	}
-	
+
 	private String splitAreaQname(String parameterName) {
 		return parameterName.split(Pattern.quote("___"))[1];
 	}
@@ -416,11 +453,11 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		}
 	}
 
-	private void insertPublicationAndSetToModel(TriplestoreDAO dao, IUCNEvaluation givenData, String citation) throws Exception {
+	private void insertPublicationAndSetToModel(TriplestoreDAO dao, Evaluation givenData, String citation) throws Exception {
 		Publication publication = new Publication(null);
 		publication.setCitation(citation);
 		dao.storePublication(publication);
 		givenData.getModel().addStatement(new Statement(IucnDAO.PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
 	}
-	
+
 }

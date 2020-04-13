@@ -12,7 +12,7 @@ public class History {
 		history.remove(qname);
 		history.add(0, qname);
 		if (history.size() > MAX_SIZE) {
-			history = new ArrayList<String>(history.subList(0, MAX_SIZE));
+			history = new ArrayList<>(history.subList(0, MAX_SIZE));
 		}
 	}
 

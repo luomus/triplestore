@@ -34,6 +34,7 @@ public class InvasiveSpeciesListServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 
 		Set<Qname> currentlyDefinedInvasiveSpecies = getCurrentlyDefinedInvasiveSpecies(); 		

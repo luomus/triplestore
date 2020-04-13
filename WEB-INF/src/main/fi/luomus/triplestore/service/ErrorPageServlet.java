@@ -1,10 +1,10 @@
 package fi.luomus.triplestore.service;
 
-import fi.luomus.commons.services.ResponseData;
-
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import fi.luomus.commons.services.ResponseData;
 
 @WebServlet(urlPatterns = {"/error/*", "/taxonomy-editor/error/*"})
 public class ErrorPageServlet extends EditorBaseServlet {
@@ -22,6 +22,7 @@ public class ErrorPageServlet extends EditorBaseServlet {
 		ResponseData responseData = super.initResponseData(req).setViewName("error");
 		if (given(error)) {
 			responseData.setData("error", error);
+			getErrorReporter().report("User triggered ajax request error:" + error);
 		}
 		return responseData;
 	}

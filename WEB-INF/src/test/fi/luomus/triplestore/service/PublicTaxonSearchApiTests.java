@@ -33,12 +33,12 @@ public class PublicTaxonSearchApiTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
 	}
 
 	@AfterClass 
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() {
 		dataSource.close();
 		taxonomyDAO.close();
 	}
@@ -46,8 +46,6 @@ public class PublicTaxonSearchApiTests {
 	@Test
 	public void test_exact_match() throws Exception {
 		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10)).getResultsAsDocument().getRootNode();
-		System.out.println(n);
-//		assertEquals(1, n.getChildNodes().size()); nyt ollaan taas silleen, että exact matchilla palautetaan muitankin osumia..
 		assertEquals(1, n.getNode("exactMatch").getChildNodes().size());
 		Node match = n.getNode("exactMatch").getChildNodes().get(0);
 		assertEquals("MX.46549", match.getName());
@@ -56,7 +54,7 @@ public class PublicTaxonSearchApiTests {
 		assertEquals("Linnaeus, 1758", match.getAttribute("scientificNameAuthorship"));
 		assertEquals("MX.species", match.getAttribute("taxonRank"));
 		assertEquals(1, match.getChildNodes("informalGroups").size());
-		assertEquals(2, match.getNode("informalGroups").getChildNodes().size()); // petoeläimet, nisäkkäät
+		assertEquals(1, match.getNode("informalGroups").getChildNodes().size()); // nisäkkäät
 	}
 
 	@Test
@@ -86,7 +84,7 @@ public class PublicTaxonSearchApiTests {
 		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10).onlyExact()).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
-	
+
 	@Test
 	public void test_partial_match_unlimited() throws Exception {
 		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getResultsAsDocument().getRootNode();
@@ -100,7 +98,7 @@ public class PublicTaxonSearchApiTests {
 				new TaxonSearch("kotka", 10000)
 				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
 				).getResultsAsDocument().getRootNode();
-		
+
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
 		assertFalse(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
@@ -110,39 +108,37 @@ public class PublicTaxonSearchApiTests {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
 				).getResultsAsDocument().getRootNode();
-		
+
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
-	
+
 	@Test 
 	public void test_filter_by_informal_groups_3() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
 				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
-				.addInformalTaxonGroup(new Qname("MVL.21")) // Kasvit
+				.addInformalTaxonGroup(new Qname("MVL.343")) // Putkilokasvit
 				).getResultsAsDocument().getRootNode();
-		
-		assertTrue(contains("maakotka", n.getNode("partialMatches")));
+		assertTrue(contains("arokotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
-	
+
 	@Test 
 	public void test_filter_by_informal_groups_4() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
-				.addInformalTaxonGroup(new Qname("MVL.21")) // Kasvit
+				.addInformalTaxonGroup(new Qname("MVL.343")) // Putkilokasvit
 				).getResultsAsDocument().getRootNode();
-		
 		assertFalse(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
-	
+
 	private boolean contains(String name, Node node) {
 		for (Node n : node) {
 			if (n.getAttribute("matchingName").equals(name)) return true;
 		}
 		return false;
 	}
-	
+
 }

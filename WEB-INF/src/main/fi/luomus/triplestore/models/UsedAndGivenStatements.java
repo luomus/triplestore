@@ -1,11 +1,5 @@
 package fi.luomus.triplestore.models;
 
-import fi.luomus.commons.containers.SingleValueObject;
-import fi.luomus.commons.containers.rdf.Context;
-import fi.luomus.commons.containers.rdf.Predicate;
-import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,10 +7,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import fi.luomus.commons.containers.SingleValueObject;
+import fi.luomus.commons.containers.rdf.Context;
+import fi.luomus.commons.containers.rdf.Predicate;
+import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.utils.Utils;
+
 public class UsedAndGivenStatements {
 
-	private final List<Statement> givenStatements = new ArrayList<Statement>();
-	private final Set<Used> used = new HashSet<Used>();
+	private final List<Statement> givenStatements = new ArrayList<>();
+	private final Set<Used> used = new HashSet<>();
 
 	public static class Used extends SingleValueObject {
 		private final String stringRepresentation;

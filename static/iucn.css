@@ -398,8 +398,8 @@ select.regionalOccurrence {
 .regionalThreatened {
   margin-left: 1em;
 }
-.regionalThreatened {
-  display: none;
+table.regionalEvaluationEdit {
+	min-width: 1000px;
 }
 .buttonContainer button {
   font-size: 10px;
@@ -430,3 +430,4 @@ select.regionalOccurrence {
 .externalImpact, .possiblyRE {
 	color: red;
 }
+

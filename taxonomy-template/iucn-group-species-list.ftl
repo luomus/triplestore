@@ -76,7 +76,7 @@
 	</tr>
 	<#list remarks?reverse as remark>
 		<tr>
-			<td><a href="${baseURL}/iucn/species/${remark.target.qname}">${remark.target.scientificName!target.qname}</a></td>
+			<td><a href="${baseURL}/iucn/species/${remark.target.qname}/${selectedYear}">${remark.target.scientificName!target.qname}</a></td>
 			<td>${remark.date!""}</td>
 			<td>${remark.personName!""}</td>
 			<td>${remark.shortenedRemark?html}</td>
@@ -254,10 +254,7 @@ $(function() {
 		var defaultPageSize = ${defaultPageSize};
 		var page = $("#pageSelector").val();
 		var pageSize = $("#pageSizeSelector").val();
-		url = "?page=" + page;
-		if (pageSize != defaultPageSize) {
-			url += "&pageSize=" + pageSize;
-		}
+		url = "?page=" + page + "&pageSize=" + pageSize;
 		window.location.href = url+"#species";
 	});
 	

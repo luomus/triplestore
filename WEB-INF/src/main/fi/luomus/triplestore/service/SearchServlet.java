@@ -42,7 +42,7 @@ public class SearchServlet extends ApiServlet {
 		int offset = getOffset(req);
 
 		if (noneGiven(subjects) && noneGiven(predicates) && noneGiven(objects) && noneGiven(objectresources) && noneGiven(objectliterals) && notGiven(type)) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		SearchParams searchParams = new SearchParams(limit, offset)
 				.subjects(subjects).predicates(predicates).objects(objects)
@@ -51,13 +51,13 @@ public class SearchServlet extends ApiServlet {
 
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
-			return processGetWithAccess(req, res, format, searchParams);
+			return processGetWithAccess(req, format, searchParams);
 		} finally {
 			access.release();
 		}
 	}
 
-	private ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res, Format format, SearchParams searchParams) throws Exception, IOException {
+	private ResponseData processGetWithAccess(HttpServletRequest req, Format format, SearchParams searchParams) throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 
 		String response = null;
@@ -68,10 +68,9 @@ public class SearchServlet extends ApiServlet {
 		}
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
+			return jsonResponse(response);
 		}
+		return rdfResponse(response);
 	}
 
 	protected Set<String> getMultiParam(String fieldName, HttpServletRequest req) {
@@ -116,9 +115,8 @@ public class SearchServlet extends ApiServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private int getLimit(HttpServletRequest req) {
@@ -152,10 +150,6 @@ public class SearchServlet extends ApiServlet {
 
 	private boolean notGiven(String value) {
 		return !given(value);
-	}
-
-	private static boolean given(String value) {
-		return value != null && value.length() > 0;
 	}
 
 	@Override

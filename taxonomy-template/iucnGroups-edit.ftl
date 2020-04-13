@@ -38,6 +38,10 @@
 			<label>Includes taxa</label>
 			<textarea placeholder="Comma separated list of MX codes" name="MVL.includesTaxon" class="checklistName"><#list group.taxons as taxonId>${taxonId}<#if taxonId_has_next>,</#if></#list></textarea>
 		</li>
+		<li>
+			<label>Order (number 1-n)</label>
+			<input type="text" name="sortOrder" value="${group.order}" />  <span class="requiredFieldMarker" title="Required">*</span>
+		</li>
 	</ul>
 	<hr>
 	<p class="info">Note: The name is not required. If the group consists of one taxon or one informal group, the name of this Red List group is generated from the name of the taxon/informal group.</p>
@@ -54,6 +58,7 @@
 			<label>Name, swedish</label>
 			<input type="text" name="name_sv" class="checklistName" value="${(group.name.forLocale("sv")!"")?html}" />  
 		</li>
+	</ul>
 	
 	<br />
 	

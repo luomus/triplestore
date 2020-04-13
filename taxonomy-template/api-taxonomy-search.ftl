@@ -3,7 +3,7 @@
 		<h3>${text[matches.name]}</h3>
 		<#list matches.childNodes as match>
 			<p>
-				<a href="${taxonpageBaseLinkURL}/${match.name}">${match.getAttribute("matchingName")}</a>
+				<a href="${taxonpageBaseLinkURL}/${match.name}<#if taxonpageURLPostfix?has_content>${taxonpageURLPostfix}</#if>">${match.getAttribute("matchingName")}</a>
 				<#if match.hasAttribute("scientificName")>
 					&nbsp; - &nbsp; ${match.getAttribute("scientificName")}<#if match.hasAttribute("scientificNameAuthorship")>,</#if>
 				</#if>

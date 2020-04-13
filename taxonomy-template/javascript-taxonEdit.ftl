@@ -7,15 +7,17 @@ $(function() {
 	
     $(document).ajaxError(function(event, response, settings, thrownError) {
     	if (settings.suppressErrors) {
-        	return;
+			return;
     	}
     	if (!response.status) {
-    		return; // ignore, cancelled request
+			return; // ignore, cancelled request
     	} 
     	if (response.status == 403) {
-        	document.location.href = document.location.href;
+			document.location.href = document.location.href;
 		} else {
-			document.location.href = '${baseURL}/error?error='+encodeURIComponent(settings.url + ': ' + response.status + ' : ' + thrownError);
+			var errorMessage = settings.url + ': ' + response.status + ': ' + response.responseText;
+			if (errorMessage.length > 300) errorMessage = errorMessage.substring(0, 300) + '...';
+			document.location.href = '${baseURL}/error?error='+encodeURIComponent(errorMessage);
 		}
 	});
 	
@@ -23,9 +25,6 @@ $(function() {
 	
 });
 	
-function editTaxon(e) {
-	editTaxon(e, false);
-}
 function editTaxon(e, fullEditMode) {
 	if ($("#taxonDragMode").prop('checked') === true) return;
 	if (toolsDisabled) return;
@@ -86,29 +85,37 @@ function initColumnsPortlets() {
 		addSaveButtonTo(this);
 	});
 	
-	<#if !(noPermissions??)>
 	$(".multirowSection").each(function() {
+		if ($(this).find('table').find(':input').first().attr('disabled') == 'disabled') return;
 		var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
 		$(this).find('table').after(addNewRowButton);
 		addNewRowButton.click(function() {
-			var tableToAddNewRow = $(this).parent().find('table'); 
-			var rowClone = $(tableToAddNewRow).find('tr').last().clone();
+			var tbodyToAddRow = $(this).parent().find('table tbody'); 
+			var rowClone = $(tbodyToAddRow).find('tr').first().clone();
 			rowClone.find('.chosen-container').remove();
-			var clonedInput = rowClone.find(':input').first().val('').show().removeAttr('display');
-			if (clonedInput.hasClass('chosen')) clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
-			rowClone.find('.chosen-container').removeAttr('style');
-			var name = clonedInput.attr("name");
-			if (name.indexOf("___") > -1) {
-				name = name.split("___")[0] + "___fi";
-				clonedInput.attr('name', name);
-				rowClone.find('select').val('fi');
-			}
-			tableToAddNewRow.append(rowClone);
+			rowClone.find(':input').each(function() {
+				var clonedInput = $(this).val('').show().removeAttr('display');
+				var name = clonedInput.attr('name');
+				if (name === undefined) return;
+				if (name.indexOf('___sv') > -1 || name.indexOf('___en') > -1) {
+					name = name.split("___")[0] + "___fi";
+					clonedInput.attr('name', name);
+				} else if (name.indexOf('___0') > -1) {
+					var countOfExisting = $(tbodyToAddRow).find('tr').size();
+					name = name.replace('___0', '___'+countOfExisting);
+					clonedInput.attr('name', name);
+				}
+				if (clonedInput.hasClass('chosen')) {
+					clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
+					rowClone.find('.chosen-container').removeAttr('style');
+				}
+			});
+			rowClone.find('.languageSelector').val('fi');
+			tbodyToAddRow.append(rowClone);
 			addSaveButtonTo(this);
 			return false;
 		});
 	});
-	</#if>
 	
 	function addSaveButtonTo(e) {
 		var section = $(e).closest(".taxonEditSection"); 
@@ -165,65 +172,36 @@ function submitTaxonEditSection(section, closeAfter) {
 
 function afterTaxonEditSectionSubmit(section, closeAfter) {
 	var section = $(section);
+	var updateTreeTaxon = false;
+	var reopen = false;
 	if (section.hasClass("scientificNameSection")) {
-		var qname = section.find("input.taxonQname").first().val();
-		var taxonRank = section.find("select.taxonRank").first().val();
-		var scientificName = section.find("input.scientificName").first().val();
-		var author = section.find("input.scientificNameAuthorship").first().val();
-		var alteredScientificName = $("#alteredScientificName").val();
-		var alteredAuthor = $("#alteredAuthor").val();
-		scientificName = (alteredScientificName) ? alteredScientificName : scientificName;
-		author = (alteredAuthor) ? alteredAuthor : author;
-			
-       	updateRankScientificNameAndAuthorToEditHeader(scientificName, author);
-       	updateRankScientificNameAndAuthorToEditSection(scientificName, author);
-        	
-       	$("#scientificNameToolButtons, #originalNamesView").fadeIn();
-       	$("#scientificNameHelp, #alteredNamesInputs, #originalNamesInputs").fadeOut();
-        	
-   		var taxon = $("#"+qname.replace("MX.", "MX"));
+       	updateTreeTaxon = true;
+       	reopen = !closeAfter;
+       	closeAfter = true;
+    } 
+    else if (section.hasClass("primaryVernacularNameSection")) {
+      	updateTreeTaxon = true;
+    }
+    else if (section.hasClass("finnishnessSection")) {
+      	updateTreeTaxon = true;
+    }
+    if (closeAfter) {
+		$("#editTaxon").dialog("close");
+	}
+    if (updateTreeTaxon) {
+    	var qname = section.find("input.taxonQname").first().val();
+    	var taxon = $("#"+qname.replace("MX.", "MX"));
 		$.get("${baseURL}/api/singleTaxonInfo/"+qname, function(data) {
 			taxon.replaceWith(data);
 			taxon = $("#"+qname.replace("MX.", "MX"));
 			taxon.find('button, .button').button();
 			taxonTreeGraphs.repaintEverything();
-		});				
-    } 
-    else if (section.hasClass("primaryVernacularNameSection")) {
-      	var qname = section.find(".taxonQname").first().val();
-		var nameFi = section.find(".vernacularName___fi").first().val();
-		var nameSv = section.find(".vernacularName___sv").first().val();
-		var nameEn = section.find(".vernacularName___en").first().val();
-		updateVernacularNameToTree(qname, nameFi, 'FI');
-		updateVernacularNameToTree(qname, nameSv, 'SV');
-		updateVernacularNameToTree(qname, nameEn, 'EN');
+			if (reopen) {
+				editTaxon(taxon.find('.taxonInfo'));
+			}
+		});
     }
-    if (closeAfter) {
-		$("#editTaxon").dialog("close");
-	}
-}
-
-function updateRankScientificNameAndAuthorToEditSection(scientificName, author) {
-   	$("#originalNamesView").find('.scientificName').first().text(scientificName);
-   	$("#originalNamesView").find('.author').first().text(author);
-}
-	
-function updateRankScientificNameAndAuthorToTree(qname, taxonRank, scientificName, author) {
-	var taxon = $("#"+qname.replace("MX.", "MX"));
-	taxon.find(".taxonRank").first().text("["+taxonRank.replace("MX.", "")+"]");
-	taxon.find(".scientificName").first().text(scientificName);
-	taxon.find(".author").first().text(author);
-}
-	
-function updateVernacularNameToTree(qname, name, langcode) {
-	var taxon = $("#"+qname.replace("MX.", "MX"));
-	taxon.find(".vernacularName"+langcode).first().text(name);
-}
-
-function updateRankScientificNameAndAuthorToEditHeader(scientificName, author) {
-	var header = $("#taxonEditHeader");
-	header.find(".scientificName").first().text(scientificName);
-	header.find(".author").first().text(author);
+    
 }
 	
 function showSuccess(section, data) {

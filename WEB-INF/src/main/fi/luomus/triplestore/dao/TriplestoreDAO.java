@@ -2,12 +2,13 @@ package fi.luomus.triplestore.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -20,9 +21,10 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public interface TriplestoreDAO {
@@ -62,12 +64,12 @@ public interface TriplestoreDAO {
 	 * @return the same group
 	 * @throws Exception
 	 */
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception;
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception;
 
 	/**
-	 * Add a taxon into db. Taxon must have Qname already set. If taxon doesn't have a taxon concept, a new one is generated.
+	 * Add a taxon into db. Taxon must have Qname already set.
 	 * @param taxon
-	 * @return the same taxon with possibly a newly created taxon concept.
+	 * @return the same taxon
 	 * @throws Exception
 	 */
 	public Taxon addTaxon(EditableTaxon taxon) throws Exception;
@@ -148,7 +150,7 @@ public interface TriplestoreDAO {
 	 * @param id
 	 * @throws Exception
 	 */
-	public void deleteStatement(int id) throws Exception;
+	public void deleteStatement(long id) throws Exception;
 
 	/**
 	 * Deletes single predicates of the given resource from default context with no language
@@ -216,7 +218,7 @@ public interface TriplestoreDAO {
 	 * @return
 	 * @throws Exception 
 	 */
-	public int getUserFK(String userQname) throws Exception;
+	public long getUserFK(String userQname) throws Exception;
 
 	/**
 	 * Opens connection that should be closed.
@@ -256,6 +258,41 @@ public interface TriplestoreDAO {
 	 * @param existingEvaluation
 	 * @throws Exception
 	 */
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception;
+	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
+
+	/**
+	 * Store IUCN evaluation occurrences
+	 * @param givenData
+	 * @param existingEvaluation
+	 * @throws Exception
+	 */
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception;
+
+	/**
+	 * Store habitat object
+	 * @param habitat
+	 * @throws Exception
+	 */
+	public void store(HabitatObject habitat) throws Exception;
+
+	/**
+	 * Report and throw
+	 * @param message
+	 * @param e
+	 * @return runtime exception that wraps the original exception, with the same message
+	 */
+	public RuntimeException exception(String message, Exception e);
+
+	/**
+	 * Get list of properties of description groups. Keys are qnames of the groups.
+	 * @return
+	 */
+	public Map<String, List<RdfProperty>> getDescriptionGroupVariables();
+
+	/**
+	 * Get ids, names of description groups
+	 * @return
+	 */
+	public List<RdfProperty> getDescriptionGroups();
 
 }

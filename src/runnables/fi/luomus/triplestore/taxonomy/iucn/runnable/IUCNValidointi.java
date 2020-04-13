@@ -19,6 +19,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.Utils;
@@ -27,10 +28,10 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidationResult;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNValidator;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
+import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
+import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 import fi.luomus.triplestore.taxonomy.iucn.service.GroupSpeciesListServlet;
 
 public class IUCNValidointi {
@@ -64,7 +65,7 @@ public class IUCNValidointi {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReporingToSystemErr());
 
 		// all data mode XXX
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
@@ -78,9 +79,9 @@ public class IUCNValidointi {
 
 	private static void validate() throws Exception {
 		initFileHeaders();
-		Collection<IUCNEvaluationTarget> targets = taxonomyDAO.getIucnDAO().getIUCNContainer().getTargets();
+		Collection<EvaluationTarget> targets = taxonomyDAO.getIucnDAO().getIUCNContainer().getTargets();
 		int i = 1;
-		for (IUCNEvaluationTarget target : targets) {
+		for (EvaluationTarget target : targets) {
 			System.out.println((i++) + "/" + targets.size() + " " + target.getQname());
 			Set<Qname> targetEvaluatedGroups = getEvaluatedGroups(target);
 			if (!target.hasEvaluations()) {
@@ -100,7 +101,7 @@ public class IUCNValidointi {
 				}
 				continue;
 			}
-			IUCNEvaluation evaluation = target.getEvaluation(VALIDATION_YEAR);
+			Evaluation evaluation = target.getEvaluation(VALIDATION_YEAR);
 			if (!evaluation.isReady()) {
 				report(notReadyFile, evaluation);
 				continue;
@@ -108,7 +109,7 @@ public class IUCNValidointi {
 			if (evaluation.isIncompletelyLoaded()) {
 				taxonomyDAO.getIucnDAO().completeLoading(evaluation);
 			}
-			IUCNEvaluation previusEvaluation = target.getPreviousEvaluation(VALIDATION_YEAR);
+			Evaluation previusEvaluation = target.getPreviousEvaluation(VALIDATION_YEAR);
 			validate(evaluation, previusEvaluation);
 			if (statusChanges(evaluation, previusEvaluation)) {
 				if (notNE(evaluation) && notNE(previusEvaluation)) {
@@ -122,11 +123,11 @@ public class IUCNValidointi {
 		}
 	}
 
-	private static boolean notNE(IUCNEvaluation evaluation) {
+	private static boolean notNE(Evaluation evaluation) {
 		return !"MX.iucnNE".equals(evaluation.getIucnStatus());
 	}
 
-	private static Set<Qname> getEvaluatedGroups(IUCNEvaluationTarget target) throws Exception {
+	private static Set<Qname> getEvaluatedGroups(EvaluationTarget target) throws Exception {
 		Set<String> evaluationGroups = taxonomyDAO.getIucnDAO().getGroupEditors().keySet();
 		Set<Qname> targetEvaluatedGroups = new HashSet<>();
 		for (Qname taxonGroup : target.getTaxon().getInformalTaxonGroups()) {
@@ -145,7 +146,7 @@ public class IUCNValidointi {
 
 		List<String> statusChangeHeaders = new ArrayList<>(commonHeaders);
 		statusChangeHeaders.add("Muutoksen syy");
-		GroupSpeciesListServlet.appendRLIHeader(VALIDATION_YEAR, taxonomyDAO.getIucnDAO().getEvaluationYears(), statusChangeHeaders);
+		GroupSpeciesListServlet.appendRLIHeader(VALIDATION_YEAR, years(), statusChangeHeaders);
 
 		List<String> automatedChangesHeaders = new ArrayList<>(commonHeaders);
 		automatedChangesHeaders.add("Muutos");
@@ -162,11 +163,19 @@ public class IUCNValidointi {
 		report(groupErrorsFile, groupErrorsHeaders);
 	}
 
+	private static List<Integer> years() throws Exception {
+		List<Integer> years = new ArrayList<>();
+		for (EvaluationYear y : taxonomyDAO.getIucnDAO().getEvaluationYears()) {
+			years.add(y.getYear());
+		}
+		return years;
+	}
+
 	private static final Set<String> EN_CR = Utils.set("MX.iucnEN", "MX.iucnCR");
 	private static final Set<String> RE_DD_NA_NE = Utils.set("MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
 	private static final Set<String> LC_RE_DD_NA_NE = Utils.set("MX.iucnLC", "MX.iucnRE", "MX.iucnDD", "MX.iucnNA", "MX.iucnNE");
 
-	private static void listAutomaticChanges(IUCNEvaluation evaluation, IUCNEvaluation previusEvaluation) {
+	private static void listAutomaticChanges(Evaluation evaluation, Evaluation previusEvaluation) {
 		if ("MKV.reasonForStatusChangeChangesInCriteria".equals(evaluation.getValue("MKV.reasonForStatusChange"))) {
 			reportAutomaticChange(evaluation, "Muutoksen syy 3 - > 8");
 		}
@@ -181,7 +190,7 @@ public class IUCNValidointi {
 			}
 		}
 		if (RE_DD_NA_NE.contains(evaluation.getIucnStatus())) {
-			if (evaluation.hasValue("MKV.exteralPopulationImpactOnRedListStatus")) {
+			if (evaluation.hasValue("MKV.externalPopulationImpactOnRedListStatus")) {
 				reportAutomaticChange(evaluation, "Poistetaan luokan alenn./korott., koska luokka on " + s(evaluation.getIucnStatus()));
 			}
 		}
@@ -200,11 +209,11 @@ public class IUCNValidointi {
 		return iucnStatus.replace("MX.iucn", "");
 	}
 
-	private static void reportAutomaticChange(IUCNEvaluation evaluation, String change) {
+	private static void reportAutomaticChange(Evaluation evaluation, String change) {
 		report(automaticChangesFile, evaluation, Utils.list(change));
 	}
 
-	private static boolean statusChanges(IUCNEvaluation evaluation, IUCNEvaluation previusEvaluation) {
+	private static boolean statusChanges(Evaluation evaluation, Evaluation previusEvaluation) {
 		if (previusEvaluation == null) return false;
 		String status = evaluation.getIucnStatus();
 		String prevStatus = previusEvaluation.getIucnStatus();
@@ -212,31 +221,31 @@ public class IUCNValidointi {
 		return !status.equals(prevStatus);
 	}
 
-	private static void reportStatusChange(IUCNEvaluation evaluation, IUCNEvaluationTarget target) throws Exception {
+	private static void reportStatusChange(Evaluation evaluation, EvaluationTarget target) throws Exception {
 		List<String> values = new ArrayList<>();
 		values.add(evaluation.getValue("MKV.reasonForStatusChange"));
-		List<Integer> years = taxonomyDAO.getIucnDAO().getEvaluationYears();
+		List<Integer> years = years();
 		GroupSpeciesListServlet.appendRLIValues(target, years, VALIDATION_YEAR, values);
 		report(statusChangeFile, evaluation, values);
 	}
 
-	private static void validate(IUCNEvaluation evaluation, IUCNEvaluation comparisonData) {
-		IUCNValidationResult result = new IUCNValidator(triplestoreDAO, errorReporter).validate(evaluation, comparisonData);
+	private static void validate(Evaluation evaluation, Evaluation comparisonData) {
+		ValidationResult result = new Validator(triplestoreDAO, errorReporter).validate(evaluation, comparisonData);
 		if (result.hasErrors()) {
 			reportValidationError(evaluation, result);
 		}
 	}
 
-	private static void reportValidationError(IUCNEvaluation evaluation, IUCNValidationResult result) {
+	private static void reportValidationError(Evaluation evaluation, ValidationResult result) {
 		report(validationFile, evaluation, result.listErrors());
 	}
 
 
-	private static void report(File file, IUCNEvaluation evaluation) {
+	private static void report(File file, Evaluation evaluation) {
 		report(file, evaluation, null);
 	}
 
-	private static void report(File file, IUCNEvaluation evaluation, List<String> values) {
+	private static void report(File file, Evaluation evaluation, List<String> values) {
 		Taxon taxon = taxonomyDAO.getTaxon(new Qname(evaluation.getSpeciesQname()));
 		List<String> theseValues = Utils.list(
 				evaluation.getId(),

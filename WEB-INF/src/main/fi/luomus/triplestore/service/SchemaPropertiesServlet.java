@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Statement;
@@ -20,12 +18,16 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = 6301235108157969958L;
 
+	protected String type() {
+		return "property";
+	}
+	
 	@Override
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData generateResponse() throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Collection<Model> models = dao.getSearchDAO().search(new SearchParams(Integer.MAX_VALUE, 0).type("rdf:Property"));
 		JSONArray response = parsePropertiesResponse(models);
-		return jsonResponse(response, res);
+		return jsonResponse(response);
 	}
 
 	//	[
@@ -75,6 +77,13 @@ public class SchemaPropertiesServlet extends SchemaClassesServlet {
 		propertyJson.setBoolean("isEmbeddable", embeddable(model));
 		propertyJson.setBoolean("multiLanguage", multiLanguage(model));
 		shortName(propertyJson, model);
+
+		for (Statement s : model.getStatements("rdfs:comment")) {
+			if (s.isLiteralStatement()) {
+				propertyJson.getObject("comment").setString(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+			}
+		}
+
 		response.appendObject(propertyJson);
 	}
 

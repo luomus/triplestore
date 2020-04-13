@@ -22,14 +22,13 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 
 public class TaxonValidator {
 
 	private static final Qname GENUS = new Qname("MX.genus");
 
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
-
+	private static final Qname SPECIES_AGGREGATE = new Qname("MX.speciesAggregate");
 	private static final Qname SPECIES = new Qname("MX.species");
 
 	private final TriplestoreDAO triplestoreDAO;
@@ -116,7 +115,7 @@ public class TaxonValidator {
 
 	private static final Set<Character> ALPHAS = Utils.set(
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
-			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë');
+			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë', '×');
 
 	private static final Set<Character> VERNACULAR_ALLOWED = Utils.set('-', ' ');
 
@@ -154,7 +153,7 @@ public class TaxonValidator {
 		return taxon.isSpecies() && !SPECIES.equals(taxon.getTaxonRank());
 	}
 
-	private static final Set<Character> SCIENTIFIC_ALLOWED_FOR_SPECIES = Utils.set('.', '/', '-', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'); // numbers are for viruses
+	private static final Set<Character> SCIENTIFIC_ALLOWED_FOR_SPECIES = Utils.set('.', '/', '-', '?', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '\''); // numbers are for viruses
 
 	private void validateScientificName(Taxon taxon) {
 		String name = taxon.getScientificName();
@@ -162,6 +161,13 @@ public class TaxonValidator {
 		name = name.trim().toLowerCase(); 
 		if (name.isEmpty()) return;
 
+		if (SPECIES_AGGREGATE.equals(taxon.getTaxonRank())) {
+			if (!name.contains("/")) {
+				setError("Scientific name", "Species aggregate name must contain the character '/'");
+				return;
+			}
+		}
+		
 		if (SUBGENUS.equals(taxon.getTaxonRank())) {
 			if (!name.contains("(") && !name.contains(")") && !name.contains("subg.")) {
 				setError("Scientific name", "For subgenuses, use the following form \"Bombus (Bombus)\" or \"Carex subg. Carex\"");
@@ -175,6 +181,9 @@ public class TaxonValidator {
 		}
 		if (!taxon.isCursiveName() && name.startsWith("\"") && name.endsWith("\"")) {
 			name = allowQuotationMarks(name); 
+		}
+		if (SPECIES_AGGREGATE.equals(taxon.getTaxonRank())) {
+			name = allowSlash(name);
 		}
 		for (char c : name.toCharArray()) {
 			if (!ALPHAS.contains(c)) {
@@ -201,6 +210,10 @@ public class TaxonValidator {
 		}
 	}
 
+	private String allowSlash(String name) {
+		return name.replace("/", "");
+	}
+
 	private String parseGenus(String scientificName) {
 		if (scientificName == null) return "";
 		if (!scientificName.contains(" ")) return scientificName.trim();
@@ -212,8 +225,7 @@ public class TaxonValidator {
 	}
 
 	private String allowQuotationMarks(String name) {
-		name = name.replace("\"", "");
-		return name;
+		return name.replace("\"", "");
 	}
 
 	private String debug(Taxon taxon) {
@@ -272,7 +284,7 @@ public class TaxonValidator {
 	}
 
 	private String getFieldDescription(Predicate predicate) {
-		Map<String, List<RdfProperty>> variables = TaxonDescriptionsServlet.cachedDescriptionGroupVariables.get(triplestoreDAO);
+		Map<String, List<RdfProperty>> variables = triplestoreDAO.getDescriptionGroupVariables();
 		for (List<RdfProperty> properties : variables.values()) {
 			for (RdfProperty p : properties) {
 				if (p.getQname().toString().equals(predicate.getQname())) {

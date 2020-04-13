@@ -87,7 +87,10 @@ label.longtext {
 
 label { 
 	display: inline-block;
-	width: 155px;
+	min-width: 200px;
+}
+#editTaxonDescriptions .info {
+	color: #777;
 }
 #editTaxonDescriptions label {
 	width: auto;
@@ -148,7 +151,7 @@ form ul li {
 }
 
 #vernacularNameTable label {
-	width: auto;
+	min-width: 30px;
 }
 .languageSelector {
 	width: auto;
@@ -238,7 +241,7 @@ tr.errorMessage td {
   padding-bottom: 10em;
 }
 
-#editTaxonDescriptions .portlet {
+/**#editTaxonDescriptions .portlet {
 	margin: 0;
 	margin-bottom: 2em;
 } 
@@ -246,7 +249,7 @@ tr.errorMessage td {
 #editTaxonDescriptions .portlet-header {
 	padding: 0.6em;
 	font-size: 1.2em;
-}
+}*/
 #editTaxonDescriptions table {
 	border-collapse: separate;
 	width: 100%;
@@ -264,14 +267,10 @@ tr.errorMessage td {
 #editTaxonDescriptions a:visited {
 	color: blue;
 }
-#editTaxonDescriptions table td .info {
-	color: rgb(200,200,200);
-}
 .emptyContent {
 	margin: 0;
 	padding: 2em;
-	border: 1px solid rgb(220,220,220);
-	border-radius: 5px;
+	border: none;
 }
 #editTaxonDescriptions .ui-widget-content {
 	background: none;
@@ -318,7 +317,7 @@ tr.errorMessage td {
 	padding-top: 0px;
 	white-space: nowrap;
 	overflow: hidden;
-	font-size: 90%;
+	font-size: 13px;
 	vertical-align: top;
 }
 
@@ -377,8 +376,11 @@ span.indent { display: inline-block; }
   width: 600px;
 }
 
+#biogeographicalProvinceTable .status {
+	 width: 100px;
+}
 #biogeographicalProvinceTable .notes {
-  width: 320px;
+  width: 200px;
 }
 #biogeographicalProvinceTable .year {
   width: 40px;
@@ -415,4 +417,8 @@ table#helpTable td, table#helpTable th {
 }
 table#helpTable img {
 	vertical-align: bottom;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
 }

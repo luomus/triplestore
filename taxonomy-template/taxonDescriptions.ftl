@@ -10,6 +10,14 @@
 			</form>
 		</div>
 		<button id="imagesButton">Images</button>
+		<div>
+			Change languages:
+			<select id="descriptionLocalesSelector" multiple="multiple" class="chosen">
+				<#list ["fi", "sv", "en", "ru"] as l>
+					<option value="${l}" <#if locales?seq_contains(l)>selected="selected"</#if>>${l?upper_case}</option>
+				</#list>
+			</select>
+		</div>
 	</div>
 </div>
 
@@ -28,23 +36,26 @@
 	${taxon.qname}
 </h5>
 
-
-<#assign locales = ["fi","sv","en"] />
-
 <#list groups as group>
 	<#if groupsWithContent?seq_contains(group.qname.toString())>
 		<@printGroup group "" group_index />
 	</#if>
 </#list>
 <#list groups as group>
-	<#if !groupsWithContent?seq_contains(group.qname.toString())>
+	<#if !groupsWithContent?seq_contains(group.qname.toString()) && !hiddenGroups?seq_contains(group.qname.toString())>
 		<@printGroup group "initiallyClosed" group_index />
 	</#if>
 </#list>
 
 <#macro printGroup group initiallyClosed index>
-	<#assign headerLabel = group.label.forLocale("fi") + " &mdash; " + group.label.forLocale("sv") + " &mdash; " + group.label.forLocale("en") />
-	<@portletHeader headerLabel initiallyClosed />
+	<#assign headerLabel = "" />
+	<#list locales as locale>
+		<#assign headerLabel = headerLabel + (group.label.forLocale(locale)!group.label.forLocale("en")!group.qname) + " ("+locale+")" />
+		<#if locale_has_next> <#assign headerLabel  = headerLabel + " &mdash; " /></#if>
+	</#list>
+	<div class="portlet">
+	<div class="portlet-header ${initiallyClosed}">${headerLabel}</div>
+	<div class="portlet-content">
 		<table>
 			<#list variables[group.qname.toString()] as descriptionVariable>
 				<#assign qname = descriptionVariable.qname.toString() />
@@ -56,22 +67,27 @@
 							<#assign existingValue = taxon.descriptions.defaultContext.getText(qname, locale)!"" />
 						</#if>
 						<td>
-							<h2>${property.label.forLocale(locale)!field}</h2>
-							<div class="content">
-								<#if existingValue?has_content>
-									${existingValue}
-								<#else><p class="info emptyContent">Click to add content</p></#if>
-							</div>
-							<div class="textareaContainer hidden">
-								<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
-								<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
-							</div>
+							<#assign portletLabel = (property.label.forLocale(locale)!property.label.forLocale("en")!property.qname) + " ("+locale+")" />
+							<@portletHeader portletLabel "" "locale___"+locale />
+								<div class="content">
+									<#if existingValue?has_content>
+										${existingValue}
+									<#else><p class="info emptyContent">Click to add content</p></#if>
+								</div>
+								<div class="textareaContainer hidden">
+									<textarea class="hidden" name="${qname + "___" + locale}" id="${qname + "forlocale" + locale}" <@checkPermissions permissions />>${existingValue?html}</textarea>
+									<button class="closeEditorButton doSave">Save & close</button> <button class="closeEditorButton noSave">Close without saving</button>
+									<p class="info">You can provide links to other taxa by using syntaxt: <b>[MX.1234]</b> </p>
+									<p class="info">In laji.fi portal the above is replaced by a link that has the taxon name.</p>
+								</div>
+							<@portletFooter />
 						</td>
 					</#list>
 				</tr>
 			</#list>
 		</table>
-	<@portletFooter />
+	</div>
+	</div>
 </#macro>
 
 <div class="clear"></div>
@@ -136,27 +152,18 @@ $(function() {
 		return doSave;  
 	});
 	
-	$("#imagesButton").on('click', function() {
-		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
-		$("body").append(container);
-		var windowHeight = $(window).height();
-        var dialogHeight = windowHeight * 0.9;
-		container.dialog({
-			title: 'Add/modify taxon images',
-			autoOpen: true,
-      		height: dialogHeight,
-      		width: "95%",
-      		modal: true,
-      		buttons: {
-        		"Close": function() {
-          			container.dialog("close");
-        		}
-			},
-      		close: function() {
-				container.remove();
-      		}
-    	});
+	$('#descriptionLocalesSelector').on('change', function() {
+		var url = window.location.href.split('?')[0];
+		if (!$(this).val()) window.location.href = url;
+		url += '?descriptionLocales=';
+		$.each($(this).val(), function(index,value) {
+			url += value+',';
+		});
+		window.location.href = url;
 	});
+	
+	<@taxonImageButton />
+	
 });
 
 function updateOriginal(e) {

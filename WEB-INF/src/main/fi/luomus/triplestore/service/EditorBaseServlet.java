@@ -1,6 +1,5 @@
 package fi.luomus.triplestore.service;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,13 +58,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	@Override
 	protected ResponseData notAuthorizedRequest(HttpServletRequest req, HttpServletResponse res) {
 		log(req);
-		SessionHandler session = getSession(req, false);
-		if (session != null) session.invalidate();
 		URIBuilder uri = new URIBuilder(getConfig().get("LoginURL"));
 		String originalURL = getURL(req);
 		String next = originalURL.replace("/triplestore", "").replace("/taxonomy-editor", "");
 		uri.addParameter("next", next);
-		return redirectTo(uri.toString(), res);
+		return redirectTo(uri.toString());
 	}
 
 	public static String getURL(HttpServletRequest req) {
@@ -115,10 +112,9 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
-		log(req);
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 		SessionHandler session = getSession(req);
-		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
+		if (session.hasSession() && session.isAuthenticatedFor(getConfig().systemId())) {
 			User user = getUser(session);
 			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
@@ -176,18 +172,18 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
 		SessionHandler session = getSession(req);
-		return session.isAuthenticatedFor("triplestore");
+		return session.isAuthenticatedFor(getConfig().systemId());
 	}
 
-	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) throws IllegalAccessException {
+	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) {
 		DataSource datasource = getDataSource();
 		User user = getUser(req);
-		return new TriplestoreDAOImple(datasource, user.getQname());
+		return new TriplestoreDAOImple(datasource, user.getQname(), getErrorReporter());
 	}
 
 	protected TriplestoreDAO getTriplestoreDAO() {
 		DataSource datasource = getDataSource();
-		return new TriplestoreDAOImple(datasource, TriplestoreDAO.SYSTEM_USER);
+		return new TriplestoreDAOImple(datasource, TriplestoreDAO.SYSTEM_USER, getErrorReporter());
 	}
 
 	private static DataSource dataSource = null;
@@ -206,22 +202,22 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	protected String getQname(HttpServletRequest req) {
@@ -245,12 +241,12 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	@Override
 	protected SessionHandler getSession(HttpServletRequest req) {
-		SessionHandler sessionHandler = new SessionHandlerImple(req.getSession(true), "triplestore");
+		SessionHandler sessionHandler = new SessionHandlerImple(req.getSession(true), getConfig().systemId());
 		return sessionHandler;
 	}
 
-	protected ResponseData rdfResponse(String xml, HttpServletResponse res) throws IOException {
-		return response(xml, "application/rdf+xml", res);
+	protected ResponseData rdfResponse(String xml) {
+		return response(xml, "application/rdf+xml");
 	}
 
 	protected static boolean jsonRequest(Format format) {
@@ -259,11 +255,11 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	private static final Map<String, Format> formats;
 	static {
-		formats = new HashMap<String, Format>();
+		formats = new HashMap<>();
 		for (Format format : Format.values()) {
 			formats.put(format.toString().toUpperCase(), format);
 		}
-	};
+	}
 
 	protected Format getFormat(HttpServletRequest req) {
 		String format = req.getParameter("format");

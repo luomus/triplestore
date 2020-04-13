@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,9 +15,9 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -31,22 +30,19 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.SimpleTransactionConnection;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
-import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.Cached.CacheLoader;
-import fi.luomus.commons.utils.Cached.ResourceWrapper;
+import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.DateUtils;
-import fi.luomus.commons.utils.SingleObjectCacheResourceInjected;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
 import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEndangermentObject;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNHabitatObject;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class TriplestoreDAOImple implements TriplestoreDAO {
@@ -62,47 +58,43 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MVL_INFORMAL_TAXON_GROUP = "MVL.informalTaxonGroup";
 	private static final String MVL_IUCN_RED_LIST_TAXON_GROUP = "MVL.iucnRedListTaxonGroup";
 	private static final String UNBOUNDED = "unbounded";
-	private static final Set<String> PERSON_ROLE_PREDICATES = Utils.set("MA.role", "MA.roleKotka", "MA.organisation");
-	private static final String MA_FULL_NAME = "MA.fullName";
+	private static final String MA_PERSON = "MA.person";
 	private static final String RDF_LI_PREFIX = "rdf:_";
 	private static final String MO_THREATENED = "MO.threatened";
 	private static final String MO_NOTES = "MO.notes";
+	private static final String MO_SPECIMEN_URI = "MO.specimenURI";
 	private static final String MO_YEAR = "MO.year";
 	private static final String MO_AREA = "MO.area";
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_TAXON = "MO.taxon";
 	private static final String MO_OCCURRENCE = "MO.occurrence";
 	private static final String RDF_ALT = "rdf:Alt";
-	private static final String MA_PERSON = "MA.person";
 	private static final String RDFS_LABEL = "rdfs:label";
 	private static final String MZ_UNIT_OF_MEASUREMENT = "MZ.unitOfMeasurement";
 	private static final String XSD_MAX_OCCURS = "xsd:maxOccurs";
 	private static final String XSD_MIN_OCCURS = "xsd:minOccurs";
-	private static final String SORT_ORDER2 = "sortOrder";
+	private static final String SORT_ORDER = "sortOrder";
 	private static final String RDFS_RANGE = "rdfs:range";
 	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
+	private static final String MX_VERCACULAR_NAME = "MX.vernacularName";
+	private static final String MX_FINNISH = "MX.finnish";
+	private static final String MX_OCCURRENCE_IN_FINLAND = "MX.occurrenceInFinland";
+	private static final String MX_TYPE_OF_OCCURRENCE_IN_FINLAND = "MX.typeOfOccurrenceInFinland";
 	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
 	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
+	private static final String MX_NOTES = "MX.notes";
 	private static final String MX_TAXON = "MX.taxon";
 	private static final String RDFS_COMMENT = "rdfs:comment";
 	private static final String MR_CHECKLIST = "MR.checklist";
 	private static final String DC_URI = "dc:URI";
 	private static final String DC_BIBLIOGRAPHIC_CITATION = "dc:bibliographicCitation";
 	private static final String MP_PUBLICATION = "MP.publication";
-	private static final String SORT_ORDER = SORT_ORDER2;
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
-	private final Qname userQname;
-	private final DataSource datasource;
-
-	public TriplestoreDAOImple(DataSource datasource, Qname userQname) {
-		this.datasource = datasource;
-		this.userQname = userQname;
-	}
 
 	private static final String DELETE_ALL_PREDICATE_CONTEXT_LANGCODE_STATEMENTS_SQL = "" +
 			" DELETE from "+SCHEMA+".rdf_statementview " +
@@ -123,20 +115,25 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" WHERE   subjectname = ?                                                      " + 
 			" ORDER BY predicatename                                                       ";
 
-	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" + 
-			" SELECT DISTINCT propertyName 										" + 
-			" FROM																" +
-			" ((																" +
-			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
-			" 	 FROM "+SCHEMA+".rdf_statementview v 							" +
-			"    WHERE v.subjectname IN ( 										" +																				
-			" 	   SELECT DISTINCT subjectname FROM "+SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ?		" + 				
-			" 	 ) 																" +
-			" ) UNION (															" +
-			"   SELECT DISTINCT subjectname as propertyName						" +
-			"   FROM "+SCHEMA+".rdf_statementview 								" +
-			"   WHERE predicatename = 'rdfs:domain' AND objectname = ?			" +
-			" )) properties														";
+	private final Qname userQname;
+	private final DataSource datasource;
+	private final ErrorReporter errorReporter;
+	private static TriplestoreDAOImpleCaches cached;
+
+	public TriplestoreDAOImple(DataSource datasource, Qname userQname, ErrorReporter errorReporter) {
+		this.datasource = datasource;
+		this.userQname = userQname;
+		this.errorReporter = errorReporter;
+		if (cached == null) {
+			cached = new TriplestoreDAOImpleCaches(this);
+		}
+	}
+
+	@Override
+	public RuntimeException exception(String message, Exception e) {
+		errorReporter.report(message, e);
+		return new RuntimeException(message, e);
+	}
 
 	@Override
 	public TransactionConnection openConnection() throws SQLException {
@@ -218,20 +215,20 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private void deleteStatement(Statement s, PreparedStatement deleteStatement) throws SQLException {
-		deleteStatement.setInt(1, s.getId());
+		deleteStatement.setLong(1, s.getId());
 		int i = deleteStatement.executeUpdate();
 		if (i != 1) throw new IllegalStateException("Delete removed " + i + " rows instead of 1.");
 	}
 
 	@Override
-	public void deleteStatement(int statementId) throws SQLException {
+	public void deleteStatement(long statementId) throws SQLException {
 		TransactionConnection con = null;
 		PreparedStatement deleteStatement = null;
 		try {
 			con = openConnection();
 			con.startTransaction();
 			deleteStatement = con.prepareStatement(DELETE_FROM_RDF_STATEMENT_BY_ID_SQL);
-			deleteStatement.setInt(1, statementId);
+			deleteStatement.setLong(1, statementId);
 			deleteStatement.executeQuery();
 			con.commitTransaction();
 		} finally {
@@ -328,12 +325,16 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname parent : group.getSubGroups()) {
 			model.addStatementIfObjectGiven(MVL_HAS_SUB_GROUP, parent);
 		}
+		model.addStatement(new Statement(SORT_ORDER_PREDICATE, group.getOrder()));
+		if (group.isExplicitlyDefinedRoot()) {
+			model.addStatement(new Statement(new Predicate("MVL.explicitlyDefinedRoot"), true));
+		}
 		store(model);
 		return group;
 	}
 
 	@Override
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception {
 		Model model = new Model(group.getQname());
 		model.setType(MVL_IUCN_RED_LIST_TAXON_GROUP);
 		for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
@@ -348,6 +349,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname groupId : group.getInformalGroups()) {
 			model.addStatementIfObjectGiven(MVL_INCLUDES_INFORMAL_TAXON_GROUP, groupId);
 		}
+		model.addStatement(new Statement(SORT_ORDER_PREDICATE, group.getOrder()));
 		store(model);
 		return group;
 	}
@@ -391,9 +393,17 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME, taxon.getScientificName());
 		model.addStatementIfObjectGiven(MX_SCIENTIFIC_NAME_AUTHORSHIP, taxon.getScientificNameAuthorship());
 		model.addStatementIfObjectGiven(MX_TAXON_RANK, taxon.getTaxonRank());
-
 		model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
 		model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
+		for (Map.Entry<String, String> e : taxon.getVernacularName().getAllTexts().entrySet()) {
+			model.addStatementIfObjectGiven(MX_VERCACULAR_NAME, e.getValue(), e.getKey());
+		}
+		if (taxon.isFinnish()) model.addStatementIfObjectGiven(MX_FINNISH, true);
+		model.addStatementIfObjectGiven(MX_OCCURRENCE_IN_FINLAND, taxon.getOccurrenceInFinland());
+		for (Qname typeOfOcc : taxon.getTypesOfOccurrenceInFinland()) {
+			model.addStatementIfObjectGiven(MX_TYPE_OF_OCCURRENCE_IN_FINLAND, typeOfOcc);
+		}
+		model.addStatementIfObjectGiven(MX_NOTES, taxon.getNotes());
 
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
@@ -464,51 +474,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatement(statement);
 	}
 
-
-
-	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> PROPERTIES_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties>(new PropertiesCacheLoader(), 60*60, 500);
-
-	private static class PropertiesCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperties> {
-
-		@Override
-		public RdfProperties load(ResourceWrapper<String, TriplestoreDAOImple> wrapper) {
-			String className = wrapper.getKey();
-			TriplestoreDAOImple dao = wrapper.getResource();
-			TransactionConnection con = null;
-			PreparedStatement p = null;
-			ResultSet rs = null;
-			try {
-				con = dao.openConnection();
-				p = con.prepareStatement(GET_PROPERTIES_BY_CLASSNAME_SQL);
-				p.setString(1, className);
-				p.setString(2, className);
-				rs = p.executeQuery();
-				RdfProperties properties = new RdfProperties();
-				Set<Qname> propertyQnames = new HashSet<>();
-				while (rs.next()) {
-					propertyQnames.add(new Qname(rs.getString(1)));
-				}
-				for (Model model : dao.getSearchDAO().get(propertyQnames)) {
-					RdfProperty property = dao.createProperty(model);
-					properties.addProperty(property);
-				}
-				return properties;
-			} catch (Exception e) {
-				throw new RuntimeException("Properties cache loader for classname " + className + ". " + e.getMessage(), e);
-			}
-			finally {
-				Utils.close(p, rs, con);
-			}
-		}
-	}
-
-	private RdfProperty createProperty(Model model) throws Exception {
+	RdfProperty createProperty(Model model) throws Exception {
 		String range = getValue(RDFS_RANGE, model);
-		String sortOrder = getValue(SORT_ORDER2, model);
+		String sortOrder = getValue(SORT_ORDER, model);
 		String minOccurs = getValue(XSD_MIN_OCCURS, model);
 		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
 		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);
-
+		String altParent = getValue("altParent", model);
 		Qname rangeQname = range == null ? null : new Qname(range); 
 		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
 
@@ -539,7 +511,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 
 		if (property.hasRange() && !property.isLiteralProperty()) {
-			addRangeValues(property, model);
+			addRangeValues(property);
 		}
 
 		LocalizedText labels = new LocalizedText();
@@ -553,6 +525,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		property.setLabels(labels);
 		property.setComments(comments);
 
+		if (altParent != null) {
+			property.setAltParent(new Qname(altParent));
+		}
 		return property;
 	}
 
@@ -563,7 +538,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		return s.getObjectResource().getQname();
 	}
 
-	private void addRangeValues(RdfProperty property, Model model) throws Exception {
+	private void addRangeValues(RdfProperty property) throws Exception {
 		if (property.getRange().getQname().toString().equals(MA_PERSON)) {
 			addPersons(property);
 		} else {
@@ -574,34 +549,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private static final SingleObjectCacheResourceInjected<List<RdfProperty>, TriplestoreDAO> CACHED_PERSONS = new SingleObjectCacheResourceInjected<>(new SingleObjectCacheResourceInjected.CacheLoader<List<RdfProperty>, TriplestoreDAO>() {
-		@Override
-		public List<RdfProperty> load(TriplestoreDAO dao) {
-			try {
-				List<RdfProperty> rangeValues = new ArrayList<RdfProperty>();
-				Collection<Model> persons = dao.getSearchDAO().search(
-						new SearchParams(Integer.MAX_VALUE, 0)
-						.type(MA_PERSON)
-						.predicates(PERSON_ROLE_PREDICATES)); 
-				for (Model m : persons) {
-					RdfProperty rangeValue = new RdfProperty(new Qname(m.getSubject().getQname()), null);
-					String personName = m.getSubject().getQname();
-					for (Statement s : m.getStatements(MA_FULL_NAME)) {
-						personName = s.getObjectLiteral().getContent();
-						break;
-					}
-					rangeValue.setLabels(new LocalizedText().set("fi", personName).set("en", personName).set("sv", personName).set(null, personName));
-					rangeValues.add(rangeValue);
-				}
-				return rangeValues;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}, 60*15);
-
-	private void addPersons(RdfProperty property) throws Exception {
-		property.getRange().setRangeValues(CACHED_PERSONS.get(this));
+	private void addPersons(RdfProperty property) {
+		property.getRange().setRangeValues(cached.persons.get());
 	}
 
 	@Override
@@ -628,31 +577,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public RdfProperties getProperties(String className) throws SQLException {
-		return PROPERTIES_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(className, this));
+	public RdfProperties getProperties(String className) {
+		return cached.properties.get(className);
 	}
 
-	private static final Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> SINGLE_PROPETY_CACHE = new Cached<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty>(new SinglePropertyCacheLoader(), 60*60, 500);
-
-	private static class SinglePropertyCacheLoader implements CacheLoader<ResourceWrapper<String, TriplestoreDAOImple>, RdfProperty> {
-
-		@Override
-		public RdfProperty load(ResourceWrapper<String, TriplestoreDAOImple> key) {
-			String predicateQname = key.getKey();
-			TriplestoreDAOImple dao = key.getResource();
-			try {
-				Model model = dao.get(predicateQname);
-				RdfProperty property = dao.createProperty(model);
-				return property;
-			} catch (Exception e) {
-				throw new RuntimeException("Single property cache loader for predicate " + predicateQname + ". " + e.getMessage());
-			}
-		}
-
-	}
 	@Override
-	public RdfProperty getProperty(Predicate predicate) throws Exception {
-		return SINGLE_PROPETY_CACHE.get(new ResourceWrapper<String, TriplestoreDAOImple>(predicate.getQname(), this));
+	public RdfProperty getProperty(Predicate predicate) {
+		return cached.propery.get(predicate.getQname());
 	}
 
 	@Override
@@ -746,10 +677,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public void clearCaches() {
-		PROPERTIES_CACHE.invalidateAll();
-		SINGLE_PROPETY_CACHE.invalidateAll();
-		CACHED_PERSONS.invalidate();
-		CACHED_RESOURCE_STATS.invalidate();
+		cached.invalidateAll();
 	}
 
 	@Override
@@ -775,6 +703,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MO_YEAR, s(occurrence.getYear()));
 		model.addStatementIfObjectGiven(MO_NOTES, occurrence.getNotes());
 		model.addStatementIfObjectGiven(MO_THREATENED, occurrence.getThreatened());
+		if (occurrence.getSpecimenURI() != null)
+			model.addStatementIfObjectGiven(MO_SPECIMEN_URI, occurrence.getSpecimenURI().toString());
 		this.store(model);
 		occurrence.setId(id);
 	}
@@ -794,13 +724,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public int getUserFK(String userQname) throws SQLException {
-		Integer id = getResourceId(userQname);
+	public long getUserFK(String userQname) throws SQLException {
+		Long id = getResourceId(userQname);
 		if (id == null) throw new IllegalStateException("No user found " + userQname);
 		return id;
 	}
 
-	private Integer getResourceId(String resourceQname) throws SQLException {
+	private Long getResourceId(String resourceQname) throws SQLException {
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
@@ -810,42 +740,17 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			p.setString(1, resourceQname);
 			rs = p.executeQuery();
 			if (!rs.next()) return null;
-			return rs.getInt(1);
+			return rs.getLong(1);
 		} finally {
 			Utils.close(p, rs, con);
 		}
 	}
 
-	private static final SingleObjectCacheResourceInjected<List<ResourceListing>, TriplestoreDAO> CACHED_RESOURCE_STATS = new SingleObjectCacheResourceInjected<List<ResourceListing>, TriplestoreDAO>(new ResourceStatCacheLoader(), 60*15);
 
-
-	private static class ResourceStatCacheLoader implements SingleObjectCacheResourceInjected.CacheLoader<List<ResourceListing>, TriplestoreDAO> {
-		@Override
-		public List<ResourceListing> load(TriplestoreDAO usingDAO) {
-			TransactionConnection con = null;
-			PreparedStatement p = null;
-			ResultSet rs = null;
-			try {
-				con = usingDAO.openConnection();
-				p = con.prepareStatement(" SELECT resourcename, resourcecount FROM " + SCHEMA + ".rdf_classview_materialized ORDER BY resourcecount DESC ");
-				rs = p.executeQuery();
-				List<ResourceListing> listing = new ArrayList<ResourceListing>();
-				while (rs.next()) {
-					listing.add(new ResourceListing(rs.getString(1), rs.getInt(2)));
-				}
-				return listing;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return Collections.emptyList();
-			} finally {
-				Utils.close(p, rs, con);
-			}
-		}
-	};
 
 	@Override
-	public List<ResourceListing> getResourceStats() throws Exception {
-		return CACHED_RESOURCE_STATS.get(this);
+	public List<ResourceListing> getResourceStats() {
+		return cached.stats.get();
 	}
 
 	@Override
@@ -859,79 +764,94 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		storeEvaluation(givenData, existingEvaluation, false);
+	}
+
+	@Override
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		storeEvaluation(givenData, existingEvaluation, true);
+	}
+
+	private void storeEvaluation(Evaluation givenData, Evaluation existingEvaluation, boolean onlyOccurrences) throws Exception {
 		storeOccurrencesAndSetIdToModel(givenData);
-		storeEndangermentObjectsAdnSetIdToModel(givenData);
-		storeHabitatObjectsAndSetIdsToModel(givenData);
+		if (!onlyOccurrences) {
+			storeEndangermentObjectsAndSetIdToModel(givenData);
+			storeHabitatObjectsAndSetIdsToModel(givenData);
+		}
 		this.store(givenData.getModel());
 		if (existingEvaluation != null) {
 			deleteOccurrences(existingEvaluation);
-			deleteEndangermentObjects(existingEvaluation);
-			deleteHabitatObjects(existingEvaluation);
+			if (!onlyOccurrences) {
+				deleteEndangermentObjects(existingEvaluation);
+				deleteHabitatObjects(existingEvaluation);
+			}
 		}
 	}
 
-	private void storeEndangermentObjectsAdnSetIdToModel(IUCNEvaluation givenData) throws Exception {
+	private void storeEndangermentObjectsAndSetIdToModel(Evaluation givenData) throws Exception {
 		Model model = givenData.getModel();
-		for (IUCNEndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
+		for (EndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
 			this.store(endangermentObject);
 			model.addStatement(new Statement(IucnDAO.HAS_ENDANGERMENT_REASON_PREDICATE, new ObjectResource(endangermentObject.getId())));
 		}
-		for (IUCNEndangermentObject endangermentObject : givenData.getThreats()) {
+		for (EndangermentObject endangermentObject : givenData.getThreats()) {
 			this.store(endangermentObject);
 			model.addStatement(new Statement(IucnDAO.HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
 		}
 	}
 
-	private void storeHabitatObjectsAndSetIdsToModel(IUCNEvaluation givenData) throws Exception {
+	private void storeHabitatObjectsAndSetIdsToModel(Evaluation givenData) throws Exception {
 		Model model = givenData.getModel();
-		IUCNHabitatObject primaryHabitat = givenData.getPrimaryHabitat();
+		HabitatObject primaryHabitat = givenData.getPrimaryHabitat();
 		if (primaryHabitat != null) {
 			this.store(primaryHabitat);
 			model.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
 		}
-		for (IUCNHabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
+		for (HabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
 			this.store(secondaryHabitat);
 			model.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
 		}
 	}
 
-	private void storeOccurrencesAndSetIdToModel(IUCNEvaluation givenData) throws Exception {
+	private void storeOccurrencesAndSetIdToModel(Evaluation givenData) throws Exception {
+		givenData.getModel().removeAll(IucnDAO.HAS_OCCURRENCE_PREDICATE);
 		for (Occurrence occurrence : givenData.getOccurrences()) {
 			this.store(new Qname(givenData.getSpeciesQname()), occurrence);
 			givenData.getModel().addStatement(new Statement(IucnDAO.HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
 		}
 	}
 
-	private void deleteHabitatObjects(IUCNEvaluation existingEvaluation) throws Exception {
+	private void deleteHabitatObjects(Evaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
 			this.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
 		}
-		for (IUCNHabitatObject habitat : existingEvaluation.getSecondaryHabitats()) {
+		for (HabitatObject habitat : existingEvaluation.getSecondaryHabitats()) {
 			this.delete(new Subject(habitat.getId()));
 		}
 	}
 
-	private void deleteOccurrences(IUCNEvaluation existingEvaluation) throws Exception {
+	private void deleteOccurrences(Evaluation existingEvaluation) throws Exception {
 		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
 			this.delete(new Subject(occurrence.getId()));
 		}
 	}
 
-	private void deleteEndangermentObjects(IUCNEvaluation existingEvaluation) throws Exception {
-		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
+	private void deleteEndangermentObjects(Evaluation existingEvaluation) throws Exception {
+		for (EndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
 			this.delete(new Subject(endangermentObject.getId()));
 		}
-		for (IUCNEndangermentObject endangermentObject : existingEvaluation.getThreats()) {
+		for (EndangermentObject endangermentObject : existingEvaluation.getThreats()) {
 			this.delete(new Subject(endangermentObject.getId()));
 		}
 	}
 
-	private void store(IUCNHabitatObject habitat) throws Exception {
-		Qname id = given(habitat.getId()) ? habitat.getId() : this.getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
+	@Override
+	public void store(HabitatObject habitat) throws Exception {
+		Qname id = given(habitat.getId()) ? habitat.getId() : this.getSeqNextValAndAddResource(Evaluation.IUCN_EVALUATION_NAMESPACE);
 		habitat.setId(id);
 		Model model = new Model(new Subject(id));
-		model.setType(IUCNEvaluation.HABITAT_OBJECT_CLASS);
+		model.setType(Evaluation.HABITAT_OBJECT_CLASS);
 		model.addStatement(new Statement(IucnDAO.HABITAT_PREDICATE, new ObjectResource(habitat.getHabitat())));
 		for (Qname type : habitat.getHabitatSpecificTypes()) {
 			model.addStatement(new Statement(IucnDAO.HABITAT_SPESIFIC_TYPE_PREDICATE, new ObjectResource(type)));
@@ -940,18 +860,28 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		this.store(model);
 	}
 
-	private void store(IUCNEndangermentObject endangermentObject) throws Exception {
-		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource(IUCNEvaluation.IUCN_EVALUATION_NAMESPACE);
+	private void store(EndangermentObject endangermentObject) throws Exception {
+		Qname id = given(endangermentObject.getId()) ? endangermentObject.getId() : getSeqNextValAndAddResource(Evaluation.IUCN_EVALUATION_NAMESPACE);
 		endangermentObject.setId(id);
 		Model model = new Model(id);
-		model.setType(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS);
-		model.addStatementIfObjectGiven(IUCNEvaluation.ENDANGERMENT, endangermentObject.getEndangerment());
+		model.setType(Evaluation.ENDANGERMENT_OBJECT_CLASS);
+		model.addStatementIfObjectGiven(Evaluation.ENDANGERMENT, endangermentObject.getEndangerment());
 		model.addStatementIfObjectGiven(SORT_ORDER, String.valueOf(endangermentObject.getOrder()));
 		this.store(model);
 	}
 
 	public String getSchema() {
 		return SCHEMA;
+	}
+
+	@Override
+	public Map<String, List<RdfProperty>> getDescriptionGroupVariables() {
+		return cached.descriptionGroupVariables.get();
+	}
+
+	@Override
+	public List<RdfProperty> getDescriptionGroups() {
+		return cached.descriptionGroups.get();
 	}
 
 }

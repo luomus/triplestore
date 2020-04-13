@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -29,15 +27,18 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = -7921975069788844624L;
 
+	protected String type() {
+		return "alt";
+	}
 
 	@Override
-	protected ResponseData processGetWithAccess(HttpServletRequest req, HttpServletResponse res) throws Exception, IOException {
+	protected ResponseData generateResponse() throws Exception, IOException {
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
 		Map<String, Model> asMap = asMap(models);
 		JSONObject response = parseAltsResponse(asMap); 
-		return jsonResponse(response, res);
+		return jsonResponse(response);
 	}
 
 	private Map<String, Model> asMap(Collection<Model> models) {
@@ -76,7 +77,9 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		JSONArray json = new JSONArray();
 		List<Statement> orderedStatements = getAltStatementsInOrder(model);
 		for (Statement s : orderedStatements) {
-			json.appendObject(parseAlt(s, models));
+			String altId = s.getObjectResource().getQname();
+			Model altModel = models.getOrDefault(altId, new Model(new Qname(altId)));
+			json.appendObject(parseAlt(altModel));
 		}
 		return json;
 	}
@@ -105,12 +108,19 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		return orderedStatements;
 	}
 
-	private JSONObject parseAlt(Statement s, Map<String, Model> models) {
+	private JSONObject parseAlt(Model model) {
 		JSONObject json = new JSONObject();
-		json.setString("id", s.getObjectResource().getQname());
-		Model objectResource = models.get(s.getObjectResource().getQname());
-		if (objectResource != null) {
-			json.setObject("value", labels(objectResource));
+		json.setString("id", model.getSubject().getQname());
+		if (model.hasStatements("rdfs:label")) {
+			json.setObject("value", labels(model));
+		}
+		for (Statement s : model) {
+			if (!s.isForDefaultContext()) continue;
+			String predicate = s.getPredicate().getQname(); 
+			if (predicate.equals("rdfs:label")) continue;
+			if (s.isLiteralStatement()) {
+				json.getObject(shortName(predicate)).setString(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
+			}
 		}
 		return json;
 	}

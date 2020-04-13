@@ -22,12 +22,13 @@ public class ApiRemoveSynonymServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
 		SynonymType synonymType = ApiAddSynonymServlet.getSynonymType(req);
 		String removedId = getRemovedId(req);
-		EditableTaxon synonymParent = ApiAddSynonymServlet.getSynonymParent(req, dao, taxonomyDAO);
+		EditableTaxon synonymParent = ApiAddSynonymServlet.getSynonymParent(req, taxonomyDAO);
 		
 		checkPermissionsToAlterTaxon(synonymParent, req);
 		

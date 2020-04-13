@@ -1,5 +1,7 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +13,11 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
-import fi.luomus.commons.utils.Utils;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
 
@@ -27,13 +28,17 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String taxonToSendID = req.getParameter("taxonToSendID");
 		String newParentID = req.getParameter("newParentID");
 		if (!taxonToSendID.contains("MX.")) taxonToSendID = taxonToSendID.replace("MX", "MX.");
 		if (!newParentID.contains("MX.")) newParentID = newParentID.replace("MX", "MX.");
 		String sendAsType = req.getParameter("sendAsType");
 
-		Utils.debug(taxonToSendID, newParentID, sendAsType);
+		notNull(taxonToSendID, newParentID, sendAsType);
+		if(taxonToSendID.equals(newParentID)) {
+			return apiErrorResponse("Sending taxon as child of itself is not allowed", res);
+		}
 
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		EditableTaxon toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
@@ -60,13 +65,18 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 				return apiErrorResponse("Can not send a checklist taxon into other checklist", res);
 			}
 		}
+		if (moveAsChild(sendAsType)) {
+			if (!newParent.getChecklist().equals(toSend.getChecklist())) {
+				return apiErrorResponse("Moving as child is allowed only within the same checklist", res);
+			}
+		}
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 
 		toSend.invalidateSelfAndLinking();
 
-		removeExistingLinkings(toSend, newParent, dao);
-		if ("CHILD".equals(sendAsType)) {
+		removeExistingLinkings(toSend, dao);
+		if (moveAsChild(sendAsType)) {
 			ApiChangeParentServlet.move(toSend, newParent, dao);
 			toSend = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonToSendID));
 			toSend.invalidateSelfAndLinking();
@@ -79,7 +89,19 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		return apiSuccessResponse(res);
 	}
 
-	private void removeExistingLinkings(EditableTaxon toSend, EditableTaxon newParent, TriplestoreDAO dao) throws Exception {
+
+	private boolean moveAsChild(String sendAsType) {
+		return "CHILD".equals(sendAsType);
+	}
+
+
+	private void notNull(String ... strings) {
+		for (String s : strings) {
+			if (!given(s)) throw new IllegalArgumentException("Empty given");
+		}
+	}
+
+	private void removeExistingLinkings(EditableTaxon toSend, TriplestoreDAO dao) throws Exception {
 		Qname synonymParentId = getTaxonomyDAO().getTaxonContainer().getSynonymParent(toSend.getQname());
 		if (synonymParentId != null) {
 			Model synonymParentModel = dao.get(synonymParentId);
@@ -94,10 +116,14 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 		dao.delete(new Subject(toSend.getQname()), ApiChangeParentServlet.IS_PART_OF_PREDICATE);
 	}
 
-	private void moveAsSynonym(EditableTaxon toSend, EditableTaxon newParent, SynonymType synonymType, TriplestoreDAO dao) throws Exception {
+	private void moveAsSynonym(EditableTaxon toSend, EditableTaxon newSynonymParent, SynonymType synonymType, TriplestoreDAO dao) throws Exception {
 		deleteNonCriticalIucnEvaluations(toSend);
-		dao.delete(new Subject(toSend.getQname()), ApiChangeParentServlet.NAME_ACCORDING_TO_PREDICATE);
-		dao.insert(new Subject(newParent.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(synonymType), new ObjectResource(toSend.getQname())));
+		Subject taxonToSendId = new Subject(toSend.getQname());
+		Subject newSynonymParentId = new Subject(newSynonymParent.getQname()); 
+		dao.delete(taxonToSendId, new Predicate("MX.taxonExpert"));
+		dao.delete(taxonToSendId, new Predicate("MX.taxonEditor"));
+		dao.delete(taxonToSendId, ApiChangeParentServlet.NAME_ACCORDING_TO_PREDICATE);
+		dao.insert(newSynonymParentId, new Statement(ApiAddSynonymServlet.getPredicate(synonymType), new ObjectResource(toSend.getQname())));
 	}
 
 	private void deleteNonCriticalIucnEvaluations(EditableTaxon toSend) throws Exception {
@@ -107,9 +133,9 @@ public class ApiSendTaxonServlet extends ApiBaseServlet {
 
 	private void deleteNonCriticalIucnEvaluations(String taxonId) throws Exception {
 		IucnDAO iucnDAO = getTaxonomyDAO().getIucnDAO();
-		IUCNContainer iucnContainer = iucnDAO.getIUCNContainer();
+		Container iucnContainer = iucnDAO.getIUCNContainer();
 		if (iucnContainer.hasTarget(taxonId)) {
-			for (IUCNEvaluation e : iucnContainer.getTarget(taxonId).getEvaluations()) {
+			for (Evaluation e : new ArrayList<>(iucnContainer.getTarget(taxonId).getEvaluations())) {
 				if (e.isCriticalDataEvaluation()) {
 					throw new IllegalStateException("Critical data validation should prevent this. Deleting evaluation with status " + e.getIucnStatus());
 				}

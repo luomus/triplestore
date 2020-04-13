@@ -28,8 +28,8 @@ public class ValidationData {
 		}
 	}
 	
-	private final List<ErrorOrWarning> errors = new ArrayList<ValidationData.ErrorOrWarning>();
-	private final List<ErrorOrWarning> warnings = new ArrayList<ValidationData.ErrorOrWarning>();
+	private final List<ErrorOrWarning> errors = new ArrayList<>();
+	private final List<ErrorOrWarning> warnings = new ArrayList<>();
 	
 	public String toJSON() {
 		JSONObject json = new JSONObject();

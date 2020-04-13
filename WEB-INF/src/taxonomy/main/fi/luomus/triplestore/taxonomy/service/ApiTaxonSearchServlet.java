@@ -20,30 +20,34 @@ public class ApiTaxonSearchServlet extends ApiBaseServlet {
 	private static final long serialVersionUID = -3382868354885463547L;
 
 	private static final Set<User.Role> ALLOWED = Collections.unmodifiableSet(Utils.set(User.Role.ADMIN, User.Role.NORMAL_USER, User.Role.DESCRIPTION_WRITER));
-	
+
 	@Override
 	protected Set<User.Role> allowedRoles() {
 		return ALLOWED;
 	}
-	
+
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = new ResponseData().setViewName("api-taxonomy-search");
 		String searchword = req.getParameter("q");
 		if (!given(searchword)) {
 			return responseData;
 		}
 		Qname checklist = PublicTaxonSearchApiServlet.parseChecklist(req);
-		boolean onlySpecies = "true".equals(req.getParameter("onlySpecies"));
+		Boolean onlySpecies = null;
+		if ("true".equals(req.getParameter("onlySpecies"))) onlySpecies = true;
 		boolean onlyFinnish = "true".equals(req.getParameter("onlyFinnish"));
 		searchword = searchword.trim();
 		Document response =  getTaxonomyDAO()
 				.search(new TaxonSearch(searchword, 10, checklist)
-						.setOnlySpecies(onlySpecies)
+						.setSpecies(onlySpecies)
 						.setOnlyFinnish(onlyFinnish))
 				.getResultsAsDocument();
-		responseData.setData("response", response);
-		responseData.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"));
+		responseData
+		.setData("response", response)
+		.setData("taxonpageBaseLinkURL", req.getParameter("taxonpageBaseLinkURL"))
+		.setData("taxonpageURLPostfix", req.getParameter("taxonpageURLPostfix"));
 		return responseData;
 	}
 

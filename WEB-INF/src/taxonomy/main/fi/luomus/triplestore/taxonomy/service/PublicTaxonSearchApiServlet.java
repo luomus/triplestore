@@ -72,9 +72,10 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Qname checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
 		boolean onlyExact = TRUE.equals(req.getParameter(ONLY_EXACT));
-		boolean onlySpecies = TRUE.equals(req.getParameter(ONLY_SPECIES));
+		Boolean onlySpecies = null;
 		boolean onlyFinnish = TRUE.equals(req.getParameter(ONLY_FINNISH));
-		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setOnlySpecies(onlySpecies);
+		if (TRUE.equals(req.getParameter(ONLY_SPECIES))) onlySpecies = true;
+		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setSpecies(onlySpecies);
 		for (Qname q : requiredInformalGroups) {
 			taxonSearch.addInformalTaxonGroup(q);
 		}
@@ -99,16 +100,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		}
 		if (jsonRequest(format)) {
 			if (version == 2) {
-				return jsonResponse(toJsonV2(response).toString(), res);
-			} else {
-				String xml = new XMLWriter(response).generateXML();
-				org.json.JSONObject jsonObject = XML.toJSONObject(xml);
-				String json = jsonObject.toString();
-				return jsonResponse(json, res);
+				return jsonResponse(toJsonV2(response).toString());
 			}
-		} else {
-			return xmlResponse(response, res);
+			String xml = new XMLWriter(response).generateXML();
+			org.json.JSONObject jsonObject = XML.toJSONObject(xml);
+			String json = jsonObject.toString();
+			return jsonResponse(json);
 		}
+		return xmlResponse(response);
 	}
 
 	private JSONObject toJsonV2(Document response) {
@@ -256,7 +255,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		StringBuilder out = new StringBuilder();
 		out.append(callback + "({ result: [");
 
-		Set<String> matches = new LinkedHashSet<String>();
+		Set<String> matches = new LinkedHashSet<>();
 		for (Node matchType : results.getRootNode()) {
 			for (Node match : matchType) {
 				String name = match.getAttribute(MATCHING_NAME).replace("'", "\\'");

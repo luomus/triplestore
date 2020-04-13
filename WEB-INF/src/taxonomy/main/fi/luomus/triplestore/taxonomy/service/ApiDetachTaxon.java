@@ -20,9 +20,10 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String taxonQname = getQname(req);
 		if (!given(taxonQname)) {
-			return redirectTo500(res);
+			return status500(res);
 		} 
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 		

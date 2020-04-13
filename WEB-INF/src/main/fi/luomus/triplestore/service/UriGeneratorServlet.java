@@ -42,7 +42,7 @@ public class UriGeneratorServlet extends EditorBaseServlet {
 		String namespace = getQname(req);
 
 		if (!given(namespace) || namespace.contains(":")) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 
 		Qname next = getTriplestoreDAO().getSeqNextValAndAddResource(namespace);
@@ -52,13 +52,13 @@ public class UriGeneratorServlet extends EditorBaseServlet {
 		response.getRootNode().addAttribute("qname", next.toString());
 
 		if (format == Format.XML) {
-			return xmlResponse(response, res);
+			return xmlResponse(response);
 		}
 		if (format == Format.JSON) {
 			String xml = new XMLWriter(response).generateXML();
 			JSONObject jsonObject = XML.toJSONObject(xml);
 			String json = jsonObject.toString();
-			return jsonResponse(json, res);
+			return jsonResponse(json);
 		}
 		throw new UnsupportedOperationException("Not yet implemented for format: " + format.toString());
 	}

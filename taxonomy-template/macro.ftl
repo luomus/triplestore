@@ -2,7 +2,7 @@
 	<#return qname1 == qname2>
 </#function>
 
-<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span><span class="scinameLink" title="${taxon.qname} ${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname} ${taxon.scientificNameAuthorship!""}">C&P</span></#macro>
+<#macro printScientificNameAndAuthor taxon><span class="scientificName <#if taxon.isCursiveName()>speciesName</#if>">${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname}</span><span class="author">${taxon.scientificNameAuthorship!""}</span></#macro>
 
 <#macro printEditorExpert taxon><#if taxon.checklist?has_content><@printEditorExpertSpecific taxon.editors taxon.experts /></#if></#macro>
 
@@ -28,10 +28,11 @@
 				<button class="enableSortingButton" onclick="enableSorting(this);">Enable sorting</button>
 			</#if>
 			<a href="${baseURL}/${parentTaxon.qname}" class="button" onclick="changeRoot(this, '${baseURL}/${parentTaxon.qname}'); return false;">Use as work root</a>
+			<button class="addNewChildButton" onclick="addNewChild(this);">Add child</button>
 		</div>
 		<div class="clear"></div>
 		<div class="sortingControls ui-widget ui-widget-header"">
-			<button class="saveSortingButton" onclick="saveSorting(this);">Save order</button>
+			<button class="saveSortingButton" onclick="saveSorting(this, true);">Save order</button>
 			<button class="sortAlphabeticallyButton" onclick="sortAlphabetically(this);">ABC..</button> 
 			<button onclick="cancelSorting(this);">Cancel</button>
 		</div>
@@ -59,11 +60,18 @@
 			</#if>
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${properties.getProperty("MX.taxonRank").range.getValueFor(taxon.taxonRank).label.forLocale("en")}]</#if></span></#if> 
 			<@printScientificNameAndAuthor taxon />
+			<span class="scinameLink" title="${taxon.qname} ${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname} ${taxon.scientificNameAuthorship!""}">C&P</span>
 			<div class="icons">
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
 				</#if>
-				<#if !taxon.synonym && taxon.markedAsFinnishTaxon><img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" /></#if>
+				<#if !taxon.synonym && taxon.finnish>
+					<#if taxon.markedAsFinnishTaxon>
+						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" />
+					<#else>
+						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Contains finnish" style="opacity: 0.4" />
+					</#if>
+				</#if>
 			</div>
 			<#if !taxon.vernacularName.empty>
 				<div class="vernacularNames">
@@ -181,6 +189,8 @@
 		<option value="fi" <#if selectedLangcode == "fi">selected="selected"</#if>>FI</option>
 		<option value="sv" <#if selectedLangcode == "sv">selected="selected"</#if>>SV</option>
 		<option value="en" <#if selectedLangcode == "en">selected="selected"</#if>>EN</option>
+		<option value="ru" <#if selectedLangcode == "ru">selected="selected"</#if>>RU</option>
+		<option value="se" <#if selectedLangcode == "se">selected="selected"</#if>>Sami</option>
 	</select>
 </#macro>
 
@@ -218,7 +228,11 @@
 			<select class="${cleanedName}" name="${field}" <@checkPermissions permissions /> > 
 				<option value=""></option>
 				<#list property.range.values as optionValue>
-					<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+					<#if cleanedName == 'typeOfOccurrenceInFinland' && (optionValue.qname == 'MX.typeOfOccurrenceOccurs' || optionValue.qname == 'MX.doesNotOccur')>
+						<#--  skip  -->
+					<#else>
+						<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+					</#if>
 				</#list>
 			</select>
 		</#if>
@@ -277,3 +291,27 @@
 	</div>
 </div>
 </#macro>
+
+<#macro taxonImageButton>
+	$("#imagesButton").on('click', function() {
+		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
+		$("body").append(container);
+		var windowHeight = $(window).height();
+        var dialogHeight = windowHeight * 0.9;
+		container.dialog({
+			title: 'Add/modify taxon images',
+			autoOpen: true,
+      		height: dialogHeight,
+      		width: "95%",
+      		modal: true,
+      		buttons: {
+        		"Close": function() {
+          			container.dialog("close");
+        		}
+			},
+      		close: function() {
+				container.remove();
+      		}
+    	});
+	});
+</#macro> 

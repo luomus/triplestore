@@ -2,14 +2,16 @@ package fi.luomus.triplestore.taxonomy.models;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
@@ -22,12 +24,12 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreSearchDAO;
 import fi.luomus.triplestore.models.ResourceListing;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.service.TaxonDescriptionsServlet;
 
 public class TriplestoreDAOStub implements TriplestoreDAO {
 
@@ -58,13 +60,13 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	@Override
 	public void store(Subject subject, Statement statement) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void insert(Subject subject, Statement statement) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -81,18 +83,6 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 
 	@Override
 	public List<RdfProperty> getAltValues(Qname qname) throws Exception {
-		if (qname.equals(TaxonDescriptionsServlet.SPECIES_DESC_VARIABLES)) {
-			List<RdfProperty> l = new ArrayList<>();
-			l.add(new RdfProperty(new Qname("MX.descGroup"), null));
-			return l;
-		}
-		if (qname.toString().equals("MX.descGroup")) {
-			List<RdfProperty> l = new ArrayList<>();
-			RdfProperty p = new RdfProperty(new Qname("MX.descriptionText"), new Qname("xsd:string"));
-			p.setLabels(new LocalizedText().set("fi", "Yleiskuvaus").set("en", "General description"));
-			l.add(p);
-			return l;
-		}
 		return null;
 	}
 
@@ -111,37 +101,37 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	@Override
 	public void store(Model model) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(Subject subject) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public void deleteStatement(int id) throws Exception {
+	public void deleteStatement(long id) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(Subject subject, Predicate predicate) throws SQLException {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete(Subject subject, Predicate predicate, Context context) throws SQLException {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void store(Subject subject, UsedAndGivenStatements usedAndGivenStatements) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -153,13 +143,13 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	@Override
 	public void clearCaches() {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void store(Qname taxonQname, Occurrence occurrence) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -169,7 +159,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public int getUserFK(String userQname) throws Exception {
+	public long getUserFK(String userQname) throws Exception {
 		// Auto-generated method stub
 		return 0;
 	}
@@ -205,21 +195,57 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(IUCNEvaluation givenData, IUCNEvaluation existingEvaluation) throws Exception {
+	public void store(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void store(Occurrences existingOccurrences, Occurrences newOccurrences, Set<Qname> supportedAreas) throws Exception {
 		// Auto-generated method stub
-		
+
 	}
 
 	@Override
-	public IucnRedListInformalTaxonGroup storeIucnRedListTaxonGroup(IucnRedListInformalTaxonGroup group) throws Exception {
+	public void store(HabitatObject habitat) throws Exception {
+		// Auto-generated method stub
+
+	}
+
+	@Override
+	public RedListEvaluationGroup storeIucnRedListTaxonGroup(RedListEvaluationGroup group) throws Exception {
 		// Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void storeOnlyOccurrences(Evaluation givenData, Evaluation existingEvaluation) throws Exception {
+		// Auto-generated method stub
+
+	}
+
+	@Override
+	public RuntimeException exception(String message, Exception e) {
+		e.printStackTrace();
+		return new RuntimeException(message, e);
+	}
+
+	@Override
+	public Map<String, List<RdfProperty>> getDescriptionGroupVariables() {
+		List<RdfProperty> l = new ArrayList<>();
+		RdfProperty p = new RdfProperty(new Qname("MX.descriptionText"), new Qname("xsd:string"));
+		p.setLabels(new LocalizedText().set("fi", "Yleiskuvaus").set("en", "General description"));
+		l.add(p);
+		
+		Map<String, List<RdfProperty>> map = new HashMap<>();
+		map.put("MX.descGroup", l);
+		return map;
+	}
+
+	@Override
+	public List<RdfProperty> getDescriptionGroups() {
+		return null;	
+		
 	}
 
 }

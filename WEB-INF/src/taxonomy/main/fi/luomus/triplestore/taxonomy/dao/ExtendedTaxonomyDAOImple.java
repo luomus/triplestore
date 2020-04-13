@@ -1,14 +1,20 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
+import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.apache.http.client.methods.HttpGet;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -16,10 +22,14 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
+import fi.luomus.commons.containers.rdf.ObjectResource;
+import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
@@ -31,6 +41,8 @@ import fi.luomus.commons.taxonomy.TaxonSearchDAOSQLQueryImple;
 import fi.luomus.commons.taxonomy.TaxonSearchDataSourceDefinition;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.SingleObjectCache;
 import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
@@ -38,19 +50,27 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
+import fi.luomus.triplestore.models.UsedAndGivenStatements;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
+	private static final Predicate TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE = new Predicate("MX.typeOfOccurrenceInFinland");
 
 	private final TriplestoreDAO triplestoreDAO;
-	private final IucnDAOImple iucnDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final Cached<TaxonSearch, TaxonSearchResponse> cachedTaxonSearches;
 	private final Cached<Qname, Boolean> cachedDwUses;
 	private final DataSource dataSource;
 	private final Config config;
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final boolean devMode;
+	private final ErrorReporter errorReporter;
+	private IucnDAOImple iucnDAO;
 
 	public ExtendedTaxonomyDAOImple(Config config, TriplestoreDAO triplestoreDAO, ErrorReporter errorReporter) {
 		this(config, config.developmentMode(), triplestoreDAO, errorReporter);
@@ -62,15 +82,285 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		this.dataSource = TaxonSearchDataSourceDefinition.initDataSource(config.connectionDescription());
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonContainer = new CachedLiveLoadingTaxonContainer(triplestoreDAO, this);
-		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, this, errorReporter);
-		this.cachedTaxonSearches = new Cached<TaxonSearch, TaxonSearchResponse>(
+		this.iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter);
+		this.cachedTaxonSearches = new Cached<>(
 				new TaxonSearchLoader(),
-				60*60*3, 50000);
-		this.cachedDwUses = new Cached<Qname, Boolean>(
+				3, TimeUnit.HOURS, 50000);
+		this.cachedDwUses = new Cached<>(
 				new DwUseLoader(),
-				60*60*3, 50000);
+				3, TimeUnit.HOURS, 50000);
 		this.config = config;
+		this.devMode = devMode;
+		this.errorReporter = errorReporter;
+		if (!devMode && config.productionMode()) {
+			startNightlyScheduler();
+		}
 	}
+
+	private void startNightlyScheduler() {
+		int repeatPeriod24H = 24 * 60;
+		long intitialDelay3am = calculateInitialDelayTill(3, repeatPeriod24H);
+		long intitialDelay6am = calculateInitialDelayTill(6, repeatPeriod24H);
+
+		scheduler.scheduleAtFixedRate(
+				iucnDataToTaxonDataSynchronizer, 
+				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+
+		scheduler.scheduleAtFixedRate(iucnRedListTaxonGroupNameUpdater, 
+				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+
+		scheduler.scheduleAtFixedRate(
+				iucnContainerReinitializer, 
+				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
+	}
+
+	private long calculateInitialDelayTill(int hour, int repeatPeriod24H) {
+		Calendar now = Calendar.getInstance();
+		now.setTime(new Date());
+		int hoursNow = now.get(Calendar.HOUR_OF_DAY);
+		int minutesNow = now.get(Calendar.MINUTE);
+
+		int minutesPassed12AM = hoursNow * 60 + minutesNow;
+		int minutesAtHour = hour * 60;
+
+		long initialDelay = minutesPassed12AM <= minutesAtHour ? minutesAtHour - minutesPassed12AM : repeatPeriod24H - (minutesPassed12AM - minutesAtHour);
+		return initialDelay;
+	}
+
+	private final Runnable iucnContainerReinitializer = new Runnable() {
+		@Override
+		public void run() {
+			iucnDAO = new IucnDAOImple(config, devMode, triplestoreDAO, taxonContainer, errorReporter); // TODO refactor method createIucnDAO
+			try {
+				for (String groupQname : iucnDAO.getGroupEditors().keySet()) {
+					iucnDAO.getIUCNContainer().getTargetsOfGroup(groupQname);
+				}
+			} catch (Exception e) {
+				errorReporter.report(e);
+			}
+		}
+	};
+
+	private final Runnable iucnRedListTaxonGroupNameUpdater = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("Staring to update IUCN Red List Taxon Group names...");
+			try {
+				for (RedListEvaluationGroup group : getRedListEvaluationGroupsForceReload().values()) {
+					Model dbGroup = triplestoreDAO.get(group.getQname());
+					if (namesDoNotMatch(group, dbGroup)) {
+						triplestoreDAO.storeIucnRedListTaxonGroup(group);
+						System.out.println("Updated name of group " + group.getQname() + " to " + group.getName());
+					}
+				}
+			} catch (Exception e) {
+				errorReporter.report("Updating IUCN Red List Taxon Group names", e);
+			}
+			System.out.println("IUCN Red List Taxon Group names updated!");
+		}
+
+		private boolean namesDoNotMatch(RedListEvaluationGroup group, Model dbGroup) {
+			for (Map.Entry<String, String> e : group.getName().getAllTexts().entrySet()) {
+				String locale = e.getKey();
+				if (locale == null) locale = "";
+				String name = e.getValue();
+				String dbName = getName(locale, dbGroup);
+				if (!dbName.equals(name)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private String getName(String locale, Model dbGroup) {
+			for (Statement s : dbGroup.getStatements("MVL.name")) {
+				if (s.isResourceStatement()) continue;
+				if (locale.equals(s.getObjectLiteral().getLangcode())) {
+					String name = s.getObjectLiteral().getContent(); 
+					if (name == null) return "";
+					return name;
+				}
+			}
+			return "";
+		}
+	};
+
+	private final Runnable iucnDataToTaxonDataSynchronizer = new Runnable() {
+		@Override
+		public void run() {
+			System.out.println("Starting to synchronize taxon data with IUCN data...");
+			try {
+				Container container = iucnDAO.getIUCNContainer();
+				container.makeSureEvaluationDataIsLoaded();
+				int c = 1;
+				for (EvaluationTarget target : container.getTargets()) {
+					if (target.getQname() == null || target.getQname().isEmpty()) {
+						errorReporter.report("Syncing taxon data with IUCN data: Null target taxon qname: " + debug(target));
+						continue;
+					}
+					Qname speciesQname = new Qname(target.getQname());
+					if (!getTaxonContainer().hasTaxon(speciesQname)) {
+						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname + " for target " + target);
+						continue;
+					}
+					EditableTaxon taxon = getTaxon(speciesQname);
+					if (c++ % 5000 == 0) System.out.println(" ... syncing " + (c-1));
+					boolean statusesChanged = syncRedListStatuses(target, taxon);
+					// The following can be returned to use once new evaluation data is again generated for taxa -- unless if taxon database at that point already has extensive info, then this is not needed even then
+					//boolean habitatsChanged = syncHabitats(target, taxon);
+					//boolean typeOfOccurrenceChanged = syncTypeOfOccurrence(target, taxon);
+					//if (statusesChanged || habitatsChanged || typeOfOccurrenceChanged) {
+					//	taxon.invalidateSelf();
+					//}
+					if (statusesChanged) taxon.invalidateSelf();
+				}
+			} catch (Exception e) {
+				errorReporter.report("Syncing taxon data with IUCN data", e);
+			}
+			System.out.println("Synchronizing taxon data with IUCN data completed!");
+		}
+
+		@SuppressWarnings("unused")
+		private boolean syncTypeOfOccurrence(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			if (!taxon.getTypesOfOccurrenceInFinland().isEmpty()) return false; // Never override types already set to taxon
+
+			Evaluation evaluation = getLatestReadyEvaluation(target);
+			if (evaluation == null) return false;
+
+			Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
+			if (!given(typeOfOccurrenceInFinland)) return false;
+
+			updateTypesOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
+			return true;
+		}
+
+		@SuppressWarnings("unused")
+		private boolean syncHabitats(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			Evaluation evaluation = getLatestReadyEvaluation(target); // change to latest locked
+			if (evaluation == null) return false;
+
+			if (!evaluation.getModel().hasStatements(Evaluation.PRIMARY_HABITAT)) return false;
+
+			if (taxon.getPrimaryHabitatId() != null && !isLatestLocked(evaluation)) {
+				return false; // don't override existing taxon data with old evaluation data
+			}
+
+			addHabitats(taxon);
+			if (evaluation.isIncompletelyLoaded()) {
+				iucnDAO.completeLoading(evaluation);
+			}
+
+			String taxonHabitats = habitatComparisonString(taxon.getPrimaryHabitat(), taxon.getSecondaryHabitats());
+			String evaluationHabitats = habitatComparisonString(evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
+			if (taxonHabitats.equals(evaluationHabitats)) return false;
+
+			updateHabitats(taxon, evaluation.getPrimaryHabitat(), evaluation.getSecondaryHabitats());
+			return true;
+		}
+
+		private String habitatComparisonString(HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) {
+			StringBuilder b = new StringBuilder();
+			b.append(habitatComparisonString(primaryHabitat));
+			b.append("[");
+			for (HabitatObject h : secondaryHabitats) {
+				b.append(habitatComparisonString(h));
+			}
+			b.append("]");
+			return b.toString();
+		}
+
+		private String habitatComparisonString(HabitatObject h) {
+			if (h == null) return ";";
+			return ""+h.getHabitat()+h.getHabitatSpecificTypes()+";";
+		}
+
+		private boolean isLatestLocked(Evaluation evaluation) throws Exception {
+			return evaluation.getEvaluationYear().equals(latestLockedEvaluationYear());
+		}
+
+		private Integer latestLockedEvaluationYear() throws Exception {
+			int max = 0;
+			for (EvaluationYear y : iucnDAO.getEvaluationYears()) {
+				if (y.isLocked()) {
+					max = Math.max(max, y.getYear());
+				}
+			}
+			return max;
+		}
+
+		private void updateHabitats(EditableTaxon taxon, HabitatObject primaryHabitat, List<HabitatObject> secondaryHabitats) throws Exception {
+			UsedAndGivenStatements statements = new UsedAndGivenStatements();
+			statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
+			statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
+			if (primaryHabitat != null) {
+				statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
+			}
+			System.out.println("   " + taxon.getQname() + " " + IucnDAO.PRIMARY_HABITAT_PREDICATE + " -> " + primaryHabitat);
+			for (HabitatObject h : secondaryHabitats) {
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+				System.out.println("   " + taxon.getQname() + " " + IucnDAO.SECONDARY_HABITAT_PREDICATE + " -> " + h);
+			}
+			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+		}
+
+		private Evaluation getLatestReadyEvaluation(EvaluationTarget target) {
+			for (Evaluation evaluation : target.getEvaluations()) {
+				if (!evaluation.isReady()) continue;
+				return evaluation;
+			}
+			return null;
+		}
+
+		private boolean syncRedListStatuses(EvaluationTarget target, EditableTaxon taxon) throws Exception {
+			boolean modifiedTaxon = false;
+			for (Evaluation evaluation : target.getEvaluations()) {
+				if (!evaluation.isReady()) continue;
+				if (!evaluation.hasIucnStatus()) continue;
+
+				Integer year = evaluation.getEvaluationYear();
+
+				if (year == null) continue;
+				if (year.intValue() > latestLockedEvaluationYear().intValue()) continue;
+
+				Qname status = new Qname(evaluation.getIucnStatus());
+				Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
+
+				if (!status.equals(taxonRedListStatus)) {
+					updateRedListStatus(taxon, year, status);
+					modifiedTaxon = true;
+				}
+			}
+			return modifiedTaxon;
+		}
+
+		private String debug(EvaluationTarget target) {
+			StringBuilder b = new StringBuilder();
+			b.append("[");
+			for (Evaluation e : target.getEvaluations()) {
+				b.append("[").append(e.getId()).append(" ").append(e.getEvaluationYear()).append("]");
+			}
+			b.append("]");
+			return b.toString();
+		}
+
+		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
+			UsedAndGivenStatements statements = new UsedAndGivenStatements();
+			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
+			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(typeOfOccurrenceInFinland)));
+			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+			System.out.println("   " + taxon.getQname() + " " + TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE + " -> " + typeOfOccurrenceInFinland);
+		}
+
+		private void updateRedListStatus(EditableTaxon taxon, Integer year, Qname status) throws Exception {
+			Predicate statusPredicate = new Predicate("MX.redListStatus"+year+"Finland");
+			triplestoreDAO.store(new Subject(taxon.getQname()), new Statement(statusPredicate, new ObjectResource(status)));
+			System.out.println("   " + taxon.getQname() + " " + statusPredicate + " -> " + status);
+		}
+
+		private boolean given(Qname qname) {
+			return qname != null && qname.isSet();
+		}
+	};
 
 	private class DwUseLoader implements Cached.CacheLoader<Qname, Boolean> {
 		@Override
@@ -88,9 +378,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				}
 				throw new Exception(dwUri + " returned unknown response");
 			} catch (Exception e) {
-				throw new RuntimeException("Dw use for " + taxonId, e);
+				throw triplestoreDAO.exception("Dw use for " + taxonId, e);
 			} finally {
-				client.close();
+				if (client != null) client.close();
 			}
 		}
 	}
@@ -101,13 +391,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			try {
 				return uncachedTaxonSearch(key);
 			} catch (Exception e) {
-				throw new RuntimeException("Taxon search with terms " + key.toString(), e);
+				throw triplestoreDAO.exception("Taxon search with terms " + key.toString(), e);
 			}
 		}
 	}
 
 	public void close() {
-		if (iucnDAO != null) iucnDAO.close();
+		try {
+			if (scheduler != null) {
+				scheduler.shutdownNow();
+			}
+		} catch (Exception e) {}
 		if (dataSource != null) dataSource.close();
 	}
 
@@ -115,11 +409,34 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	public void clearCaches() {
 		super.clearCaches();
 		taxonContainer.clearCaches();
+		cachedTaxonSearches.invalidateAll();
+		cachedDwUses.invalidateAll();
 	}
 
 	@Override
 	public EditableTaxon getTaxon(Qname qname) {
 		return taxonContainer.getTaxon(qname);
+	}
+
+	@Override
+	public void addHabitats(EditableTaxon taxon) {
+		try {
+			if (taxon.getPrimaryHabitat() != null) return;
+			Set<String> habitatObjectIds = taxon.getHabitatIds();
+			if (habitatObjectIds.isEmpty()) return;
+
+			Collection<Model> models = triplestoreDAO.getSearchDAO().search(new SearchParams(1000, 0).subjects(habitatObjectIds));
+			for (Model model : models) {
+				HabitatObject h = IucnDAOImple.constructHabitatObject(model);
+				if (h.getId().toString().equals(taxon.getPrimaryHabitatId())) {
+					taxon.setPrimaryHabitat(h);
+				} else {
+					taxon.addSecondaryHabitat(h);
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -136,6 +453,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				Qname status = null;
 				String notes = null;
 				Integer year = null;
+				URI specimenURI = null;
 				for (Statement s : model.getStatements()) {
 					if (s.getPredicate().getQname().equals("MO.area")) {
 						area = q(s.getObjectResource());
@@ -147,11 +465,16 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 						try {
 							year = Integer.valueOf(s.getObjectLiteral().getContent());
 						} catch (Exception e) {}
+					} else if (s.getPredicate().getQname().equals("MO.specimenURI")) {
+						try {
+							specimenURI = new URI(s.getObjectLiteral().getContent());
+						} catch (Exception e) {}
 					}
 				}
 				Occurrence occurrence = new Occurrence(id, area, status);
 				occurrence.setNotes(notes);
 				occurrence.setYear(year);
+				occurrence.setSpecimenURI(specimenURI);
 				taxon.getOccurrences().setOccurrence(occurrence);
 			}
 		} catch (Exception e) {
@@ -185,20 +508,9 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 
 	@Override
 	public List<Taxon> taxonNameExistsInChecklistForOtherTaxon(String name, Taxon taxon) throws Exception {
-		List<Taxon> matches = new ArrayList<Taxon>();
+		List<Taxon> matches = new ArrayList<>();
 
-		Qname checklist = null;
-		if (given(taxon.getChecklist())) {
-			checklist = taxon.getChecklist();
-		} else {
-			Taxon synonymParent = taxon.getSynonymParent();
-			if (synonymParent != null) {
-				checklist = synonymParent.getChecklist();
-			}
-			if (!given(checklist)) {
-				checklist = new Qname("MR.1");
-			}
-		}
+		Qname checklist = getChecklistOrDefault(taxon);
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -206,7 +518,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		try {
 			con = triplestoreDAO.openConnection();
 			p = con.prepareStatement("" +
-					" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized " +
+					" SELECT qname, scientificname, author, taxonrank FROM "+SCHEMA+".taxon_search_materialized_v2 " +
 					" WHERE checklist = ? AND name = ? AND qname != ? ");
 			p.setString(1, checklist.toString());
 			p.setString(2, name.toUpperCase());
@@ -232,6 +544,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		return matches;
 	}
 
+	private Qname getChecklistOrDefault(Taxon taxon) {
+		if (given(taxon.getChecklist())) {
+			return taxon.getChecklist();
+		}
+		Taxon synonymParent = taxon.getSynonymParent();
+		if (synonymParent != null && given(synonymParent.getChecklist())) {
+			return synonymParent.getChecklist();
+		}
+		return new Qname("MR.1");
+	}
+
 	private boolean given(Object o) {
 		return o != null && o.toString().trim().length() > 0;
 	}
@@ -243,27 +566,24 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public Set<String> getInformalTaxonGroupRoots() {
+	public List<String> getInformalTaxonGroupRoots() {
 		return getRoots(getInformalTaxonGroups());
 	}
 
 	@Override
-	public Set<String> getIucnRedListInformalGroupRoots() {
-		return getRoots(getIucnRedListInformalTaxonGroups());
+	public List<String> getIucnRedListInformalGroupRoots() {
+		return getRoots(getRedListEvaluationGroups());
 	}
 
-	private <T extends InformalTaxonGroup> Set<String> getRoots(Map<String, T> allGroups) {
-		Set<String> roots = new LinkedHashSet<>(allGroups.keySet());
-		for (T group : allGroups.values()) {
-			for (Qname subGroup : group.getSubGroups()) {
-				roots.remove(subGroup.toString());
-			}
-		}
-		return roots;
+	private <T extends InformalTaxonGroup> List<String> getRoots(Map<String, T> allGroups) {
+		return allGroups.values().stream()
+				.filter(g->g.isRoot())
+				.map(g->g.getQname().toString())
+				.collect(Collectors.toList());
 	}
 
 	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 
-			new SingleObjectCache<Map<String, Area>>(
+			new SingleObjectCache<>(
 					new CacheLoader<Map<String, Area>>() {
 						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");
 						@Override
@@ -277,10 +597,10 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 								}
 								return areas;
 							} catch (Exception e) {
-								throw new RuntimeException("Loading biogeographical provinces", e);
+								throw triplestoreDAO.exception("Loading biogeographical provinces", e);
 							}
 						}
-					}, 60*60*7);
+					}, 7, TimeUnit.HOURS);
 
 	@Override
 	public Map<String, Area> getBiogeographicalProvinces() throws Exception {

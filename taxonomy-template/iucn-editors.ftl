@@ -15,7 +15,7 @@
 			<select name="editor" data-placeholder="Select person" class="chosen">
 				<option value=""></option>
 				<#list persons?keys as personQname>
-					<option value="${personQname}" <#if same(editor, personQname)>selected="selected"</#if> >${persons[personQname].fullname}</option>
+					<option value="${personQname}" <#if same(editor, personQname)>selected="selected"</#if> >${persons[personQname].fullname} ${personQname}</option>
 				</#list>
 			</select>
 		</li>
@@ -25,7 +25,7 @@
 		<select name="editor" data-placeholder="Select person" class="chosen">
 			<option value=""></option>
 			<#list persons?keys as personQname>
-				<option value="${personQname}">${persons[personQname].fullname}</option>
+				<option value="${personQname}">${persons[personQname].fullname} ${personQname}</option>
 			</#list>
 		</select>
 	</li>

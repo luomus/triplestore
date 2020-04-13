@@ -26,6 +26,17 @@
 			<input type="text" name="name_sv" class="required checklistName" value="${(group.name.forLocale("sv")!"")?html}" />  <span class="requiredFieldMarker" title="Required">*</span>
 		</li>
 		<li>
+			<label>Order (number 1-n)</label>
+			<input type="text" name="sortOrder" class="required" value="${group.order}" />  <span class="requiredFieldMarker" title="Required">*</span>
+		</li>
+		<li>
+			<label>Explicitly defined root</label>
+			<select name="explicitlyDefinedRoot">	
+				<option value="">&nbsp;</option>
+				<option value="true" <#if group.explicitlyDefinedRoot>selected="selected"</#if> >Yes</option>
+			</select>
+		</li>
+		<li>
 			<label>Has sub groups</label>
 			<select name="MVL.hasSubGroup" data-placeholder="Select group" class="chosen" multiple="multiple">
 				<option value=""></option>
@@ -52,4 +63,13 @@ $(function() {
 	$("#groupForm").validate();
 });
 </script>
+
+<h2>Defining taxa</h2>
+<ul>
+<#list definingTaxa as t>
+	<ol>${t.scientificName!""} ${t.qname}</ol>
+</#list>
+</ul>
+<#if hasMore> [...]</#if>
+
 <#include "luomus-footer.ftl">

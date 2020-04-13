@@ -2,6 +2,7 @@ package fi.luomus.triplestore.taxonomy.dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,10 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Optional;
 
-import fi.luomus.commons.containers.IucnRedListInformalTaxonGroup;
+import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
@@ -27,6 +29,7 @@ import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandler;
 import fi.luomus.commons.taxonomy.TripletToTaxonHandlers;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.Cached;
 import fi.luomus.commons.utils.Cached.CacheLoader;
 import fi.luomus.commons.utils.SingleObjectCache;
@@ -50,30 +53,60 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	private final TriplestoreDAO triplestoreDAO;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
-	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers();
-	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<Qname, EditableTaxon>(new TaxonLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<Qname, Set<Qname>>(new ChildrenLoader(), 3*60*60, 25000);
-	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<Qname, Optional<Qname>>(new SynonymParentLoader(), 3*60*60, 25000);
-	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12*60*60);
+
+	private final TripletToTaxonHandlers tripletToTaxonHandlers = new TripletToTaxonHandlers()
+			.extend(Evaluation.PRIMARY_HABITAT, new TripletToTaxonHandler() {
+				@Override
+				public void setToTaxon(Qname context, Qname predicatename, Qname objectname, String resourceliteral, String locale, Taxon taxon) {
+					EditableTaxon editableTaxon = (EditableTaxon) taxon;
+					editableTaxon.setPrimaryHabitatId(objectname.toString());
+				}
+			})
+			.extend(Evaluation.SECONDARY_HABITAT, new TripletToTaxonHandler() {
+				@Override
+				public void setToTaxon(Qname context, Qname predicatename, Qname objectname, String resourceliteral, String locale, Taxon taxon) {
+					EditableTaxon editableTaxon = (EditableTaxon) taxon;
+					if (editableTaxon.getSecondaryHabitatIds() == null) {
+						editableTaxon.setSecondaryHabitatIds(new ArrayList<>());
+					}
+					editableTaxon.getSecondaryHabitatIds().add(objectname.toString());
+				}
+			});
+
+	private final Cached<Qname, EditableTaxon> cachedTaxons = new Cached<>(new TaxonLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final Cached<Qname, Set<Qname>> cachedChildren = new Cached<>(new ChildrenLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final Cached<Qname, Optional<Qname>> cachedSynonymParents = new Cached<>(new SynonymParentLoader(), 3, TimeUnit.HOURS, 25000, false);
+	private final SingleObjectCache<Set<Qname>> cachedTaxaWithImages = new SingleObjectCache<>(new TaxaWithImagesLoader(), 12, TimeUnit.HOURS);
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfInformalTaxonGroup; // informal taxon group id -> IUCN group ids
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
 	private final SingleObjectCache<InformalTaxonGroupContainer> cachedInformalTaxonGroupContainer;
+	private final SingleObjectCache<InformalTaxonGroupContainer> cachedRedListEvaluationGroupContainer;
 
 	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, final ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
 		this.taxonomyDAO = taxonomyDAO;
-		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3*60*60);
-		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3*60*60);
+		this.cachedIucnGroupsOfInformalTaxonGroup = new SingleObjectCache<>(new IucnGroupsOfInformalTaxonGroupLoader(taxonomyDAO) , 3, TimeUnit.HOURS);
+		this.cachedIucnGroupsOfTaxon = new SingleObjectCache<>(new IucnGroupsOfTaxonLoader(taxonomyDAO) , 3, TimeUnit.HOURS);
 		this.cachedInformalTaxonGroupContainer = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<InformalTaxonGroupContainer>() {
 			@Override
 			public InformalTaxonGroupContainer load() {
 				try {
 					return new InformalTaxonGroupContainer(taxonomyDAO.getInformalTaxonGroupsForceReload());
 				} catch (Exception e) {
-					throw new RuntimeException(e);
+					throw triplestoreDAO.exception("Informal taxon group loader", e);
 				}
 			}
-		}, 60);
+		}, 5, TimeUnit.MINUTES);
+		this.cachedRedListEvaluationGroupContainer = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<InformalTaxonGroupContainer>() {
+			@Override
+			public InformalTaxonGroupContainer load() {
+				try {
+					return new InformalTaxonGroupContainer(taxonomyDAO.getRedListEvaluationGroupsForceReload());
+				} catch (Exception e) {
+					throw triplestoreDAO.exception("Red list evaluation group container loader", e);
+				}
+			}
+		}, 5, TimeUnit.MINUTES);
 	}
 
 	private class IucnGroupsOfInformalTaxonGroupLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
@@ -85,7 +118,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public Map<Qname, Set<Qname>> load() {
 			try {
 				Map<Qname, Set<Qname>> map = new HashMap<>();
-				for (IucnRedListInformalTaxonGroup group : dao.getIucnRedListInformalTaxonGroupsForceReload().values()) {
+				for (RedListEvaluationGroup group : dao.getRedListEvaluationGroupsForceReload().values()) {
 					for (Qname informalTaxonGroupId : group.getInformalGroups()) {
 						if (!map.containsKey(informalTaxonGroupId)) {
 							map.put(informalTaxonGroupId, new HashSet<Qname>());
@@ -95,7 +128,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return map;
 			} catch (Exception e) {
-				throw new RuntimeException("Loading iucn groups of informal taxon groups", e);
+				throw triplestoreDAO.exception("Loading iucn groups of informal taxon groups", e);
 			}
 		}		
 	}
@@ -109,7 +142,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		public Map<Qname, Set<Qname>> load() {
 			try {
 				Map<Qname, Set<Qname>> map = new HashMap<>();
-				for (IucnRedListInformalTaxonGroup group : dao.getIucnRedListInformalTaxonGroupsForceReload().values()) {
+				for (RedListEvaluationGroup group : dao.getRedListEvaluationGroupsForceReload().values()) {
 					for (Qname taxonId : group.getTaxons()) {
 						if (!map.containsKey(taxonId)) {
 							map.put(taxonId, new HashSet<Qname>());
@@ -119,7 +152,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return map;
 			} catch (Exception e) {
-				throw new RuntimeException("Loading iucn groups of taxons", e);
+				throw triplestoreDAO.exception("Loading iucn groups of taxons", e);
 			}
 		}		
 	}
@@ -143,7 +176,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				System.out.println("Taxa with media loaded.");
 				return taxonIds;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Taxa with media", e);
 			} finally {
 				Utils.close(p, rs, con);
 			}
@@ -154,21 +187,25 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		@Override
 		public EditableTaxon load(Qname taxonQname) {
 			try {
-				Model model = triplestoreDAO.get(taxonQname);
-				if (model.isEmpty()) throw new NoSuchTaxonException(taxonQname);
-				EditableTaxon taxon = createTaxon(model);
-				preloadSynonyms(taxon);
-				taxon.getChildren();
-				return taxon;
-			} catch (NoSuchTaxonException e) {
-				throw e;
+				EditableTaxon taxon = getOrNull(taxonQname);
+				if (taxon != null) return taxon;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Load taxon: " + taxonQname, e);
 			}
+			throw new NoSuchTaxonException(taxonQname);
+		}
+
+		private EditableTaxon getOrNull(Qname taxonQname) throws Exception {
+			Model model = triplestoreDAO.get(taxonQname);
+			if (model.isEmpty()) return null;
+			EditableTaxon taxon = createTaxon(model);
+			preloadSynonyms(taxon);
+			taxon.getChildren(); // preload all child models to cache
+			return taxon;
 		}
 	}
 
-	private EditableTaxon createTaxon(Model model) throws Exception {
+	private EditableTaxon createTaxon(Model model) {
 		Qname qname = q(model.getSubject());
 		EditableTaxon taxon = new EditableTaxon(qname, this, taxonomyDAO);
 		for (Statement statement : model.getStatements()) {
@@ -192,7 +229,6 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				synonymIds.addAll(taxon.getSynonymsContainer().getAll());
 			}
 		}
-
 		if (synonymIds.isEmpty()) return;
 
 		for (Model synonymModel : triplestoreDAO.getSearchDAO().get(synonymIds)) {
@@ -205,7 +241,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		return new Qname(resource.getQname());
 	}
 
-	private void addPropertyToTaxon(Taxon taxon, Statement statement) {
+	private void addPropertyToTaxon(EditableTaxon taxon, Statement statement) {
 		Qname context = statement.isForDefaultContext() ? null : q(statement.getContext());
 		Qname predicatename = q(statement.getPredicate());
 		Qname objectname = null;
@@ -238,7 +274,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 						.predicate(IS_PART_OF)
 						.objectresource(taxonQname));
 				if (models.isEmpty()) return Collections.emptySet();
-				Set<Qname> childIds = new HashSet<Qname>();
+				Set<Qname> childIds = new HashSet<>();
 				List<EditableTaxon> createdChildren = new ArrayList<>();
 				for (Model model : models) {
 					EditableTaxon child = createTaxon(model);
@@ -249,7 +285,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				preloadSynonyms(createdChildren);
 				return childIds;
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Children loader: " + taxonQname, e);
 			}
 		}
 	}
@@ -268,7 +304,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				}
 				return Optional.absent();
 			} catch (Exception e) {
-				throw new RuntimeException(e);
+				throw triplestoreDAO.exception("Synonym parent loader: " + synonymTaxonId, e);
 			}
 		}
 	}
@@ -283,7 +319,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		try {
 			cachedTaxons.get(taxonId);
 			return true;
-		} catch (Exception e) {
+		} catch (NoSuchTaxonException e) {
 			return false;
 		}
 	}
@@ -335,7 +371,18 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	@Override
 	public Filter getInformalGroupFilter() {
-		throw new UnsupportedOperationException();
+		return new Filter() {
+
+			@Override
+			public Set<Qname> getFilteredTaxons(Qname groupId) {
+				try {
+					return triplestoreDAO.getSearchDAO().searchQnames(new SearchParams(100, 0).predicate("MX.isPartOfInformalTaxonGroup").object(groupId.toString()));
+				} catch (SQLException e) {
+					e.printStackTrace();
+					return Collections.emptySet();
+				}
+			}
+		};
 	}
 
 	@Override
@@ -364,12 +411,12 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
-	public Filter getIucnRedListTaxonGroupFilter() {
+	public Filter getRedListEvaluationGroupFilter() {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Set<Qname> getHasMediaFilter() throws UnsupportedOperationException {
+	public Set<Qname> getHasMediaFilter() {
 		return cachedTaxaWithImages.get();
 	}
 
@@ -379,14 +426,14 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
-	public Set<Qname> getIucnGroupsOfInformalTaxonGroup(Qname informalTaxonGroupId) {
+	public Set<Qname> getRedListEvaluationGroupsOfInformalTaxonGroup(Qname informalTaxonGroupId) {
 		Set<Qname> set = cachedIucnGroupsOfInformalTaxonGroup.get().get(informalTaxonGroupId); 
 		if (set == null) return Collections.emptySet();
 		return set;
 	}
 
 	@Override
-	public Set<Qname> getIucnGroupsOfTaxon(Qname taxonId) {
+	public Set<Qname> getRedListEvaluationGroupsOfTaxon(Qname taxonId) {
 		Set<Qname> set = cachedIucnGroupsOfTaxon.get().get(taxonId); 
 		if (set == null) return Collections.emptySet();
 		return set;
@@ -400,6 +447,21 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	@Override
 	public Set<Qname> getParentInformalTaxonGroups(Qname groupId) {
 		return cachedInformalTaxonGroupContainer.get().getParents(groupId);
+	}
+
+	@Override
+	public Set<Qname> getParentRedListEvaluationGroups(Qname groupId) {
+		return cachedRedListEvaluationGroupContainer.get().getParents(groupId);
+	}
+
+	@Override
+	public Collection<Taxon> getAll() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getLatestLockedRedListEvaluationYear() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 	}
 
 }

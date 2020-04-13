@@ -1,10 +1,11 @@
 package fi.luomus.triplestore.taxonomy.iucn.model;
 
-import fi.luomus.commons.utils.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
+import fi.luomus.commons.utils.Utils;
 
 public class EditHistory {
 
@@ -15,12 +16,12 @@ public class EditHistory {
 		private final String editorQname;
 		public EditHistoryEntry(String notes, String editorQname) {
 			this.date = exctractDate(notes);
-			this.notes = date == null ? notes : notes.replace(IUCNEvaluation.NOTE_DATE_SEPARATOR+date, "");
+			this.notes = date == null ? notes : notes.replace(Evaluation.NOTE_DATE_SEPARATOR+date, "");
 			this.editorQname = validEditor(editorQname); 
 		}
 		private String exctractDate(String notes) {
 			if (notes == null) return null;
-			String[] parts =  notes.split(Pattern.quote(IUCNEvaluation.NOTE_DATE_SEPARATOR));
+			String[] parts =  notes.split(Pattern.quote(Evaluation.NOTE_DATE_SEPARATOR));
 			if (parts.length < 2) return null;
 			String date = parts[parts.length-1].trim();
 			if (isDate(date)) return date;

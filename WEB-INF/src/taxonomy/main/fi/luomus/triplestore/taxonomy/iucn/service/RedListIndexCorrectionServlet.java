@@ -12,24 +12,25 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/redListIndexCorrection/*"})
 public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 
-	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(IUCNEvaluation.LAST_MODIFIED_BY);
-	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(IUCNEvaluation.LAST_MODIFIED);
-	private static final Predicate NOTES_PREDICATE = new Predicate(IUCNEvaluation.RED_LIST_INDEX_CORRECTION+"Notes");
-	private static final Predicate INDEX_PREDICATE = new Predicate(IUCNEvaluation.RED_LIST_INDEX_CORRECTION);
+	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED_BY);
+	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED);
+	private static final Predicate NOTES_PREDICATE = new Predicate(Evaluation.RED_LIST_INDEX_CORRECTION+"Notes");
+	private static final Predicate INDEX_PREDICATE = new Predicate(Evaluation.RED_LIST_INDEX_CORRECTION);
 	private static final long serialVersionUID = 2285910485664606619L;
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String redListIndexCorrection = req.getParameter(INDEX_PREDICATE.getQname());
@@ -38,10 +39,10 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
 
-		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		Evaluation evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 		String speciesQname = evaluation.getSpeciesQname();
-		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
-		IUCNEvaluationTarget target = container.getTarget(speciesQname);
+		Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		EvaluationTarget target = container.getTarget(speciesQname);
 
 		if (!permissions(req, target, null)) {
 			throw new IllegalAccessException();
@@ -84,18 +85,17 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		model.addStatement(lastModifiedStatement);
 		model.addStatement(lastModifiedByStatement);
 
-		evaluation.setIncompletelyLoaded(true);
 		container.setEvaluation(evaluation);
 
 		getSession(req).setFlashSuccess("Indeksi tallennettu!");
 
-		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
+		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear());
 	}
 
 	private String editNotes(boolean indexAdded) {
 		return indexAdded ? 
-				IUCNEvaluation.INDEX_CHANGE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy") : 
-					IUCNEvaluation.INDEX_REMOVE_NOTES + IUCNEvaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
+				Evaluation.INDEX_CHANGE_NOTES + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy") : 
+					Evaluation.INDEX_REMOVE_NOTES + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 	}
 
 }

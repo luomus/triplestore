@@ -2,13 +2,13 @@ package fi.luomus.triplestore.taxonomy.iucn.model;
 
 public class Remark implements Comparable<Remark> {
 
-	private final int id;
-	private final IUCNEvaluationTarget target;
+	private final long id;
+	private final EvaluationTarget target;
 	private final String date;
 	private final String remark;
 	private final String personName;
 	
-	public Remark(int id, IUCNEvaluationTarget target, String date, String remark, String personName) {
+	public Remark(long id, EvaluationTarget target, String date, String remark, String personName) {
 		this.id = id;
 		this.target = target;
 		this.date = date;
@@ -17,7 +17,7 @@ public class Remark implements Comparable<Remark> {
 		if (id <= 0) throw new IllegalStateException("Id is " + id);
 	}
 
-	public IUCNEvaluationTarget getTarget() {
+	public EvaluationTarget getTarget() {
 		return target;
 	}
 
@@ -40,18 +40,18 @@ public class Remark implements Comparable<Remark> {
 		return personName;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
 	@Override
 	public int compareTo(Remark o) {
-		return Integer.valueOf(id).compareTo(o.getId());
+		return Long.valueOf(id).compareTo(o.getId());
 	}
 
 	@Override
 	public int hashCode() {
-		return id;
+		return Long.valueOf(id).hashCode();
 	}
 
 	@Override

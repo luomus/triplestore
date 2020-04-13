@@ -20,34 +20,25 @@
 			
 			<label>As</label>
 			<select name="sendAsType" id="sendAsType">
-				<#if !taxon.hasTreeRelatedCriticalData()>
+				<#if taxon.allowsMoveAsChild()>
 					<option value="CHILD">child</option>
-				<#else>
-					<option disabled="disabled" value="CHILD">Child</option>
 				</#if>
-
-				<#assign disabled=""/><#if taxon.hasCriticalData()><#assign disabled=" disabled=\"disabled\" "/></#if>
-				<option ${disabled} value="BASIONYM">Basionym</option>
-				<option ${disabled} value="OBJECTIVE">Objective synonym</option>
-				<option ${disabled} value="SUBJECTIVE">Subjective synonym</option>
-				<option ${disabled} value="HOMOTYPIC">Homotypic synonym</option>
-				<option ${disabled} value="HETEROTYPIC">Heterotypic synonym</option>
-				<option ${disabled} value="ALTERNATIVE">Alternative name</option>
-				<option ${disabled} value="SYNONYM">Synonym</option>
-				<option ${disabled} value="MISSPELLED">Misspelled name</option>
-				<option ${disabled} value="ORTHOGRAPHIC">Orthographic variant</option>
-				<option ${disabled} value="UNCERTAIN">Uncertain synonym</option>
-				<option ${disabled} value="MISAPPLIED">Misapplied name</option>
+				
+				<#if taxon.allowsMoveAsSynonym()>
+				<option value="BASIONYM">Basionym / Original combination</option>
+				<option value="OBJECTIVE">Objective synonym</option>
+				<option value="SUBJECTIVE">Subjective synonym</option>
+				<option value="HOMOTYPIC">Homotypic synonym</option>
+				<option value="HETEROTYPIC">Heterotypic synonym</option>
+				<option value="ALTERNATIVE">Alternative name</option>
+				<option value="SYNONYM">Synonym</option>
+				<option value="MISSPELLED">Misspelled name</option>
+				<option value="ORTHOGRAPHIC">Orthographic variant</option>
+				<option value="UNCERTAIN">Uncertain synonym</option>
+				<option value="MISAPPLIED">Misapplied name</option>
+				</#if>
 			</select>
 			
-			<#if taxon.hasCriticalData()>
-				<div style="display: inline-block; margin-left: 1em;">
-					<span class="ui-icon ui-icon-alert"></span> 
-					Some operations are not permitted 
-					<button id="sendTaxonManageCriticalButton">Manage critical data</button>
-				</div>
-			</#if>
-
 			<br />
 			<label>Of</label>
 			<input type="text" id="newParentIDSelector" name="newParentSelector" /> <span id="newParentIdDisplay"></span><br />

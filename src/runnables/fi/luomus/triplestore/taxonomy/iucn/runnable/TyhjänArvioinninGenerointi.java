@@ -1,6 +1,5 @@
 package fi.luomus.triplestore.taxonomy.iucn.runnable;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,7 +51,7 @@ public class TyhjänArvioinninGenerointi {
 			res = client.execute(post);
 			if (res.getStatusLine().getStatusCode() != 200) throw new Exception(""+ res.getStatusLine().getStatusCode());
 		} finally {
-			res.close();
+			if (res != null) res.close();
 		}
 	}
 
@@ -60,7 +59,7 @@ public class TyhjänArvioinninGenerointi {
 		return new Qname(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
 	}
 
-	private static Set<Qname> taxonIds() throws FileNotFoundException, IOException {
+	private static Set<Qname> taxonIds() {
 		Set<Qname> taxonIds = new HashSet<>();
 		taxonIds.add(new Qname("MX.66198"));
 		return taxonIds;

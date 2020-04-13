@@ -4,8 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -14,11 +20,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
 import fi.luomus.triplestore.service.EditorBaseServlet.Format;
-
-import org.apache.tomcat.jdbc.pool.DataSource;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 public class SearchServiceTests {
 
@@ -30,11 +31,11 @@ public class SearchServiceTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
 	}
 
 	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	public static void tearDownAfterClass() {
 		dataSource.close();
 	}
 

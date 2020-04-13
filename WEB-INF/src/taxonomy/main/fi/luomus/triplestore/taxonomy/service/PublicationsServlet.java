@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/publications/*", "/taxonomy-editor/publications/add/*"})
 public class PublicationsServlet extends TaxonomyEditorBaseServlet {
@@ -16,6 +16,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 		if (req.getRequestURI().endsWith("/publications")) {
 			responseData.setData("publications", getTaxonomyDAO().getPublicationsForceReload());
@@ -27,7 +28,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		String qname = getQname(req);
 		Publication publication = getTaxonomyDAO().getPublicationsForceReload().get(qname);
 		if (publication == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("publications-edit").setData("action", "modify").setData("publication", publication);
 	}
@@ -38,6 +39,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 		Qname qname = addNew ? null : new Qname(getQname(req));
@@ -53,11 +55,10 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		
 		if (addNew) {
 			getSession(req).setFlashSuccess("New publication added");
-			return redirectTo(getConfig().baseURL()+"/publications", res);
-		} else {
-			getSession(req).setFlashSuccess("Publication modified");
-			return redirectTo(getConfig().baseURL()+"/publications/"+qname, res);
+			return redirectTo(getConfig().baseURL()+"/publications");
 		}
+		getSession(req).setFlashSuccess("Publication modified");
+		return redirectTo(getConfig().baseURL()+"/publications/"+qname);
 	}
 
 }

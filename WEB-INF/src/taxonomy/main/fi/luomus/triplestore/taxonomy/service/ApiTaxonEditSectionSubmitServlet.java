@@ -1,8 +1,6 @@
 package fi.luomus.triplestore.taxonomy.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +13,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -29,6 +26,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.models.UsedAndGivenStatements;
@@ -36,6 +34,9 @@ import fi.luomus.triplestore.models.UsedAndGivenStatements.Used;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.models.ValidationData;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.service.EvaluationEditServlet;
+import fi.luomus.triplestore.taxonomy.iucn.service.EvaluationEditServlet.Habitats;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.taxonomy.models.TaxonValidator;
 import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
@@ -57,10 +58,9 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String EN = "en";
 	private static final String SV = "sv";
 	private static final String FI = "fi";
-	private static final String IS_PART_OF_INFORMAL_TAXON_GROUP = "MX.isPartOfInformalTaxonGroup";
-	private static final Predicate IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE = new Predicate(IS_PART_OF_INFORMAL_TAXON_GROUP);
-	private static final Set<String> VERNACULAR_NAMES = Utils.set("MX.vernacularName", "MX.alternativeVernacularName", "MX.obsoleteVernacularName");
-	private static final Set<String> FI_SV = Utils.set(FI, SV);
+	private static final String RU = "ru";
+	private static final String SE = "se";
+	public static final Set<String> SUPPORTED_LOCALES = Utils.set(FI, SV, EN, RU, SE);
 
 	@Override
 	protected Set<User.Role> allowedRoles() {
@@ -69,6 +69,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = new ResponseData().setViewName("api-taxoneditsubmit");
 		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
 		String newPublicationCitation = req.getParameter("newPublicationCitation");
@@ -76,13 +77,14 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String alteredScientificName = req.getParameter("alteredScientificName");
 		String alteredAuthor = req.getParameter("alteredAuthor");
 		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
+		boolean storeHabitats = storeHabitats(req);
+		String savedLocale = savedLocale(req);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
 		RdfProperties properties = dao.getProperties(MX_TAXON);
-		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties);
-		addParentInformalGroupsIfGiven(usedAndGivenStatements, taxonomyDAO);
+		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties, savedLocale);
 
 		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
 		if (!editingDescriptionFields) {
@@ -111,8 +113,10 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 
-		if (storeBiogeographicalProvinceOccurrences && !editingDescriptionFields) {
+		if (storeBiogeographicalProvinceOccurrences) {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
+		} else if (storeHabitats) {
+			storeHabitats(req, dao, taxon);
 		} else {
 			dao.store(new Subject(taxonQname), usedAndGivenStatements);
 		}
@@ -130,10 +134,25 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return responseData.setData(VALIDATION_RESULTS, validationData);
 	}
 
+	private String savedLocale(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return null;
+		for (String locale : SUPPORTED_LOCALES) {
+			if (classes.contains("locale___"+locale)) return locale;
+		}
+		return null;
+	}
+
 	private boolean storeBiogeographicalProvinceOccurrences(HttpServletRequest req) {
 		String classes = req.getParameter("classes");
 		if (!given(classes)) return false;
 		return classes.contains("biogeographicalProvinceOccurrences");
+	}
+
+	private boolean storeHabitats(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return false;
+		return classes.contains("habitats");
 	}
 
 	private static Set<Qname> supportedAreas = null;
@@ -175,35 +194,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		usedAndGivenStatements.addStatement(new Statement(AUTHOR_PREDICATE, new ObjectLiteral(alteredAuthor)));
 	}
 
-	private void addParentInformalGroupsIfGiven(UsedAndGivenStatements usedAndGivenStatements, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		List<Statement> newStatements = new ArrayList<>();
-		for (Statement s : usedAndGivenStatements.getGivenStatements()) {
-			if (s.getPredicate().toString().equals(IS_PART_OF_INFORMAL_TAXON_GROUP)) {
-				newStatements.addAll(parentInformalGroups(s, taxonomyDAO));
-			}
-		}
-		for (Statement s : newStatements) {
-			usedAndGivenStatements.addStatement(s);
-		}
-	}
-
-	private Collection<Statement> parentInformalGroups(Statement s, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		if (!s.isResourceStatement()) return Collections.emptyList();
-		if (!given(s.getObjectResource().getQname())) return Collections.emptyList();
-
-		List<Statement> parentStatements = new ArrayList<>();
-		String informalGroupId = s.getObjectResource().getQname();
-		InformalTaxonGroup group = taxonomyDAO.getInformalTaxonGroups().get(informalGroupId);
-		if (group == null) return Collections.emptyList();
-
-		while (group.hasParent()) {
-			parentStatements.add(new Statement(IS_PART_OF_INFORMAL_TAXON_GROUP_PREDICATE, new ObjectResource(group.getParent())));
-			group = taxonomyDAO.getInformalTaxonGroups().get(group.getParent().toString());
-			if (group == null) break;
-		}
-		return parentStatements;
-	}
-
 	private boolean editingDescriptionFields(UsedAndGivenStatements usedAndGivenStatements, TriplestoreDAO dao) {
 		if (usedAndGivenStatements.getUsed().isEmpty()) return false;
 		Set<String> descriptionFields = getDescriptionFields(dao);
@@ -216,13 +206,30 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	private Set<String> getDescriptionFields(TriplestoreDAO dao) {
 		Set<String> fieldQnames = new HashSet<>();
-		Map<String, List<RdfProperty>> descriptionVariables = TaxonDescriptionsServlet.cachedDescriptionGroupVariables.get(dao);
+		Map<String, List<RdfProperty>> descriptionVariables = dao.getDescriptionGroupVariables();
 		for (List<RdfProperty> properties : descriptionVariables.values()) {
 			for (RdfProperty p : properties) {
 				fieldQnames.add(p.getQname().toString());
 			}
 		}
 		return fieldQnames;
+	}
+
+	private void storeHabitats(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon) throws Exception {
+		Habitats habitats = EvaluationEditServlet.parseHabitats(req);
+		UsedAndGivenStatements statements = new UsedAndGivenStatements();
+		statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
+		statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
+		if (habitats.primaryHabitat != null && given(habitats.primaryHabitat.getHabitat())) {
+			dao.store(habitats.primaryHabitat);
+			statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(habitats.primaryHabitat.getId())));
+			for (HabitatObject h : habitats.secondaryHabitats) {
+				if (!given(h.getHabitat())) continue;
+				dao.store(h);
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+			}
+		}
+		dao.store(new Subject(taxon.getQname()), statements);
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -236,7 +243,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!given(value)) continue;
 			parseOccurrence(parameterName, value, occurrences);
 		}
-
 		taxonomyDAO.addOccurrences(taxon);
 		dao.store(taxon.getOccurrences(), occurrences, supportedAreas);
 	}
@@ -245,6 +251,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		// MO.occurrence___ML.xxx___status
 		// MO.occurrence___ML.xxx___notes
 		// MO.occurrence___ML.xxx___year
+		// MO.occurrence___ML.xxx___specimenURI
 		Qname areaQname = splitAreaQname(parameterName);
 		String field = splitField(parameterName);
 		Occurrence occurrence = occurrences.getOccurrence(areaQname);
@@ -257,8 +264,19 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			occurrence.setNotes(value);
 		} else if (field.equals("year")) {
 			occurrence.setYear(parseYear(value));
+		} else if (field.equals("specimenURI")) {
+			occurrence.setSpecimenURI(parseURI(value));
 		}
 		occurrences.setOccurrence(occurrence);
+	}
+
+	private URI parseURI(String value) {
+		if (!given(value)) return null;
+		try {
+			return new URI(value);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	private Integer parseYear(String value) {
@@ -292,7 +310,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		return publication;
 	}
 
-	private UsedAndGivenStatements parseUsedAndGivenStatements(HttpServletRequest req, RdfProperties properties) {
+	private UsedAndGivenStatements parseUsedAndGivenStatements(HttpServletRequest req, RdfProperties properties, String savedLocale) {
 		UsedAndGivenStatements usedAndGivenStatements = new UsedAndGivenStatements();
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
@@ -317,16 +335,19 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			if (!properties.hasProperty(predicate.getQname())) continue;
 			RdfProperty predicateProperty = properties.getProperty(predicate);
 
-			// The UI should submit all information for this predicate in this context for all languages
-			usedAndGivenStatements.addUsed(predicate, context, null);
-			usedAndGivenStatements.addUsed(predicate, context, FI);
-			usedAndGivenStatements.addUsed(predicate, context, SV);
-			usedAndGivenStatements.addUsed(predicate, context, EN);
+			if (savedLocale != null) {
+				usedAndGivenStatements.addUsed(predicate, context, savedLocale);
+			} else {
+				// The UI should submit all information for this predicate in this context for all locales
+				usedAndGivenStatements.addUsed(predicate, context, null);
+				for (String locale : SUPPORTED_LOCALES) {
+					usedAndGivenStatements.addUsed(predicate, context, locale);
+				}
+			}
 
 			for (String value : values) {
 				if (!given(value)) continue;
 				if (predicateProperty.isLiteralProperty()) {
-					value = cleanPossibleVernacularName(parameterName, langcode, value);
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value, langcode), context));
 				} else {
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value), context));
@@ -334,17 +355,6 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 		return usedAndGivenStatements;
-	}
-
-	private String cleanPossibleVernacularName(String parameterName, String langcode, String value) {
-		if (VERNACULAR_NAMES.contains(parameterName)) {
-			if (FI_SV.contains(langcode)) {
-				return value.toLowerCase();
-			} else if (EN.equals(langcode)) {
-				return Utils.upperCaseFirst(value);
-			}
-		}
-		return value;
 	}
 
 }

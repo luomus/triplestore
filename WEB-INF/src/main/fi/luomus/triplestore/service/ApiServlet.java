@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.jena.riot.RDFFormat;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -52,7 +53,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Set<Qname> qnames = new HashSet<>(getQnames(req));
 		if (qnames.isEmpty()) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
@@ -72,18 +73,17 @@ public class ApiServlet extends EditorBaseServlet {
 		try {
 			response = get(qnames, resultType, format, dao);
 		} catch (TooManyResultsException e) {
-			return redirectTo403(res);
+			return status403(res);
 		}
 
 		if (response == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
+			return jsonResponse(response);
 		}
+		return rdfResponse(response);
 	}
 
 	public static String get(Qname qname, ResultType resultType, Format format, TriplestoreDAO dao) throws Exception {
@@ -113,9 +113,8 @@ public class ApiServlet extends EditorBaseServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private static String specialResultTypeRDF(Set<Qname> qnames, ResultType resultType, Format format, TriplestoreDAO dao) throws TooManyResultsException, Exception {
@@ -133,37 +132,37 @@ public class ApiServlet extends EditorBaseServlet {
 	}
 
 	protected static String generateRdf(Collection<Model> models, Format format) {
-		String language = FORMAT_TO_RDF_LANG_MAPPING.get(format);
+		RDFFormat language = FORMAT_TO_RDF_LANG_MAPPING.get(format);
 		if (language == null) throw new UnsupportedOperationException("Unknown language for " + format);
-		com.hp.hpl.jena.rdf.model.Model jenaModel = new InternalModelToJenaModelConverter(models).getJenaModel();
-		String rdfXml = JenaUtils.getRdf(jenaModel, language);
+		org.apache.jena.rdf.model.Model jenaModel = new InternalModelToJenaModelConverter(models).getJenaModel();
+		String rdfXml = JenaUtils.getSerialized(jenaModel, language);
 		return rdfXml;
 	}
 
-	private static final Map<Format, String> FORMAT_TO_RDF_LANG_MAPPING; 
+	private static final Map<Format, RDFFormat> FORMAT_TO_RDF_LANG_MAPPING; 
 	static {
-		FORMAT_TO_RDF_LANG_MAPPING = new HashMap<Format, String>();
+		FORMAT_TO_RDF_LANG_MAPPING = new HashMap<>();
 		for (Format format : Format.values()) {
 			if (format == Format.JSONP) continue;
 			if (format == Format.JSON) {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML-ABBREV");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_ABBREV);
 				continue;
 			}
 			if (format.toString().endsWith("ABBREV")) {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML-ABBREV");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_ABBREV);
 			} else {
-				FORMAT_TO_RDF_LANG_MAPPING.put(format, "RDF/XML");
+				FORMAT_TO_RDF_LANG_MAPPING.put(format, RDFFormat.RDFXML_PLAIN);
 			}
 		}
 	}
 
 	private static final Map<String, ResultType> RESULT_TYPE_MAPPING;
 	static {
-		RESULT_TYPE_MAPPING = new HashMap<String, ResultType>();
+		RESULT_TYPE_MAPPING = new HashMap<>();
 		for (ResultType resultType : ResultType.values()) {
 			RESULT_TYPE_MAPPING.put(resultType.toString().toUpperCase(), resultType);
 		}
-	};
+	}
 
 	private ResultType getResultType(HttpServletRequest req) {
 		String resultType = req.getParameter("resulttype");
@@ -177,17 +176,16 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = new Qname(getQname(req));
 		if (!qname.isSet()) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		Format format = getFormat(req);
 
 		String response = delete(qname, format, getTriplestoreDAO());
 
 		if (jsonRequest(format)) {
-			return jsonResponse(response, res);
-		} else {
-			return rdfResponse(response, res);
+			return jsonResponse(response);
 		}
+		return rdfResponse(response);
 	}
 
 	public static String delete(Qname qname, Format format, TriplestoreDAO dao) throws Exception {
@@ -199,9 +197,8 @@ public class ApiServlet extends EditorBaseServlet {
 			JSONObject jsonObject = XML.toJSONObject(rdf);
 			String json = jsonObject.toString();
 			return json;
-		} else {
-			return rdf;
 		}
+		return rdf;
 	}
 
 	private static String generateRdf(Model model, Format format) {
@@ -217,7 +214,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = new Qname(getQname(req));
 		if (!qname.isSet()) {
-			return redirectTo500(res);
+			return status500(res);
 		}
 		Format format = getFormat(req);
 
@@ -265,9 +262,12 @@ public class ApiServlet extends EditorBaseServlet {
 	public static void put(Qname qname, String data, Format format, TriplestoreDAO dao) throws Exception {
 		Model model = null;
 		if (format == Format.RDFXMLABBREV || format == Format.RDFXML) {
-			model = new Model(data);
+			model = Model.fromRdf(data);
 		} else {
 			throw new UnsupportedOperationException("Not yet implemented for format: " + format.toString());
+		}
+		if (!model.getSubject().getQname().equals(qname.toString())) {
+			throw new IllegalArgumentException("Request qname and data subject do not match");
 		}
 		if (!qname.toString().contains(":")) {
 			dao.addResource(qname);

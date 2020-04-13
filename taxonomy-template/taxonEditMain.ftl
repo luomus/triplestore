@@ -49,16 +49,20 @@
 	<div id="addNewTaxonDialog" class="taxonDialog" title="Add new taxon">
 		<form id="addNewTaxonDialogForm" onsubmit="addNewChildDialogSubmit(); return false;">
 			<input type="hidden" name="newTaxonParent" id="newTaxonParent" />
+			<input type="hidden" name="insertNewTaxonBelow" id="insertNewTaxonBelow" />
 			
 			<label>Parent</label>
 			<span id="newTaxonParentName">parent</span>
 			<br />
+			
 			<label for="newTaxonScientificName">Scientific name</label>
 			<input type="text" id="newTaxonScientificName" name="newTaxonScientificName" /> 
 			<br />
+			
 			<label for="newTaxonAuthor">Author</label>
 			<input type="text" id="newTaxonAuthor" name="newTaxonAuthor" />
 			<br />
+			
 			<label for="newTaxonTaxonrank">Taxon rank</label>
 			<select id="allTaxonRanksSelect" class="hidden"> 
 				<option value=""></option>
@@ -68,8 +72,35 @@
 			</select>
 			<span id="taxonRankSelectPlaceholder">&nbsp;</span>
 			<br />
+			
+			<hr />
+			Primary vernacular name <br />
+			<label for="newTaxonNameFi">FI</label>
+			<input type="text" id="newTaxonNameFi" name="newTaxonNameFi" />
+			<br />
+			
+			<label for="newTaxonNameSv">SV</label>
+			<input type="text" id="newTaxonNameSv" name="newTaxonNameSv" />
+			<br />
+			
+			<label for="newTaxonNameEn">EN</label>
+			<input type="text" id="newTaxonNameEn" name="newTaxonNameEn" />
+			<br />
+			
+			<hr />
+			
+			<@label "MX.finnish" />
+	    	<select class="finnish" name="MX.finnish">
+	    		<option value="">&nbsp;</option>
+	    		<option value="true" <#if taxon.finnish>selected="selected"</#if>>Yes</option>
+	    	</select>
+			<@labeledSelect "MX.occurrenceInFinland" "" />
+			<@labeledSelect "MX.typeOfOccurrenceInFinland" "" />
+			
+			<hr />
+			
 			<input type="submit" class="button addButton" value="Add" />
-			<p class="important info">IMPORTANT: Before adding a new taxon into the checklist, make sure it is not present by some other name!</p>
+			<p class="important info">IMPORTANT: Before adding a new taxon into the checklist, make sure it is not present by some other name.</p>
 		</form>
 	</div>
 	
@@ -81,7 +112,7 @@
 			<br />
 			<label for="synonymType">Type of relationship</label>
 			<select name="synonymType" id="synonymType">
-				<option value="BASIONYM">Basionym</option>
+				<option value="BASIONYM">Basionym / Original combination</option>
 				<option value="OBJECTIVE">Objective synonym</option>
 				<option value="SUBJECTIVE">Subjective synonym</option>
 				<option value="HOMOTYPIC">Homotypic synonym</option>
@@ -102,6 +133,7 @@
 						<th>Scientific name</th>
 						<th>Authors</th>
 						<th>Rank</th>
+						<th>Type of relationship notes</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -116,6 +148,7 @@
 								</#list>
 							</select>
 					 	</td>
+					 	<td><input placeholder="In english" name="notes___1" class="addNewSynonymNotes" /></td>
 					</tr>
 				</tbody>
 			</table>
@@ -124,7 +157,7 @@
 			<input type="submit" class="button addButton" value="Add synonyms"  />
 			<br /><br />
 			<ul class="info">
-				<li><b>Basionym:</b> The first name under which this taxon was described.</li>
+				<li><b>Basionym / Original combination:</b> The first name under which this taxon was described.</li>
 				<li><b>Objective/Homotypic:</b> Name based on same type specimen.</li>
 				<li><b>Subjective/Heterotypic:</b> Name not based on same type specimen.</li>
 				<li><b>Alternative:</b> Alternative valid name (not synonym).</li>

@@ -16,27 +16,27 @@ public abstract class ApiBaseServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData notAuthorizedRequest(HttpServletRequest req, HttpServletResponse res) {
-		return redirectTo403(res);
+		return status403(res);
 	}
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo500(res);
+		return status500(res);
 	}
 	
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo500(res);
+		return status500(res);
 	}
 	
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo500(res);
+		return status500(res);
 	}
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo500(res);
+		return status500(res);
 	}
 	
 	@Override

@@ -10,20 +10,21 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/remarks/*"})
 public class RemarksServlet extends EvaluationEditServlet {
 
 	private static final long serialVersionUID = -7749268274655196771L;
-	private static final Predicate REMARKS_PREDICATE = new Predicate(IUCNEvaluation.REMARKS);
+	private static final Predicate REMARKS_PREDICATE = new Predicate(Evaluation.REMARKS);
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		String evaluationId = req.getParameter("evaluationId");
 		String remarks = req.getParameter(REMARKS_PREDICATE.getQname());
@@ -32,10 +33,10 @@ public class RemarksServlet extends EvaluationEditServlet {
 		Model model = dao.get(evaluationId);
 		if (model.isEmpty()) throw new IllegalStateException("No model for evaluation " + evaluationId);
 
-		IUCNEvaluation evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
+		Evaluation evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 		String speciesQname = evaluation.getSpeciesQname();
-		IUCNContainer container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
-		IUCNEvaluationTarget target = container.getTarget(speciesQname);
+		Container container = getTaxonomyDAO().getIucnDAO().getIUCNContainer();
+		EvaluationTarget target = container.getTarget(speciesQname);
 
 		if (given(remarks)) {
 			String userFullname = getUser(req).getFullname();
@@ -47,8 +48,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			dao.insert(subject, statement);
 
 			model = dao.get(evaluationId); // must get model again for added statement to have a statement id
-			evaluation = new IUCNEvaluation(model, dao.getProperties(IUCNEvaluation.EVALUATION_CLASS));
-			evaluation.setIncompletelyLoaded(true);
+			evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 			container.setEvaluation(evaluation);
 			container.addRemark(target, evaluation);
 			getSession(req).setFlashSuccess("Kommentit tallennettu!");
@@ -59,7 +59,6 @@ public class RemarksServlet extends EvaluationEditServlet {
 			if (found) {
 				// important not to delete statements that are not found from the model.. they could be any statements
 				dao.deleteStatement(id);
-				evaluation.setIncompletelyLoaded(true);
 				container.setEvaluation(evaluation);
 				container.removeRemark(target, id);
 				getSession(req).setFlashSuccess("Kommentti poistettu!");
@@ -70,7 +69,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			getSession(req).setFlashSuccess("Ei mitään tallennettavaa!");
 		}
 		
-		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear(), res);
+		return redirectTo(getConfig().baseURL()+"/iucn/species/"+speciesQname+"/"+evaluation.getEvaluationYear());
 	}
 
 }

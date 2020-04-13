@@ -1,5 +1,9 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -10,10 +14,6 @@ import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @WebServlet(urlPatterns = {"/taxonomy-editor/checklists/*", "/taxonomy-editor/checklists/add/*"})
 public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 
@@ -21,6 +21,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 		if (req.getRequestURI().endsWith("/checklists")) {
 			responseData.setData("checklists", getTaxonomyDAO().getChecklistsForceReload());
@@ -32,7 +33,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		String qname = getQname(req);
 		Checklist checklist = getTaxonomyDAO().getChecklistsForceReload().get(qname);
 		if (checklist == null) {
-			return redirectTo404(res);
+			return status404(res);
 		}
 		return responseData.setViewName("checklists-edit").setData("action", "modify").setData("checklist", checklist);
 	}
@@ -43,6 +44,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MR") : new Qname(getQname(req));
@@ -91,11 +93,10 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 
 		if (addNew) {
 			getSession(req).setFlashSuccess("New checklist added");
-			return redirectTo(getConfig().baseURL()+"/checklists", res);
-		} else {
-			getSession(req).setFlashSuccess("Checklist modified");
-			return redirectTo(getConfig().baseURL()+"/checklists/"+qname, res);
+			return redirectTo(getConfig().baseURL()+"/checklists");
 		}
+		getSession(req).setFlashSuccess("Checklist modified");
+		return redirectTo(getConfig().baseURL()+"/checklists/"+qname);
 	}
 
 	private void checkPermissions(Qname qname, HttpServletRequest req) throws Exception {

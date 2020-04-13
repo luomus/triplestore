@@ -18,12 +18,13 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn", "/taxonomy-editor/iucn/*"})
@@ -33,10 +34,11 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req);
 		int selectedYear = selectedYear(req);
-		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
-		Map<String, IUCNEditors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
+		List<Integer> evaluationYears = years();
+		Map<String, Editors> groupEditors = getTaxonomyDAO().getIucnDAO().getGroupEditors();
 		TriplestoreDAO dao = getTriplestoreDAO();
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
@@ -47,14 +49,22 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("taxonGroups", taxonomyDAO.getInformalTaxonGroups())
 				.setData("taxonGroupRoots", taxonomyDAO.getInformalTaxonGroupRoots())
 				.setData("taxonGroupEditors", groupEditors)
-				.setData("evaluationProperties", dao.getProperties(IUCNEvaluation.EVALUATION_CLASS))
-				.setData("habitatObjectProperties", dao.getProperties(IUCNEvaluation.HABITAT_OBJECT_CLASS))
-				.setData("endangermentObjectProperties", dao.getProperties(IUCNEvaluation.ENDANGERMENT_OBJECT_CLASS))
+				.setData("evaluationProperties", iucnDAO.getEvaluationProperties())
+				.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
+				.setData("endangermentObjectProperties", dao.getProperties(Evaluation.ENDANGERMENT_OBJECT_CLASS))
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)))
+				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 				.setData("downloads", getCompletedDownloads());
+	}
+
+	private List<Integer> years() throws Exception {
+		List<Integer> years = new ArrayList<>();
+		for (EvaluationYear y : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
+			years.add(y.getYear());
+		}
+		return years;
 	}
 
 	private List<String> getCompletedDownloads() {
@@ -75,7 +85,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	protected int selectedYear(HttpServletRequest req) throws Exception {
-		List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears(); 
+		List<Integer> evaluationYears = years(); 
 		String selectedYearParam = getId(req);
 		if (!given(selectedYearParam)) {
 			return getDraftYear(evaluationYears);
@@ -85,7 +95,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 			if (!evaluationYears.contains(selectedYear)) throw new IllegalArgumentException();
 			return selectedYear;
 		} catch (Exception e) {
-			return getDraftYear(getTaxonomyDAO().getIucnDAO().getEvaluationYears());
+			return getDraftYear(years());
 		}
 	}
 
@@ -96,7 +106,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 		try {
 			int selectedYear = Integer.valueOf(selectedYearParam);
-			List<Integer> evaluationYears = getTaxonomyDAO().getIucnDAO().getEvaluationYears();
+			List<Integer> evaluationYears = years();
 			if (!evaluationYears.contains(selectedYear)) throw new IllegalArgumentException();
 			return selectedYear;
 		} catch (Exception e) {
@@ -104,7 +114,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		}
 	}
 
-	private int getDraftYear(List<Integer> allYears) throws Exception {
+	private int getDraftYear(List<Integer> allYears) {
 		return Iterables.getLast(allYears);
 	}
 

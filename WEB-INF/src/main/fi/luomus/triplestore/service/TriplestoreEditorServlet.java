@@ -31,6 +31,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = super.initResponseData(req);
 
 		History history = (History) getSession(req).getObject("history");
@@ -87,6 +88,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		String qname = getQname(req);
 		try {
 			return saveAndRedirect(req, qname);
@@ -95,9 +97,8 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			getErrorReporter().report("Saving " + qname, e);
 			if (given(qname)) {
 				return redirectToGet(qname);
-			} else {
-				return redirectTo(getConfig().baseURL()+"/editor", res);
 			}
+			return redirectTo(getConfig().baseURL()+"/editor");
 		}
 	}
 
@@ -134,9 +135,8 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 	private RdfProperty getPropertyForStatement(RdfProperties properties, Statement s, TriplestoreDAO dao) throws Exception {
 		if (properties.hasProperty(s.getPredicate().getQname())) {
 			return properties.getProperty(s.getPredicate());
-		} else {
-			return dao.getProperty(s.getPredicate());	
 		}
+		return dao.getProperty(s.getPredicate());
 	}
 
 	protected JSONObject validate(Model model, TriplestoreDAO dao) throws Exception {
@@ -149,14 +149,14 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			if (s.isResourceStatement()) {
 				validateResourceStatement(s, p, dao, validationResponse);
 			} else {
-				validateLiteralStatement(s, p, dao, validationResponse);
+				validateLiteralStatement(s, p, validationResponse);
 			}
 		}
 
 		return validationResponse;
 	}
 
-	private void validateLiteralStatement(Statement s, RdfProperty p, TriplestoreDAO dao, JSONObject validationResponse) throws Exception {
+	private void validateLiteralStatement(Statement s, RdfProperty p, JSONObject validationResponse) {
 		if (!p.isLiteralProperty()) {
 			if (p.hasRange()) {
 				validationError("Objectliteral given for " + s.getPredicate().getQname() + ", which range is " + p.getRange().getQname(), validationResponse);
@@ -294,12 +294,11 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		String rdfType = model.getType();
 		if (rdfType != null) {
 			return dao.getProperties(rdfType);
-		} else {
-			return new RdfProperties();
 		}
+		return new RdfProperties();
 	}
 
-	protected ResponseData mainPage(ResponseData responseData) throws Exception {
+	protected ResponseData mainPage(ResponseData responseData) {
 		return responseData.setViewName("main");
 	}
 }

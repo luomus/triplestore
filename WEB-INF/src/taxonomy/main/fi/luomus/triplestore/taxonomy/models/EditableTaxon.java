@@ -1,8 +1,10 @@
 package fi.luomus.triplestore.taxonomy.models;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
@@ -10,12 +12,12 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.RedListStatus;
 import fi.luomus.commons.taxonomy.Synonyms;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.taxonomy.dao.CachedLiveLoadingTaxonContainer;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNContainer;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.Container;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 public class EditableTaxon extends Taxon {
@@ -24,6 +26,8 @@ public class EditableTaxon extends Taxon {
 
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
+	private String primaryHabitatId;
+	private List<String> secondaryHabitatIds;
 
 	public EditableTaxon(Qname qname, CachedLiveLoadingTaxonContainer taxonContainer, ExtendedTaxonomyDAO taxonomyDAO) {
 		super(qname, taxonContainer);
@@ -36,6 +40,11 @@ public class EditableTaxon extends Taxon {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public boolean isHidden() {
+		return super.isMarkedHidden(); // super implementation marks all higher taxa that do not have species as hidden
+	}
+	
 	public boolean allowsAlterationsBy(User user) {
 		if (user.isAdmin()) {
 			return true;
@@ -72,8 +81,8 @@ public class EditableTaxon extends Taxon {
 	}
 
 	@Override
-	public Synonyms getSynonymsContainer() {
-		return super.getSynonymsContainer();
+	public Synonyms getSynonymsContainer() { // change visibility to public
+		return super.getSynonymsContainer(); 
 	}
 
 	public void invalidateSelfAndLinking() {
@@ -86,13 +95,20 @@ public class EditableTaxon extends Taxon {
 
 	private Boolean hasCritical = null;
 
+	public boolean allowsMoveAsSynonym() {
+		return this.getChecklist() == null;
+	}
+
+	public boolean allowsMoveAsChild() {
+		return this.getChecklist() != null && !hasTreeRelatedCriticalData();
+	}
+	
 	public boolean hasCriticalData() {
 		if (hasCritical == null) hasCritical = initHasCritical();
 		return hasCritical;
 	}	
 
 	public boolean hasTreeRelatedCriticalData() {
-		if (this.hasExplicitlySetExpertsOrEditors()) return true;
 		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
 		return false;
 	}
@@ -127,6 +143,11 @@ public class EditableTaxon extends Taxon {
 		return getExplicitlySetOccurrenceInFinlandPublications().contains(new Qname(qname));
 	}
 
+	public boolean hasOriginalDescription(String qname) {
+		if (super.getOriginalDescription() == null) return false;
+		return super.getOriginalDescription().toString().equals(qname);
+	}
+
 	public boolean hasExplicitlySetEditor(String qname) {
 		return getExplicitlySetEditors().contains(new Qname(qname));
 	}
@@ -137,11 +158,6 @@ public class EditableTaxon extends Taxon {
 
 	public boolean hasExplicitlySetInformalTaxonGroup(String qname) {
 		return getExplicitlySetInformalTaxonGroups().contains(new Qname(qname));
-	}
-
-	@Override
-	public boolean isFinnish() {
-		return this.isMarkedAsFinnishTaxon();
 	}
 
 	public boolean isDeletable() {
@@ -161,10 +177,10 @@ public class EditableTaxon extends Taxon {
 			return true;
 		}
 		try {
-			IUCNContainer iucnContainer = taxonomyDAO.getIucnDAO().getIUCNContainer();
+			Container iucnContainer = taxonomyDAO.getIucnDAO().getIUCNContainer();
 			iucnContainer.makeSureEvaluationDataIsLoaded();
 			if (!iucnContainer.hasTarget(this.getQname().toString())) return false;
-			IUCNEvaluationTarget target = iucnContainer.getTarget(this.getQname().toString());
+			EvaluationTarget target = iucnContainer.getTarget(this.getQname().toString());
 
 			return hasCriticalIUCNEvaluationStatus(target);
 		} catch (Exception e) {
@@ -173,8 +189,8 @@ public class EditableTaxon extends Taxon {
 	}
 
 
-	private boolean hasCriticalIUCNEvaluationStatus(IUCNEvaluationTarget target) {
-		for (IUCNEvaluation e : target.getEvaluations()) {
+	private boolean hasCriticalIUCNEvaluationStatus(EvaluationTarget target) {
+		for (Evaluation e : target.getEvaluations()) {
 			if (e.isCriticalDataEvaluation()) return true;
 		}
 		return false;
@@ -182,7 +198,7 @@ public class EditableTaxon extends Taxon {
 
 	private boolean hasCriticalIUCNEvaluationStatus(Collection<RedListStatus> statuses) {
 		for (RedListStatus s : statuses) {
-			if (IUCNEvaluation.isCriticalIUCNEvaluation(s.getStatus().toString())) return true;
+			if (Evaluation.isCriticalIUCNEvaluation(s.getStatus().toString())) return true;
 		}
 		return false;
 	}
@@ -191,6 +207,7 @@ public class EditableTaxon extends Taxon {
 		return !this.getAdministrativeStatuses().isEmpty();
 	}
 
+	@Override
 	public boolean hasDescriptions() {
 		return !this.getDescriptions().getContextsWithContentAndLocales().isEmpty();
 	}
@@ -223,6 +240,30 @@ public class EditableTaxon extends Taxon {
 
 	public boolean isIdentifierUsedInDataWarehouse() {
 		return taxonomyDAO.isTaxonIdUsedInDataWarehouse(this.getQname());
+	}
+
+	public String getPrimaryHabitatId() {
+		return primaryHabitatId;
+	}
+
+	public void setPrimaryHabitatId(String primaryHabitatId) {
+		this.primaryHabitatId = primaryHabitatId;
+	}
+
+	public List<String> getSecondaryHabitatIds() {
+		return secondaryHabitatIds;
+	}
+
+	public void setSecondaryHabitatIds(List<String> secondaryHabitatIds) {
+		this.secondaryHabitatIds = secondaryHabitatIds;
+	}
+
+	public Set<String> getHabitatIds() {
+		if (primaryHabitatId == null && secondaryHabitatIds == null) return Collections.emptySet();
+		Set<String> ids = new HashSet<>();
+		if (primaryHabitatId != null) ids.add(primaryHabitatId);
+		if (secondaryHabitatIds != null) ids.addAll(secondaryHabitatIds);
+		return ids;
 	}
 
 }

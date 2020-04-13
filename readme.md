@@ -15,6 +15,8 @@ For example /triplestore/taxon-search?q=susi&onlyExact=true&format=json&v=2
 * onlySpecies - true|false, only species or subspecies etc (default false)
 * onlyFinnish - true|false, only finnish taxa (default false)
 
+Returns HTTP 200 on success, HTTP 500 on failure.
+
 Triplestore-API
 ===============
 
@@ -22,7 +24,7 @@ Triplestore-API provides a way to query and modify contents of LuOnto database. 
 
 ### Common parameters
 
-For all requests defined bellow (except for taxon-search), you can use these common parameters:
+For all requests defined below (except for taxon-search), you can use these common parameters:
 
 * format - RDFXMLABBREV, RDFXML, JSON_RDFXMLABBREV, JSON_RDFXML (default is RDFXMLABBREV)
 * limit - integer (there is no hard coded maximum; default is 1000)
@@ -112,19 +114,6 @@ To delete a literal statement, give empty resourceliteral ("") as parameter. Thi
 * On error returns HTTP 500
 
 
-## GET /triplestore/taxon-search?q={searchword}
-## GET /triplestore/taxon-search/{searchword}
-
-### Parameters
-* q - The search word
-* depracated: giving search word as path parameter
-* checklist - Qname of checklist, default MR.1 (master checklist)
-* requiredInformalTaxonGroup - One or more informal taxon group Qnames; names matching searchword must belong to one of these groups
-* format - JSON, XML, JSONP
-* v - version (default 1, for format=JSON v=2 is also supported)
-
-Returns HTTP 200 on success, HTTP 500 on failure.
-
 ## GET /triplestore/uri/{namespace}
 
 Get sequence next value for namespace (for example "JA")
@@ -138,7 +127,7 @@ Returns all properties (type=rdf:Property) and their ranges ("deep search") in J
 
 ##Installation
 
-1. Create LuOnto DB user, grant needed privileges (see bellow)
+1. Create LuOnto DB user, grant needed privileges (see below)
 2. Add triplestore-v2.properties to  <catalina.base>/app-conf
 3. Place ojdbc6.jar to <catalina.base>/lib
 4. Add http basic authentication permissions to tomcat-users.xml
@@ -228,20 +217,6 @@ Taxon editor responds from /triplestore/taxonomy-editor
 2. Add triplestore-v2-taxonomyeditor.properties to  <catalina.base>/app-conf
 3. Production enviroment may require allowing cross domain access to Taxon Editor fonts
 
-### tomcat/conf/web.xml - allow cors
-~~~
-   <!-- Allow cross domain access to fonts - This is for taxon editor -->
-    <filter>
-       <filter-name>CorsFilter</filter-name>
-       <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
-     </filter>
-     <filter-mapping>
-       <filter-name>CorsFilter</filter-name>
-       <url-pattern>*.ttf</url-pattern>
-       <url-pattern>*.woff</url-pattern>
-     </filter-mapping>
-~~~
-
 
 ###Example configuration file
 ~~~
@@ -293,7 +268,7 @@ TriplestorePassword =
 DwURL = https://../taxon-use
 
 #Used by IUCN editor
-TaxonomyAPIURL = http://laji.fi/api/taxonomy
+TaxonomyAPIURL = .. api/taxa
 
 ~~~
 

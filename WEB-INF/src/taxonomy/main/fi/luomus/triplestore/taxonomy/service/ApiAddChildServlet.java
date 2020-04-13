@@ -19,6 +19,7 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = initResponseData(req).setViewName("api-addchild");
 		
 		String checklistQname = req.getParameter("checklist");
@@ -26,6 +27,13 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		String scientificName = req.getParameter("scientificName");
 		String author = req.getParameter("author");
 		String rank = req.getParameter("taxonRank");
+		
+		String nameFi = req.getParameter("nameFi");
+		String nameSv = req.getParameter("nameSv");
+		String nameEn = req.getParameter("nameEn");
+		String finnish = req.getParameter("finnish");
+		String occurrenceInFinland = req.getParameter("occurrenceInFinland");
+		String typeOfoccurrenceInFinland = req.getParameter("typeOfoccurrenceInFinland");
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
@@ -40,6 +48,12 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		if (given(rank)) {
 			taxon.setTaxonRank(new Qname(rank));
 		}
+		if (given(nameFi)) taxon.addVernacularName("fi", nameFi);
+		if (given(nameSv)) taxon.addVernacularName("sv", nameSv);
+		if (given(nameEn)) taxon.addVernacularName("en", nameEn);
+		if ("true".equals(finnish)) taxon.setFinnish(true);
+		if (given(occurrenceInFinland)) taxon.setOccurrenceInFinland(new Qname(occurrenceInFinland));
+		if (given(typeOfoccurrenceInFinland)) taxon.addTypeOfOccurrenceInFinland(new Qname(typeOfoccurrenceInFinland));
 		
 		dao.addTaxon(taxon);
 		

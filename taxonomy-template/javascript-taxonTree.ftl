@@ -41,7 +41,7 @@ $(function() {
   		checked: false
 	});
 	
-	$("#taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
+	$("#taxonEditHeader, #taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
 		var value = $(this).attr('title');
 		if (!value) return false;
 		value = value.trim();
@@ -244,8 +244,8 @@ function sortAlphabetically(e) {
 	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
     var listitems = $('li', list);
     listitems.sort(function (a, b) {
-		var compA = $(a).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
-        var compB = $(b).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö');
+		var compA = $(a).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö').replace('×', '').replace(' x ', '');
+        var compB = $(b).find('.taxonWithTools').find('.scientificName').first().text().replace('MX.', 'Ö').replace('×', '').replace(' x ', '');
         return (compA < compB) ? -1 : 1;
     });
     list.append(listitems);
@@ -253,16 +253,17 @@ function sortAlphabetically(e) {
     list.sortable("refresh");
 }
 
-function saveSorting(e) {
+function saveSorting(e, uiCleanup) {
 	var list = $(e).closest('.taxonChilds').find('.childTaxonList');
 	var order = new Array();
 	$(list).find('.taxonWithTools').each(function() {
 		order.push($(this).attr('id'));
 	});
-	list.sortable("destroy");
-	$(e).closest('.sortingControls').hide(300);
-	$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
-	
+	if (uiCleanup) {
+		list.sortable("destroy");
+		$(e).closest('.sortingControls').hide(300);
+		$(e).closest('.taxonChildTools').find('.enableSortingButton').fadeTo(300, 1);
+	}
 	saveOrder(order);
 }
 
@@ -325,7 +326,7 @@ function changeTaxonDragMode() {
 			$(this).append(dropContainer);
 		});
 		taxonTreeGraphs.repaintEverything();
-		$(".taxonWithTools").not(".rootTaxon").draggable({ revert: "invalid", helper: "clone", cursor: 'move' });
+		$(".taxonWithTools").not(".rootTaxon, .synonym").draggable({ revert: "invalid", helper: "clone", cursor: 'move' });
 	} else {
 		$("#taxonTree").find("button, .button, .ui-button").prop("disabled", false).removeClass("ui-state-disabled");
 		$(".taxonDropArea").remove();
@@ -401,6 +402,8 @@ function addNewChild(e) {
 	var parentName = $("#"+parentID).find(".scientificName").first().text();
 	var parentRank = 'MX.' + $("#"+parentID).find(".taxonRank").first().text().replace('[', '').replace(']','');
 	$("#newTaxonParentName").text(parentName + " [" + parentRank.replace('MX.','') + ']');
+	var insertNewTaxonBelow = $(e).closest('.taxonWithTools').attr('id');	
+	if (insertNewTaxonBelow) $("#insertNewTaxonBelow").val(insertNewTaxonBelow);
 	
 	$(".trimmedTaxonRankSelect").remove();
 	$(".speciesQuickButton").remove();
@@ -409,12 +412,12 @@ function addNewChild(e) {
 	taxonRankSelect.addClass('trimmedTaxonRankSelect');
 	taxonRankSelect.show();
 	var showSpeciesQuickLink = false;
-	var bellowGenus = false;
+	var belowGenus = false;
 	if (parentRank !== 'MX.NO RANK!' && parentRank !== '') {
 		var remove = true;
 		taxonRankSelect.find('option').each(function() {
 			if ($(this).prop('value') === '') return true;
-			if ($(this).prop('value') === 'MX.genus') { showSpeciesQuickLink = true; bellowGenus = true; }
+			if ($(this).prop('value') === 'MX.genus') { showSpeciesQuickLink = true; belowGenus = true; }
 			if ($(this).prop('value') === 'MX.species') { showSpeciesQuickLink = false; }
 			if ($(this).prop('value') === parentRank || $(this).prop('value') === 'MX.species') {
 				$(this).remove();
@@ -425,7 +428,7 @@ function addNewChild(e) {
 	}
 	
 	$("#taxonRankSelectPlaceholder").append(taxonRankSelect);
-	if (bellowGenus) {
+	if (belowGenus) {
 		$("#newTaxonScientificName").val(parentName + ' ');
 	}
 	if (showSpeciesQuickLink) {
@@ -745,6 +748,11 @@ $(function() {
 				return false;
 			});
 			
+			$("#taxonToolMenuAddChildBelow").click(function() {
+				addNewChild(this);
+				return false;
+			});
+			
 			$("#taxonToolMenuHide").click(function() {
 				hideTaxon(this);
 				return false;
@@ -783,8 +791,8 @@ $(function() {
 	$(".taxonDialog").dialog({
  		autoOpen: false,
 		modal: true,
-		width: 550,
-		position: { my: "center", at: "top+30%" }
+		width: 880,
+		position: { my: "center", at: "top+50%" }
 	});
         
 	$("#editTaxon").dialog({
@@ -892,18 +900,34 @@ function moveEvaluationDialogSubmit(action) {
 
 function addNewChildDialogSubmit() {
 	if (!$("#addNewTaxonDialogForm").valid()) return false;
-	
-	var checklist = '<#if checklist??>${checklist.qname}</#if>';
 	var parent = $('#newTaxonParent').val();
-	var scientificName = $('#newTaxonScientificName').val();
-	var author = $('#newTaxonAuthor').val();
-	var taxonRank = $('.trimmedTaxonRankSelect').first().val();
-	
 	var taxaOfTaxonContainerOfParent = $("#"+parent+"Children");
 
-	$.post('${baseURL}/api/addchild?checklist='+encodeURIComponent(checklist)+'&parent='+encodeURIComponent(parent)+'&scientificName='+encodeURIComponent(scientificName)+'&author='+encodeURIComponent(author)+'&taxonRank='+encodeURIComponent(taxonRank), function(data) {
+	$.ajax({
+		url: '${baseURL}/api/addchild',
+		type: 'POST',
+		data: {
+			checklist:      '<#if checklist??>${checklist.qname}</#if>',
+			parent:         parent,
+			scientificName: $('#newTaxonScientificName').val(),
+			author:         $('#newTaxonAuthor').val(),
+			taxonRank:      $('.trimmedTaxonRankSelect').first().val(),
+			nameFi:         $('#newTaxonNameFi').val(),
+			nameSv:         $('#newTaxonNameSv').val(),
+			nameEn:         $('#newTaxonNameEn').val(),
+			finnish:        $('#addNewTaxonDialogForm .finnish').val(),
+			occurrenceInFinland:        $('#addNewTaxonDialogForm .occurrenceInFinland').val(),
+			typeOfoccurrenceInFinland:  $('#addNewTaxonDialogForm .typeOfOccurrenceInFinland').val()
+		}
+	}).done(function(data) {
 		var newTaxon = $('<li>'+data+'</li>');
-		taxaOfTaxonContainerOfParent.find('.childTaxonList').append(newTaxon); 
+		var insertNewTaxonBelow = $("#insertNewTaxonBelow").val();
+		if (insertNewTaxonBelow) {
+			$("#"+insertNewTaxonBelow).closest('li').after(newTaxon);
+			saveSorting(newTaxon, false);
+		} else {
+			taxaOfTaxonContainerOfParent.find('.childTaxonList').append(newTaxon);
+		}
 		newTaxon.find('button, .button').button();
 		taxonTreeGraphs.repaintEverything();
 		$("#addNewTaxonDialog").dialog("close");

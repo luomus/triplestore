@@ -19,6 +19,7 @@ import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
+import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
@@ -46,7 +47,7 @@ public class ApiServiceTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER);
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
 	}
 
 	@AfterClass
@@ -134,7 +135,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(new Qname("MX.7"), ResultType.CHILDREN, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
-		Set<String> taxonRanks = new HashSet<String>();
+		Set<String> taxonRanks = new HashSet<>();
 		for (Node child : n.getChildNodes()) {
 			taxonRanks.add(child.getNode("MX.taxonRank").getAttribute("rdf:resource"));
 		}
@@ -186,7 +187,7 @@ public class ApiServiceTests {
 		ApiServlet.put(TEST_RESOURCE_QNAME, data, Format.RDFXML, dao);
 
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
-		assertEquals(Utils.cleanForCompare(data), Utils.cleanForCompare(response));
+		assertEquals(Utils.removeWhitespace(data), Utils.removeWhitespace(response));
 
 		response = ApiServlet.delete(TEST_RESOURCE_QNAME, Format.RDFXML, dao);
 		Node root = new XMLReader().parse(response).getRootNode();
@@ -238,10 +239,10 @@ public class ApiServiceTests {
 
 		// Put    rdfs:label "changed" @ sv for null context
 		predicateQname = "rdfs:label";
-		objectResource = null;
+		//objectResource = null;
 		objectLiteral = "changed";
 		langCode = "sv";
-		contextQname = null;
+		//contextQname = null;
 
 		ApiServlet.put(TEST_RESOURCE_QNAME, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
 		response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
@@ -255,7 +256,7 @@ public class ApiServiceTests {
 
 		// Put  rdfs:label "added" @ sv for context JA.1
 		predicateQname = "rdfs:label";
-		objectResource = null;
+		//objectResource = null;
 		objectLiteral = "added";
 		langCode = "sv";
 		contextQname = "JA.1";
@@ -472,7 +473,7 @@ public class ApiServiceTests {
 		String expected = "Foo";
 		assertEquals(expected, storedLiteral);
 	}
-	
+
 	@Test
 	public void sanitizeLiterals_4() throws Exception {
 		String givenLiteral = "Foo <iframe src=\"http://...\"></a>";
@@ -483,7 +484,7 @@ public class ApiServiceTests {
 		String expected = "Foo </a>";
 		assertEquals(expected, storedLiteral);
 	}
-	
+
 	@Test
 	public void sanitizeLiterals_5() throws Exception {
 		String givenLiteral = "Foo <p>bar";
@@ -494,7 +495,7 @@ public class ApiServiceTests {
 		String expected = "Foo <p>bar</p>";
 		assertEquals(expected, storedLiteral);
 	}
-	
+
 	@Test
 	public void sanitizeLiterals_6() throws Exception {
 		String givenLiteral = "Foo <p>bar</a> ";
@@ -505,35 +506,35 @@ public class ApiServiceTests {
 		String expected = "Foo <p>bar</p>";
 		assertEquals(expected, storedLiteral);
 	}
-	
+
 	@Test
 	public void whitespace_nonbreaking() throws Exception {
 		String nonBreakingChar = String.valueOf(Character.toChars(Character.codePointAt("\u00A0", 0))); 
 		String givenLiteral = nonBreakingChar + " Foo " + nonBreakingChar + " " + nonBreakingChar;
-		
+
 		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);
-		
+
 		String response = ApiServlet.get(TEST_RESOURCE_QNAME, ResultType.NORMAL, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		String storedLiteral = n.getNode(RDF_DESCRIPTION).getNode(MX_ORIGIN_AND_DISTRIBUTION_TEXT).getContents();
 		assertEquals("Foo", storedLiteral);
 	}
-	
+
 	@Test
 	public void testget_properties() throws TooManyResultsException, Exception {
 		Set<Qname> propertyQnames = dao.getSearchDAO().searchQnames(new SearchParams().type("rdf:Property"));
-		
+
 		Collection<Model> models = dao.getSearchDAO().get(propertyQnames, ResultType.DEEP);
 		Set<String> qnames = new HashSet<>();
 		for (Model m : models) {
 			qnames.add(m.getSubject().getQname());
 		}
-		
+
 		assertEquals(true, qnames.contains("MA.roleKotka"));
 		assertEquals(true, qnames.contains("MA.emailAddress"));
 		assertEquals(true, qnames.contains("MA.roleKotkaEnum"));
 		assertEquals(true, qnames.contains("MA.person"));
 		assertEquals(true, qnames.contains("MA.advanced"));
 	}
-	
+
 }

@@ -27,7 +27,7 @@
 			<select name="owner" class="chosen">
 				<option value=""></option>
 				<#list persons?keys as personQname>
-    				<option value="${personQname}" <#if same(personQname, checklist.owner)>selected="selected"</#if> >${persons[personQname].fullname}</option>
+    				<option value="${personQname}" <#if same(personQname, checklist.owner)>selected="selected"</#if> >${persons[personQname].fullname} ${personQname}</option>
 				</#list>
 			</select>
 		</li>

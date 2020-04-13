@@ -22,7 +22,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = 6850858604573984943L;
 
-	public static enum Sixfold { PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION, ADMIN_PRODUCTION, ADMIN_DEVELOPMENT, ABANDONED, UKNOWN };
+	public static enum Sixfold { PUBLIC_DEVELOPMENT, PUBLIC_PRODUCTION, INTERNAL_DEVELOPMENT, INTERNAL_PRODUCTION, ADMIN_PRODUCTION, ADMIN_DEVELOPMENT, ABANDONED, UKNOWN }
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
@@ -32,6 +32,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
 		ResponseData responseData = super.initResponseData(req).setViewName("it-sixfold");
 
 		if ("dependency-graph".equals(req.getParameter("view"))) responseData.setViewName("it-dependency-graph");
@@ -84,7 +85,7 @@ public class InformationSystemsViewerServlet extends EditorBaseServlet {
 			String publicity = getPublicity(system);
 			String slot = resolveSixfoldSlot(state, publicity).toString();
 			if (!systems.containsKey(slot)) {
-				systems.put(slot, new TreeSet<Model>(SYSTEM_COMPARATOR));
+				systems.put(slot, new TreeSet<>(SYSTEM_COMPARATOR));
 			}
 			systems.get(slot).add(system);
 		}

@@ -1,6 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.session.SessionHandler;
+import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -18,8 +21,8 @@ import fi.luomus.triplestore.models.User;
 import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEditors;
-import fi.luomus.triplestore.taxonomy.iucn.model.IUCNEvaluation;
+import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
 
@@ -73,7 +76,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 
 		SessionHandler session = getSession(req);
-		if (session.hasSession() && session.isAuthenticatedFor("triplestore")) {
+		if (session.hasSession() && session.isAuthenticatedFor(getConfig().systemId())) {
 			User user = getUser(session);
 			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
@@ -91,12 +94,21 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
 		responseData.setData("properties", dao.getProperties("MX.taxon"));
 		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
+		responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
 		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 		responseData.setData("nameCleaner", nameCleaner);
 		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
-		responseData.setData("evaluationYears", taxonomyDAO.getIucnDAO().getEvaluationYears());
-		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(IUCNEvaluation.RED_LIST_STATUS)));
+		responseData.setData("evaluationYears", years(taxonomyDAO));
+		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
 		return responseData;
+	}
+
+	private List<Integer> years(ExtendedTaxonomyDAO dao) throws Exception {
+		List<Integer> years = new ArrayList<>();
+		for (EvaluationYear y : dao.getIucnDAO().getEvaluationYears()) {
+			years.add(y.getYear());
+		}
+		return years;
 	}
 
 	public static long getLastAllowedTaxonDeleteTimestamp() {
@@ -117,17 +129,17 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return redirectTo404(res);
+		return status404(res);
 	}
 
 	protected EditableTaxon createTaxon(String scientificName, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -155,7 +167,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	protected boolean hasIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
-		IUCNEditors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
+		Editors editors = getTaxonomyDAO().getIucnDAO().getGroupEditors().get(groupQname);
 		if (editors == null || editors.getEditors().isEmpty()) return false;
 		User user = getUser(req);
 		if (user == null || user.getQname() == null) return false;
