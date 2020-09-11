@@ -422,3 +422,23 @@ table#helpTable img {
 .ui-corner-all {
 	border-radius: 0px;
 }
+
+.helpText {
+	float: right;
+	position: relative;
+}
+
+.ui-tooltip {
+    white-space: pre-line;
+}
+
+.ui-icon-help:after {
+	content: "INFO";
+	display: block;
+	text-indent: 0px;
+	width: 100%;
+	white-space: pre;
+	top: 2px;
+	right: 25px;
+	position: absolute;
+}

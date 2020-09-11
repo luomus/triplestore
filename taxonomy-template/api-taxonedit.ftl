@@ -129,6 +129,16 @@
 <div class="column">
 	
 	<@portletHeader "Primary vernacular names" "" "primaryVernacularNameSection" />
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Nykyisin suositeltu nimi
+				Currently recommended name
+				
+				For example 'muurain', 'metsämänty'
+				
+				Käytetään lajinimihaussa, näytetään lajikortilla otsikossa. 
+				
+				Used in taxon name search, shown on taxon card in title."></span>
+		</div>
 		<table id="vernacularNameTable">
 			<tr>
 				<th>&nbsp;</th>
@@ -224,10 +234,21 @@
 <div class="column">
 	
 	<#if taxon.alternativeVernacularNames.empty>
-		<@portletHeader "Other vernacular names" "initiallyClosed" "multirowSection" />
+		<@portletHeader "Other common names" "initiallyClosed" "multirowSection" />
 	<#else>
-		<@portletHeader "Other vernacular names" "" "multirowSection" />
+		<@portletHeader "Other common names" "" "multirowSection" />
 	</#if>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Yleisesti käytössä olevat nimet. (Esim. tuoreessa kirjallisuudessa käytettävät nimet.)
+			
+				Commonly used names. (Eg names used in recent literature.)
+				
+				For example 'hilla', 'vaahtera', 'juolavehnä'
+				
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortin otsikossa (suluissa).
+				
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card title (in brackets)."></span>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -253,10 +274,21 @@
 	<@portletFooter />	
 	
 	<#if taxon.obsoleteVernacularNames.empty>
-		<@portletHeader "Obsolete vernacular names" "initiallyClosed" "multirowSection" />
+		<@portletHeader "Obsolete common names" "initiallyClosed" "multirowSection" />
 	<#else>
-		<@portletHeader "Obsolete vernacular names" "" "multirowSection" />
+		<@portletHeader "Obsolete common names" "" "multirowSection" />
 	</#if>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Ei-suositellut ja ei enää (pitkään aikaan) yleisesti käytössä olleet nimet. (Esim. 1900-luvulla kirjallisuudessa käytetyt nimet, tai nimet, jotka siirretty toiselle taksonille.)
+			
+				Names not recommended and no longer (for a long time) commonly used. (For example, names used in the literature in the 20th century, or names transferred to another taxon.
+				
+				For example 'lörppösorsa', 'punatatti', 'pientarekukka'
+				
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä.
+				
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab."></span>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -286,6 +318,17 @@
 	<#else>
 		<@portletHeader "Trade names" "" "multirowSection" />
 	</#if>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Nimet joita käytetään oppaissa ja kaupoissa kasvin, sienen yms markkinoinnissa.
+			
+				Names used in books and stores for marketing a plant, mushroom etc.
+				
+				For example 'ankka', 'kukkakaali', 'purovainokas'
+				
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä.
+				
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab."></span>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -311,9 +354,17 @@
 	<@portletFooter />
 	
 	<@portletHeader "AKA names (observation names)" "initiallyClosed" "multirowSection" />
-		<p class="info">AKA names are names that for some reason have been used to report observations but are not valid names (not correct vernacular names, species codes, etc).
-		   For example 'jokin sieni' or 'talitintti'. Adding the name to one taxon as an AKA name allows those observations to be linked with that taxon. 
-		   Unlike other names, AKA names are not used for taxon search.</p>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Nimet joita on käytetty havainnoissa ja joita ei haluta näyttää tai käyttää lajinimihaussa, mutta joilla ilmoitetut havainnot halutaan liittää tähän taksoniin.
+				
+				Names used in observations which we do not want to show or use in taxon name search, but we want to link the observations by these names to this taxon concept. 
+				
+				For example 'jokin sieni', 'talitintti', 'vesilintu'
+				
+				Ei käytetä lajinimihaussa. Ei näytetä lajikortilla. Käytetään ainoastaan havaintojen linkittämiseen.
+				
+				Not used in taxon name search. Not shown on species card. Used only to link observations."></span>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -334,10 +385,15 @@
 	<@portletFooter />	
 
 	<@portletHeader "Observation linking override" "initiallyClosed" "multirowSection" />
-		<p class="info">This feature allows the taxon expert to specify how observations reported using a certain name are linked to the taxonomy.
-		   The name for example can be a valid species name in taxonomy and has had many other alternative meanings → The editor wants to define that the observations
-		   are linked with a higher taxon group instead of the species.
-		   Overriding names are not used for taxon search.</p>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Nimet, jotka ovat jonkin muun taksonikäsitteen valideja nimiä, mutta jolla ilmoitetut havainnot halutaan silti linkittää tähän taksonikäsitteeseen.
+				
+				Names that are valid names of another taxon concept, but we want to link observations reported by these names to this taxon concept.
+				
+				Ei käytetä lajinimihaussa. Ei näytetä lajikortilla. Käytetään ainoastaan havaintojen linkittämiseen.
+				
+				Not used in taxon name search. Not shown on species card. Used only to link observations."></span>
+		</div>
 		<table>
 			<thead>
 				<tr>
@@ -653,6 +709,8 @@
 $(function() {
 
 	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
+	
+	$(".helpText").tooltip();
 	
 	<@taxonImageButton />
 	
