@@ -130,7 +130,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			} catch (Exception e) {
 				throw triplestoreDAO.exception("Loading iucn groups of informal taxon groups", e);
 			}
-		}		
+		}
 	}
 
 	private class IucnGroupsOfTaxonLoader implements SingleObjectCache.CacheLoader<Map<Qname, Set<Qname>>> {
@@ -143,7 +143,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			try {
 				Map<Qname, Set<Qname>> map = new HashMap<>();
 				for (RedListEvaluationGroup group : dao.getRedListEvaluationGroupsForceReload().values()) {
-					for (Qname taxonId : group.getTaxons()) {
+					for (Qname taxonId : group.getTaxa()) {
 						if (!map.containsKey(taxonId)) {
 							map.put(taxonId, new HashSet<Qname>());
 						}
@@ -154,7 +154,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			} catch (Exception e) {
 				throw triplestoreDAO.exception("Loading iucn groups of taxons", e);
 			}
-		}		
+		}
 	}
 
 	private class TaxaWithImagesLoader implements SingleObjectCache.CacheLoader<Set<Qname>> {
@@ -365,7 +365,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	@Override
-	public int getNumberOfTaxons() throws UnsupportedOperationException {
+	public int getNumberOfTaxa() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -374,7 +374,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 		return new Filter() {
 
 			@Override
-			public Set<Qname> getFilteredTaxons(Qname groupId) {
+			public Set<Qname> getFilteredTaxa(Qname groupId) {
 				try {
 					return triplestoreDAO.getSearchDAO().searchQnames(new SearchParams(100, 0).predicate("MX.isPartOfInformalTaxonGroup").object(groupId.toString()));
 				} catch (SQLException e) {
@@ -427,14 +427,14 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	@Override
 	public Set<Qname> getRedListEvaluationGroupsOfInformalTaxonGroup(Qname informalTaxonGroupId) {
-		Set<Qname> set = cachedIucnGroupsOfInformalTaxonGroup.get().get(informalTaxonGroupId); 
+		Set<Qname> set = cachedIucnGroupsOfInformalTaxonGroup.get().get(informalTaxonGroupId);
 		if (set == null) return Collections.emptySet();
 		return set;
 	}
 
 	@Override
 	public Set<Qname> getRedListEvaluationGroupsOfTaxon(Qname taxonId) {
-		Set<Qname> set = cachedIucnGroupsOfTaxon.get().get(taxonId); 
+		Set<Qname> set = cachedIucnGroupsOfTaxon.get().get(taxonId);
 		if (set == null) return Collections.emptySet();
 		return set;
 	}

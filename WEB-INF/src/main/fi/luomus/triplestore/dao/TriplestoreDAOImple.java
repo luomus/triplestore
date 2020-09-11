@@ -98,7 +98,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private static final String DELETE_ALL_PREDICATE_CONTEXT_LANGCODE_STATEMENTS_SQL = "" +
 			" DELETE from "+SCHEMA+".rdf_statementview " +
-			" WHERE subjectname = ? AND predicatename = ? " + 
+			" WHERE subjectname = ? AND predicatename = ? " +
 			" AND coalesce(contextname,'.') = ? AND coalesce(langcodefk,'.') = ? ";
 
 	private static final String CALL_LTKM_LUONTO_ADD_STATEMENT_L = " {CALL "+SCHEMA+".AddStatementL(?, ?, ?, ?, ?, ?)} ";
@@ -110,9 +110,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String CALL_LTKM_LUONTO_ADD_RESOURCE = "{CALL "+SCHEMA+".AddResource(?)}";
 
 	private final static String GET_MODEL_BY_QNAME_SQL = "" +
-			" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid " +  
-			" FROM    "+SCHEMA+".rdf_statementview                                         " + 
-			" WHERE   subjectname = ?                                                      " + 
+			" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid " +
+			" FROM    "+SCHEMA+".rdf_statementview                                         " +
+			" WHERE   subjectname = ?                                                      " +
 			" ORDER BY predicatename                                                       ";
 
 	private final Qname userQname;
@@ -343,7 +343,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		for (Qname parent : group.getSubGroups()) {
 			model.addStatementIfObjectGiven(MVL_HAS_IUCN_SUB_GROUP, parent);
 		}
-		for (Qname taxonId : group.getTaxons()) {
+		for (Qname taxonId : group.getTaxa()) {
 			model.addStatementIfObjectGiven(MVL_INCLUDES_TAXON, taxonId);
 		}
 		for (Qname groupId : group.getInformalGroups()) {
@@ -481,7 +481,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
 		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);
 		String altParent = getValue("altParent", model);
-		Qname rangeQname = range == null ? null : new Qname(range); 
+		Qname rangeQname = range == null ? null : new Qname(range);
 		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
 
 		if (sortOrder != null) {
@@ -694,7 +694,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	@Override
 	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
-		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO"); 
+		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO");
 		Model model = new Model(id);
 		model.setType(MO_OCCURRENCE);
 		model.addStatementIfObjectGiven(MO_TAXON, taxonQname);

@@ -52,7 +52,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			return status404(res);
 		}
 
-		Set<Qname> definingTaxaIds = dao.getTaxonContainer().getInformalGroupFilter().getFilteredTaxons(new Qname(groupId));
+		Set<Qname> definingTaxaIds = dao.getTaxonContainer().getInformalGroupFilter().getFilteredTaxa(new Qname(groupId));
 		List<Taxon> definingTaxa = new ArrayList<>();
 		int i = 0;
 		for (Qname id : definingTaxaIds) {
@@ -62,7 +62,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 					definingTaxa.add(t);
 				}
 			}
-			if (i++ > 30) break; 
+			if (i++ > 30) break;
 		}
 		Collections.sort(definingTaxa);
 
@@ -110,7 +110,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		names.set("sv", Utils.upperCaseFirst(nameSV));
 
 		int order = getSortOrder(req);
-		
+
 		InformalTaxonGroup group = new InformalTaxonGroup(qname, names, order);
 
 		if (req.getParameter("MVL.hasSubGroup") != null) {
@@ -122,7 +122,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		if ("true".equals(req.getParameter("explicitlyDefinedRoot"))) {
 			group.setExplicitlyDefinedRoot(true);
 		}
-		
+
 		triplestoreDAO.storeInformalTaxonGroup(group);
 		getTaxonomyDAO().getInformalTaxonGroupsForceReload();
 
@@ -133,12 +133,12 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		getSession(req).setFlashSuccess("Informal group modified");
 		return redirectTo(getConfig().baseURL()+"/informalGroups/"+qname);
 	}
-	
+
 	private int getSortOrder(HttpServletRequest req) {
 		try {
 			return Integer.valueOf(req.getParameter("sortOrder"));
 		} catch (Exception e) {}
 		return Integer.MAX_VALUE;
 	}
-	
+
 }
