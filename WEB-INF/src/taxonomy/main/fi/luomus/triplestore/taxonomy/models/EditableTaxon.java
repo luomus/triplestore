@@ -9,6 +9,7 @@ import java.util.Set;
 
 import fi.luomus.commons.containers.Content;
 import fi.luomus.commons.containers.rdf.Qname;
+import fi.luomus.commons.taxonomy.PublicInformation;
 import fi.luomus.commons.taxonomy.RedListStatus;
 import fi.luomus.commons.taxonomy.Synonyms;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -44,7 +45,7 @@ public class EditableTaxon extends Taxon {
 	public boolean isHidden() {
 		return super.isMarkedHidden(); // super implementation marks all higher taxa that do not have species as hidden
 	}
-	
+
 	public boolean allowsAlterationsBy(User user) {
 		if (user.isAdmin()) {
 			return true;
@@ -62,7 +63,7 @@ public class EditableTaxon extends Taxon {
 		}
 
 		if (!this.isSynonym()) {
-			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist  
+			return false; // This is a taxon in some checklist: editor has to have permissions to edit this taxon in that checklist
 		}
 
 		Taxon synonymParent = this.getSynonymParent();
@@ -82,7 +83,7 @@ public class EditableTaxon extends Taxon {
 
 	@Override
 	public Synonyms getSynonymsContainer() { // change visibility to public
-		return super.getSynonymsContainer(); 
+		return super.getSynonymsContainer();
 	}
 
 	public void invalidateSelfAndLinking() {
@@ -102,11 +103,11 @@ public class EditableTaxon extends Taxon {
 	public boolean allowsMoveAsChild() {
 		return this.getChecklist() != null && !hasTreeRelatedCriticalData();
 	}
-	
+
 	public boolean hasCriticalData() {
 		if (hasCritical == null) hasCritical = initHasCritical();
 		return hasCritical;
-	}	
+	}
 
 	public boolean hasTreeRelatedCriticalData() {
 		if (this.hasExplicitlySetHigherInformalTaxonGroup()) return true;
@@ -264,6 +265,52 @@ public class EditableTaxon extends Taxon {
 		if (primaryHabitatId != null) ids.add(primaryHabitatId);
 		if (secondaryHabitatIds != null) ids.addAll(secondaryHabitatIds);
 		return ids;
+	}
+
+	private Boolean containsOrIsFinnishTaxon = null;
+
+	@Override
+	@PublicInformation(order=5001)
+	public boolean isFinnish() {
+		if (containsOrIsFinnishTaxon == null) {
+			containsOrIsFinnishTaxon = isFinnish(3);
+		}
+		return containsOrIsFinnishTaxon;
+	}
+
+	private boolean isFinnish(int maxLevelToCheck) {
+		if (this.isMarkedAsFinnishTaxon()) {
+			this.containsOrIsFinnishTaxon = true;
+			return true;
+		}
+
+		maxLevelToCheck--;
+		if (maxLevelToCheck <= 0) return false; // give up -  don't store result to containsOrIsFinnishTaxon
+
+		List<Taxon> children = this.getChildren();
+		if (children.isEmpty()) {
+			this.containsOrIsFinnishTaxon = false;
+			return false;
+		}
+
+		for (Taxon child : children) {
+			if (child.isMarkedAsFinnishTaxon()) {
+				this.containsOrIsFinnishTaxon = true;
+				return true;
+			}
+		}
+
+		if (children.size() > 50) return false; // give up - don't store result to containsOrIsFinnishTaxon
+
+		for (Taxon child : children) {
+			EditableTaxon eChild = (EditableTaxon) child;
+			if (eChild.isFinnish(maxLevelToCheck)) {
+				this.containsOrIsFinnishTaxon = true;
+				return true;
+			}
+		}
+
+		return false; // going through children possibly gave up so don't store result to containsOrIsFinnishTaxon
 	}
 
 }
