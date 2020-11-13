@@ -21,6 +21,7 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH" ("CHEC
     'MX.vernacularName',
     'MX.alternativeVernacularName',
     'MX.obsoleteVernacularName',
+    'MX.colloquialVernacularName',
     'MX.birdlifeCode',
     'MX.euringCode',
     'MX.tradeName'

@@ -353,7 +353,51 @@
 		</table>
 	<@portletFooter />
 	
-	<@portletHeader "AKA names (observation names)" "initiallyClosed" "multirowSection" />
+	<#if taxon.colloquialVernacularNames.empty>
+		<@portletHeader "Colloquial names" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "Colloquial names" "" "multirowSection" />
+	</#if>
+		<div class="helpText">
+			<span class="ui-icon ui-icon-help" title="Epämuodollinen mutta yleisesti käytetty nimi. Nimi, joka on vanhentunut, virallistamaton tai jonka käyttöä ei suositella, mutta jota kuitenkin käytetään tästä taksonista yleisesti.
+			
+				Informal but commonly used name. Name that is outdated, unofficial or non-recommended, but which is still commonly used for this taxon.
+				
+				For example 'päivänkakkara', 'mänty'
+				
+				Käytetään lajinimihaussa ja voi käyttää havaintojen ilmoitukseen, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla epävirallisena. Ei käytetä havaintojen linkitykseen tietovarastossa.
+				
+				Used in taxon name search and can be used to report occurrences, but primary common name is shown (and this name in brackets). This name is shown on taxon card as unofficial name. Not used in data warehouse for linking occurrences to taxonomy."></span>
+		</div>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th> 
+					<th>Language</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list ["fi", "sv", "en"] as localeSelector>
+					<#list taxon.colloquialVernacularNames.forLocale(localeSelector) as colloquialVernacularName>
+						<tr>
+							<td><@input "MX.colloquialVernacularName___${localeSelector}" "off" colloquialVernacularName /></td>
+							<td><@languageSelector localeSelector /></td>
+						</tr>
+					</#list>
+				</#list>
+				<tr>
+					<td><@input "MX.colloquialVernacularName___fi" "off" "" /></td>
+					<td><@languageSelector "fi" /></td>
+				</tr>
+			</tbody>
+		</table>
+	<@portletFooter />
+	
+	<#if !taxon.alsoKnownAsNames?has_content>
+		<@portletHeader "AKA names (observation names)" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "AKA names (observation names)" "" "multirowSection" />
+	</#if>
 		<div class="helpText">
 			<span class="ui-icon ui-icon-help" title="Nimet joita on käytetty havainnoissa ja joita ei haluta näyttää tai käyttää lajinimihaussa, mutta joilla ilmoitetut havainnot halutaan liittää tähän taksoniin.
 				
@@ -384,7 +428,11 @@
 		</table>
 	<@portletFooter />	
 
-	<@portletHeader "Observation linking override" "initiallyClosed" "multirowSection" />
+	<#if !taxon.overridingTargetNames?has_content>
+		<@portletHeader "Observation linking override" "initiallyClosed" "multirowSection" />
+	<#else>
+		<@portletHeader "Observation linking override" "" "multirowSection" />
+	</#if>
 		<div class="helpText">
 			<span class="ui-icon ui-icon-help" title="Nimet, jotka ovat jonkin muun taksonikäsitteen valideja nimiä, mutta jolla ilmoitetut havainnot halutaan silti linkittää tähän taksonikäsitteeseen.
 				
@@ -419,7 +467,7 @@
 		<@labeledInput "MX.birdlifeCode" "off" />
 	<@portletFooter />	
 	
-	  	<@portletHeader "Informal groups" />
+	<@portletHeader "Informal groups" />
 		<#assign headerPrinted = false>
 		<#list taxon.informalTaxonGroups as groupQname>
 			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
