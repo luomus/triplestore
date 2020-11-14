@@ -717,6 +717,8 @@
 	</#if>
 </div>
 </#if>
+
+<#if fullView>
 <div class="column">
 	<@portletHeader "Frequency scoring points" />
 		<@labeledInput "MX.frequencyScoringPoints" />
@@ -751,7 +753,7 @@
 	<@portletFooter />
 </div>
 <div class="clear"></div>
-
+</#if>
 
 <script>
 $(function() {
