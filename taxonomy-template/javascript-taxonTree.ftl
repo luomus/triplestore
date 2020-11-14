@@ -6,8 +6,6 @@ function startsWith(needle, haystack) {
 
 var taxonTreeGraphs;
 var headerPositioned = false;
-var windowHeight = $(window).height();
-var dialogHeight = windowHeight * 0.9;
     
 $(function() {
 	
@@ -15,9 +13,7 @@ $(function() {
 	
 	$(window).resize(function(){
 		taxonTreeGraphs.repaintEverything();
-		windowHeight = $(window).height();
-    	dialogHeight = windowHeight * 0.9;
-    	$("#editTaxon").dialog('option', 'height', dialogHeight);
+    	$("#editTaxon").dialog('option', 'height', $(window).height());
   	});
 	
 	$(window).on('scroll', function() {
@@ -798,10 +794,16 @@ $(function() {
 	$("#editTaxon").dialog({
  		autoOpen: false,
 		resizable: false,
-		height: dialogHeight,
-      	width: "95%",
+		left: 0,
+		top: 0,
+		height: $(document).height(),
+      	width: "100%",
       	modal: true,
+      	open: function() {
+      		$('body').css('overflow','hidden');
+      	},
       	beforeClose: function() {
+      		$('body').css('overflow', '');
       		if ($(".saveButton").length > 0) {
 				if (confirm('This taxon has unsaved changes. Are you sure you want to close without saving?')) {
 					$(".saveButton").remove();
