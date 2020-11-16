@@ -347,17 +347,13 @@ span.indent { display: inline-block; }
 	font-size: 9px;
 }
 
-.inheritedValues li {
-  max-width: 350px;
-  white-space: nowrap;
-  overflow: hidden;
-  margin-bottom: 1em;
+.taxonEditList li {
+	max-width: 350px;
+	list-style-type: inherit;
+	list-style-position: inside;
+	margin: 4px;
 }
 
-.inheritedValues li:HOVER {
-  white-space: normal;
-  overflow: auto;
-}
 
 #loadsUglyBlocker {
   position: absolute;

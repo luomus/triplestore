@@ -77,9 +77,9 @@
 	<@portletFooter />
 	
 	<@portletHeader "Source of taxonomy" />
+		<label>Inherited publications</label>
 		<#if taxon.setToStopOriginalPublicationInheritance || (!taxon.explicitlySetOriginalPublications?has_content && taxon.originalPublications?has_content)>
-			<label>Inherited publications</label>
-			<ul class="inheritedValues">
+			<ul class="taxonEditList">
 				<#list taxon.originalPublications as publicationQname>	
 					<li>${publications[publicationQname].citation}</li>
 				</#list>
@@ -92,15 +92,27 @@
 				<option value="false">No</option>
 			</select>
 			<br /><br />
+		<#else>
+			No publications inherited
 		</#if>
+		
+		<p><label>Publications defined for this taxon</label></p>
 		<input type="hidden" name="MX.originalPublication" value="" />
-		<select id="originalPublicationSelector" name="MX.originalPublication" class="chosen" data-placeholder="Select publication" multiple="multiple" <@checkPermissions/> >
-			<option value=""></option>
-			<#list publications?keys as publicationQname>
-				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOriginalPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+		<#list taxon.explicitlySetOriginalPublications as publicationQname>
+			<input class="selectedPublication" type="hidden" name="MX.originalPublication" value="${publicationQname}" />
+		</#list>
+		<#if taxon.explicitlySetOriginalPublications?has_content>
+			<ul class="taxonEditList">
+			<#list taxon.explicitlySetOriginalPublications as publicationQname>
+				<li>${publications[publicationQname].citation}</li>
 			</#list>
-		</select>
-		<br/>
+			</ul>
+		<#else>
+			No publications defined
+		</#if>
+		<#if !(noPermissions??)>
+			<button class="publicationSelectButton" data-field-name="originalPublication">Select publications</button>
+		</#if>
 		<p><label class="">Add a new publication</label></p>
 		<textarea <@checkPermissions/> class="newPublicationInput" name="newPublicationCitation" id="newPublicationCitation" placeholder="For example 'Hellén, W. 1940: Enumeratio Insectorum Fenniae II Hymenoptera 2. Terebrantia. - Helsinki, 32 s.' "></textarea>
 	<@portletFooter />
@@ -110,12 +122,17 @@
 		
 		<@label "MX.originalDescription" "longtext" />
 		<input type="hidden" name="MX.originalDescription" value="" />
-		<select id="originalDescriptionSelector" name="MX.originalDescription" class="chosen" data-placeholder="Select publication" <@checkPermissions/> >
-			<option value=""></option>
-			<#list publications?keys as publicationQname>
-				<option value="${publicationQname}" <#if taxon.hasOriginalDescription(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
-			</#list>
-		</select>
+		<input class="selectedPublication" type="hidden" name="MX.originalDescription" value="${taxon.originalDescription!""}" />
+		<#if taxon.originalDescription??>
+			<ul class="taxonEditList">
+				<li>${publications[taxon.originalDescription].citation}</li>
+			</ul>
+		<#else>
+			Publication not defined
+		</#if>
+		<#if !(noPermissions??)>
+			<button class="publicationSelectButton" data-field-name="originalDescription">Select publications</button>
+		</#if>
 	<@portletFooter />
 	
 	<@portletHeader "Notes" />
@@ -199,9 +216,9 @@
 	<@portletFooter />				
 
 	<@portletHeader "Source of occurrence" />
+		<label>Inherited publications</label>
 		<#if taxon.setToStopOccurrenceInFinlandPublicationInheritance || (!taxon.explicitlySetOccurrenceInFinlandPublications?has_content && taxon.occurrenceInFinlandPublications?has_content)>
-			<label>Inherited publications</label>
-			<ul class="inheritedValues">
+			<ul class="taxonEditList">
 				<#list taxon.occurrenceInFinlandPublications as publicationQname>	
 					<li>${publications[publicationQname].citation}</li>
 				</#list>
@@ -214,15 +231,27 @@
 				<option value="false">No</option>
 			</select>
 			<br /><br />
+		<#else>
+			No publications inherited
 		</#if>
+		
+		<p><label>Publications defined for this taxon</label></p>
 		<input type="hidden" name="MX.occurrenceInFinlandPublication" value="" />
-		<select id="occurrenceInFinlandPublicationSelector" name="MX.occurrenceInFinlandPublication" multiple="multiple" data-placeholder="Select publication" class="chosen" <@checkPermissions/> >
-			<option value=""></option>
-			<#list publications?keys as publicationQname>
-				<option value="${publicationQname}" <#if taxon.hasExplicitlySetOccurrenceInFinlandPublication(publicationQname)>selected="selected"</#if> >${publications[publicationQname].citation}</option>
+		<#list taxon.explicitlySetOccurrenceInFinlandPublications as publicationQname>
+			<input class="selectedPublication" type="hidden" name="MX.occurrenceInFinlandPublication" value="${publicationQname}" />
+		</#list>
+		<#if taxon.explicitlySetOccurrenceInFinlandPublications?has_content>
+			<ul class="taxonEditList">
+			<#list taxon.explicitlySetOccurrenceInFinlandPublications as publicationQname>
+				<li>${publications[publicationQname].citation}</li>
 			</#list>
-		</select>
-		<br/>
+			</ul>
+		<#else>
+			No publications defined
+		</#if>
+		<#if !(noPermissions??)>
+			<button class="publicationSelectButton" data-field-name="occurrenceInFinlandPublication">Select publications</button>
+		</#if>
 		<p><label class="">Add a new publication</label></p>
 		<textarea <@checkPermissions/> class="newPublicationInput" name="newOccurrenceInFinlandPublicationCitation" id="newOccurrenceInFinlandPublicationCitation" placeholder="For example 'Juutinen, R. & Ulvinen, T. 2015: Suomen sammalien levinneisyys eliömaakunnissa. – Suomen ympäristökeskus. 27.3.2015' "></textarea>
 	<@portletFooter />	
@@ -473,7 +502,7 @@
 			<#if !taxon.explicitlySetInformalTaxonGroups?seq_contains(groupQname)>
 				<#if !headerPrinted>
 					<label>Inherited groups</label>
-					<ul class="inheritedValues">
+					<ul class="taxonEditList">
 					<#assign headerPrinted = true>
 				</#if>
 				<li>${informalGroups[groupQname.toString()].name.forLocale("fi")!""} - ${informalGroups[groupQname.toString()].name.forLocale("en")!groupQnameString}</li>

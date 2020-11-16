@@ -42,7 +42,7 @@ function editTaxon(e, fullEditMode) {
 }
 
 function initColumnsPortlets() {
-
+	
 	$("#fixTypo").on('click', function() {
 		$("#scientificNameToolButtons, #originalNamesView").fadeOut('fast', function() {
 			$("#originalNamesInputs").fadeIn('slow', function() {
@@ -152,6 +152,30 @@ function initColumnsPortlets() {
 		var closeAfter = clickedButton.hasClass('saveAndClose');
 		$(this).find(".saveButton").remove();
 		submitTaxonEditSection(this, closeAfter);
+		return false;
+	});
+	
+	$(".newPublicationInput").on('keyup', function() {
+		$(this).parent().find(".publicationSelectButton").trigger('click');
+	});
+	
+	$(".publicationSelectButton").on('click', function() {
+		var taxon = $(this).closest('.taxonEditSection').find('input.taxonQname').first().val(); 
+		var fieldName = $(this).data('fieldName');
+		var publicationSelect = $('<div>Tässä olis oikeasti select '+taxon+' ' + fieldName + '</div>');
+		
+		var parent = $(this).parent();
+		var button = $(this);
+		$.get("${baseURL}/api/publicationSelect/"+taxon+"?fieldName="+fieldName, function(data) {
+			var publicationSelect = $(data);
+			publicationSelect.bind("change keyup", function() {
+				addSaveButtonTo(this);
+			});
+			button.parent().find('.selectedPublication').remove();
+			button.parent().find('.taxonEditList').remove();
+			button.replaceWith(publicationSelect);
+			parent.find(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
+		});
 		return false;
 	});
 }
