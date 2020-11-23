@@ -103,14 +103,17 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		long intitialDelay6am = calculateInitialDelayTill(6, repeatPeriod24H);
 
 		scheduler.scheduleAtFixedRate(
-				iucnDataToTaxonDataSynchronizer, 
+				iucnDataToTaxonDataSynchronizer,
 				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
 
-		scheduler.scheduleAtFixedRate(iucnRedListTaxonGroupNameUpdater, 
+		scheduler.scheduleAtFixedRate(iucnRedListTaxonGroupNameUpdater,
+				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
+
+		scheduler.scheduleAtFixedRate(unusedPublicationsRemover,
 				intitialDelay3am, repeatPeriod24H, TimeUnit.MINUTES);
 
 		scheduler.scheduleAtFixedRate(
-				iucnContainerReinitializer, 
+				iucnContainerReinitializer,
 				intitialDelay6am, repeatPeriod24H, TimeUnit.MINUTES);
 	}
 
@@ -126,6 +129,20 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		long initialDelay = minutesPassed12AM <= minutesAtHour ? minutesAtHour - minutesPassed12AM : repeatPeriod24H - (minutesPassed12AM - minutesAtHour);
 		return initialDelay;
 	}
+
+	private final Runnable unusedPublicationsRemover = new Runnable() {
+		@Override
+		public void run() {
+			try {
+				int i = triplestoreDAO.removeUnusedPublications();
+				if (i != 0) {
+					System.out.println("Removed " + i + " unused publications");
+				}
+			} catch (Exception e) {
+				errorReporter.report(e);
+			}
+		}
+	};
 
 	private final Runnable iucnContainerReinitializer = new Runnable() {
 		@Override
@@ -176,7 +193,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			for (Statement s : dbGroup.getStatements("MVL.name")) {
 				if (s.isResourceStatement()) continue;
 				if (locale.equals(s.getObjectLiteral().getLangcode())) {
-					String name = s.getObjectLiteral().getContent(); 
+					String name = s.getObjectLiteral().getContent();
 					if (name == null) return "";
 					return name;
 				}
@@ -582,7 +599,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				.collect(Collectors.toList());
 	}
 
-	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces = 
+	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces =
 			new SingleObjectCache<>(
 					new CacheLoader<Map<String, Area>>() {
 						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");

@@ -236,7 +236,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 		RdfProperty p = new RdfProperty(new Qname("MX.descriptionText"), new Qname("xsd:string"));
 		p.setLabels(new LocalizedText().set("fi", "Yleiskuvaus").set("en", "General description"));
 		l.add(p);
-		
+
 		Map<String, List<RdfProperty>> map = new HashMap<>();
 		map.put("MX.descGroup", l);
 		return map;
@@ -244,8 +244,14 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 
 	@Override
 	public List<RdfProperty> getDescriptionGroups() {
-		return null;	
-		
+		return null;
+
+	}
+
+	@Override
+	public int removeUnusedPublications() {
+		// Auto-generated method stub
+		return -1;
 	}
 
 }

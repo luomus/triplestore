@@ -884,4 +884,28 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		return cached.descriptionGroups.get();
 	}
 
+	private static final String REMOVE_UNUSED_PUBLICATIONS_SQL = "" +
+			" DELETE from "+SCHEMA+".rdf_statementview " +
+			" WHERE subjectname IN ( " +
+			" 	SELECT s.subjectname FROM "+SCHEMA+".rdf_statementview s " +
+			" 	LEFT JOIN "+SCHEMA+".rdf_statementview s2 ON s.subjectname = s2.objectname " +
+			" 	WHERE s.predicatename = 'rdf:type' " +
+			" 	AND s.objectname = 'MP.publication' " +
+			" 	AND s2.objectname is null " +
+			" ) ";
+
+	@Override
+	public int removeUnusedPublications() throws SQLException {
+		TransactionConnection con = null;
+		PreparedStatement p = null;
+		ResultSet rs = null;
+		try {
+			con = openConnection();
+			p = con.prepareStatement(REMOVE_UNUSED_PUBLICATIONS_SQL);
+			return p.executeUpdate();
+		} finally {
+			Utils.close(p, rs, con);
+		}
+	}
+
 }
