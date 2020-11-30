@@ -19,6 +19,7 @@ import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Context;
+import fi.luomus.commons.containers.rdf.JenaUtils;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.ObjectResource;
@@ -311,6 +312,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MR_OWNER, checklist.getOwner());
 		model.addStatement(new Statement(new Predicate(MR_IS_PUBLIC), checklist.isPublic()));
 
+		validate(model);
 		store(model);
 		return checklist;
 	}
@@ -329,6 +331,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		if (group.isExplicitlyDefinedRoot()) {
 			model.addStatement(new Statement(new Predicate("MVL.explicitlyDefinedRoot"), true));
 		}
+		validate(model);
 		store(model);
 		return group;
 	}
@@ -368,6 +371,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.setType(MP_PUBLICATION);
 		model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, publication.getCitation(), null);
 		model.addStatementIfObjectGiven(DC_URI, publication.getURI(), null);
+		validate(model);
 		store(model);
 		return publication;
 	}
@@ -408,8 +412,21 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
 		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
+		validate(model);
 		store(model);
 		return taxon;
+	}
+
+	@Override
+	public void validate(Model model) throws RDFValidationException {
+		try {
+			String rdf = model.getRDF();
+			JenaUtils.read(rdf);
+		} catch (Exception e) {
+			RDFValidationException validationException = new RDFValidationException(model, e);
+			errorReporter.report(validationException);
+			throw validationException;
+		}
 	}
 
 	private boolean given(Object value) {
@@ -705,6 +722,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MO_THREATENED, occurrence.getThreatened());
 		if (occurrence.getSpecimenURI() != null)
 			model.addStatementIfObjectGiven(MO_SPECIMEN_URI, occurrence.getSpecimenURI().toString());
+		this.validate(model);
 		this.store(model);
 		occurrence.setId(id);
 	}
@@ -779,6 +797,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			storeEndangermentObjectsAndSetIdToModel(givenData);
 			storeHabitatObjectsAndSetIdsToModel(givenData);
 		}
+		this.validate(givenData.getModel());
 		this.store(givenData.getModel());
 		if (existingEvaluation != null) {
 			deleteOccurrences(existingEvaluation);

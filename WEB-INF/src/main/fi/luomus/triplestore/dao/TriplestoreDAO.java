@@ -302,4 +302,11 @@ public interface TriplestoreDAO {
 	 */
 	int removeUnusedPublications() throws Exception;
 
+	/**
+	 * Check model does not contain characters that can not be parsed with Jena
+	 * @param model
+	 * @throws RDFValidationException
+	 */
+	void validate(Model model) throws RDFValidationException;
+
 }

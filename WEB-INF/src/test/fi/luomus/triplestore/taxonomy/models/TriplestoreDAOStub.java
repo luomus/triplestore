@@ -26,6 +26,7 @@ import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
+import fi.luomus.triplestore.dao.RDFValidationException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreSearchDAO;
 import fi.luomus.triplestore.models.ResourceListing;
@@ -252,6 +253,12 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	public int removeUnusedPublications() {
 		// Auto-generated method stub
 		return -1;
+	}
+
+	@Override
+	public void validate(Model model) throws RDFValidationException {
+		// Auto-generated method stub
+
 	}
 
 }
