@@ -71,8 +71,12 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 
 	private static final NameCleaner nameCleaner = new NameCleaner();
 
-	@Override
 	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
+		return initResponseData(req, true);
+	}
+
+	@Override
+	protected ResponseData initResponseData(HttpServletRequest req, boolean requireBasedData) throws Exception {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 
 		SessionHandler session = getSession(req);
@@ -85,21 +89,23 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("restartMessage", getRestartMessage(user));
 		}
 
-		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		TriplestoreDAO dao = getTriplestoreDAO();
+		if (requireBasedData) {
+			ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
+			TriplestoreDAO dao = getTriplestoreDAO();
 
-		responseData.setData("checklists", taxonomyDAO.getChecklists());
-		responseData.setData("persons", taxonomyDAO.getPersons());
-		responseData.setData("publications", taxonomyDAO.getPublications());
-		responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
-		responseData.setData("properties", dao.getProperties("MX.taxon"));
-		responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
-		responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
-		responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
-		responseData.setData("nameCleaner", nameCleaner);
-		responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
-		responseData.setData("evaluationYears", years(taxonomyDAO));
-		responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
+			responseData.setData("checklists", taxonomyDAO.getChecklists());
+			responseData.setData("persons", taxonomyDAO.getPersons());
+			responseData.setData("publications", taxonomyDAO.getPublications());
+			responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
+			responseData.setData("properties", dao.getProperties("MX.taxon"));
+			responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
+			responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
+			responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
+			responseData.setData("nameCleaner", nameCleaner);
+			responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
+			responseData.setData("evaluationYears", years(taxonomyDAO));
+			responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
+		}
 		return responseData;
 	}
 

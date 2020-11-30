@@ -111,10 +111,12 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return new Date().before(lastRestartNofity);
 	}
 
-	protected ResponseData initResponseData(HttpServletRequest req) throws Exception {
+	protected ResponseData initResponseData(HttpServletRequest req, boolean requireBaseData) throws Exception {
 		ResponseData responseData = new ResponseData().setDefaultLocale("en");
 		SessionHandler session = getSession(req);
-		if (session.hasSession() && session.isAuthenticatedFor(getConfig().systemId())) {
+		Config config = getConfig();
+
+		if (session.hasSession() && session.isAuthenticatedFor(config.systemId())) {
 			User user = getUser(session);
 			responseData.setData("user", user);
 			responseData.setData("flashMessage", session.getFlash());
@@ -122,14 +124,14 @@ public abstract class EditorBaseServlet extends BaseServlet {
 			responseData.setData("errorMessage", session.getFlashError());
 			responseData.setData("restartMessage", getRestartMessage(user));
 			responseData.setData("creatableResources", CREATABLE_RESOURCES);
-			responseData.setData("resources", getTriplestoreDAO().getResourceStats());
-			Config config = getConfig();
+			if (requireBaseData) {
+				responseData.setData("resources", getTriplestoreDAO().getResourceStats());
+			}
 			if (config.defines("TriplestoreSelf_Username")) {
 				responseData.setData("TriplestoreSelf_Username", config.get("TriplestoreSelf_Username"));
 				responseData.setData("TriplestoreSelf_Password", config.get("TriplestoreSelf_Password"));
 			}
 		}
-		Config config = getConfig();
 
 		if (config.defines("taxonomyEditorBaseURL")) {
 			responseData.setData("taxonomyEditorBaseURL", config.get("taxonomyEditorBaseURL"));

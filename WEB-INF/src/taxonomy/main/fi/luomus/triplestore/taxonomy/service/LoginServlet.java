@@ -26,11 +26,11 @@ public class LoginServlet extends TaxonomyEditorBaseServlet {
 	private LoginUtil getLoginUtil() {
 		if (util == null) {
 			util = new LoginUtil(
-					frontpages(), 
-					getConfig(), getErrorReporter(), 
+					frontpages(),
+					getConfig(), getErrorReporter(),
 					Utils.set("MA.admin", "MA.taxonEditorUser", "MA.taxonEditorUserDescriptionWriterOnly"));
 		}
-		return util; 
+		return util;
 	}
 
 	private Map<String, String> frontpages() {
@@ -43,12 +43,12 @@ public class LoginServlet extends TaxonomyEditorBaseServlet {
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return getLoginUtil().processGet(req, getSession(req), super.initResponseData(req));
+		return getLoginUtil().processGet(req, getSession(req), super.initResponseData(req, false));
 	}
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req));
+		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req, false));
 	}
 
 }

@@ -1,13 +1,13 @@
 package fi.luomus.triplestore.service;
 
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = {"/editor/new-predicate/*"})
 public class TriplestoreEditorNewPredicateServlet extends TriplestoreEditorServlet {
@@ -17,7 +17,7 @@ public class TriplestoreEditorNewPredicateServlet extends TriplestoreEditorServl
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String qname = getQname(req);
-		ResponseData responseData = initResponseData(req).setViewName("new-predicate");
+		ResponseData responseData = initResponseData(req, false).setViewName("new-predicate");
 		try {
 			TriplestoreDAO dao = getTriplestoreDAO();
 			if (!dao.resourceExists(qname)) {

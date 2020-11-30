@@ -27,17 +27,17 @@ public class LoginServlet extends EditorBaseServlet {
 		if (util == null) {
 			util = new LoginUtil(frontpagesForRoles(), getConfig(), getErrorReporter(), Utils.set("MA.admin"));
 		}
-		return util; 
+		return util;
 	}
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return getLoginUtil().processGet(req, getSession(req), super.initResponseData(req));
+		return getLoginUtil().processGet(req, getSession(req), super.initResponseData(req, false));
 	}
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req));
+		return getLoginUtil().processPost(req, getSession(req), super.initResponseData(req, false));
 	}
 
 	private Map<String, String> frontpagesForRoles() {

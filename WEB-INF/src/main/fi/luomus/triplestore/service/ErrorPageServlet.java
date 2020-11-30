@@ -19,12 +19,12 @@ public class ErrorPageServlet extends EditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		String error = req.getParameter("error");
-		ResponseData responseData = super.initResponseData(req).setViewName("error");
+		ResponseData responseData = super.initResponseData(req, false).setViewName("error");
 		if (given(error)) {
 			responseData.setData("error", error);
 			getErrorReporter().report("User triggered ajax request error:" + error);
 		}
 		return responseData;
 	}
-	
+
 }

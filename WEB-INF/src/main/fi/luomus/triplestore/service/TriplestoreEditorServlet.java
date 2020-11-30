@@ -32,7 +32,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
-		ResponseData responseData = super.initResponseData(req);
+		ResponseData responseData = super.initResponseData(req, true);
 
 		History history = (History) getSession(req).getObject("history");
 		if (history == null) {
@@ -40,12 +40,12 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			getSession(req).setObject("history", history);
 		}
 		responseData.setData("history", history);
-		
+
 		String qname = getQname(req);
 		if (!given(qname)) {
 			return mainPage(responseData);
 		}
-		
+
 		if (isTaxon(qname)) {
 			responseData.setData("error", "Taxons must be edited using Taxon editor.");
 			return mainPage(responseData);
@@ -78,11 +78,11 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		for (Statement s : model.getStatements()) {
 			if (!properties.hasProperty(s.getPredicate().getQname())) {
 				properties.addProperty(dao.getProperty(s.getPredicate()));
-			} 
+			}
 		}
 
 		responseData.setData("modelRdfXml", model.getRDF());
-		
+
 		return responseData.setViewName("edit").setData("model", model).setData("properties", properties);
 	}
 
@@ -125,6 +125,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			throw new IllegalStateException("Validation failed: " + validationResponse.toString());
 		}
 
+		dao.validate(model);
 		dao.store(model);
 
 		getSession(req).setFlashSuccess("Saved!");
