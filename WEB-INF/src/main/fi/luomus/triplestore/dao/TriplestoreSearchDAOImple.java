@@ -28,19 +28,19 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
-	private static final String FETCH_CHILDREN_SQL = "" + 
-			" SELECT DISTINCT subjectname                      " + 
-			" FROM "+SCHEMA+".rdf_statementview               " + 
-			" WHERE objectname = ?                             " + 
-			" AND ( predicatename IN ( 						   " + 
-			" 		SELECT DISTINCT subjectname FROM "+SCHEMA+".rdf_statementview              " + 
-			"       WHERE predicatename = 'rdfs:subPropertyOf' AND objectname = 'MZ.isPartOf' ) " + 
+	private static final String FETCH_CHILDREN_SQL = "" +
+			" SELECT DISTINCT subjectname                      " +
+			" FROM "+SCHEMA+".rdf_statementview               " +
+			" WHERE objectname = ?                             " +
+			" AND ( predicatename IN ( 						   " +
+			" 		SELECT DISTINCT subjectname FROM "+SCHEMA+".rdf_statementview              " +
+			"       WHERE predicatename = 'rdfs:subPropertyOf' AND objectname = 'MZ.isPartOf' ) " +
 			" 		OR predicatename = 'MZ.isPartOf' ) ";
 
-	private static final String FETCH_TAXON_CHAIN_SQL = "" + 
-			" SELECT objectname                   " + 
-			" FROM "+SCHEMA+".rdf_statementview  " + 
-			" WHERE subjectname = ?               " + 
+	private static final String FETCH_TAXON_CHAIN_SQL = "" +
+			" SELECT objectname                   " +
+			" FROM "+SCHEMA+".rdf_statementview  " +
+			" WHERE subjectname = ?               " +
 			" AND predicatename = 'MX.isPartOf'   ";
 
 	private final TriplestoreDAOImple dao;
@@ -65,7 +65,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
-		try { 
+		try {
 			// System.out.println(sql);
 			// System.out.println(values);
 			con = dao.openConnection();
@@ -74,7 +74,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			for (String value : values) {
 				p.setString(i++, value);
 			}
-			rs = p.executeQuery(); 
+			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
 				results.add(new Qname(rs.getString(1)));
@@ -88,7 +88,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	private String buildSearchSQLAndSetValues(SearchParams searchParams, List<String> values) {
 		StringBuilder query = new StringBuilder();
 		query.append(" SELECT  DISTINCT subjectname            \n");
-		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 
+		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n");
 		query.append(" WHERE   1=1                             \n");
 		subjects(searchParams.getSubjects(), values, query);
 		predicates(searchParams.getPredicates(), values, query);
@@ -112,7 +112,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		if (type.startsWith("http:")) {
 			query.append(" AND objecturi = ? ");
 		} else {
-			query.append(" AND objectname = ? ");	
+			query.append(" AND objectname = ? ");
 		}
 		query.append(" ) ");
 		values.add(type);
@@ -196,7 +196,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			if (subject.startsWith("http:")) {
 				query.append(" OR subjecturi = ? ");
 			} else {
-				query.append(" OR subjectname = ? ");	
+				query.append(" OR subjectname = ? ");
 			}
 			values.add(subject);
 		}
@@ -363,7 +363,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	private String constructSelectQuery(Collection<Qname> results) {
 		StringBuilder sql = new StringBuilder();
-		sql.append(" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid, subjectname "); 
+		sql.append(" SELECT  predicatename, objectname, resourceliteral, langcodefk, contextname, statementid, subjectname ");
 		sql.append(" FROM    "+SCHEMA+".rdf_statementview ");
 		sql.append(" WHERE   subjectname IN ( ");
 		Iterator<Qname> i = results.iterator();
@@ -371,7 +371,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			i.next();
 			sql.append("?");
 			if (i.hasNext()) {
-				sql.append(", ");				
+				sql.append(", ");
 			}
 		}
 		sql.append(" ) ");
@@ -388,7 +388,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		try {
-			con = dao.openConnection(); 
+			con = dao.openConnection();
 			p = con.prepareStatement(FETCH_TAXON_CHAIN_SQL);
 			while (!searchForThese.isEmpty()) {
 				Qname searchedFor = fetchTaxonChain(resultSet, searchForThese, p);
@@ -487,7 +487,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		List<String> values = new ArrayList<>();
 		StringBuilder query = new StringBuilder();
 		query.append(" SELECT  count(DISTINCT subjectname)     \n");
-		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n"); 
+		query.append(" FROM    "+SCHEMA+".rdf_statementview    \n");
 		query.append(" WHERE   1=1                             \n");
 		subjects(searchParams.getSubjects(), values, query);
 		predicates(searchParams.getPredicates(), values, query);
@@ -498,7 +498,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		TransactionConnection con = null;
 		PreparedStatement p = null;
 		ResultSet rs = null;
-		try { 
+		try {
 			//			System.out.println(sql);
 			//			System.out.println(values);
 			con = dao.openConnection();
@@ -507,7 +507,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			for (String value : values) {
 				p.setString(i++, value);
 			}
-			rs = p.executeQuery(); 
+			rs = p.executeQuery();
 			rs.next();
 			return rs.getInt(1);
 		} finally {
