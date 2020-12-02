@@ -41,7 +41,7 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File("E:/esko-local/temp/checklist2020/2020_draft_2020_11_02.txt");
+		File latest = new File("E:/esko-local/temp/checklist2020/checklist_draft_2020_12_02.tsv");
 		File previous = new File("E:/esko-local/temp/checklist2020/2019.txt");
 		String s = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
@@ -140,10 +140,11 @@ public class ChecklistComparison {
 
 		private ChecklistRow parse(CSVRecord record) {
 			ChecklistRow row = new ChecklistRow();
-			for (Map.Entry<Field, String> e : FIELDS.entrySet())  {
-				String colName = e.getValue();
-				Field f = e.getKey();
-				setValue(record, row, colName, f);
+			for (Map.Entry<Field, String[]> e : FIELDS.entrySet())  {
+				for (String colName : e.getValue()) {
+					Field f = e.getKey();
+					setValue(record, row, colName, f);
+				}
 			}
 			return row;
 		}
@@ -151,7 +152,7 @@ public class ChecklistComparison {
 		private void setValue(CSVRecord record, ChecklistRow row, String colName, Field f) {
 			String value = get(record, colName);
 			if (value != null) try {
-				f.set(row, value);
+				f.set(row, value.replace("http://tun.fi/", ""));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -187,7 +188,7 @@ public class ChecklistComparison {
 		}
 	}
 
-	private static final Map<Field, String> FIELDS;
+	private static final Map<Field, String[]> FIELDS;
 	static {
 		ArrayList<Field> ordered = new ArrayList<>();
 		ordered.addAll(Arrays.asList(ChecklistRow.class.getFields()));
@@ -199,31 +200,31 @@ public class ChecklistComparison {
 		});
 		FIELDS = new LinkedHashMap<>();
 		for (Field f : ordered) {
-			FIELDS.put(f, f.getAnnotation(FieldInfo.class).name());
+			FIELDS.put(f, f.getAnnotation(FieldInfo.class).cols());
 		}
 	}
 
 	private static class ChecklistRow {
-		@FieldInfo(name="Identifier", order=0) public String taxonId;
-		@FieldInfo(name="Scientific name", order=1.1, useInCompare=true) public String scientificName;
-		@FieldInfo(name="Author", order=1.2, useInCompare=true) public String author;
-		@FieldInfo(name="Finnish name", order=2.1, useInCompare=true) public String finnishName;
-		@FieldInfo(name="Swedish name", order=2.2, useInCompare=true) public String swedishName;
-		@FieldInfo(name="Domain", order=3.01) public String domainName;
-		@FieldInfo(name="Kingdom", order=3.02) public String kingdomName;
-		@FieldInfo(name="Phylum", order=3.031) public String phylumName;
-		@FieldInfo(name="Division", order=3.04) public String divisionName;
-		@FieldInfo(name="Class", order=3.05) public String className;
-		@FieldInfo(name="Subclass", order=3.06) public String subclassName;
-		@FieldInfo(name="Order", order=3.07) public String orderName;
-		@FieldInfo(name="Suborder", order=3.08) public String suborderName;
-		@FieldInfo(name="Superfamily", order=3.09) public String superfamilyName;
-		@FieldInfo(name="Family", order=3.10, useInCompare=true) public String familyName;
-		@FieldInfo(name="Subfamily", order=3.11) public String subfamilyName;
-		@FieldInfo(name="Tribe", order=3.12) public String tribeName;
-		@FieldInfo(name="Subtribe", order=3.13) public String subtribeName;
-		@FieldInfo(name="Genus", order=3.14) public String genusName;
-		@FieldInfo(name="Subgenus", order=3.15) public String subgenusName;
+		@FieldInfo(name="Id", order=0, cols={"Identifier"}) public String taxonId;
+		@FieldInfo(name="Scientific name", order=1.1, cols={"Scientific name"}, useInCompare=true) public String scientificName;
+		@FieldInfo(name="Author", order=1.2, cols={"Author"}, useInCompare=true) public String author;
+		@FieldInfo(name="Finnish name", order=2.1, cols={"Finnish name"}, useInCompare=true) public String finnishName;
+		@FieldInfo(name="Swedish name", order=2.2, cols={"Swedish name"}, useInCompare=true) public String swedishName;
+		@FieldInfo(name="Domain", order=3.01, cols={"Domain", "Domain, Scientific name"}) public String domainName;
+		@FieldInfo(name="Kingdom", order=3.02, cols={"Kingdom", "Kingdom, Scientific name"}) public String kingdomName;
+		@FieldInfo(name="Phylum", order=3.031, cols={"Phylum", "Phylum, Scientific name"}) public String phylumName;
+		@FieldInfo(name="Division", order=3.04, cols={"Division", "Division, Scientific name"}) public String divisionName;
+		@FieldInfo(name="Class", order=3.05, cols={"Class", "Class, Scientific name"}) public String className;
+		@FieldInfo(name="Subclass", order=3.06, cols={"Subclass", "Subclass, Scientific name"}) public String subclassName;
+		@FieldInfo(name="Order", order=3.07, cols={"Order", "Order, Scientific name"}) public String orderName;
+		@FieldInfo(name="Suborder", order=3.08, cols={"Suborder", "Suborder, Scientific name"}) public String suborderName;
+		@FieldInfo(name="Superfamily", order=3.09, cols={"Superfamily", "Superfamily, Scientific name"}) public String superfamilyName;
+		@FieldInfo(name="Family", order=3.10, cols={"Family", "Family, Scientific name"}, useInCompare=true) public String familyName;
+		@FieldInfo(name="Subfamily", order=3.11, cols={"Subfamily", "Subfamily, Scientific name"}) public String subfamilyName;
+		@FieldInfo(name="Tribe", order=3.12, cols={"Tribe", "Tribe, Scientific name"}) public String tribeName;
+		@FieldInfo(name="Subtribe", order=3.13, cols={"Subtribe", "Subtribe, Scientific name"}) public String subtribeName;
+		@FieldInfo(name="Genus", order=3.14, cols={"Genus", "Genus, Scientific name"}) public String genusName;
+		@FieldInfo(name="Subgenus", order=3.15, cols={"Subgenus", "Subgenus, Scientific name"}) public String subgenusName;
 
 		@Override
 		public boolean equals(Object obj) {
@@ -286,6 +287,7 @@ public class ChecklistComparison {
 	public @interface FieldInfo {
 		public String name();
 		public double order();
+		public String[] cols();
 		public boolean useInCompare() default false;
 	}
 
