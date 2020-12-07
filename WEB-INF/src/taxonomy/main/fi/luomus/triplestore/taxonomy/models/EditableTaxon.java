@@ -42,6 +42,11 @@ public class EditableTaxon extends Taxon {
 	}
 
 	@Override
+	public int getObservationCountFinland() {
+		return 0;
+	}
+
+	@Override
 	public boolean isHidden() {
 		return super.isMarkedHidden(); // super implementation marks all higher taxa that do not have species as hidden
 	}
