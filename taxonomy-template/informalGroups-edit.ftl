@@ -64,12 +64,14 @@ $(function() {
 });
 </script>
 
-<h2>Defining taxa</h2>
-<ul>
-<#list definingTaxa as t>
-	<ol>${t.scientificName!""} ${t.qname}</ol>
-</#list>
-</ul>
-<#if hasMore> [...]</#if>
+<#if action != "add">
+	<h2>Defining taxa</h2>
+	<ul>
+		<#list definingTaxa as t>
+			<ol>${t.scientificName!""} ${t.qname}</ol>
+		</#list>
+	</ul>
+	<#if hasMore> [...]</#if>
+</#if>
 
 <#include "luomus-footer.ftl">
