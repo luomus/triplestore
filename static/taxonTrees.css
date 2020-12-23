@@ -71,20 +71,21 @@ h4 {
 .supergenus			{ background-color: rgb(255, 227, 201) }
 .genus				{ background-color: rgb(255, 227, 201) }
 .nothogenus         { background-color: rgb(255, 227, 201) }
-.subgenus			{ background-color: rgb(255, 227, 201) }
-.section            { background-color: rgb(255, 227, 201) }
 .subsection         { background-color: rgb(255, 227, 201) }
 .series             { background-color: rgb(255, 227, 201) }
 .subseries          { background-color: rgb(255, 227, 201) }
-.infragenericTaxon  { background-color: rgb(255, 227, 201) }
-.aggregate 			{ background-color: rgb(255, 227, 201) }
 .group              { background-color: rgb(255, 227, 201) }
 .speciesAggregate   { background-color: rgb(255, 227, 201) }
+
+.subgenus			{ background-color: rgb(198, 168, 197) }
+.section            { background-color: rgb(255, 214, 214) }
+.aggregate 			{ background-color: rgb(204, 182, 189) }
+.infragenericTaxon  { background-color: rgb(208, 247, 217) }
+.infraspecificTaxon { background-color: rgb(201, 231, 255) }
 
 .species			{ background-color: rgb(255, 238, 216) }
 
 .nothospecies       { background-color: rgb(252, 241, 227) }
-.infraspecificTaxon { background-color: rgb(252, 241, 227) }
 .subspecificAggregate { background-color: rgb(252, 241, 227) }
 .subspecies			{ background-color: rgb(252, 241, 227) }
 .nothosubspecies    { background-color: rgb(252, 241, 227) }
