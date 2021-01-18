@@ -75,11 +75,11 @@ h4 {
 .series             { background-color: rgb(255, 227, 201) }
 .subseries          { background-color: rgb(255, 227, 201) }
 .group              { background-color: rgb(255, 227, 201) }
-.speciesAggregate   { background-color: rgb(255, 227, 201) }
 
 .subgenus			{ background-color: rgb(198, 168, 197) }
 .section            { background-color: rgb(255, 214, 214) }
 .aggregate 			{ background-color: rgb(204, 182, 189) }
+.speciesAggregate   { background-color: rgb(204, 182, 189) }
 .infragenericTaxon  { background-color: rgb(208, 247, 217) }
 .infraspecificTaxon { background-color: rgb(201, 231, 255) }
 
