@@ -14,7 +14,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -40,75 +39,112 @@ public class ChecklistComparison {
 		System.out.println("done");
 	}
 
+	private static class Comparison {
+		StringBuilder human = new StringBuilder();
+		StringBuilder machine = new StringBuilder();
+	}
+
 	private static void compareChecklists() throws Exception {
-		File latest = new File("E:/esko-local/temp/checklist2020/checklist_draft_2020_12_02.tsv");
+		File latest = new File("E:/esko-local/temp/checklist2020/2020.tsv");
 		File previous = new File("E:/esko-local/temp/checklist2020/2019.txt");
-		String s = new ChecklistComparator().compare(
+
+		Comparison c = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
 				new ChecklistReader().read(previous));
-		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), s);
+
+		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), c.human.toString());
+		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_diff_"+DateUtils.getFilenameDatetime()+".tsv"), c.machine.toString());
+	}
+
+	private static class Difference {
+		String field;
+		String oldValue;
+		String newValue;
+		public Difference(String field, String oldValue, String newValue) {
+			this.field = field;
+			this.oldValue = oldValue;
+			this.newValue = newValue;
+		}
 	}
 
 	private static class ChecklistComparator {
 
-		public String compare(Checklist latest, Checklist previous) {
-			StringBuilder b = new StringBuilder();
-			colHeaders(b);
-			b.append(NEWLINE);
+		public Comparison compare(Checklist latest, Checklist previous) {
+			Comparison c = new Comparison();
+			colHeadersHuman(c.human);
+			colHeadersMachine(c.machine);
 			latest.rows.values().forEach(row -> {
-				ChecklistRow prevRow = previous.getRow(row.taxonId);
-				if (!row.equals(prevRow)) {
-					b.append(LATEST_YEAR).append(TAB);
-					b.append(row.toString());
-					b.append(NEWLINE);
-					b.append(PREV_YEAR).append(TAB);
-					if (prevRow != null) {
-						b.append(prevRow.toString()).append(NEWLINE);
-						b.append("Differences:").append(TAB).append(differences(row, prevRow));
-					} else {
-						b.append("Taxon did not exist (new taxon)");
-					}
-					b.append(NEWLINE).append(NEWLINE);
-				}
+				compare(previous, row, c);
 			});
-
-			b.append(NEWLINE).append("Removed taxa").append(NEWLINE);
-			colHeaders(b);
-			b.append(NEWLINE);
-			previous.rows.values().forEach(prevRow -> {
-				if (!latest.contains(prevRow.taxonId)) {
-					b.append(PREV_YEAR).append(TAB);
-					b.append(prevRow.toString()).append(NEWLINE);
-				}
-			});
-
-			return b.toString();
+			return c;
 		}
 
-		private String differences(ChecklistRow latest, ChecklistRow prevRow) {
-			List<String> differences = new ArrayList<>();
+		private void compare(Checklist previous, ChecklistRow row, Comparison c) {
+			ChecklistRow prevRow = previous.getRow(row.taxonId);
+			compareMachine(row, prevRow, c);
+			compareHuman(row, prevRow, c);
+		}
+
+		private void compareHuman(ChecklistRow row, ChecklistRow prevRow, Comparison c) {
+			if (prevRow == null) {
+				c.human.append(LATEST_YEAR).append(TAB);
+				c.human.append(row.toString());
+				c.human.append(NEWLINE);
+				c.human.append("NEW TAXON");
+				c.human.append(NEWLINE).append(NEWLINE);
+				return;
+			}
+			List<Difference> differences = differences(row, prevRow, false);
+			if (!differences.isEmpty()) {
+				c.human.append(LATEST_YEAR).append(TAB);
+				c.human.append(row.toString());
+				c.human.append(NEWLINE);
+				c.human.append(PREV_YEAR).append(TAB);
+				c.human.append(prevRow.toString()).append(NEWLINE);
+				for (Difference d : differences) {
+					c.human.append(d.field).append(": ").append(d.oldValue).append(" -> ").append(d.newValue).append(NEWLINE);
+				}
+				c.human.append(NEWLINE);
+			}
+		}
+
+		private void compareMachine(ChecklistRow row, ChecklistRow prevRow, Comparison c) {
+			List<Difference> differences = differences(row, prevRow, true);
+			for (Difference d : differences) {
+				c.machine.append(row.taxonId).append(TAB).append(d.field).append(TAB).append(d.oldValue).append(TAB).append(d.newValue).append(NEWLINE);
+			}
+		}
+
+		private List<Difference> differences(ChecklistRow latest, ChecklistRow prevRow, boolean all) {
+			List<Difference> differences = new ArrayList<>();
 			for (Field f : FIELDS.keySet()) {
+				if (!all && !f.getAnnotation(FieldInfo.class).useInCompare()) continue;
 				try {
 					String valueOfLatest = (String) f.get(latest);
-					String valueOfPrev = (String) f.get(prevRow);
+					String valueOfPrev = prevRow == null ? "" : (String) f.get(prevRow);
 					if (valueOfLatest == null) valueOfLatest = "";
 					if (valueOfPrev == null) valueOfPrev = "";
 					if (!valueOfLatest.equals(valueOfPrev)) {
 						String colname = colName(f);
-						if (!f.getAnnotation(FieldInfo.class).useInCompare()) colname = "(" + colname + ")";
-						differences.add(colname);
+						differences.add(new Difference(colname, valueOfPrev, valueOfLatest));
 					}
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
 			}
-			return differences.stream().collect(Collectors.joining(", "));
+			return differences;
 		}
-		private void colHeaders(StringBuilder b) {
-			b.append("Year").append(TAB);
+		private void colHeadersHuman(StringBuilder b) {
+			b.append("Year/Changes").append(TAB);
 			for (Field f : FIELDS.keySet()) {
 				b.append(colName(f)).append(TAB);
 			}
+			b.append(NEWLINE);
+		}
+
+		private void colHeadersMachine(StringBuilder b) {
+			b.append("id").append(TAB).append("field").append(TAB).append("old").append(TAB).append("new").append(NEWLINE);
+
 		}
 
 		private String colName(Field f) {
@@ -180,9 +216,6 @@ public class ChecklistComparison {
 		public Checklist(List<ChecklistRow> rows) {
 			rows.forEach(r->this.rows.put(r.taxonId, r));
 		}
-		public boolean contains(String taxonId) {
-			return rows.containsKey(taxonId);
-		}
 		ChecklistRow getRow(String taxonId) {
 			return rows.get(taxonId);
 		}
@@ -225,42 +258,6 @@ public class ChecklistComparison {
 		@FieldInfo(name="Subtribe", order=3.13, cols={"Subtribe", "Subtribe, Scientific name"}) public String subtribeName;
 		@FieldInfo(name="Genus", order=3.14, cols={"Genus", "Genus, Scientific name"}) public String genusName;
 		@FieldInfo(name="Subgenus", order=3.15, cols={"Subgenus", "Subgenus, Scientific name"}) public String subgenusName;
-
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (obj == null)
-				return false;
-			if (getClass() != obj.getClass())
-				return false;
-			ChecklistRow other = (ChecklistRow) obj;
-			if (author == null) {
-				if (other.author != null)
-					return false;
-			} else if (!author.equals(other.author))
-				return false;
-			if (finnishName == null) {
-				if (other.finnishName != null)
-					return false;
-			} else if (!finnishName.equals(other.finnishName))
-				return false;
-			if (scientificName == null) {
-				if (other.scientificName != null)
-					return false;
-			} else if (!scientificName.equals(other.scientificName))
-				return false;
-			if (swedishName == null) {
-				if (other.swedishName != null)
-					return false;
-			} else if (!swedishName.equals(other.swedishName))
-				return false;
-			if (given(this.familyName) && given(other.familyName)) { // note family comparison only if both have family
-				if (!this.familyName.equals(other.familyName))
-					return false;
-			}
-			return true;
-		}
 
 		@Override
 		public String toString() {
