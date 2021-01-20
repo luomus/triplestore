@@ -42,6 +42,7 @@ public class ChecklistComparison {
 	private static class Comparison {
 		StringBuilder human = new StringBuilder();
 		StringBuilder machine = new StringBuilder();
+		StringBuilder deleted = new StringBuilder();
 	}
 
 	private static void compareChecklists() throws Exception {
@@ -54,6 +55,7 @@ public class ChecklistComparison {
 
 		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), c.human.toString());
 		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_diff_"+DateUtils.getFilenameDatetime()+".tsv"), c.machine.toString());
+		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2020/checklist_removed_"+DateUtils.getFilenameDatetime()+".tsv"), c.deleted.toString());
 	}
 
 	private static class Difference {
@@ -76,6 +78,15 @@ public class ChecklistComparison {
 			latest.rows.values().forEach(row -> {
 				compare(previous, row, c);
 			});
+
+			colHeadersHuman(c.deleted);
+			previous.rows.values().forEach(prevRow -> {
+				if (!latest.contains(prevRow.taxonId)) {
+					c.deleted.append(PREV_YEAR).append(TAB);
+					c.deleted.append(prevRow.toString()).append(NEWLINE);
+				}
+			});
+
 			return c;
 		}
 
@@ -84,6 +95,8 @@ public class ChecklistComparison {
 			compareMachine(row, prevRow, c);
 			compareHuman(row, prevRow, c);
 		}
+
+
 
 		private void compareHuman(ChecklistRow row, ChecklistRow prevRow, Comparison c) {
 			if (prevRow == null) {
@@ -215,6 +228,9 @@ public class ChecklistComparison {
 		private final Map<String, ChecklistRow> rows = new LinkedHashMap<>();
 		public Checklist(List<ChecklistRow> rows) {
 			rows.forEach(r->this.rows.put(r.taxonId, r));
+		}
+		boolean contains(String taxonId) {
+			return rows.containsKey(taxonId);
 		}
 		ChecklistRow getRow(String taxonId) {
 			return rows.get(taxonId);
