@@ -1,5 +1,5 @@
 
-CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME") AS 
+CREATE OR REPLACE FORCE EDITIONABLE VIEW "RDF_TAXON_SEARCH" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME", "NAMELANGUAGE") AS 
   SELECT
     checklist.objectname           AS checklist,
     names.subjectname              AS qname,
@@ -8,7 +8,8 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH" ("CHEC
     author.resourceliteral         AS author,
     taxonrank.objectname           AS taxonrank,
     names.predicatename            AS nametype,
-    names.resourceliteral   	   AS casedname
+    names.resourceliteral   	   AS casedname,
+    names.langcodefk               AS namelanguage
   FROM rdf_statementview names
   JOIN rdf_statementview type                ON (names.subjectname = type.subjectname and type.predicatename = 'rdf:type' and type.objectname = 'MX.taxon')
   LEFT JOIN rdf_statementview scientificname ON (names.subjectname = scientificname.subjectname AND scientificname.predicatename = 'MX.scientificName')
@@ -28,15 +29,16 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH" ("CHEC
   );
 
   
-CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH_SYNONYMS_V2" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME") AS 
-  SELECT checklist.objectname               AS checklist,
+CREATE OR REPLACE FORCE EDITIONABLE VIEW "RDF_TAXON_SEARCH_SYNONYMS_V2" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME", "NAMELANGUAGE") AS 
+  SELECT checklist.objectname              AS checklist,
     qname.subjectname                      AS qname,
     UPPER(nameOfSynonyms.resourceliteral)  AS name,
     scientificname.resourceliteral         AS scientificName,
     author.resourceliteral                 AS author,
     taxonrank.objectname                   AS taxonrank,
     synonymqname.predicatename             AS nametype,
-    nameOfSynonyms.resourceliteral		     AS casedname
+    nameOfSynonyms.resourceliteral		   AS casedname,
+    null                                   AS namelanguage
  from rdf_statementview qname
   join rdf_statementview checklist on (qname.subjectname = checklist.subjectname and checklist.predicatename = 'MX.nameAccordingTo')
   LEFT JOIN rdf_statementview scientificname ON (scientificname.subjectname = qname.subjectname AND scientificname.predicatename = 'MX.scientificName')
@@ -49,9 +51,12 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_TAXON_SEARCH_SYNONYM
   WHERE qname.predicatename  = 'rdf:type'
   AND   qname.objectname     = 'MX.taxon';
   
-  
+
+
+select * from  TAXON_SEARCH_MATERIALIZED_V2 fetch first 1 rows only;
 drop materialized view TAXON_SEARCH_MATERIALIZED_V2;
-CREATE MATERIALIZED VIEW "LTKM_LUONTO"."TAXON_SEARCH_MATERIALIZED_V2" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME")
+
+CREATE MATERIALIZED VIEW "TAXON_SEARCH_MATERIALIZED_V2" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME", "NAMELANGUAGE")
   BUILD IMMEDIATE
   REFRESH COMPLETE ON DEMAND START WITH sysdate+0 NEXT SYSDATE + 1/2
   AS 
@@ -60,7 +65,6 @@ CREATE MATERIALIZED VIEW "LTKM_LUONTO"."TAXON_SEARCH_MATERIALIZED_V2" ("CHECKLIS
   	union
   	select * from rdf_taxon_search_synonyms_v2
 );
-COMMENT ON MATERIALIZED VIEW "LTKM_LUONTO"."TAXON_SEARCH_MATERIALIZED_V2" IS 'snapshot table for snapshot LTKM_LUONTO.TAXON_SEARCH_MATERIALIZED_V2';
     
 CREATE INDEX ix_taxon_search ON taxon_search_materialized_v2 (checklist, name);
 CREATE INDEX ix_taxon_search_reverse ON taxon_search_materialized_v2 (checklist, REVERSE(name));
