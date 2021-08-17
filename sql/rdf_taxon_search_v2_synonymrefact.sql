@@ -3,7 +3,7 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "RDF_TAXON_SEARCH" ("CHECKLIST", "QNAME
   SELECT
     checklist.objectname           AS checklist,
     names.subjectname              AS qname,
-    UPPER(names.resourceliteral)   AS name,
+    REPLACE(REPLACE(REPLACE(UPPER(names.resourceliteral), '×', ''), 'Æ', 'AE'), 'Ë', 'E') AS name,
     scientificname.resourceliteral AS scientificName,
     author.resourceliteral         AS author,
     taxonrank.objectname           AS taxonrank,
@@ -32,7 +32,7 @@ CREATE OR REPLACE FORCE EDITIONABLE VIEW "RDF_TAXON_SEARCH" ("CHECKLIST", "QNAME
 CREATE OR REPLACE FORCE EDITIONABLE VIEW "RDF_TAXON_SEARCH_SYNONYMS_V2" ("CHECKLIST", "QNAME", "NAME", "SCIENTIFICNAME", "AUTHOR", "TAXONRANK", "NAMETYPE", "CASEDNAME", "NAMELANGUAGE") AS 
   SELECT checklist.objectname              AS checklist,
     qname.subjectname                      AS qname,
-    UPPER(nameOfSynonyms.resourceliteral)  AS name,
+    REPLACE(REPLACE(REPLACE(UPPER(nameOfSynonyms.resourceliteral), '×', ''), 'Æ', 'AE'), 'Ë', 'E') AS name,
     scientificname.resourceliteral         AS scientificName,
     author.resourceliteral                 AS author,
     taxonrank.objectname                   AS taxonrank,

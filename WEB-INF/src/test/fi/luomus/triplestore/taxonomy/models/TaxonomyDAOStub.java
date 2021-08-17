@@ -15,6 +15,7 @@ import fi.luomus.commons.containers.OccurrenceType;
 import fi.luomus.commons.containers.Person;
 import fi.luomus.commons.containers.Publication;
 import fi.luomus.commons.containers.RedListEvaluationGroup;
+import fi.luomus.commons.containers.TaxonSet;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonContainer;
@@ -204,6 +205,18 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 
 	@Override
 	public Map<String, RedListEvaluationGroup> getRedListEvaluationGroupsForceReload() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, TaxonSet> getTaxonSets() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, TaxonSet> getTaxonSetsForceReload() throws Exception {
 		// Auto-generated method stub
 		return null;
 	}

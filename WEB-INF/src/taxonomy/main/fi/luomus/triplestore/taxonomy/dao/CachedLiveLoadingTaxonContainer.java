@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Optional;
 
+import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -462,6 +463,16 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	@Override
 	public int getLatestLockedRedListEvaluationYear() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Set<Qname> orderRedListEvaluationGroups(Set<Qname> groups) {
+		return cachedRedListEvaluationGroupContainer.get().orderInformalTaxonGroups(groups);
+	}
+
+	@Override
+	public LocalizedText getInformalTaxonGroupNames(Set<Qname> informalGroups) {
+		return cachedInformalTaxonGroupContainer.get().getInformalTaxonGroupNames(informalGroups);
 	}
 
 }
