@@ -256,6 +256,11 @@ DBusername =
 DBpassword = 
 LuontoDbName = 
 
+Namespaces_DBdriver = com.mysql.jdbc.Driver
+Namespaces_DBurl = jdbc:mysql://
+Namespaces_DBusername = 
+Namespaces_DBpassword = 
+
 #Used for taxon images
 KotkaURL = https://kotkatest.luomus.fi
 

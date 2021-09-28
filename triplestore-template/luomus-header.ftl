@@ -59,6 +59,7 @@
 						<li role="menuitem"><a href="${taxonomyEditorBaseURL}">Taxon Editor</a></li>
 						<#if user?? && user.isAdmin()>
 							<li role="menuitem"><a href="${baseURL}/editor">Triplestore editor</a></li>
+							<li role="menuitem"><a href="${baseURL}/namespaces">Namespaces</a></li>
 							<li role="menuitem"><a href="${baseURL}/it">Information Systems</a></li>
 							<li><a target="_blank" href="${lajiETLBaseURL}">Laji-ETL</a></li>
 						</#if>

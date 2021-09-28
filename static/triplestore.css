@@ -320,4 +320,17 @@ div.system h3 {
 	color: #444; 
 }
 
+table#namespaces {
+	border-collapse: collapse;
+}
+table#namespaces td, table#namespaces th {
+	padding: 4px;
+}
+table#namespaces th {
+	background-color: rgb(219, 232, 251);
+	font-weight: bold;
+	font-size: 1.2em;
+	padding: 5px;
+}
+
 

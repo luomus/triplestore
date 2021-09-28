@@ -46,6 +46,7 @@
 			<url-pattern>/editor/*</url-pattern>
 			<url-pattern>/taxonomy-editor/*</url-pattern>
 			<url-pattern>/it/*</url-pattern>
+			<url-pattern>/namespaces/*</url-pattern>
 			<url-pattern>/greet/*</url-pattern>
 			<url-pattern>/login/*</url-pattern>
 			<url-pattern>/logout/*</url-pattern>
