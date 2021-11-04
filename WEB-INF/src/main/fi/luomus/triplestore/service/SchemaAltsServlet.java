@@ -27,6 +27,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 
 	private static final long serialVersionUID = -7921975069788844624L;
 
+	@Override
 	protected String type() {
 		return "alt";
 	}
@@ -37,7 +38,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		Set<Qname> altQnames = getQnamesOfType(dao, "rdf:Alt");
 		Collection<Model> models = dao.getSearchDAO().get(altQnames, ResultType.DEEP);
 		Map<String, Model> asMap = asMap(models);
-		JSONObject response = parseAltsResponse(asMap); 
+		JSONObject response = parseAltsResponse(asMap);
 		return jsonResponse(response);
 	}
 
@@ -85,7 +86,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 	}
 
 	private List<Statement> getAltStatementsInOrder(Model model) {
-		List<Statement> orderedStatements = new ArrayList<>(); 
+		List<Statement> orderedStatements = new ArrayList<>();
 		for (Statement s : model.getStatements()) {
 			if (s.getPredicate().getQname().startsWith("rdf:_") && s.isResourceStatement()) {
 				orderedStatements.add(s);
@@ -114,9 +115,12 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		if (model.hasStatements("rdfs:label")) {
 			json.setObject("value", labels(model));
 		}
+		if (model.hasStatements("altParent")) {
+			json.setString("altParent", model.getStatements("altParent").get(0).getObjectResource().getQname());
+		}
 		for (Statement s : model) {
 			if (!s.isForDefaultContext()) continue;
-			String predicate = s.getPredicate().getQname(); 
+			String predicate = s.getPredicate().getQname();
 			if (predicate.equals("rdfs:label")) continue;
 			if (s.isLiteralStatement()) {
 				json.getObject(shortName(predicate)).setString(s.getObjectLiteral().getLangcode(), s.getObjectLiteral().getContent());
