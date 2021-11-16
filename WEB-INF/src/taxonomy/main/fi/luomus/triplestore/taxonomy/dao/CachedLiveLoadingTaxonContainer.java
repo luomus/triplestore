@@ -190,6 +190,8 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			try {
 				EditableTaxon taxon = getOrNull(taxonQname);
 				if (taxon != null) return taxon;
+			} catch (NoSuchTaxonException nte) {
+				throw nte;
 			} catch (Exception e) {
 				throw triplestoreDAO.exception("Load taxon: " + taxonQname, e);
 			}
