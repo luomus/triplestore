@@ -87,33 +87,36 @@ function initColumnsPortlets() {
 	
 	$(".multirowSection").each(function() {
 		if ($(this).find('table').find(':input').first().attr('disabled') == 'disabled') return;
-		var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
-		$(this).find('table').after(addNewRowButton);
-		addNewRowButton.click(function() {
-			var tbodyToAddRow = $(this).parent().find('table tbody'); 
-			var rowClone = $(tbodyToAddRow).find('tr').first().clone();
-			rowClone.find('.chosen-container').remove();
-			rowClone.find(':input').each(function() {
-				var clonedInput = $(this).val('').show().removeAttr('display');
-				var name = clonedInput.attr('name');
-				if (name === undefined) return;
-				if (name.indexOf('___sv') > -1 || name.indexOf('___en') > -1) {
-					name = name.split("___")[0] + "___fi";
-					clonedInput.attr('name', name);
-				} else if (name.indexOf('___0') > -1) {
-					var countOfExisting = $(tbodyToAddRow).find('tr').size();
-					name = name.replace('___0', '___'+countOfExisting);
-					clonedInput.attr('name', name);
-				}
-				if (clonedInput.hasClass('chosen')) {
-					clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
-					rowClone.find('.chosen-container').removeAttr('style');
-				}
+		
+		$(this).find('table').each(function() {
+			var addNewRowButton = $('<a href="#" class="addNewItem">+ Add new</a>');
+			$(this).after(addNewRowButton);
+			addNewRowButton.click(function() {
+				var tbodyToAddRow = $(this).prev('table').find('tbody'); 
+				var rowClone = $(tbodyToAddRow).find('tr').first().clone();
+				rowClone.find('.chosen-container').remove();
+				rowClone.find(':input').each(function() {
+					var clonedInput = $(this).val('').show().removeAttr('display');
+					var name = clonedInput.attr('name');
+					if (name === undefined) return;
+					if (name.indexOf('___sv') > -1 || name.indexOf('___en') > -1) {
+						name = name.split("___")[0] + "___fi";
+						clonedInput.attr('name', name);
+					} else if (name.indexOf('___0') > -1) {
+						var countOfExisting = $(tbodyToAddRow).find('tr').size();
+						name = name.replace('___0', '___'+countOfExisting);
+						clonedInput.attr('name', name);
+					}
+					if (clonedInput.hasClass('chosen')) {
+						clonedInput.chosen({ search_contains: true, allow_single_deselect: true });
+						rowClone.find('.chosen-container').removeAttr('style');
+					}
+				});
+				rowClone.find('.languageSelector').val('fi');
+				tbodyToAddRow.append(rowClone);
+				addSaveButtonTo(this);
+				return false;
 			});
-			rowClone.find('.languageSelector').val('fi');
-			tbodyToAddRow.append(rowClone);
-			addSaveButtonTo(this);
-			return false;
 		});
 	});
 	

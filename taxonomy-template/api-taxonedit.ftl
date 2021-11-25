@@ -754,18 +754,30 @@
 	<@portletFooter />
 	
 	<@portletHeader "Identifiers" "" "multirowSection" />
-		<label>Taxonid.org</label>
-		<#list taxon.taxonConceptIds as id>
-			<a target="_blank" href="${id.toURI()}">${id}</a>
-		</#list>
-		<#if !taxon.taxonConceptIds?has_content>
-			none
-		</#if>
-		<hr />
 		<table>
 			<thead>
 				<tr>
-					<th>Identifier</th> 
+					<th>Taxonid.org</th> 
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.taxonConceptIds as id>
+					<tr>
+						<td><@input "skos:exactMatch" "off" id.toString() /></td>
+					</tr>
+				</#list>
+				<tr>
+					<td><@input "skos:exactMatch" "off" "taxonid:" /></td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="info">Note: The taxonid.org id must already exist or saving will fail in error message</p>
+		<hr />
+		
+		<table>
+			<thead>
+				<tr>
+					<th>Other taxon identifier</th> 
 				</tr>
 			</thead>
 			<tbody>
