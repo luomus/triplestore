@@ -31,7 +31,7 @@ public class LoginUtil  {
 		private String userQname;
 		private String personToken;
 		private String next;
-		private Set<String> roles; 
+		private Set<String> roles;
 
 		public AuthenticationResult(boolean success) {
 			this.success = success;
@@ -145,6 +145,7 @@ public class LoginUtil  {
 		responseData.setData("ltkmURI", ltkmURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
 		responseData.setData("lajifiURI", lajifiURI.toString());
+		responseData.setData("lajiAuthLoginURI", client.createLoginUrl(next).build());
 	}
 
 	public ResponseData processPost(HttpServletRequest req, SessionHandler session, ResponseData responseData) throws Exception {
@@ -167,7 +168,7 @@ public class LoginUtil  {
 			errorReporter.report("Login data " + Utils.debugS(lajiAuthToken), e);
 			responseData.setData("error", "Something went wrong: " + e.getMessage());
 			return responseData;
-		} 
+		}
 	}
 
 	private boolean nextGiven(AuthenticationResult authentication) {
@@ -213,11 +214,11 @@ public class LoginUtil  {
 		if (!validForSystem( userDetails)) return new AuthenticationResult(false).setErrorMessage("Required permissions to to use this system are missing.");
 		authenticationResponse.setPersonToken(token);
 		authenticationResponse.setRoles(userDetails.getRoles());
-		
+
 		// For easy testing of different roles
 		//Set<String> overridingRoles = Utils.set("MA.taxonEditorUserDescriptionWriterOnly");
 		//authenticationResponse.setRoles(overridingRoles);
-		
+
 		authenticationResponse.setUserId(userDetails.getQname().get());
 		authenticationResponse.setUserQname(userDetails.getQname().get());
 		authenticationResponse.setUserFullname(userDetails.getName());
