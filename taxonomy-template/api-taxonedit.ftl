@@ -511,6 +511,14 @@
 		<#if headerPrinted>
 			</ul>
 			<br/>
+			<label>Stop inheritance from parents</label>
+			<p class="info">Setting this to yes means the groups listead above are no longer inherited from the parent taxon. If you set other groups explisitly to this taxon, the 'parent groups' are still inherited.</p> 
+			<select name="MX.stopInformalTaxonGroupInheritance" <@checkPermissions/> >
+				<option value=""></option>
+				<option value="true" <#if taxon.setToStopInformalTaxonGroupInheritance>selected="selected"</#if>>Yes</option>
+				<option value="false">No</option>
+			</select>
+			<br /><br />
 		</#if>
 		
 		<input type="hidden" name="MX.isPartOfInformalTaxonGroup" value="" />
