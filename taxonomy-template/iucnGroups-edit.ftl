@@ -36,7 +36,7 @@
 		</li>
 		<li>
 			<label>Includes taxa</label>
-			<textarea placeholder="Comma separated list of MX codes" name="MVL.includesTaxon" class="checklistName"><#list group.taxons as taxonId>${taxonId}<#if taxonId_has_next>,</#if></#list></textarea>
+			<textarea placeholder="Comma separated list of MX codes" name="MVL.includesTaxon" class="checklistName"><#if group.taxons??><#list group.taxons as taxonId>${taxonId}<#if taxonId_has_next>,</#if></#list></#if></textarea>
 		</li>
 		<li>
 			<label>Order (number 1-n)</label>
