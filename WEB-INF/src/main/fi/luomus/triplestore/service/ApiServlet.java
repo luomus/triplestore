@@ -56,11 +56,6 @@ public class ApiServlet extends EditorBaseServlet {
 			return status404(res);
 		}
 
-		// TODO allow all request from vieraslajit user - remove when user not needed any more
-		if ("vieraslajit".equals(req.getRemoteUser())) {
-			return processGetWithAccess(req, res, qnames);
-		}
-
 		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
 			return processGetWithAccess(req, res, qnames);
