@@ -809,7 +809,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			Set<String> taxonQnames = Collections.emptySet();
 			if (given(taxon)) {
 				try {
-					taxonQnames = getTaxons(taxon);
+					taxonQnames = getTaxa(taxon);
 				} catch (Exception e) {
 					throw new TaxonLoadException();
 				}
@@ -867,7 +867,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return false;
 		}
 
-		private Set<String> getTaxons(String taxon) throws Exception {
+		private Set<String> getTaxa(String taxon) throws Exception {
 			TaxonSearchResponse result = getTaxonomyDAO().search(new TaxonSearch(taxon, 1000).onlyExact());
 			Set<String> qnames = new HashSet<>();
 			for (Match exactmatch : result.getExactMatches()) {
