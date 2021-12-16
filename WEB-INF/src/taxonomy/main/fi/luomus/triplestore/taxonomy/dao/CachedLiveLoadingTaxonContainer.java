@@ -22,6 +22,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.RdfResource;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
+import fi.luomus.commons.taxonomy.AdministrativeStatusContainer;
 import fi.luomus.commons.taxonomy.Filter;
 import fi.luomus.commons.taxonomy.InformalTaxonGroupContainer;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
@@ -82,6 +83,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	private final SingleObjectCache<Map<Qname, Set<Qname>>> cachedIucnGroupsOfTaxon; // taxon id -> IUCN group ids
 	private final SingleObjectCache<InformalTaxonGroupContainer> cachedInformalTaxonGroupContainer;
 	private final SingleObjectCache<InformalTaxonGroupContainer> cachedRedListEvaluationGroupContainer;
+	private final SingleObjectCache<AdministrativeStatusContainer> cachedAdministrativeStatusContainer;
 
 	public CachedLiveLoadingTaxonContainer(TriplestoreDAO triplestoreDAO, final ExtendedTaxonomyDAO taxonomyDAO) {
 		this.triplestoreDAO = triplestoreDAO;
@@ -105,6 +107,16 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 					return new InformalTaxonGroupContainer(taxonomyDAO.getRedListEvaluationGroupsForceReload());
 				} catch (Exception e) {
 					throw triplestoreDAO.exception("Red list evaluation group container loader", e);
+				}
+			}
+		}, 5, TimeUnit.MINUTES);
+		this.cachedAdministrativeStatusContainer = new SingleObjectCache<>(new SingleObjectCache.CacheLoader<AdministrativeStatusContainer>() {
+			@Override
+			public AdministrativeStatusContainer load() {
+				try {
+					return new AdministrativeStatusContainer(taxonomyDAO.getAdministrativeStatuses());
+				} catch (Exception e) {
+					throw triplestoreDAO.exception("Administrative status container loader", e);
 				}
 			}
 		}, 5, TimeUnit.MINUTES);
@@ -475,6 +487,16 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	@Override
 	public LocalizedText getInformalTaxonGroupNames(Set<Qname> informalGroups) {
 		return cachedInformalTaxonGroupContainer.get().getInformalTaxonGroupNames(informalGroups);
+	}
+
+	@Override
+	public Set<Qname> orderAdministrativeStatuses(Set<Qname> administrativeStatuses) {
+		return cachedAdministrativeStatusContainer.get().orderaAdministrativeStatuses(administrativeStatuses);
+	}
+
+	@Override
+	public LocalizedText getAdministrativeStatusNames(Set<Qname> administrativeStatuses) {
+		return cachedAdministrativeStatusContainer.get().getIAdministrativeStatusNames(administrativeStatuses);
 	}
 
 }
