@@ -1,0 +1,413 @@
+
+
+-- rdf_language
+
+  CREATE TABLE "LTKM_LUONTO"."RDF_LANGUAGE" 
+   ("LANGCODE" VARCHAR2(5 BYTE) NOT NULL ENABLE, 
+	"NIMI" VARCHAR2(200 BYTE) NOT NULL ENABLE, 
+	"PRIORITY" NUMBER(2,0) NOT NULL ENABLE, 
+	"LANGNAME" VARCHAR2(200 BYTE) NOT NULL ENABLE, 
+	 PRIMARY KEY ("LANGCODE")
+   ) ;
+
+
+-- rdf_resource
+
+
+  CREATE TABLE "LTKM_LUONTO"."RDF_RESOURCE_HISTORY" 
+   (	"RESOURCEID" NUMBER(10,0) NOT NULL ENABLE, 
+	"RESOURCEURI" VARCHAR2(400 BYTE) NOT NULL ENABLE, 
+	"RESOURCENAME" VARCHAR2(400 BYTE) NOT NULL ENABLE, 
+	"RESOURCELITERAL" VARCHAR2(4000 BYTE), 
+	"RESOURCELITERAL2" CLOB, 
+	"RESOURCEXML" "SYS"."XMLTYPE" , 
+	"RESOURCETYPEFK" NUMBER(10,0), 
+	"CREATED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"USERFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"LANGCODEFK" VARCHAR2(3 BYTE), 
+	"DELETED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"DELETED_USERFK" NUMBER, 
+	"VISIBILITY" NUMBER(2,0) DEFAULT 0, 
+	"PARENTFK" NUMBER(10,0)
+   );
+
+
+  CREATE TABLE "LTKM_LUONTO"."RDF_RESOURCE" 
+   ("RESOURCEID" NUMBER(10,0) NOT NULL ENABLE, 
+	"RESOURCEURI" VARCHAR2(400 BYTE) NOT NULL ENABLE, 
+	"RESOURCENAME" VARCHAR2(400 BYTE) NOT NULL ENABLE, 
+	"RESOURCELITERAL" VARCHAR2(4000 BYTE), 
+	"RESOURCELITERAL2" CLOB, 
+	"RESOURCEXML" "SYS"."XMLTYPE" , 
+	"RESOURCETYPEFK" NUMBER(10,0), 
+	"CREATED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"USERFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"LANGCODEFK" VARCHAR2(3 BYTE), 
+	"VISIBILITY" NUMBER(2,0) DEFAULT 0, 
+	"PARENTFK" NUMBER(10,0), 
+	 PRIMARY KEY ("RESOURCEID")
+
+	 CONSTRAINT "FK_LANGCODE" FOREIGN KEY ("LANGCODEFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_LANGUAGE" ("LANGCODE") ENABLE, 
+	 CONSTRAINT "FK_RESOURCETYPE" FOREIGN KEY ("RESOURCETYPEFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ENABLE, 
+	 CONSTRAINT "FK_USER" FOREIGN KEY ("USERFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ENABLE, 
+	 CONSTRAINT "FK_PARENTFK_RESOURCEID" FOREIGN KEY ("PARENTFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ON DELETE CASCADE ENABLE
+   ) 
+  CREATE UNIQUE INDEX "LTKM_LUONTO"."IX_RESOURCE_LITERAL" ON "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCELITERAL", "LANGCODEFK");
+
+  CREATE INDEX "LTKM_LUONTO"."IX_RESOURCE_LITERAL_TEXT" ON "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCELITERAL");
+
+  CREATE UNIQUE INDEX "LTKM_LUONTO"."IX_RESOURCE_RESOURCENAME" ON "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCENAME");
+
+  CREATE INDEX "LTKM_LUONTO"."IX_RESOURCE_RESOURCENAME2" ON "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCENAME", "RESOURCEID");
+
+  CREATE UNIQUE INDEX "LTKM_LUONTO"."IX_RESOURCE_RESOURCEURI" ON "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEURI");
+
+  CREATE INDEX "LTKM_LUONTO"."IX_UPPERLITERAL" ON "LTKM_LUONTO"."RDF_RESOURCE" (UPPER("RESOURCELITERAL"));
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "LTKM_LUONTO"."TR_RDF_RESOURCE_DELETE" 
+BEFORE DELETE
+ON RDF_RESOURCE 
+FOR EACH ROW
+DECLARE
+  v_userfk NUMBER;
+BEGIN
+  SELECT ltkm_luonto.GetUserFK
+  INTO v_userfk
+  FROM dual;
+
+  INSERT INTO RDF_RESOURCE_HISTORY(RESOURCEID,RESOURCEURI,RESOURCENAME,RESOURCELITERAL,RESOURCELITERAL2,RESOURCEXML,RESOURCETYPEFK,CREATED,USERFK,LANGCODEFK,DELETED_USERFK,VISIBILITY,PARENTFK)
+  VALUES (:OLD.RESOURCEID,:OLD.RESOURCEURI,:OLD.RESOURCENAME,:OLD.RESOURCELITERAL,:OLD.RESOURCELITERAL2,:OLD.RESOURCEXML,:OLD.RESOURCETYPEFK,:OLD.CREATED,:OLD.USERFK,:OLD.LANGCODEFK,v_userfk,:OLD.VISIBILITY,:OLD.PARENTFK);
+END;
+
+/
+ALTER TRIGGER "LTKM_LUONTO"."TR_RDF_RESOURCE_DELETE" ENABLE;
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "LTKM_LUONTO"."TR_RDF_RESOURCE_UPDATE" 
+BEFORE UPDATE
+ON RDF_RESOURCE 
+FOR EACH ROW
+DECLARE
+  v_userfk NUMBER;
+BEGIN
+  SELECT ltkm_luonto.GetUserFK
+  INTO v_userfk
+  FROM dual;
+
+  INSERT INTO RDF_RESOURCE_HISTORY(RESOURCEID,RESOURCEURI,RESOURCENAME,RESOURCELITERAL,RESOURCELITERAL2,RESOURCEXML,RESOURCETYPEFK,CREATED,USERFK,LANGCODEFK,DELETED_USERFK,VISIBILITY)
+  VALUES (:OLD.RESOURCEID,:OLD.RESOURCEURI,:OLD.RESOURCENAME,:OLD.RESOURCELITERAL,:OLD.RESOURCELITERAL2,:OLD.RESOURCEXML,:OLD.RESOURCETYPEFK,:OLD.CREATED,:OLD.USERFK,:OLD.LANGCODEFK,v_userfk,:OLD.VISIBILITY);
+
+  SELECT SYSDATE INTO :NEW.CREATED FROM DUAL;
+END;
+
+/
+ALTER TRIGGER "LTKM_LUONTO"."TR_RDF_RESOURCE_UPDATE" ENABLE;
+
+
+
+-- rdf_statement
+
+
+  CREATE TABLE "LTKM_LUONTO"."RDF_STATEMENT_HISTORY" 
+   (	"STATEMENTID" NUMBER(10,0) NOT NULL ENABLE, 
+	"SUBJECTFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"PREDICATEFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"OBJECTFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"CONTEXTFK" NUMBER(10,0), 
+	"CREATED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"USERFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"DELETED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"DELETED_USERFK" NUMBER
+   ) ;
+
+
+
+  CREATE TABLE "LTKM_LUONTO"."RDF_STATEMENT" 
+   (	"STATEMENTID" NUMBER(10,0) NOT NULL ENABLE, 
+	"SUBJECTFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"PREDICATEFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"OBJECTFK" NUMBER(10,0) NOT NULL ENABLE, 
+	"CONTEXTFK" NUMBER(10,0), 
+	"CREATED" DATE DEFAULT SYSDATE NOT NULL ENABLE, 
+	"USERFK" NUMBER(10,0) NOT NULL ENABLE, 
+	 PRIMARY KEY ("STATEMENTID")
+	 CONSTRAINT "FK_SUBJECT_RESOURCE" FOREIGN KEY ("SUBJECTFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ON DELETE CASCADE ENABLE, 
+	 CONSTRAINT "FK_PREDICATE_RESOURCE" FOREIGN KEY ("PREDICATEFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ENABLE, 
+	 CONSTRAINT "FK_OBJECT_RESOURCE" FOREIGN KEY ("OBJECTFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ENABLE, 
+	 CONSTRAINT "FK_CONTEXT_RESOURCE" FOREIGN KEY ("CONTEXTFK")
+	  REFERENCES "LTKM_LUONTO"."RDF_RESOURCE" ("RESOURCEID") ENABLE
+   );
+
+  CREATE INDEX "LTKM_LUONTO"."IX_CONTEXTFK" ON "LTKM_LUONTO"."RDF_STATEMENT" ("CONTEXTFK", "SUBJECTFK", "PREDICATEFK", "OBJECTFK") ;
+
+  CREATE INDEX "LTKM_LUONTO"."IX_OBJECTFK" ON "LTKM_LUONTO"."RDF_STATEMENT" ("OBJECTFK", "SUBJECTFK", "PREDICATEFK", "CONTEXTFK");
+
+  CREATE INDEX "LTKM_LUONTO"."IX_PREDICATEFK" ON "LTKM_LUONTO"."RDF_STATEMENT" ("PREDICATEFK", "SUBJECTFK", "OBJECTFK", "CONTEXTFK");
+
+  CREATE UNIQUE INDEX "LTKM_LUONTO"."IX_SUBJECTFK" ON "LTKM_LUONTO"."RDF_STATEMENT" ("SUBJECTFK", "PREDICATEFK", "OBJECTFK", "CONTEXTFK");
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "LTKM_LUONTO"."TR_RDF_STATEMENT_UPDATE" 
+BEFORE UPDATE
+ON RDF_STATEMENT
+FOR EACH ROW
+DECLARE
+  v_userfk NUMBER;
+BEGIN
+  SELECT ltkm_luonto.GetUserFK
+  INTO v_userfk
+  FROM dual;
+
+  INSERT INTO RDF_STATEMENT_HISTORY(STATEMENTID,SUBJECTFK,PREDICATEFK,OBJECTFK,CONTEXTFK,CREATED,USERFK,DELETED_USERFK)
+  VALUES (:OLD.STATEMENTID,:OLD.SUBJECTFK,:OLD.PREDICATEFK,:OLD.OBJECTFK,:OLD.CONTEXTFK,:OLD.CREATED,:OLD.USERFK,v_userfk);
+
+  SELECT SYSDATE INTO :NEW.CREATED FROM DUAL;
+END;
+
+/
+ALTER TRIGGER "LTKM_LUONTO"."TR_RDF_STATEMENT_UPDATE" ENABLE;
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "LTKM_LUONTO"."TR_RDF_STATEMENT_DELETE" 
+BEFORE DELETE
+ON RDF_STATEMENT
+FOR EACH ROW
+DECLARE
+  v_userfk NUMBER;
+BEGIN
+  SELECT ltkm_luonto.GetUserFK
+  INTO v_userfk
+  FROM dual;
+
+  INSERT INTO RDF_STATEMENT_HISTORY(STATEMENTID,SUBJECTFK,PREDICATEFK,OBJECTFK,CONTEXTFK,CREATED,USERFK,DELETED_USERFK)
+  VALUES (:OLD.STATEMENTID,:OLD.SUBJECTFK,:OLD.PREDICATEFK,:OLD.OBJECTFK,:OLD.CONTEXTFK,:OLD.CREATED,:OLD.USERFK,v_userfk);
+END;
+
+/
+ALTER TRIGGER "LTKM_LUONTO"."TR_RDF_STATEMENT_DELETE" ENABLE;
+
+
+-- AddResource
+
+create or replace PROCEDURE AddResource
+  (
+  p_resourcename IN VARCHAR2
+  )
+AS 
+  v_count NUMBER;
+  v_userfk NUMBER;
+BEGIN
+  SELECT ltkm_luonto.GetUserFK
+  INTO v_userfk
+  FROM dual;
+
+  IF INSTR(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(p_resourcename, 'utu:'), 'zmuo:'),'herbo:'),'luomus:'),'taxonid:'),':') = 0 THEN
+    SELECT COUNT(*)
+    INTO v_count
+    FROM rdf_resource
+    WHERE resourcename = p_resourcename;
+    
+    IF v_count = 0 THEN
+      INSERT INTO rdf_resource(resourceid,resourceuri,resourcename,userfk)
+      VALUES (rdf_resource_seq.NEXTVAL,GetResourceURI(p_resourcename),p_resourcename,v_userfk);
+    END IF;
+  ELSE
+    raise_application_error(-20001, 'Resource failed colon check ' || p_resourcename);
+  END IF;
+END ADDRESOURCE;
+
+
+-- AddStatement
+
+create or replace PROCEDURE AddStatement
+  (
+  p_subjectName IN VARCHAR2,
+  p_predicateName IN VARCHAR2,
+  p_objectName IN VARCHAR2,
+  p_userQName IN VARCHAR2 DEFAULT NULL,
+  p_contextName IN VARCHAR2 DEFAULT NULL
+  )
+---------------------------------------------------------
+-- This procedure adds a new statement with
+-- a QName as an object
+-- into table RDF_RESOURCE
+--
+-- Parameter p_userQName added 29 Nov 2013
+-- Parameter p_contextName added 31 Mar 2014
+--
+-- Created by  Tapani Lahti 27 Nov 2011
+-- Modified by Viltsu 18 Aug 2015
+---------------------------------------------------------
+AS 
+  v_subjectfk NUMBER;
+  v_predicatefk NUMBER;
+  v_objectfk NUMBER;
+  v_contextfk NUMBER := NULL;
+  v_count NUMBER;
+  v_userfk NUMBER;
+BEGIN
+  -- Fetch UserFK
+  IF p_userQName IS NOT NULL THEN
+    FOR rec IN (
+      SELECT resourceid 
+      FROM ltkm_luonto.rdf_resource
+      WHERE resourcename = p_userQName)
+    LOOP
+      v_userfk := rec.resourceid;
+    END LOOP;
+  ELSE
+    SELECT ltkm_luonto.GetUserFK
+    INTO v_userfk
+    FROM dual;
+  END IF;
+
+  IF v_userfk IS NULL THEN
+    v_userfk := 0;
+  END IF;
+
+  SELECT resourceid
+  INTO v_subjectfk
+  FROM rdf_resource
+  WHERE resourcename = p_subjectName
+  OR    resourceuri  = p_subjectName;
+
+  SELECT resourceid
+  INTO v_predicatefk
+  FROM rdf_resource
+  WHERE resourcename = p_predicateName
+  OR    resourceuri  = p_predicateName;
+
+  SELECT resourceid
+  INTO v_objectfk
+  FROM rdf_resource
+  WHERE resourcename = p_objectName
+  OR    resourceuri  = p_objectName;
+
+  IF p_contextName IS NOT NULL THEN
+    SELECT resourceid
+    INTO v_contextfk
+    FROM rdf_resource
+    WHERE resourcename = p_contextName
+    OR    resourceuri  = p_contextName;
+  END IF;
+
+  -- Check duplicates
+  SELECT COUNT(*)
+  INTO v_count
+  FROM rdf_statement
+  WHERE subjectfk = v_subjectfk
+  AND predicatefk = v_predicatefk
+  AND objectfk = v_objectfk
+  AND COALESCE(contextfk,-1) = COALESCE(v_contextfk,-1);
+
+  IF v_count = 0 THEN
+    -- If the statement is unique, add it to the repository
+    INSERT INTO rdf_statement(statementid,subjectfk,predicatefk,objectfk,contextfk,userfk)
+    VALUES (rdf_statement_seq.NEXTVAL,v_subjectfk,v_predicatefk,v_objectfk,v_contextfk,v_userfk);
+  END IF;
+EXCEPTION
+  WHEN DUP_VAL_ON_INDEX THEN
+    NULL; -- Don't do anythign when insering failed by unique index
+/*    
+  WHEN OTHERS THEN
+    raise_application_error(-20300, 'AddStatement failed');
+*/
+END ADDSTATEMENT;
+
+
+
+-- AddStatementL
+
+create or replace PROCEDURE AddStatementL
+  (
+  p_subjectName IN VARCHAR2,
+  p_predicateName IN VARCHAR2,
+  p_objectLiteral IN VARCHAR2,
+  p_langCode IN VARCHAR2 DEFAULT NULL,
+  p_userQName IN VARCHAR2 DEFAULT NULL,
+  p_contextName IN VARCHAR2 DEFAULT NULL
+  )
+---------------------------------------------------------
+-- This procedure adds a new statement with
+-- a literal value as an object
+-- into table RDF_RESOURCE
+--
+-- Parameter p_userfk removed 13 Sep 2012 by TL
+-- Parameter p_userqname added 29 Nov 2013
+-- Parameter p_contextname added 31 Mar2014
+--
+-- Created by  Tapani Lahti 27 Nov 2011
+-- Modified by Tapani Lahti 31 Mar 2014
+---------------------------------------------------------
+AS 
+  v_subjectfk NUMBER;
+  v_predicatefk NUMBER;
+  v_objectfk NUMBER;
+  v_contextfk NUMBER := NULL;
+  v_userfk NUMBER;
+  v_literal VARCHAR(4000 byte);
+BEGIN
+  v_literal := TrimLiteral(p_objectliteral);
+  
+  -- Fetch UserFK
+  IF p_userQName IS NOT NULL THEN
+    FOR rec IN (
+      SELECT resourceid 
+      FROM rdf_resource
+      WHERE resourcename = p_userQName)
+    LOOP
+      v_userfk := rec.resourceid;
+    END LOOP;
+  ELSE
+    SELECT GetUserFK
+    INTO v_userfk
+    FROM dual;
+  END IF;
+
+  -- Add literal into database
+  AddLiteral(v_literal,p_langcode);
+
+  -- Fetch subjectFK
+  SELECT resourceid
+  INTO v_subjectfk
+  FROM rdf_resource
+  WHERE resourcename = p_subjectname
+  OR    resourceuri  = p_subjectname;
+
+  -- Fetch predicateFK
+  SELECT resourceid
+  INTO v_predicatefk
+  FROM rdf_resource
+  WHERE resourcename = p_predicatename
+  OR    resourceuri  = p_predicatename;
+
+  -- Fetch objectFK
+  SELECT resourceid
+  INTO v_objectfk
+  FROM rdf_resource
+  WHERE resourceliteral = v_literal
+  AND COALESCE(langcodefk,'.') = COALESCE(p_LangCode,'.');
+
+  -- Fetch contextFK
+  IF p_contextName IS NOT NULL THEN
+    SELECT resourceid
+    INTO v_contextfk
+    FROM rdf_resource
+    WHERE resourcename = p_contextname
+    OR    resourceuri  = p_contextname;
+  END IF;
+
+  -- Insert new statement
+  INSERT INTO rdf_statement(statementid,subjectfk,predicatefk,objectfk,contextfk,userfk)
+  VALUES (rdf_statement_seq.NEXTVAL,v_subjectfk,v_predicatefk,v_objectfk,v_contextfk,v_userfk);
+
+EXCEPTION
+  WHEN DUP_VAL_ON_INDEX THEN
+    NULL; -- Don't do anythign when insering failed by unique index
+END AddStatementL;
+
+
