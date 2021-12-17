@@ -477,4 +477,23 @@ END AddStatementL;
   ON st.contextfk = c.resourceid;
 
   
-  
+-- function GetUserFK
+
+create or replace FUNCTION GetUserFK
+RETURN NUMBER
+IS
+  v_userfk NUMBER;
+BEGIN
+  BEGIN
+    SELECT resourceid
+    INTO v_userfk
+    FROM ltkm_luonto.rdf_resource
+    WHERE resourcename = replace(user,'USER_MA','MA.');
+  EXCEPTION
+    WHEN OTHERS THEN
+      v_userfk := 0;
+  END;
+
+  RETURN v_userfk;
+END;
+
