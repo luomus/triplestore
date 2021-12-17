@@ -411,3 +411,70 @@ EXCEPTION
 END AddStatementL;
 
 
+-- rdf_statementview
+
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_STATEMENTVIEW" ("STATEMENTID", "SUBJECTNAME", "PREDICATENAME", "OBJECTNAME", "CONTEXTNAME", "RESOURCELITERAL", "RESOURCELITERAL2", "LANGCODEFK", "CREATED", "USERFK", "SUBJECTURI", "PREDICATEURI", "OBJECTURI", "CONTEXTURI", "SUBJECTID", "PREDICATEID", "OBJECTID", "VISIBILITY") AS 
+  SELECT st.statementid,
+    s.resourcename AS subjectname,
+    p.resourcename AS predicatename,
+    o.resourcename AS objectname,
+    c.resourcename AS contextname,
+    o.resourceliteral,
+    o.resourceliteral2,
+    o.langcodefk,
+    st.created,
+    st.userfk,
+    s.resourceuri AS subjecturi,
+    p.resourceuri AS predicateuri,
+    o.resourceuri AS objecturi,
+    c.resourceuri AS contexturi,
+    s.resourceid  AS subjectid,
+    p.resourceid  AS predicateid,
+    o.resourceid  AS objectid,
+    s.visibility  AS visibility
+  FROM rdf_statement st
+  JOIN rdf_resource s
+  ON st.subjectfk = s.resourceid
+  JOIN rdf_resource p
+  ON st.predicatefk = p.resourceid
+  JOIN rdf_resource o
+  ON st.objectfk = o.resourceid
+  LEFT JOIN rdf_resource c
+  ON st.contextfk = c.resourceid;
+
+
+-- rdf_statementview_history
+
+
+  CREATE OR REPLACE FORCE EDITIONABLE VIEW "LTKM_LUONTO"."RDF_STATEMENTVIEW_HISTORY" ("STATEMENTID", "SUBJECTNAME", "PREDICATENAME", "OBJECTNAME", "CONTEXTNAME", "RESOURCELITERAL", "LANGCODEFK", "CREATED", "USERFK", "DELETED", "DELETED_USERFK", "SUBJECTURI", "PREDICATEURI", "OBJECTURI", "CONTEXTURI", "SUBJECTID", "PREDICATEID", "OBJECTID", "VISIBILITY") AS 
+  SELECT st.statementid,
+    s.resourcename AS subjectname,
+    p.resourcename AS predicatename,
+    o.resourcename AS objectname,
+    c.resourcename AS contextname,
+    o.resourceliteral,
+    o.langcodefk,
+    st.created,
+    st.userfk,
+    st.deleted,
+    st.deleted_userfk,
+    s.resourceuri AS subjecturi,
+    p.resourceuri AS predicateuri,
+    o.resourceuri AS objecturi,
+    c.resourceuri AS contexturi,
+    s.resourceid  AS subjectid,
+    p.resourceid  AS predicateid,
+    o.resourceid  AS objectid,
+    s.visibility  AS visibility
+  FROM rdf_statement_history st
+  JOIN rdf_resource s
+  ON st.subjectfk = s.resourceid
+  JOIN rdf_resource p
+  ON st.predicatefk = p.resourceid
+  JOIN rdf_resource o
+  ON st.objectfk = o.resourceid
+  LEFT JOIN rdf_resource c
+  ON st.contextfk = c.resourceid;
+
+  
+  
