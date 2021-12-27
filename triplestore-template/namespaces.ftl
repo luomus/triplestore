@@ -2,7 +2,7 @@
 
 <h1>Namespaces</h1>
 
-<table id="namespaces">
+<table id="namespaces" class="public">
 	<tr>
 		<th>Namespace</th>
 		<th>Person in charge</th>

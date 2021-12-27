@@ -326,6 +326,9 @@ table#namespaces {
 table#namespaces td, table#namespaces th {
 	padding: 4px;
 }
+table#namespaces.public td, table#namespaces.public th {
+	border: 1px solid grey;
+}
 table#namespaces th {
 	background-color: rgb(219, 232, 251);
 	font-weight: bold;
