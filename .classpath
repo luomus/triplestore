@@ -8,7 +8,7 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-io-2.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-logging-1.1.3.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/fluent-hc-4.3.5.jar"/>
-	<classpathentry kind="lib" path="WEB-INF/lib/freemarker-2-3-19.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/freemarker-2-3-19.jar" sourcepath="E:/esko-local/apache-maven-3.6.3/.m2/repository/org/freemarker/freemarker/2.3.19/freemarker-2.3.19-sources.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/guava-17.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/httpclient-4.3.5.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/httpclient-cache-4.3.5.jar"/>
@@ -28,5 +28,6 @@
 	<classpathentry kind="lib" path="WEB-INF/lib/caffeine-2.8.0.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/commons-csv-1.6.jar"/>
 	<classpathentry kind="lib" path="WEB-INF/lib/jena-3.13.1.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/mysql-connector-java-5.1.35-bin.jar"/>
 	<classpathentry kind="output" path="WEB-INF/classes"/>
 </classpath>

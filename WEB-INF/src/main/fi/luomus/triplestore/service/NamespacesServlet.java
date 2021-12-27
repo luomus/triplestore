@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.triplestore.dao.NamespacesDAO;
 import fi.luomus.triplestore.dao.NamespacesDAOImple;
-import fi.luomus.triplestore.models.Namespace;
 
 @WebServlet(urlPatterns = {"/namespaces/*"})
 public class NamespacesServlet extends EditorBaseServlet {
@@ -16,8 +15,7 @@ public class NamespacesServlet extends EditorBaseServlet {
 
 	@Override
 	protected boolean authorized(HttpServletRequest req) {
-		if (!super.authorized(req)) return false;
-		return getUser(req).isAdmin();
+		return true;
 	}
 
 	@Override
@@ -31,18 +29,6 @@ public class NamespacesServlet extends EditorBaseServlet {
 
 	private NamespacesDAO getDao() {
 		return new NamespacesDAOImple(getConfig());
-	}
-
-	@Override
-	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		Namespace namespace = new Namespace(
-				req.getParameter("namespace"),
-				req.getParameter("personInCharge"),
-				req.getParameter("purpose"),
-				req.getParameter("type"),
-				req.getParameter("qnamePrefix"));
-		getDao().upsert(namespace);
-		return new ResponseData().setRedirectLocation(getConfig().baseURL()+"/namespaces");
 	}
 
 }

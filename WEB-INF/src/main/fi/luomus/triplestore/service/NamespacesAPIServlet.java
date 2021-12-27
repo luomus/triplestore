@@ -17,7 +17,7 @@ import fi.luomus.triplestore.dao.NamespacesDAOImple;
 import fi.luomus.triplestore.models.Namespace;
 
 @WebServlet(urlPatterns = {"/api/namespaces/*"})
-public class PulicNamespacesServlet extends ApiServlet {
+public class NamespacesAPIServlet extends ApiServlet {
 
 	private static final long serialVersionUID = -5846147682122073946L;
 
