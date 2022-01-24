@@ -137,12 +137,10 @@ public class LoginUtil  {
 	private void setLajiAuthLinks(String next, ResponseData responseData) throws URISyntaxException {
 		LajiAuthClient client = getLajiAuthClient();
 		URI hakaURI = client.createLoginUrl(next).authenticationSource(AuthenticationSource.HAKA).build();
-		URI ltkmURI = client.createLoginUrl(next).authenticationSource(AuthenticationSource.LTKM).build();
 		URI virtuURI = client.createLoginUrl(next).authenticationSource(AuthenticationSource.VIRTU).build();
 		URI lajifiURI = client.createLoginUrl(next).authenticationSource(AuthenticationSource.LOCAL).build();
 
 		responseData.setData("hakaURI", hakaURI.toString());
-		responseData.setData("ltkmURI", ltkmURI.toString());
 		responseData.setData("virtuURI", virtuURI.toString());
 		responseData.setData("lajifiURI", lajifiURI.toString());
 		responseData.setData("lajiAuthLoginURI", client.createLoginUrl(next).build());
