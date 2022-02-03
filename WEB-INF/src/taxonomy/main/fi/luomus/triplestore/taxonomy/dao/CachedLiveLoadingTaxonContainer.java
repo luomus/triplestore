@@ -336,7 +336,30 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 			return true;
 		} catch (NoSuchTaxonException e) {
 			return false;
+		} catch (Exception e) {
+			if (chainContains(NoSuchTaxonException.class, e)) return false;
+			throw e;
 		}
+	}
+
+	public static boolean chainContains(Class<?> exceptionClass, Throwable e) {
+		if (e == null) return false;
+		Map<Class<?>, Integer> causes = new HashMap<>();
+		while (true) {
+			if (e.getCause() == null) break;
+			if (e.getCause().getClass() == exceptionClass) return true;
+
+			// prevent infinite loop
+			Integer i = causes.get(e.getCause().getClass());
+			if (i != null) {
+				if (i > 10) return false;
+				causes.put(e.getCause().getClass(), i + 1);
+			} else {
+				causes.put(e.getClass().getClass(), 1);
+			}
+			e = e.getCause();
+		}
+		return false;
 	}
 
 	@Override
