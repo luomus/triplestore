@@ -217,8 +217,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 
 	private void deleteStatement(Statement s, PreparedStatement deleteStatement) throws SQLException {
 		deleteStatement.setLong(1, s.getId());
-		int i = deleteStatement.executeUpdate();
-		if (i != 1) throw new IllegalStateException("Delete removed " + i + " rows instead of 1.");
+		deleteStatement.executeUpdate();
 	}
 
 	@Override
