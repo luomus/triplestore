@@ -160,6 +160,7 @@ public class LoginUtil  {
 				String frontpage = frontpageForRoles.get(authentication.getRoles().iterator().next());
 				return responseData.setRedirectLocation(frontpage);
 			}
+			getLajiAuthClient().invalidateToken(lajiAuthToken);
 			responseData.setData("error", authentication.getErrorMessage());
 			return responseData;
 		} catch (Exception e) {
