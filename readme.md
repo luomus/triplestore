@@ -153,7 +153,7 @@ grant select on luonto.rdf_XX_seq to ; -- All used sequences..
 ###Example configuration file
 ~~~
 SystemID = triplestore
-SystemQname = 
+SystemQname = KE.xxx
 
 DevelopmentMode = YES
 StagingMode = NO
@@ -215,13 +215,13 @@ Taxon editor responds from /triplestore/taxonomy-editor
 
 1. Included in Triplestore-API, but requires it's own configuration file
 2. Add triplestore-v2-taxonomyeditor.properties to  <catalina.base>/app-conf
-3. Production enviroment may require allowing cross domain access to Taxon Editor fonts
+3. Production environment may require allowing cross domain access to Taxon Editor fonts
 
 
 ###Example configuration file
 ~~~
 SystemID = taxonomy-editor
-SystemQname = 
+SystemQname = KE.xxx
 LajiAuthURL = 
 
 DevelopmentMode = YES
