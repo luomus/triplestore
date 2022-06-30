@@ -58,7 +58,7 @@ public class TaxonValidator {
 	}
 
 	private void setError(String field, String error) {
-		validationData.setError(field, error);		
+		validationData.setError(field, error);
 	}
 
 	private boolean given(Object o) {
@@ -114,22 +114,38 @@ public class TaxonValidator {
 	}
 
 	private static final Set<Character> ALPHAS = Utils.set(
-			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 
+			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
 			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë', '×');
 
 	private static final Set<Character> VERNACULAR_ALLOWED = Utils.set('-', ' ');
 
 	private void validateVernacularName(String fieldName, String name, String locale, Taxon taxon) {
 		if (name == null) return;
-		name = name.trim().toLowerCase();
+		name = name.trim();
 		if (name.isEmpty()) return;
+
+		if ("en".equals(locale)) {
+			if (!Utils.upperCaseFirst(name).equals(name)) {
+				setWarning(fieldName, "English name should start with uppercase character");
+			}
+		} else {
+			if (!name.toLowerCase().equals(name)) {
+				setWarning(fieldName, "Finnish and swedish names should be typed lowercased");
+			}
+		}
+
+		name = name.toLowerCase();
+
 		if (!ALPHAS.contains(name.charAt(0))) {
 			setError(fieldName, "Name should begin with an alpha. For example write the complete name \"jättiputket -ryhmä\", not just \"-ryhmä\".");
 			return;
 		}
 		if (name.contains(",")) {
-			setError(fieldName, "Name must not contain a comma. Give multiple names separately.");
+			setWarning(fieldName, "Name must not contain a comma. Give multiple names separately.");
 			return;
+		}
+		if (name.contains(" or ") || name.contains(" ja ")) {
+			setWarning(fieldName, "Name should not contain words 'or' or 'ja'. Give alternative names as alternative names.");
 		}
 		if (isSubSpecies(taxon)) {
 			name = allowParentheses(name);
@@ -158,7 +174,7 @@ public class TaxonValidator {
 	private void validateScientificName(Taxon taxon) {
 		String name = taxon.getScientificName();
 		if (name == null) return;
-		name = name.trim().toLowerCase(); 
+		name = name.trim().toLowerCase();
 		if (name.isEmpty()) return;
 
 		if (SPECIES_AGGREGATE.equals(taxon.getTaxonRank())) {
@@ -167,20 +183,20 @@ public class TaxonValidator {
 				return;
 			}
 		}
-		
+
 		if (SUBGENUS.equals(taxon.getTaxonRank())) {
 			if (!name.contains("(") && !name.contains(")") && !name.contains("subg.")) {
 				setError("Scientific name", "For subgenuses, use the following form \"Bombus (Bombus)\" or \"Carex subg. Carex\"");
 				return;
 			}
 		}
-		
+
 		if ((taxon.isCursiveName() || taxon.getTaxonRank() == null) && !GENUS.equals(taxon.getTaxonRank())) {
 			name = allowParentheses(name);
 			name = allowSpace(name);
 		}
 		if (!taxon.isCursiveName() && name.startsWith("\"") && name.endsWith("\"")) {
-			name = allowQuotationMarks(name); 
+			name = allowQuotationMarks(name);
 		}
 		if (SPECIES_AGGREGATE.equals(taxon.getTaxonRank())) {
 			name = allowSlash(name);
@@ -189,7 +205,7 @@ public class TaxonValidator {
 			if (!ALPHAS.contains(c)) {
 				if (!taxon.isSpecies() || !SCIENTIFIC_ALLOWED_FOR_SPECIES.contains(c)) {
 					setError("Scientific name", "Must not contain the character '" + c+ "'");
-					return;					
+					return;
 				}
 			}
 		}
@@ -262,18 +278,18 @@ public class TaxonValidator {
 
 	private void validateDescription(Statement s) {
 		String content = s.getObjectLiteral().getUnsanitazedContent();
-		
+
 		if (Utils.countOfUTF8Bytes(content) >= ObjectLiteral.MAX_BYTE_LENGTH) {
 			setError(getFieldDescription(s.getPredicate()), "The text was too long and it has been shortened!");
 		}
-		
+
 		Set<String> tags = parseTags(content);
 		tags.removeAll(ALLOWED_TAGS);
 		if (!tags.isEmpty()) {
 			setError(getFieldDescription(s.getPredicate()), "Unallowed tag: " + tags.iterator().next().replace("/", "") + ". They were removed from the saved content! Allowed tags are: " + ObjectLiteral.ALLOWED_TAGS);
 			return ;
 		}
-		
+
 		if (hasStyles(content)) {
 			setWarning(getFieldDescription(s.getPredicate()), "Custom styles are discouraged");
 		}
@@ -299,7 +315,7 @@ public class TaxonValidator {
 		throw new IllegalStateException("No desc variable found: " + predicate.getQname());
 	}
 
-	private static final Collection<String> ALLOWED_TAGS; 
+	private static final Collection<String> ALLOWED_TAGS;
 	static {
 		ALLOWED_TAGS = new ArrayList<>();
 		for (String tag : ObjectLiteral.ALLOWED_TAGS.split(Pattern.quote(","))) {
