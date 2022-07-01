@@ -10,15 +10,21 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.http.client.methods.HttpGet;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
+import fi.luomus.commons.http.HttpClientService;
+import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.utils.DateUtils;
@@ -32,11 +38,17 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
-	private static final String FILENAME_IN = "E:\\esko-local\\temp\\kalat.txt";
-	private static final String FILENAME_OUT = "E:\\esko-local\\temp\\taxon_statements.txt";
-	private static final boolean DRY_RUN = true;
+	private static final String API_URL = "https://.../uri/MX";
+	private static final String API_USERNAME = "...";
+	private static final String API_PASSWORD = "....";
 
-	private static int seq;
+	private static final String FILENAME_IN = "E:\\esko-local\\temp\\kalat.txt";
+	private static final String FILENAME_OUT = "E:\\esko-local\\temp\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
+	private static final boolean DRY_RUN = true; // XXX
+
+	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: To fix/undo things gone wrong all created new taxa have the same created timestamp making it easy to identify them (also of course MX-code range can be used)
+
+	private static int seq = 1;
 	private static final List<String> warnings = new ArrayList<>();
 
 	private static final String MZ_CREATED_AT_TIMESTAMP = "MZ.createdAtTimestamp";
@@ -62,7 +74,7 @@ public class TaxaCreationFromFile {
 			e.printStackTrace();
 			System.out.println("end - fail");
 		}
-		// TODO or maybe add old names (manually?) as alternative names?
+		// Or maybe add old names (manually?) as alternative names?
 		System.out.println("Remember to run the following: ");
 		System.out.println("--delete from rdf_statement where statementid in ( ");
 		System.out.println("	select subjectname, langcodefk, count(1), min(statementid) ");
@@ -81,13 +93,44 @@ public class TaxaCreationFromFile {
 			debug(t);
 		}
 		List<String> statements = createStatements(taxa);
+		if (!DRY_RUN) {
+			replaceTempIdsWithReal(statements);
+		}
 		for (String s : statements) {
 			System.out.println(s);
+		}
+		FileUtils.writeToFile(new File(FILENAME_OUT), statements.stream().collect(Collectors.joining("\n")));
+	}
+
+	private static void replaceTempIdsWithReal(List<String> statements) {
+		int maxUsed = seq;
+		Map<String, String> replace = new HashMap<>();
+		for (int i = 1; i<=maxUsed; i++) {
+			String id = getNextRealSeqValue();
+			replace.put("TEMP."+i, id);
+		}
+		for (Map.Entry<String, String> e : replace.entrySet()) {
+			String temp = e.getKey();
+			String real = e.getValue();
+			ListIterator<String> i = statements.listIterator();
+			while (i.hasNext()) {
+				i.set(i.next().replace("'"+temp+"'", "'"+real+"'"));
+			}
+		}
+	}
+
+	private static String getNextRealSeqValue() {
+		try (HttpClientService client = new HttpClientService(API_URL, API_USERNAME, API_PASSWORD)) {
+			JSONObject json = client.contentAsJson(new HttpGet(API_URL));
+			return json.getObject("response").getString("qname");
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	private static List<String> createStatements(List<Taxon> taxa) {
 		List<String> statements = new ArrayList<>();
+		statements.add("set define off;"); // This fixes & character causing a replacement dialog
 		for (Taxon taxon : taxa) {
 			if (isExisting(taxon)) {
 				Model model = new Model(taxon.getId());
@@ -107,8 +150,7 @@ public class TaxaCreationFromFile {
 				model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
 				model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
 				vernacularNameStatements(taxon, model);
-				String createdAt = Long.toString(DateUtils.getCurrentEpoch());
-				model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
+				model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(CREATED_TIMESTAMP)));
 				statements.addAll(generateStatements(model));
 			}
 		}
@@ -245,7 +287,7 @@ public class TaxaCreationFromFile {
 	}
 
 	private static String nextId() {
-		return "A." + (seq++);
+		return "TEMP." + (seq++);
 	}
 
 	private static void validate(Taxon taxon, Map<String, String> originalData) {
