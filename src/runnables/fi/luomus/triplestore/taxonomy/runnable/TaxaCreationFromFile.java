@@ -38,6 +38,8 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
+	// TODO VERY IMPORTANT IF USED AGAIN: Make sure all loaded taxon ids are valid MX. ids
+
 	private static final String API_URL = "https://.../uri/MX";
 	private static final String API_USERNAME = "...";
 	private static final String API_PASSWORD = "....";
