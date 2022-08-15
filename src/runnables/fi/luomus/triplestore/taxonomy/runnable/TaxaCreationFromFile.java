@@ -38,8 +38,6 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
-	// TODO VERY IMPORTANT IF USED AGAIN: Make sure all loaded taxon ids are valid MX. ids
-
 	private static final String API_URL = "https://.../uri/MX";
 	private static final String API_USERNAME = "...";
 	private static final String API_PASSWORD = "....";
@@ -48,7 +46,7 @@ public class TaxaCreationFromFile {
 	private static final String FILENAME_OUT = "E:\\esko-local\\temp\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
 	private static final boolean DRY_RUN = true; // XXX
 
-	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: To fix/undo things gone wrong all created new taxa have the same created timestamp making it easy to identify them (also of course MX-code range can be used)
+	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: All created new taxa have the same created timestamp making it easy to identify them - to fix/undo things gone wrong...
 
 	private static int seq = 1;
 	private static final List<String> warnings = new ArrayList<>();
@@ -57,6 +55,7 @@ public class TaxaCreationFromFile {
 	private static final String MX_IS_PART_OF = "MX.isPartOf";
 	private static final String MX_VERCACULAR_NAME = "MX.vernacularName";
 	private static final String MX_ALTERNATIVE_VERNACULAR_NAME = "MX.alternativeVernacularName";
+	private static final String MX_OBSOLETE_VERNACULAR_NAME = "MX.obsoleteVernacularName";
 	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
@@ -185,6 +184,11 @@ public class TaxaCreationFromFile {
 				model.addStatementIfObjectGiven(MX_ALTERNATIVE_VERNACULAR_NAME, s, e.getKey());
 			}
 		}
+		for (Map.Entry<String, List<String>> e : taxon.getObsoleteVernacularNames().getAllTexts().entrySet()) {
+			for (String s : e.getValue()) {
+				model.addStatementIfObjectGiven(MX_OBSOLETE_VERNACULAR_NAME, s, e.getKey());
+			}
+		}
 	}
 
 	private static boolean isExisting(Taxon t) {
@@ -253,8 +257,8 @@ public class TaxaCreationFromFile {
 	}
 
 	private static Taxon createTaxon(Map<String, String> data) {
-		String id = data.get("TaxonID");
-		Taxon taxon = given(id) ? new Taxon(new Qname(id), null) : new Taxon(new Qname(nextId()), null);
+		Qname taxonId = resolveTaxonId(data.get("TaxonID"));
+		Taxon taxon = new Taxon(taxonId, null);
 		taxon.setChecklist(new Qname("MR.1"));
 		for (String field : data.keySet()) {
 			if (field.startsWith("#")) continue;
@@ -281,11 +285,34 @@ public class TaxaCreationFromFile {
 			} else if (field.equals("AlternativeEN")) {
 				taxon.addAlternativeVernacularName("en", Utils.upperCaseFirst(value));
 				continue;
+			} else if (field.equals("ObsoleteVernacularNameFI")) {
+				taxon.addObsoleteVernacularName("fi", value);
+				continue;
 			}
 			throw new IllegalStateException("Unknown field " + field);
 		}
 		validate(taxon, data);
 		return taxon;
+	}
+
+	private static Qname resolveTaxonId(String id) {
+		if (given(id)) {
+			Qname taxonId = new Qname(id.trim());
+			validateTaxonId(taxonId);
+			return taxonId;
+		}
+		return new Qname(nextId());
+	}
+
+	private static void validateTaxonId(Qname taxonId) {
+		if (!taxonId.toString().startsWith("MX.")) throw new IllegalStateException("Invalid taxon id " + taxonId);
+		try {
+			String s = taxonId.toString().replaceFirst("MX.", "");
+			if (!s.equals(Utils.removeWhitespace(s))) throw new IllegalStateException("Invalid taxon id " + taxonId);
+			Integer.valueOf(s);
+		} catch (Exception e) {
+			throw new IllegalStateException("Invalid taxon id " + taxonId);
+		}
 	}
 
 	private static String nextId() {

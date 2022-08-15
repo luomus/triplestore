@@ -1,0 +1,2187 @@
+TaxonID	TaxonRank	ScientificName	Author	SpeciesID	SpeciesScientificName	SpeciesAuthor	VernacularFI	AlternativeFI	VernacularEN
+MX.5084670	heimo 	Myxinidae							
+		Myxine	Linnaeus, 1758		Myxine glutinosa 	Linnaeus, 1758	limaaja		
+		Myxine			Myxine ios 	Fernholm, 1981	valkopäälimaaja		
+MX.53083	heimo 	Petromyzontidae							
+		Caspiomyzon	Berg, 1906		Caspiomyzon graecus	(Renaud & Economidis, 2010)	epeiroksennahkiainen		
+		Caspiomyzon			Caspiomyzon hellenicus 	Vladykov, Renaud, Kott & Economidis, 1982 	kreikannahkiainen		
+		Caspiomyzon			Caspiomyzon wagneri 	(Kessler, 1870) 	kaspiannahkiainen		
+		Eudontomyzon	Regan, 1911		Eudontomyzon danfordi 	Regan, 1911 	karpaattiennahkiainen	tonavannahkiainen	Carpathian lamprey
+		Eudontomyzon			Eudontomyzon mariae 	(Berg, 1931) 	ukrainannahkiainen		
+		Eudontomyzon			Eudontomyzon stankokaramani 	Karaman, 1974 	balkaninnahkiainen		
+		Eudontomyzon			Eudontomyzon vladykovi 	Oliva & Zanandrea, 1959 	tonavannahkiainen		
+MX.53290		Lampetra	Lampetra Bonnaterre, 1788	MX.53084	Lampetra fluviatilis 	(Linnaeus, 1758)	nahkiainen		
+MX.53290		Lampetra		MX.53256	Lampetra planeri 	(Bloch, 1784)	pikkunahkiainen		
+MX.53290		Lampetra			Lampetra zanandreai 	Vladykov, 1955	italiannahkiainen		
+		Lethenteron	Creaser & Hubbs, 1922		Lethenteron camtschaticum 	(Tilesius, 1811)	idännahkiainen		
+		Lethenteron			Lethenteron ninae 	Naseka, Tuniyev & Renaid, 2009	kaukasiannahkiainen		
+		Lethenteron			Lethenteron kessleri	(Anikin, 1905)	siperiannahkiainen		Siberian lamprey
+MX.53085		Petromyzon	Linnaeus, 1758	MX.53086	Petromyzon marinus 	Linnaeus, 1758	merinahkiainen		
+MX.5086291	heimo 	Hexanchidae							
+		Heptranchias	Rafinesque, 1810		Heptranchias perlo 	(Bonnaterre, 1788)	kapeapäähai		
+		Hexanchus	Rafinesque, 1810		Hexanchus griseus 	(Bonnaterre, 1788)	kidushai		
+		Hexanchus			Hexanchus nakamurai 	Teng, 1962	pikkukidushai		
+MX.5086292	heimo 	Chlamydoselachidae							
+		Chlamydoselachus	Garman, 1884		Chlamydoselachus anguineus 	Garman, 1884	kaulushai		
+MX.5086296	heimo 	Rhincodontidae							
+		Rhincodon	Smith, 1829		Rhincodon typus 	Smith, 1828	valashai		
+MX.5086302	heimo 	Ginglymostomatidae							
+		Ginglymostoma	Müller & Henle, 1837		Ginglymostoma cirratum 	(Bonnaterre, 1788)	viiksihai		
+MX.5086303	heimo 	Mitsukurinidae							
+		Mitsukurina	Jordan, 1898		Mitsukurina owstoni 	Jordan, 1898	peikkohai		
+MX.5086304	heimo	Carchariidae							
+		Carcharias	Rafinesque, 1810		Carcharias taurus 	Rafinesque, 1810	hietahai		
+MX.5086305	heimo 	Odontaspididae							
+		Odontaspis	Agassiz, 1838		Odontaspis ferox	(Risso, 1810)	mustahietahai		
+		Odontaspis			Odontaspis noronhai 	(Maul, 1955)	ruskohietahai		
+MX.5086306	heimo 	Pseudocarchariidae							
+		Pseudocarcharias	Cadenat, 1963		Pseudocarcharias kamoharai 	(Matsubara, 1936)	krokotiilihai		
+MX.5086308	heimo 	Alopiidae							
+		Alopias	Rafinesque, 1810		Alopias superciliosus 	(Lowe, 1841)	isosilmäkettuhai		
+		Alopias			Alopias vulpinus 	(Bonnaterre, 1788)	kettuhai		
+MX.5086309	heimo 	Cetorhinidae							
+		Cetorhinus	Blainville, 1816		Cetorhinus maximus 	(Gunnerus, 1765)	jättiläishai		
+MX.53291	heimo 	Lamnidae							
+		Carcharodon	Smith, 1838		Carcharodon carcharias 	(Linnaeus, 1758)	valkohai		
+MX.53327		Lamna	Cuvier, 1816	MX.53089	Lamna nasus 	(Bonnaterre, 1788)	sillihai		
+		Isurus	Rafinesque, 1810		Isurus oxyrinchus 	Rafinesque, 1810	makrillihai		
+		Isurus			Isurus paucus 	Guitart Manday, 1966	makohai		
+MX.5086312	heimo	Pentanchidae							
+		Apristurus	Garman, 1913		Apristurus aphyodes 	Nakaya & Stehmann, 1998	hämyaavehai		white ghost catshark
+		Apristurus			Apristurus laurussonii 	(Saemundsson, 1922)	ruskoaavehai	islanninkissahai	Iceland catshark
+		Apristurus			Apristurus manis 	(Springer,, 1979)	paksuaavehai		
+		Apristurus			Apristurus melanoasper 	Iglésias, Nakaya & Stehmann, 2004	tumma-aavehai		
+		Apristurus			Apristurus microps 	(Gilchrist, 1922)	tihruaavehai		smalleye catshark
+		Galeus	Rafinesque, 1810		Galeus atlanticus 	(Vaillant, 1888)	atlantinkissahai		
+		Galeus			Galeus melastomus 	Rafinesque, 1810	rengaskissahai		
+		Galeus			Galeus murinus 	(Collett, 1904)	islanninkissahai	pohjankissahai	
+MX.5086310	heimo 	Scyliorhinidae							
+		Scyliorhinus	Blainville, 1816		Scyliorhinus canicula 	(Linnaeus, 1758)	pistepunahai		
+		Scyliorhinus			Scyliorhinus stellaris 	(Linnaeus, 1758)	täpläpunahai		
+MX.5086313	heimo 	Pseudotriakidae							
+		Pseudotriakis	de Brito Capello, 1868		Pseudotriakis microdon 	de Brito Capello, 1868	okahammashai		
+MX.5086315	heimo 	Leptochariidae							
+		Leptocharias	Smith, 1838		Leptocharias smithii 	(Müller & Henle, 1839)	hiirihai		
+MX.5086316	heimo 	Triakidae							
+		Galeorhinus	de Blainville, 1816		Galeorhinus galeus 	(Linnaeus, 1758)	harmaakoirahai		
+		Mustelus	de Blainville, 1816		Mustelus asterias 	Cloquet, 1821	tähtikoirahai		
+		Mustelus			Mustelus mustelus 	(Linnaeus, 1758)	silokoirahai		
+		Mustelus			Mustelus punctulatus 	Risso, 1827	pilkkukoirahai		
+MX.5086317	heimo 	Hemigaleidae							
+		Paragaleus	Budker, 1935		Paragaleus pectoralis 	(Garman, 1906)	atlantinkärppähai		
+MX.5086318	heimo 	Carcharhinidae							
+		Carcharhinus	Blainville, 1816		Carcharhinus altimus 	(Springer, 1950)	isokuonohai		
+		Carcharhinus			Carcharhinus amboinensis 	(Müller & Henle, 1839)	savuhai		
+		Carcharhinus			Carcharhinus brachyurus 	(Günther, 1870)	kuparihai		
+		Carcharhinus			Carcharhinus brevipinna 	(Müller & Henle, 1839)	pyörijähai		
+		Carcharhinus			Carcharhinus falciformis 	(Müller & Henle, 1839)	haukkahai		
+		Carcharhinus			Carcharhinus galapagensis	(Snodgrass & Heller, 1905)	sysihai		
+		Carcharhinus			Carcharhinus isodon 	(Müller & Henle, 1839)	tasahammashai		
+		Carcharhinus			Carcharhinus leucas 	(Müller & Henle, 1839)	härkähai		
+		Carcharhinus			Carcharhinus limbatus 	(Müller & Henle, 1839)	mustapilkkahai		
+		Carcharhinus			Carcharhinus longimanus 	(Poey, 1861)	valkopilkkahai		
+		Carcharhinus			Carcharhinus melanopterus 	(Quoy & Gaimard, 1824)	mustaevähai		
+		Carcharhinus			Carcharhinus obscurus 	(Lesueur, 1818)	sumuhai		
+		Carcharhinus			Carcharhinus plumbeus 	(Nardo, 1827)	ruskohai		
+		Carcharhinus			Carcharhinus signatus 	(Poey, 1868)	yöhai		
+		Galeocerdo	Müller & Henle, 1837		Galeocerdo cuvier 	(Péron & Lesueur, 1822)	tiikerihai		
+		Negaprion	Whitley, 1940		Negaprion brevirostris 	(Poey, 1868)	sitruunahai		
+		Prionace	Cantor, 1849		Prionace glauca 	(Linnaeus, 1758)	sinihai		
+		Rhizoprionodon	Whitley, 1929		Rhizoprionodon acutus 	(Rüppell, 1837)	maitohai		
+MX.5086320	heimo 	Sphyrnidae							
+		Sphyrna	Rafinesque, 1810		Sphyrna lewini 	(Griffith & Smith, 1834)	kampavasarahai		
+		Sphyrna			Sphyrna mokarran 	(Rüppell, 1837)	isovasarahai		
+		Sphyrna			Sphyrna tudes 	(Valenciennes, 1822)	ruskovasarahai		
+		Sphyrna			Sphyrna zygaena 	(Linnaeus, 1758)	vasarahai		
+MX.5086321	heimo 	Dalatiidae							
+		Dalatias	Rafinesque, 1810		Dalatias licha 	(Bonnaterre, 1788)	leijahai		
+		Isistius			Isistius brasiliensis 	(Quoy & Gaimard, 1824)	leikkurihai		
+		Isistius			Isistius plutodus 	Garrick & Springer, 1964	pikkuleikkurihai		
+		Squaliolus			Squaliolus laticaudus 	Smith & Radcliffe, 1912	lyhtyhai		Spined pygmy shark
+MX.5086322	heimo 	Etmopteridae							
+		Centroscyllium	Müller & Henle, 1841		Centroscyllium fabricii 	(Reinhardt, 1825)	tummavalohai		
+		Etmopterus	Rafinesque, 1810		Etmopterus princeps 	Collett, 1904	isovalohai		
+		Etmopterus			Etmopterus pusillus 	(Lowe, 1839)	pehmovalohai		
+		Etmopterus			Etmopterus spinax 	(Linnaeus, 1758)	samettivalohai		
+MX.5086323	heimo 	Somniosidae							
+		Centroscymnus	Barbosa du Bocage & de Brito Capello, 1864		Centroscymnus coelolepis 	Barbosa du Bocage & de Brito Capello, 1864	ruskosusihai		
+		Centroscymnus			Centroscymnus owstonii 	Barman, 1906	mustasusihai		Roughskin dogfish
+		Centroselachus	Garman, 1913		Centroselachus crepidater 	(Barbosa du Bocage & de Brito Capello, 1864)	kuonosamettihai		
+		Scymnodalatias	Garrick, 1956		Scymnodalatias garricki 	Kukuyev & Konovalenko, 1988	azoriensusihai		Azores dogfish
+		Scymnodon	Barbosa du Bocage & de Brito Capello, 1864		Scymnodon ringens 	Barbosa du Bocage & de Brito Capello, 1864	piikkihammashai		Knifetooth dogfish
+		Somniosus	Lesueur, 1818		Somniosus microcephalus 	(Bloch & Schneider, 1801)	holkeri		
+		Somniosus			Somniosus rostratus	(Risso, 1827)	pikkuholkeri		
+		Zameus	Jordan & Fowler, 1903		Zameus squamulosus 	(Günther, 1877)	mustasamettihai		Velvet dogfish
+MX.5086324	heimo 	Oxynotidae							
+		Oxynotus	Rafinesque, 1810		Oxynotus centrina 	(Linnaeus, 1758)	särmäpurjehai		
+		Oxynotus			Oxynotus paradoxus 	Frade, 1929	purjehai		
+MX.5086325	heimo 	Centrophoridae							
+		Centrophorus	Müller & Henle, 1837		Centrophorus granulosus 	(Bloch & Schneider, 1801)	nystypistinhai		
+		Centrophorus			Centrophorus lusitanicus 	Barbosa du Bocage & de Brito Capello, 1864	sysipistinhai		
+		Centrophorus			Centrophorus squamosus 	(Bonnaterre, 1788)	suomupistinhai		
+		Centrophorus			Centrophorus uyato 	(Rafinesque 1810)	harmaapistinhai 	harmaapiikkihai	
+		Deania	Jordan & Snyder, 1902		Deania calcea 	(Lowe, 1839)	lattahai		
+		Deania			Deania hystricosa 	(Garman, 1906)	okalattahai		
+MX.53090	heimo 	Squalidae							
+MX.53292		Squalus	Linnaeus, 1758	MX.53091	Squalus acanthias 	Linnaeus, 1758	piikkihai		
+MX.53292		Squalus			Squalus blainville 	(Risso, 1827)	nokkapiikkihai		
+MX.53292		Squalus			Squalus megalops 	(Macleay, 1881)	töppöpiikkihai		
+MX.5086327	heimo 	Echinorhinidae							
+		Echinorhinus	Blainville, 1816		Echinorhinus brucus 	(Bonnaterre, 1788)	okahai		
+MX.5086330	heimo 	Squatinidae							
+		Squatina	Duméril, 1805		Squatina aculeata 	Cuvier, 1829	ruskomerienkeli		
+		Squatina			Squatina oculata 	Bonaparte, 1840	täplämerienkeli		
+		Squatina			Squatina squatina 	(Linnaeus, 1758)	merienkeli		
+MX.5086335	heimo 	Torpedinidae							
+		Torpedo	Duméril, 1806		Torpedo marmorata 	Risso, 1810	marmorisähkörausku		
+		Torpedo			Torpedo nobiliana 	Bonaparte, 1835	sysisähkörausku		
+		Torpedo			Torpedo torpedo 	(Linnaeus, 1758)	silmäsähkörausku		
+MX.5086338	heimo 	Rhinobatidae							
+		Rhinobatos	Linck, 1790		Rhinobatos rhinobatos 	(Linnaeus, 1758)	kitararausku		
+MX.5086340	heimo 	Glaucostegidae							
+		Glaucostegus	Bonaparte, 1846		Glaucostegus halavi 	(Forsskål, 1775)	omaninkitarausku		
+		Glaucostegus			Glaucostegus cemiculus 	(Geoffroy St. Hilaire, 1817)	kirsukitararausku		blackchin guitarfish
+		Glaucostegus			Glaucostegus thouin 	(Anonymous [Lacepède] 1798)	karttukitararausku		clubnose guitarfish
+MX.5086341	heimo 	Pristidae							
+		Pristis	Linck, 1790		Pristis pectinata 	Latham, 1794	saharausku		
+		Pristis			Pristis pristis 	(Linnaeus, 1758)	harmaasaharausku		
+MX.5086342	heimo 	Rajidae							
+		Amblyraja	Malm, 1877		Amblyraja hyperborea 	(Collett, 1879)	jäärausku		
+		Amblyraja			Amblyraja jenseni	(Bigelow & Schroeder, 1950)	lyhytpyrstörausku		shorttail skate
+		Amblyraja			Amblyraja radiata 	(Donovan, 1808)	kynsirausku		
+		Dipturus	Rafinesque, 1810		Dipturus batis 	(Linnaeus, 1758)	silorausku		
+		Dipturus			Dipturus linteus 	(Fries, 1838)	valkorausku		
+		Dipturus			Dipturus nidarosiensis 	(Storm, 1881)	mustavatsarausku		
+		Dipturus			Dipturus oxyrinchus 	(Linnaeus, 1758)	vannasrausku		
+		Leucoraja	Malm, 1877		Leucoraja circularis 	(Couch, 1838)	hietarausku		
+		Leucoraja			Leucoraja fullonica 	(Linnaeus, 1758)	käkirausku		
+		Leucoraja			Leucoraja melitensis 	(Clark, 1926)	maltanrausku		Maltese ray
+		Leucoraja			Leucoraja naevus 	(Müller & Henle, 1841)	marmorirausku		
+		Malacoraja	Stehmann, 1970		Malacoraja kreffti 	(Stehmann, 1977)	herttarausku		
+		Malacoraja			Malacoraja spinacidermis 	(Barnard, 1923)	tummavatsarausku		abruptly dark below
+		Neoraja	McEachran & Compagno, 1982		Neoraja caerulea 	(Stehmann, 1976)	sinirausku		blue ray
+		Neoraja			Neoraja iberica 	Stehmann, Séret, Costa & Baro, 2008	iberianrausku		
+		Raja	Linnaeus, 1758		Raja africana 	Capapé, 1977	afrikanrausku		African ray
+		Raja			Raja asterias 	Delaroche, 1809	tähtirausku		
+		Raja			Raja brachyura 	Lafont, 1873	pilkkurausku		
+		Raja			Raja clavata 	Linnaeus, 1758	okarausku		
+		Raja			Raja maderensis	Lowe, 1838	madeiranrausku		
+		Raja			Raja microocellata 	Montagu, 1818	palettirausku		
+		Raja			Raja miraletus 	Linnaeus, 1758	peilirausku		
+		Raja			Raja montagui 	Fowler, 1910	pisterausku		
+		Raja			Raja polystigma 	Regan, 1923	silmärausku		speckled ray
+		Raja			Raja radula 	Delaroche, 1809	karhorausku		
+		Raja			Raja undulata 	Lacépède, 1802	aaltorausku		
+		Rajella	Stehmann, 1970		Rajella bathyphila 	(Holt & Byrne, 1908)	syvännerausku		deep-water ray
+		Rajella			Rajella bigelowi 	(Stehmann, 1978)	pilkkupyrstörausku		
+		Rajella			Rajella fyllae 	(Lütken, 1887)	pyörörausku		
+		Rajella			Rajella kukujevi 	(Dolganov, 1985)	valkoselkärausku		white deep-water skate
+		Rostroraja	Hulley, 1972		Rostroraja alba 	(Lacépède, 1803)	pullonokkarausku		
+MX.5086343	heimo 	Arhynchobatidae							
+		Bathyraja	Ishiyama, 1958		Bathyraja pallida 	(Forster, 1967)	kalvaspehmorausku		pale ray
+		Bathyraja			Bathyraja richardsoni 	(Garrick, 1961)	harmaapehmorausku		
+		Bathyraja			Bathyraja spinicauda 	(Jensen, 1914)	piikkipyrstörausku		spinytail skate
+MX.5086346	heimo	Zanobatidae							
+		Zanobatus	Garman, 1913		Zanobatus schoenleinii 	(Müller & Henle, 1841)	seeprapannurausku		
+MX.5086348	heimo 	Dasyatidae							
+		Dasyatis	Rafinesque, 1810		Dasyatis centroura 	(Mitchill, 1815)	okakeihäsrausku		
+		Dasyatis			Dasyatis marmorata 	(Steindachner, 1892)	marmorikeihäsrausku		marbled stingray
+		Dasyatis			Dasyatis pastinaca 	(Linnaeus, 1758)	keihäsrausku		
+		Dasyatis			Dasyatis tortonesei 	Capapé, 1975	keltakeihäsrausku		
+		Himantura	Müller & Henle, 1837		Himantura uarnak 	(Bleeker, 1852)	leopardisiimarausku		
+		Pteroplatytrygon	Fowler, 1910		Pteroplatytrygon violacea 	(Bonaparte, 1832)	ulappakeihäsrausku		
+		Taeniura	Müller & Henle, 1837		Taeniura grabata 	(Geoffroy Saint–Hilaire, 1817)	pyörökeihäsrausku		
+MX.5086351	heimo 	Gymnuridae							
+		Gymnura	van Hasselt, 1823		Gymnura altavela 	(Linnaeus, 1758)	piikkiperhosrausku		
+MX.5086355	heimo 	Myliobatidae							
+		Myliobatis	Cuvier, 1816		Myliobatis aquila 	(Linnaeus, 1758)	kotkarausku		
+		Aetomyleus	Garman, 1908		Aetomyleus bovinus 	(Geoffroy Saint–Hilaire, 1817)	juovakotkarausku		
+MX.5086356	heimo	Rhinopteridae							
+		Rhinoptera	Cuvier, 1829		Rhinoptera marginata 	(Geoffroy Saint–Hilaire, 1817)	pronssilehmärausku		Lusitanian cownose ray
+MX.5086357	heimo	Mobulidae							
+		Mobula	Rafinesque, 1810		Mobula birostris 	(Walbaum, 1792)	paholaisrausku		
+		Mobula			Mobula mobular 	(Bonnaterre, 1788) 	kauluspaholaisrausku	sarvirausku	"devil fish; devil ray"
+		Mobula			Mobula hypostoma 	(Bancroft, 1831)	tummapaholaisrausku		
+		Mobula			Mobula diabolus 	(Shaw, 1804)	sysipaholaisrausku		
+MX.5086359	heimo 	Chimaeridae							
+		Chimaera	Linnaeus, 1758		Chimaera monstrosa 	Linnaeus, 1758 	sillikuningas		
+		Hydrolagus	Gill, 1862		Hydrolagus affinis 	(de Brito Capello, 1868)	ruskosillikuningas		
+		Hydrolagus			Hydrolagus lusitanicus 	Moura & al., 2005	portugalinsillikuningas		
+		Hydrolagus			Hydrolagus mirabilis 	(Collett, 1904)	isosilmäsillikuningas		large-eyed rabbitfish
+		Hydrolagus			Hydrolagus pallidus 	Hardy & Stehmann, 1990	haamusillikuningas		
+MX.5086360	heimo 	Rhinochimaeridae							
+		Harriotta	Goode & Bean, 1895		Harriotta raleighana 	Goode & Bean, 1895	nokkakuningas		
+		Rhinochimaera	Garman, 1901		Rhinochimaera atlantica 	Holt & Byrne, 1909	atlantinnokkakuningas		
+MX.53324	heimo 	Acipenseridae							
+MX.53094		Acipenser	Linnaeus, 1758	MX.53096	Acipenser baerii	Brandt, 1869	siperiansampi		
+MX.53094		Acipenser			Acipenser colchicus 	Marty, 1940	kaukasiansampi		
+MX.53094		Acipenser		MX.53097	Acipenser gueldenstaedtii 	Brandt & Ratzeburg, 1833	venäjänsampi		
+MX.53094		Acipenser		MX.206817	Acipenser naccarii 	Bonaparte, 1836	välimerensampi		
+MX.53094		Acipenser			Acipenser nudiventris 	Lovetsky, 1828	ehythuulisampi	harmaasampi	
+MX.53094		Acipenser		MX.206815	Acipenser oxyrinchus 	Mitchill, 1815	sinisampi		
+MX.53094		Acipenser			Acipenser persicus 	Borodin, 1897	persiansampi		
+MX.53094		Acipenser		MX.53095	Acipenser ruthenus 	Linnaeus, 1758	sterletti		
+MX.53094		Acipenser		MX.206816	Acipenser stellatus 	Pallas, 1771	tähtisampi		
+MX.53094		Acipenser		MX.53293	Acipenser sturio 	Linnaeus, 1758	sampi		
+MX.206818		Huso	Brandt & Ratzeburg, 1833	MX.206819	Huso huso 	(Linnaeus, 1758)	kitasampi		
+MX.5086369	heimo 	Megalopidae							
+		Megalops	Lacepède, 1803		Megalops atlanticus 	Valenciennes, 1847	tarponi		
+MX.5086373	heimo 	Halosauridae							
+		Aldrovandia	Goode & Bean, 1896		Aldrovandia phalacra 	(Vaillant, 1888)	harmaaliskoankerias		
+		Halosauropsis			Halosauropsis macrochir 	(Günther, 1878)	siipiliskoankerias		
+		Halosaurus	Johnson, 1864		Halosaurus johnsonianus 	Vaillant, 1888	rusoliskoankerias		
+		Halosaurus			Halosaurus ovenii 	Johnson, 1864	pinkkiliskoankerias		
+MX.5086374	heimo 	Notacanthidae							
+		Notacanthus	Bloch, 1788		Notacanthus bonaparte 	Risso, 1840	tummapiikkiankerias		
+		Notacanthus			Notacanthus chemnitzii 	Bloch, 1788	piikkiankerias		
+		Polyacanthonotus	Bleeker, 1874		Polyacanthonotus africanus 	(Gilchrist & von Bonde, 1924)	atlantinpiikkiankerias		
+		Polyacanthonotus			Polyacanthonotus challengeri 	(Vaillant, 1888)	nokkapiikkiankerias		
+		Polyacanthonotus			Polyacanthonotus rissoanus 	(De Filippi & Verany, 1857)	suppusuupiikkiankerias		small-mouth spiny eel
+MX.5086376	heimo 	Synaphobranchidae							
+		Dysomma	Alcock, 1889		Dysomma brevirostre 	(Facciolà, 1887)	töpökuonopetoankerias		pig-nosed arrowtooth eel
+		Histiobranchus	Gill, 1883		Histiobranchus bathybius 	(Günther, 1877)	syvännepetoankerias	naskalipetoankerias	
+		Ilyophis	Gilbert, 1891		Ilyophis arx 	Robins, 1976			
+		Ilyophis			Ilyophis blachei 	Saldanha & Merrett, 1982			
+		Ilyophis			Ilyophis brunneus 	Gilbert, 1891	mutapetoankerias		muddy arrowtooth eel
+		Simenchelys	Gill, 1879		Simenchelys parasitica 	Gill, 1879	loispetoankerias	töppöankerias	
+		Synaphobranchus	Johnson, 1862		Synaphobranchus affinis 	Günther, 1877	harmaapetoankerias		
+		Synaphobranchus			Synaphobranchus brevidorsalis 	Günther, 1887	lyhyteväpetoankerias		Shortdorsal cutthroat eel
+		Synaphobranchus			Synaphobranchus kaupii	Johnson, 1862	petoankerias		
+MX.5086377	heimo 	Heterenchelyidae							
+		Panturichthys	Pellegrin, 1913		Panturichthys fowleri 	(Ben–Tuvia, 1953)	rusomuta-ankerias		
+MX.5086379	heimo 	Muraenidae							
+		Anarchias	Jordan & Starks, 1906		Anarchias euryurus 	(Lea, 1913)	ruostemureena		
+		Enchelycore	Kaup, 1856		Enchelycore anatina 	(Lowe, 1838)	torahammasmureena		
+		Gymnothorax	Bloch, 1795		Gymnothorax bacalladoi 	Böhlke & Brito, 1987	kanarianmureena		Canary moray
+		Gymnothorax			Gymnothorax unicolor 	(Delaroche, 1809)	ruskomureena		
+		Gymnothorax			Gymnothorax vicinus 	(Castelnau, 1855)	purppurakuonomureena	valkomustamureena	purplemouth moray
+		Muraena	Linnaeus, 1758		Muraena helena 	Linnaeus, 1758	mureena		
+MX.5086380	heimo 	Chlopsidae							
+		Chlopsis	Rafinesque, 1810		Chlopsis bicolor 	Rafinesque, 1810	valkovatsamureena		bicolor eel
+MX.5086382	heimo 	Derichthyidae							
+		Derichthys	Gill, 1884		Derichthys serpentinus 	Gill, 1884	serpentiiniankerias		
+		Nessorhamphus	Schmidt, 1931		Nessorhamphus ingolfianus	(Schmidt, 1912)	ankannokka-ankerias	pitkäkaula-ankerias	duckbill oceanic eel
+MX.5086383	heimo 	Ophichthidae							
+		Apterichtus	Duméril, 1806		Apterichtus anguiformis 	(Peters, 1877)	nauhakäärmeankerias		slender finless eel
+		Apterichtus			Apterichtus caecus 	(Linnaeus, 1758)	rupikäärmeankerias		
+		Dalophis	Rafinesque, 1810		Dalophis imberbis 	(Delaroche, 1809)	silokäärmeankerias		armless snake eel
+		Echelus	Rafinesque, 1810		Echelus myrus 	(Linnaeus, 1758)	kaivurikäärmeankerias		
+		Mystriophis	Kaup, 1856		Mystriophis crosnieri 	Blache, 1971	mutakäärmeankerias		
+		Ophichthus	Ahl, 1789		Ophichthus maculatus 	(Rafinesque, 1810)	italiankäärmeankerias		
+		Ophichthus			Ophichthus ophis 	(Linnaeus, 1758)	käärmeankerias		
+		Ophichthus			Ophichthus rufus 	(Rafinesque, 1810)	okrakäärmeankerias		
+		Ophisurus	Lacepède, 1800		Ophisurus serpens 	(Linnaeus, 1758)	nauhakäärmeankerias		serpent eel
+		Pisodonophis	Kaup, 1856		Pisodonophis semicinctus 	(Richardson, 1848)	satulakäärmeankerias		
+MX.5086384	heimo 	Muraenesocidae							
+		Cynoponticus	Costa, 1845		Cynoponticus ferox 	Costa, 1846	afrikanhaukiankerias		Guinean pike conger
+		Muraenesox	McClelland, 1844		Muraenesox cinereus 	(Forsskål, 1775)	hopeahaukiankerias		
+MX.5086385	heimo 	Nettastomatidae							
+		Facciolella	Whitley, 1938		Facciolella oxyrhynchus 	(Bellotti, 1883)	nokkavelhoankerias		
+		Nettastoma	Rafinesque, 1810		Nettastoma melanurum 	Rafinesque, 1810	mustaevävelhoankerias		
+		Saurenchelys	Peters, 1864		Saurenchelys cancrivora 	Peters, 1864	siimavelhoankerias		
+		Venefica	Jordan & Davis, 1891		Venefica proboscidea 	(Vaillant, 1888)	piiskavelhoankerias		whipsnout sorcerer
+MX.53113	heimo 	Congridae							
+		Ariosoma	Swainson, 1838		Ariosoma balearicum 	(Delaroche, 1809)	harjahammasankerias		bandtooth conger
+MX.53328		Conger	Bosc, 1817	MX.53114	Conger conger 	(Linnaeus, 1758)	meriankerias		
+		Gnathophis	Kaup, 1859		Gnathophis codoniphorus 	Maul, 1972	azorienankerias		
+		Gnathophis			Gnathophis mystax 	(Delaroche, 1809)	mustaeväankerias		thinlip conger
+		Heteroconger	Bleeker, 1868		Heteroconger longissimus 	Günther, 1870	ruskoputkiankerias		brown garden eel
+		Paraconger	Kanazawa, 1961		Paraconger macrops 	(Günther, 1870)	täpläeväankerias		blackspot conger
+		Pseudophichthys	Roule, 1915		Pseudophichthys splendens 	(Lea, 1913)	purppurasuuankerias		purplemouthed conger
+		Rhynchoconger	Jordan & Hubbs, 1925		Rhynchoconger trewavasae 	Ben–Tuvia, 1993	kuonomeriankerias		
+MX.5086387	heimo 	Nemichthyidae							
+		Avocettina	Jordan & Davis, 1891		Avocettina infans 	(Günther, 1878)	avosettiankerias		
+		Nemichthys	Richardson, 1848		Nemichthys curvirostris 	(Strömman, 1896)	kalvasnokka-ankerias		boxer snipe-eel
+		Nemichthys			Nemichthys scolopaceus 	Richardson, 1848	nokka-ankerias		
+MX.5086388	heimo 	Serrivomeridae							
+		Serrivomer	Gill & Ryder, 1883		Serrivomer beanii	Gill & Ryder, 1883	vankkakuonoankerias		stout sawpalate
+MX.53110	heimo 	Anguillidae							
+MX.53111		Anguilla	Schrank, 1798	MX.53112	Anguilla anguilla 	(Linnaeus, 1758)	ankerias		
+MX.5086390	heimo 	Cyematidae							
+		Cyema	Günther, 1878		Cyema atrum 	Günther, 1878	nuoliankerias		
+MX.5086393	heimo 	Eurypharyngidae							
+		Eurypharynx	Vaillant, 1882		Eurypharynx pelecanoides 	Vaillant, 1882	pelikaaniankerias		
+MX.5086394	heimo 	Saccopharyngidae							
+		Saccopharynx	Mitchill, 1824		Saccopharynx ampullaceus 	(Harwood, 1827)	ahmattiankerias		
+		Saccopharynx			Saccopharynx hjorti 	Bertin, 1938			
+		Saccopharynx			Saccopharynx ramosus 	Nielsen & Bertelsen, 1985	ripsuahmattiankerias		
+		Saccopharynx			Saccopharynx thalassa 	Nielsen & Bertelsen, 1985	pasaatiahmattiankerias		hairytail swallower eel
+		Saccopharynx			Saccopharynx trilobatus 	Nielsen & Bertelsen, 1985			
+MX.5086405	heimo	Spratelloididae							
+		Spratelloides	Bleeker, 1851		Spratelloides delicatulus 	(Bennett, 1832)	pyöröhaili		
+MX.53099	heimo 	Clupeidae							
+MX.53295	suku	Alosa	Linck, 1790				täpläsillit		
+MX.53295		Alosa			Alosa agone 	(Scopoli, 1786)	alppisilli		
+MX.53295		Alosa			Alosa algeriensis 	Regan, 1916	algeriansilli		
+MX.53295		Alosa		MX.53106	Alosa alosa 	(Linnaeus, 1758)	pilkkusilli		Allis shad
+MX.53295		Alosa			Alosa caspia 	(Eichwald, 1838)	kaspiansilli		
+MX.53295		Alosa			Alosa curensis 	(Suvorov, 1907)	kuransilli		
+MX.53295		Alosa		MX.53257	Alosa fallax 	(Lacépède, 1803)	täpläsilli		Twaite shad
+MX.53295		Alosa			Alosa immaculata 	Bennett, 1835	sarmatiansilli		
+MX.53295		Alosa			Alosa kessleri 	(Grimm, 1887)	mustaselkäsilli		Blackback shad
+MX.53295		Alosa			Alosa macedonica 	(Vinciguerra, 1921)	makedoniansilli		
+MX.53295		Alosa			Alosa maeotica 	(Grimm, 1901)	asovansilli		
+MX.53295		Alosa			Alosa saposchnikowii 	(Grimm, 1887)	suurisilmäsilli		
+MX.53295		Alosa			Alosa sphaerocephala 	(Berg, 1913)	pyöröpääsilli		
+MX.53295		Alosa			Alosa tanaica 	(Grimm, 1901)	mustanmerensilli	asovansilli	
+MX.53295		Alosa			Alosa vistonica 	Economidis & Sinis, 1986	vistonisinsilli		
+MX.53295		Alosa			Alosa volgensis 	(Berg, 1913)	volgansilli		
+	suku	Clupeonella	Kessler, 1877				kilkat		
+		Clupeonella			Clupeonella abrau 	(Malyatskii, 1930)	abraunkilka		
+		Clupeonella			Clupeonella caspia 	(Svetovidov, 1941)	kaspiankilka		
+		Clupeonella			Clupeonella cultriventris 	(Nordmann, 1840)	asovankilka	asovanhaili	
+		Clupeonella			Clupeonella engrauliformis 	(Borodin, 1904)	sardellikilka		
+		Clupeonella			Clupeonella grimmi 	Kessler, 1877	veitsikilka		
+		Clupeonella			Clupeonella tscharchalensis 	(Borodin, 1896)	volgankilka		
+		Herklotsichthys	Whitley, 1951		Herklotsichthys punctatus 	(Rüppell, 1837)	täpläselkäsilli		
+		Sardina	Antipa, 1904		Sardina pilchardus 	(Walbaum, 1792)	sardiini		
+		Sardinella	Valenciennes, 1847		Sardinella aurita 	Valenciennes, 1847	kultasardiini		
+		Sardinella			Sardinella maderensis 	(Lowe, 1838)	pilkkapyrstösardiini		
+MX.53104		Sprattus	Girgensohn, 1846	MX.53105	Sprattus sprattus 	(Linnaeus, 1758)	kilohaili		
+MX.5086406	heimo 	Dussumieriidae							
+		Dussumieria	Valenciennes, 1847		Dussumieria acuta 	Valenciennes, 1847	kirjopyörösilli	kirjosardiini	Rainbow sardine
+		Dussumieria			Dussumieria elopsoides 	Bleeker, 1849	soukkapyörösilli	soukkasardiini	Slender rainbow sardine
+		Etrumeus	Bleeker, 1853		Etrumeus sadina	(DeKay, 1842)	pyörösilli		
+MX.53107	heimo 	Engraulidae							
+MX.53108		Engraulis	Cuvier, 1816	MX.53296	Engraulis encrasicolus 	(Linnaeus, 1758)	sardelli		
+MX.53108		Engraulis			Engraulis albidus 	Borsa, Collet & Durand,, 2004	valkosardelli		
+MX.5086410	heimo 	Alepocephalidae							
+		Alepocephalus	Risso, 1820		Alepocephalus agassizii 	Goode & Bean, 1883	mustasilopää		
+		Alepocephalus			Alepocephalus australis 	Barnard, 1923	tropiikinsilopää		
+		Alepocephalus			Alepocephalus bairdii 	Goode & Bean, 1879	atlantinsilopää	atlantinsilokuore	
+		Alepocephalus			Alepocephalus productus 	Gill, 1883	mokkasilopää		
+		Alepocephalus			Alepocephalus rostratus 	Risso, 1820	purppurasilopää		
+		Asquamiceps	Zugmayer, 1911		Asquamiceps caeruleus 	Markle, 1980	sinisilopää		
+		Asquamiceps			Asquamiceps velaris 	Zugmayer, 1911	ruskosilopää	viuhkasilokuore	fanfin smooth-head
+		Bajacalifornia	Townsend & Nichols, 1925		Bajacalifornia megalops 	(Lütken, 1898)	isosilmäsilopää		bigeye smoot-head
+		Bathylaco	Goode & Bean, 1896		Bathylaco nigricans 	Goode & Bean, 1896	kitasilopää		
+		Bathytroctes	Günther, 1878		Bathytroctes macrognathus 	Nielsen & Larsen, 1968	etelänsilopää		
+		Bathytroctes			Bathytroctes macrolepis 	Günther, 1887	isosuomusilopää		
+		Bathytroctes			Bathytroctes michaelsarsi 	Koefoed, 1927	ruostesilopää		
+		Bathytroctes			Bathytroctes microlepis 	Günther, 1878	pienisuomusilopää		
+		Conocara	Goode & Bean, 1896		Conocara fiolenti 	Sazonov & Ivanov, 1979	soukkasilopää		
+		Conocara			Conocara macropterum 	(Vaillant, 1888)	pitkäeväsilopää		Longfin smooth-head
+		Conocara			Conocara microlepis 	(Lloyd, 1909)	suipposilopää		
+		Conocara			Conocara murrayi 	(Koefoed, 1927)	tuppisilopää		
+		Conocara			Conocara salmoneum 	(Gill & Townsend, 1897)	kastanjasilopää		Salmon smooth-head
+		Conocara			Conocara werneri 	Nybelin, 1947	paksusilopää		
+		Einara	Parr, 1951		Einara edentula 	(Alcock, 1892)	kobolttisilopää		
+		Einara			Einara macrolepis 	(Koefoed, 1927)	tummasilopää		loosescale smooth-head
+		Herwigia	Nielsen, 1972		Herwigia kreffti 	(Nielsen & Larsen, 1970)	pyörösilopää		
+		Leptoderma	Vaillant, 1886		Leptoderma macrops 	Vaillant, 1886	puikkosilopää		
+		Leptochilichthys	Garman, 1899		Leptochilichthys agassizii 	Garman, 1889	nuijasilopää		
+		Mirognathus	Parr, 1951		Mirognathus normani 	Parr, 1951	sinikeltasilopää		
+		Narcetes			Narcetes stomias 	(Gilbert, 1890)	samettisilopää		Blackhead salmon
+		Photostylus	Beebe, 1933		Photostylus pycnopterus 	Beebe, 1933	tähtisilopää		
+		Rinoctes	Parr, 1952		Rinoctes nasutus 	(Koefoed, 1927)	olkisilopää		
+		Rouleina	Jordan, 1923		Rouleina attrita 	(Vaillant, 1888)	pehmosilopää		Softskin smooth-head
+		Rouleina			Rouleina maderensis 	Maul, 1948	madeiransilopää		Madeiran smooth-head
+		Talismania	Goode & Bean, 1896		Talismania antillarum 	(Goode & Bean, 1896)	pikkusilopää		
+		Talismania			Talismania homoptera 	(Vaillant, 1888)	rihmasilopää		
+		Talismania			Talismania mekistonema 	Sulak, 1975	ruskorihmasilopää		
+		Xenodermichthys	Günther, 1878		Xenodermichthys copei 	(Gill, 1884)	tylppäsilopää		
+MX.5086411	heimo 	Platytroctidae							
+		Barbantus	Parr, 1951		Barbantus curvifrons 	(Roule & Angel, 1931)	purppuratuikkija		Palebelly searsid
+		Holtbyrnia	Parr, 1937		Holtbyrnia macrops 	Maul, 1957	isosilmätuikkija		
+		Maulisia	Parr, 1960		Maulisia mauli 	Parr, 1960	tummatuikkija		
+		Normichthys	Parr, 1951		Normichthys operosus 	Parr, 1951	kolotuikkija		multipore searsid
+		Platytroctes	Günther, 1878		Platytroctes apus 	Günther, 1878	mustaraitatuikkija	velttovalokuore	
+		Platytroctes			Platytroctes mirus 	(Lloyd, 1909)	lehtituikkija		
+		Sagamichthys	Parr, 1953		Sagamichthys schnakenbecki 	(Krefft, 1953)	soukkatuikkija		
+		Searsia	Parr, 1937		Searsia koefoedi 	Parr, 1937	pikkutuikkija		
+MX.53170	heimo 	Catostomidae							
+MX.53171		Catostomus	Lesueur, 1817	MX.53172	Catostomus catostomus 	(Forster, 1773)	imukarppi		
+		Ictiobus	Rafinesque, 1820				puhvelikarpit		
+		Ictiobus			Ictiobus bubalus 	(Rafinesque, 1818)	puhvelikarppi		
+		Ictiobus			Ictiobus cyprinellus 	(Valenciennes, 1844)	isopuhvelikarppi		
+		Ictiobus			Ictiobus niger 	(Rafinesque, 1819)	mustapuhvelikarppi		
+MX.53173	heimo	Cobitidae							
+MX.53330	suku	Cobitis	Linnaeus, 1758				piikkinuoliaiset		
+MX.53330		Cobitis			Cobitis arachthosensis 	Economidis & Nalbant, 1997	artanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis bilineata 	Canestrini, 1866	italianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis calderoni 	B?cescu, 1962	ebronpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis dalmatina 	Karaman, 1928	dalmatianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis elongata 	Heckel & Kner, 1858	serbianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis elongatoides 	B?cescu & Maier, 1969	tonavanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis gladkovi 	Vasilev & Vasileva, 2008	idänpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis hellenica 	Economidis & Nalbant, 1997	epeiroksenpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis illyrica 	Freyhof & Stelbrink, 2007	imotskinpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis jadovaensis 	Mustafic & Mrakovcic, 2008	jadovanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis melanoleuca 	Nichols, 1925	siperianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis meridionalis 	Karaman, 1924	prespanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis narentana 	Karaman, 1928	neretvanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis ohridana 	Karaman, 1928	albanianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis paludica 	(de Buen, 1930)	iberianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis pontica 	Vasilieva & Vasiliev, 2006	marmaranpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis puncticulata 	Erk'akan, Atalay-Ekmekçi & Nalbant, 1998	evroksenpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis punctilineata 	Economidis & Nalbant, 1997	strymoninpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis stephanidisi 	Economidis & Nalbant, 1997	lähdepiikkinuoliainen		
+MX.53330		Cobitis			Cobitis strumicae 	Karaman, 1955	bulgarianpiikkinuoliainen		
+MX.53330		Cobitis		MX.53262	Cobitis taenia 	Linnaeus, 1758	rantanuoliainen		
+MX.53330		Cobitis			Cobitis tanaitica 	B?cescu & Maier, 1969	asovanpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis taurica 	Vasilieva, Vasiliev, Janko, Ráb & Rábová, 2005	kriminpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis trichonica 	Stephanidis, 1974	akhelooksenpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis turcica 	Hankó, 1925	turkinpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis vardarensis 	Karaman, 1928	thessalianpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis vettonica 	Doadrio & Perdices, 1997	alagoninpiikkinuoliainen		
+MX.53330		Cobitis			Cobitis zanandreai 	Cavicchioli, 1965	napolinpiikkinuoliainen		
+		Misgurnus	Lacepède, 1803		Misgurnus anguillicaudatus 	(Cantor, 1842)	aasianmutakala		
+		Misgurnus			Misgurnus bipartitus	Sauvage, 1874	marmorimutakala		
+		Misgurnus			Misgurnus fossilis 	(Linnaeus, 1758)	mutakala		
+		Misgurnus			Misgurnus dabryanus 	Dabry de Thiersant, 1872	taiwaninmutakala		
+		Sabanejewia	Vladykov, 1929		Sabanejewia balcanica 	(Karaman, 1922)	balkaninpiikkinuoliainen		
+		Sabanejewia			Sabanejewia baltica 	Witkowski, 1994	ukrainanpiikkinuoliainen		
+		Sabanejewia			Sabanejewia bulgarica 	(Drensky, 1928)	unkarinpiikkinuoliainen		
+		Sabanejewia			Sabanejewia caucasica 	(Berg, 1906)	kaukasianpiikkinuoliainen		
+		Sabanejewia			Sabanejewia kubanica 	Vasilieva & Vasiliev, 1988	kubaninpiikkinuoliainen		
+		Sabanejewia			Sabanejewia larvata 	(De Filippi, 1859)	padanianpiikkinuoliainen	italianpiikkinuoliainen	
+		Sabanejewia			Sabanejewia romanica 	(B?cescu, 1943)	romanianpiikkinuoliainen		
+		Sabanejewia			Sabanejewia vallachica 	Nalbant, 1957	karpaattienpiikkinuoliainen		
+MX.206824	heimo	Nemacheilidae							
+MX.206825		Barbatula	Linck, 1790	MX.53308	Barbatula barbatula 	(Linnaeus, 1758)	kivennuoliainen		
+MX.206825		Barbatula			Barbatula quignardi 	(B?cescu-Mester, 1967)	pyreneidennuoliainen		
+MX.206825		Barbatula			Barbatula sturanyi 	(Steindachner, 1892)	drininnuoliainen		
+MX.206825		Barbatula			Barbatula vardarensis 	(Karaman, 1928)	makedoniannuoliainen		
+MX.206825		Barbatula			Barbatula zetensis 	(Šori?, 2001)	montenegronnuoliainen		
+		Oxynoemacheilus	Banarescu & Nalbant, 196		Oxynoemacheilus bureschi 	(Drensky, 1928)	balkaninnuoliainen		
+		Oxynoemacheilus			Oxynoemacheilus merga 	(Krynicki,, 1840)	kaukasiannuoliainen	pippurinuoliainen	
+		Oxynoemacheilus			Oxynoemacheilus pindus 	(Economidis, 2005)	semaninnuoliainen		
+		Oxynoemacheilus			Oxynoemacheilus theophilii 	Stoumboudi, Kottelat & Barbieri, 2006	turkinnuoliainen		
+MX.5016661	heimo	Cyprinidae							
+	alaheimo	Barbinae					barbit		
+		Aulopyge	Heckel, 1841		Aulopyge huegelii 	Heckel, 1842	dalmatianbarbi	dalmatiantörö	
+	suku	Barbus	Cuvier & Cloquet, 1816				barbit		
+		Barbus			Barbus balcanicus 	Kotlík, Tsigenopoulos, Ráb & Berrebi, 2002	balkaninbarbi		
+		Barbus			Barbus barbus 	(Linnaeus, 17	barbi		
+		Barbus			Barbus bergi 	Chichkoff, 1935	bulgarianbarbi		
+		Barbus			Barbus caninus 	Bonaparte, 1839	padanianbarbi		
+		Barbus			Barbus carpathicus 	Kotlík, Tsigenopoulos, Ráb & Berrebi, 2002	karpaattienbarbi		
+		Barbus			Barbus ciscaucasicus 	Kessler, 1877	kaukasianbarbi		
+		Barbus			Barbus cyclolepis 	Heckel, 1837	traakianbarbi		
+		Barbus			Barbus euboicus 	Stephanidis, 1950	euboianbarbi		
+		Barbus			Barbus haasi 	Mertens, 1924	ebronbarbi		
+		Barbus			Barbus kubanicus 	Berg, 1913	kubaninbarbi		
+		Barbus			Barbus macedonicus 	Karaman, 1928	makedonianbarbi		
+		Barbus			Barbus meridionalis 	Risso, 1827	rhônenbarbi		
+		Barbus			Barbus peloponnesius 	Valenciennes, 1842	kreikanbarbi		
+		Barbus			Barbus pergamonensis 	Karaman, 1971	turkinbarbi		
+		Barbus			Barbus petenyi 	Heckel, 1852	romanianbarbi		
+		Barbus			Barbus plebejus 	Bonaparte, 1839	italianbarbi		
+		Barbus			Barbus prespensis 	Karaman, 1924	prespanbarbi		
+		Barbus			Barbus rebeli 	Koller, 1926	länsibalkaninbarbi		
+		Barbus			Barbus sperchiensis 	Stephanidis, 1950	pinioksenbarbi		
+		Barbus			Barbus strumicae 	Karaman, 1955	itäbalkaninbarbi		
+		Barbus			Barbus tauricus 	Kessler, 1877	kriminbarbi		
+		Barbus			Barbus tyberinus 	Bonaparte, 1839	tiberinbarbi		
+		Barbus			Barbus waleckii 	Rolik, 1970	puolanbarbi		
+	suku	Luciobarbus	Heckel, 1843				virtabarbit		
+		Luciobarbus			Luciobarbus albanicus 	(Steindachner, 1870)	epeiroksenvirtabarbi		
+		Luciobarbus			Luciobarbus bocagei 	(Steindachner, 1865)	iberianvirtabarbi		
+		Luciobarbus			Luciobarbus brachycephalus 	(Kessler, 1872)	kaspianvirtabarbi		
+		Luciobarbus			Luciobarbus capito 	(Güldenstaedt, 1778)	kaukasianvirtabarbi		
+		Luciobarbus			Luciobarbus comizo 	(Steindachner, 1865)	espanjanvirtabarbi		
+		Luciobarbus			Luciobarbus graecus 	(Steindachner, 1896)	kreikanvirtabarbi		
+		Luciobarbus			Luciobarbus graellsii 	(Steindachner, 1866)	ebronvirtabarbi		
+		Luciobarbus			Luciobarbus guiraonis 	(Steindachner, 1866)	valencianvirtabarbi		
+		Luciobarbus			Luciobarbus microcephalus 	(Almaça, 1967)	guadiananvirtabarbi		
+		Luciobarbus			Luciobarbus sclateri 	(Günther, 1868)	andalusianvirtabarbi		
+		Luciobarbus			Luciobarbus steindachneri 	(Almaça, 1967)	tajonvirtabarbi		
+	alaheimo	Cyprininae					karpit		
+MX.53167	suku	Carassius	Jarocki, 1822				ruutanat		
+MX.53167		Carassius		MX.5010842	Carassius auratus 	(Linnaeus, 1758)	kultakala		
+MX.53167		Carassius		MX.53168	Carassius carassius 	(Linnaeus, 1758)	ruutana		
+MX.53167		Carassius		MX.52996	Carassius gibelio 	(Bloch, 1782)	hopearuutana		
+MX.53167		Carassius			Carassius langsdorfii 	Temminck & Schlegel, 1846	japaninruutana		
+MX.53169		Cyprinus	Linnaeus, 1758	MX.52997	Cyprinus carpio 	Linnaeus, 1758	karppi		
+MX.5016664	heimo	Xenocyprididae							
+MX.53329		Ctenopharyngodon	Steindachner, 1866	MX.53152	Ctenopharyngodon idella 	(Valenciennes, 1844)	ruohokarppi		
+		Mylopharyngodon	Peters, 1881		Mylopharyngodon piceus 	(Richardson, 1846)	musta-amuri		
+MX.5016659	heimo	Tincidae							
+MX.53154		Tinca	Cuvier, 1816	MX.53155	Tinca tinca 	(Linnaeus, 1758)	suutari		
+MX.5077707	heimo	Acheilognathidae							
+MX.5077708		Rhodeus	Agassiz, 1832	MX.5077709	Rhodeus amarus 	(Bloch, 1782)	katkerokala		
+MX.5077708		Rhodeus			Rhodeus colchicus	Bogutskaya & Komlev, 2001	kaukasiankatkerokala		
+MX.5077708		Rhodeus			Rhodeus meridionalis 	Karaman, 1924	balkaninkatkerokala		
+MX.5077708		Rhodeus			Rhodeus ocellatus	(Kner, 1866)	täpläkatkerokala		
+MX.5077708		Rhodeus			Rhodeus sericeus 	(Pallas, 1776)	amurinkatkerokala		
+MX.5016663	heimo	Gobionidae							
+MX.53156		Gobio	Cuvier, 1816		Gobio alverniae 	Kottelat & Persat, 2005	ranskantörö		
+MX.53156		Gobio			Gobio brevicirris 	Fowler, 1976	donintörö		
+MX.53156		Gobio			Gobio bulgaricus 	Drensky, 1926    	bulgariantörö		
+MX.53156		Gobio			Gobio carpathicus 	Vladykov, 1925	karpaattientörö		
+MX.53156		Gobio			Gobio caucasicus	Kamensky, 1901	georgiantörö		
+MX.53156		Gobio			Gobio delyamurei 	Freyhof & Naseka, 2005	sevastopolintörö		
+MX.53156		Gobio			Gobio feraeensis 	Stephanidis, 1973	thessaliantörö		
+MX.53156		Gobio		MX.53157	Gobio gobio 	(Linnaeus, 1758)	törö		
+MX.53156		Gobio			Gobio holurus 	Fowler, 1976	kaukasiantörö		
+MX.53156		Gobio			Gobio kovatschevi 	Chichkoff, 1937	varnantörö		
+MX.53156		Gobio			Gobio krymensis 	B?n?rescu & Nalbant, 1973	krimintörö		
+MX.53156		Gobio			Gobio kubanicus 	Vasilieva, 2004	kubanintörö		
+MX.53156		Gobio			Gobio lozanoi 	Doadrio & Madeira, 2004	pyreneidentörö		
+MX.53156		Gobio			Gobio obtusirostris 	Valenciennes, 1842	tonavantörö		
+MX.53156		Gobio			Gobio occitaniae 	Kottelat & Persat, 2005	oksitaniantörö		
+MX.53156		Gobio			Gobio ohridanus 	Karaman, 1924	ohridintörö		
+MX.53156		Gobio			Gobio sarmaticus 	Berg, 1949	ukrainantörö		
+MX.53156		Gobio			Gobio skadarensis 	Karaman, 1936	skutarintörö		
+MX.53156		Gobio			Gobio volgensis 	Vasileva, Mendel, Vasilev, Lusk, Kuskova, 2008	volgantörö		
+MX.206840		Pseudorasbora	Bleeker, 1859	MX.206841	Pseudorasbora parva 	(Temminck & Schlegel, 1846)	saharasbora		
+MX.206675		Romanogobio	B?n?rescu, 1961	MX.206676	Romanogobio albipinnatus 	(Lukasch, 1933)	valkoevätörö		
+MX.206675		Romanogobio			Romanogobio antipai 	(B?n?rescu, 1953)	romaniantörö		
+MX.206675		Romanogobio			Romanogobio banarescui 	(Dimovski & Grupche, 1974)	vardarintörö	makedoniantörö	
+MX.206675		Romanogobio			Romanogobio belingi 	(Slastenenko, 1934)	dneprintörö		
+MX.206675		Romanogobio			Romanogobio benacensis 	(Pollini, 1816)	italiantörö		
+MX.206675		Romanogobio			Romanogobio ciscaucasicus 	(Berg, 1932)	dagestanintörö	kaukasiantörö	
+MX.206675		Romanogobio			Romanogobio elimeius 	(Kattoulas, Stephanidis & Economidis, 1973)	kreikantörö		
+MX.206675		Romanogobio			Romanogobio kesslerii 	(Dybowski, 1862)	hietatörö		
+MX.206675		Romanogobio			Romanogobio parvus 	Naseka & Freyhof, 2004	kubaninpikkutörö		
+MX.206675		Romanogobio			Romanogobio pentatrichus 	(Naseka & Bogutskaya, 1998)	viisiruototörö		
+MX.206675		Romanogobio			Romanogobio tanaiticus 	(Naseka, 2001)	tanaiksentörö		
+MX.206675		Romanogobio			Romanogobio uranoscopus 	(Agassiz, 1828)	tähystäjätörö		
+MX.206675		Romanogobio			Romanogobio vladykovi 	(Fang, 1943)	kivitörö		
+MX.5016660	heimo	Leuciscidae							
+MX.53161		Abramis	Cuvier, 1816	MX.53162	Abramis brama 	(Linnaeus, 1758)	lahna		
+	suku	Achondrostoma	Robalo et al., 2007				iberiansärjet		
+		Achondrostoma			Achondrostoma arcasii 	(Steindachner, 1866)	iberiansärki		
+		Achondrostoma			Achondrostoma occidentale 	(Robalo, Almada, Sousa Santos, Moreira & Doadrio, 2005)	lissaboninsärki		
+		Achondrostoma			Achondrostoma oligolepis 	(Robalo, Doadrio, Almada & Kottelat, 2005)	portugalinsärki		
+		Achondrostoma			Achondrostoma salmantinum	Doadrio & Elvira, 2007	salamancansärki		
+	suku	Alburnoides	Jeitteles, 1861				punasalakat		
+		Alburnoides			Alburnoides bipunctatus 	(Bloch,, 1782)	punasalakka		
+		Alburnoides			Alburnoides devolli 	Bogutskaya, Zupancic & Naseka, 2010	devollinpunasalakka		
+		Alburnoides			Alburnoides economoui	Barbieri, Vuki?, Šanda & Zogaris, 2017	sperkheioksenpunasalakka		
+		Alburnoides			Alburnoides fangfangae 	Bogutskaya, Zupancic & Naseka, 2010	osuminpunasalakka		
+		Alburnoides			Alburnoides eichwaldii 	(De Filippi, 1863)	kuranpunasalakka		
+		Alburnoides			Alburnoides fasciatus 	(Nordmann, 1840)	georgianpunasalakka		
+		Alburnoides			Alburnoides gmelini 	Bogutskaya & Coad, 2009	dagestaninpunasalakka		
+		Alburnoides			Alburnoides kubanicus 	Berg, 1932	kubaninpunasalakka		
+		Alburnoides			Alburnoides maculatus 	(Kessler, 1859)	taurianpunasalakka		
+		Alburnoides			Alburnoides ohridanus 	(Karaman, 1928)	ohridinpunasalakka		
+		Alburnoides			Alburnoides prespensis 	(Karaman, 1924)	prespanpunasalakka		
+		Alburnoides			Alburnoides rossicus 	Berg, 1924	venäjänpunasalakka		
+		Alburnoides			Alburnoides strymonicus 	Chichkoff, 1940	strumanpunasalakka		
+		Alburnoides			Alburnoides tabarestanensis	Mousavi-Sabet, Anvarifar & Azizi, 2015	tajaninpunasalakka		
+		Alburnoides			Alburnoides thessalicus 	Stephanidis, 1950	makedonianpunasalakka		
+MX.53158		Alburnus	Rafinesque, 1820		Alburnus albidus 	(Costa, 1838)	italiansalakka		
+MX.53158		Alburnus		MX.53159	Alburnus alburnus 	(Linnaeus, 1758)	salakka		
+MX.53158		Alburnus			Alburnus arborella 	(Bonaparte, 1841)	padaniansalakka		
+MX.53158		Alburnus			Alburnus belvica 	Karaman, 1924	prespansalakka		
+MX.53158		Alburnus			Alburnus chalcoides 	(Gueldenstaedt, 1772)	kaspiansalakka	tonavansalakka	
+MX.53158		Alburnus			Alburnus hohenackeri 	Kessler, 1877	kumansalakka		
+MX.53158		Alburnus			Alburnus istanbulensis 	Battalgil, 1941	marmaransalakka		
+MX.53158		Alburnus			Alburnus leobergi 	Freyhof & Kottelat, 2007	asovansalakka		
+MX.53158		Alburnus			Alburnus macedonicus 	Karaman, 1928	doiraninsalakka		
+MX.53158		Alburnus			Alburnus mandrensis 	Drensky, 1943	mandransalakka		
+MX.53158		Alburnus			Alburnus maximus 	(Fatio, 1882)	luganonsalakka		
+MX.53158		Alburnus			Alburnus mento 	(Heckel, 1836)	alppisalakka		
+MX.53158		Alburnus			Alburnus mentoides 	Kessler, 1858	kriminsalakka		
+MX.53158		Alburnus			Alburnus neretvae 	Buj, Sanda & Perea, 2010	neretvansalakka		
+MX.53158		Alburnus			Alburnus sarmaticus 	Freyhof & Kottelat, 2007	sarmatiansalakka		
+MX.53158		Alburnus			Alburnus schischkovi 	Drensky, 1943	velekansalakka		
+MX.53158		Alburnus			Alburnus scoranza 	Bonaparte, 1845	skutarinsalakka		
+MX.53158		Alburnus			Alburnus thessalicus 	Stephanidis, 1950	thessaliansalakka		
+MX.53158		Alburnus			Alburnus vistonicus 	Freyhof & Kottelat, 2007	vistonisinsalakka		
+MX.53158		Alburnus			Alburnus volviticus 	Freyhof & Kottelat, 2007	volvinsalakka		
+		Anaecypris	Collares-Pereira, 1983		Anaecypris hispanica 	(Steindachner, 1866)	espanjanmutu		
+MX.212077		Ballerus	Heckel, 1843	MX.53261	Ballerus ballerus 	(Linnaeus, 1758)	sulkava		
+MX.212077		Ballerus			Ballerus sapa 	(Pallas, 1814)	sapa		
+MX.53160		Blicca	Heckel, 1843	MX.53276	Blicca bjoerkna 	(Linnaeus, 1758)	pasuri		
+MX.5077705	suku	Chondrostoma	Agassiz, 1832				nokkasärjet		
+MX.5077705		Chondrostoma			Chondrostoma angorense	Elvira, 1986	anatoliannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma beysehirense 	Bogutskaya, 1997	beysehirinnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma colchicum 	Derjugin, 1899	kaukasiannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma cyri 	Kessler, 1877	kurannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma holmwoodii 	(Boulenger, 1896)	izmirinnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma kinzelbachi 	Krupp, 1985	syyriannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma meandrense 	Elvira, 1986	menderesinnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma orientale 	Blanco and Banarescu, 1982	korinnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma regium 	(Heckel, 1843)	mesopotamiannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma knerii 	Heckel, 1843	dalmatiannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma kubanicum 	Berg, 1914	kubaninnokkasärki		
+MX.5077705		Chondrostoma		MX.5077706	Chondrostoma nasus 	(Linnaeus, 1758)	nokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma oxyrhynchum	Kessler, 1877	kaspiannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma phoxinus 	Heckel, 1843	bosniannokkäsärki		
+MX.5077705		Chondrostoma			Chondrostoma prespense 	Karaman, 1924	prespannokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma scodrense 	Elvira, 1987	skutarinnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma soetta 	Bonaparte, 1840	padaniannokkasärki	italiannokkasärki	
+MX.5077705		Chondrostoma			Chondrostoma vardarense 	Karaman, 1928	balkaninnokkasärki		
+MX.5077705		Chondrostoma			Chondrostoma variabile 	Yakovlev, 1870	volgannokkasärki		
+	suku	Delminichthys	Freyhof et al., 2008						
+		Delminichthys			Delminichthys adspersus 	(Heckel, 1843)	täplämutu		
+		Delminichthys			Delminichthys ghetaldii 	(Steindachner, 1882)	messinkimutu	pistemutu	
+		Delminichthys			Delminichthys jadovensis 	(Zupan?i? & Bogutskaya, 2002)	marmorimutu		
+		Delminichthys			Delminichthys krbavensis 	(Zupan?i? & Bogutskaya, 2002)	kiiltomutu		
+MX.206837		Hypophthalmichthys	Bleeker, 1860		Hypophthalmichthys molitrix 	(Valenciennes, 1844)	hopeapaksuotsa		
+MX.206837		Hypophthalmichthys			Hypophthalmichthys nobilis 	(Richardson, 1845)	marmoripaksuotsa		
+		Iberochondrostoma	Robalo et al., 2007		Iberochondrostoma almacai 	(Coelho Mesquita & Collares-Pereira, 2005)	algarvennokkasärki		
+		Iberochondrostoma			Iberochondrostoma lemmingii 	(Steindachner, 1866)	iberiannokkasärki	portugalinsärki	
+		Iberochondrostoma			Iberochondrostoma lusitanicum 	(Collares-Pereira, 1980)	portugalinnokkasärki		
+		Iberochondrostoma			Iberochondrostoma oretanum 	(Doadrio & Carmona, 2003)	jandulannokkasärki		
+MX.206823		Squalius	Bonaparte, 1837		Squalius alburnoides 	(Steindachner, 1866)	iberiansalakkaturpa		
+MX.206823		Squalius			Squalius palaciosi 	Doadrio, 1980	andujarinsalakkaturpa		
+MX.206823		Squalius	Karaman, 1972		Ladigesocypris ghigii 	(Gianferrari, 1927)	rodoksenturpa		
+MX.206823		Squalius			Ladigesocypris irideus 	(Ladiges, 1960) 	smyrnanturpa		
+		Ladigesocypris			Ladigesocypris mermere 	(Ladiges, 1960)	gedizinturpa		
+MX.53275		Leucaspius	Heckel & Kner, 1857	MX.53305	Leucaspius delineatus 	(Heckel, 1843)	allikkosalakka		
+MX.53272		Leuciscus	Cuvier, 1816	MX.53304	Leuciscus aspius 	(Linnaeus, 1758)	toutain		
+MX.53272		Leuciscus			Leuciscus bearnensis 	(Blanchard, 1865)	adourinseipi		
+MX.53272		Leuciscus			Leuciscus burdigalensis 	Valenciennes, 1844	ranskanseipi		
+MX.53272		Leuciscus			Leuciscus danilewskii 	(Kessler, 1877)	doninseipi		
+MX.53272		Leuciscus		MX.53273	Leuciscus idus 	(Linnaeus, 1758)	säyne		
+MX.53272		Leuciscus		MX.53146	Leuciscus leuciscus 	(Linnaeus, 1758)	seipi		
+MX.53272		Leuciscus			Leuciscus oxyrrhis 	La Blanchère, 1873	nokkaseipi		
+		Pachychilon	Steindachner, 1882		Pachychilon macedonicum 	(Steindachner, 1892)	makedoniansärki		
+		Pachychilon			Pachychilon pictum 	(Heckel & Kner, 1858)	albaniansärki		
+		Parachondrostoma	Robalo et al., 2007		Parachondrostoma arrigonis 	(Steindachner, 1866)	valenciannokkasärki		
+		Parachondrostoma			Parachondrostoma miegii 	(Steindachner, 1866)	ebronnokkasärki		
+		Parachondrostoma			Parachondrostoma toxostoma 	(Vallot, 1837)	ranskannokkasärki	pikkunokkasärki	
+		Parachondrostoma			Parachondrostoma turiense 	(Elvira, 1987)	turiannokkasärki		
+	suku	Pelasgus	Kottelat & Freyhof, 2007				kreikanmudut		
+		Pelasgus			Pelasgus epiroticus 	(Steindachner, 1896)	ioanninanmutu		
+		Pelasgus			Pelasgus laconicus 	(Kottelat & Barbieri, 2004)	lakonianmutu		
+		Pelasgus			Pelasgus marathonicus 	(Vinciguerra, 1921)	maratoninmutu		
+		Pelasgus			Pelasgus minutus 	(Karaman, 1924)	albanianmutu		
+		Pelasgus			Pelasgus prespensis 	(Karaman, 1924)	prespanmutu		
+		Pelasgus			Pelasgus stymphalicus 	(Valenciennes, 1844)	arkadianmutu		
+		Pelasgus			Pelasgus thesproticus 	(Stephanidis, 1939)	epeiroksenmutu		
+MX.53306		Pelecus	Agassiz, 1835	MX.53166	Pelecus cultratus 	(Linnaeus, 1758)	miekkasärki		
+		Petroleuciscus	Bogutskaya, 2002		Petroleuciscus borysthenicus	(Kessler, 1859)	bobyretsi		
+		Petroleuciscus			Petroleuciscus smyrnaeus 	(Boulenger, 1896)	smyrnanturpa		
+	suku	Phoxinellus	Heckel, 1843				mudut		
+		Phoxinellus			Phoxinellus alepidotus 	Heckel, 1843	nahkamutu		
+		Phoxinellus			Phoxinellus dalmaticus 	Zupan?i? & Bogutskaya,, 2000	dalmatiannahkamutu		
+		Phoxinellus			Phoxinellus pseudalepidotus 	Bogutskaya & Zupan?i?, 2003	mostarinnahkamutu		
+MX.53148	suku	Phoxinus	Rafinesque, 1820				mudut		
+MX.53148		Phoxinus			Phoxinus bigerri 	Kottelat, 2007	pyreneidenmutu		
+MX.53148		Phoxinus			Phoxinus colchicus 	Berg, 1910	kaukasianmutu		
+MX.53148		Phoxinus			Phoxinus karsticus 	Bianco & De Bonis, 2015	trebinjenmutu		
+MX.53148		Phoxinus			Phoxinus krkae 	Bogutskaya, Jeli?, Vuci?, Jeli?, Diripasko, Stefanov & Klobu?ar, 2019	krkanmutu		
+MX.53148		Phoxinus			Phoxinus csikii 	Hankó, 1922	neretvanmutu		
+MX.53148		Phoxinus			Phoxinus lumaireul 	Schinz, 1840	adrianmutu		
+MX.53148		Phoxinus			Phoxinus marsilii 	Heckel, 1836	tonavanmutu		
+MX.53148		Phoxinus		MX.53149	Phoxinus phoxinus 	(Linnaeus, 1758)	mutu		
+MX.53148		Phoxinus			Phoxinus septimaniae 	Kottelat, 2007	languedocinmutu		
+MX.53148		Phoxinus			Phoxinus strandjae 	Drensky, 1926	velekanmutu		
+MX.53148		Phoxinus			Phoxinus strymonicus 	Kottelat, 2007	strumanmutu		
+		Pimephales	Rafinesque, 1820		Pimephales promelas 	Rafinesque, 1820	paksupäämutu		
+		Protochondrostoma	Robalo et al., 2007		Protochondrostoma genei 	(Bonaparte, 1839)	lombardiannokkasärki		
+		Pseudochondrostoma	Robalo et al., 2007		Pseudochondrostoma duriense 	(Coelho, 1985)	douronnokkasärki		
+		Pseudochondrostoma			Pseudochondrostoma polylepis 	(Steindachner, 1865)	tajonnokkasärki		
+		Pseudochondrostoma			Pseudochondrostoma willkommii 	(Steindachner, 1866)	andalusianokkasärki		
+		Rhynchocypris	Günther, 1889		Rhynchocypris czekanowskii 	(Dybowski, 1869)	siperianmutu	tundramutu	
+		Rhynchocypris			Rhynchocypris percnurus 	(Pallas, 1814)	euraasianmutu	suomutu	
+		Leucos	Heckel, 1843		Leucos albus 	(Maric, 2010)	montenegronsärki		
+		Leucos			Leucos aula 	(Bonaparte, 1841)	padaniansärki	dalmatiansärki	
+		Leucos			Leucos basak 	Heckel, 1843	neretvansärki		
+		Leucos			Leucos panosi 	(Bogutskaya & Iliadou, 2006)	kreikansärki		
+		Leucos			Leucos ylikiensis 	(Economidis, 1991)	ylikinsärki		
+MX.53271	suku	Rutilus	Rafinesque, 1820				särjet		
+MX.53271		Rutilus			Rutilus atropatenus	Derjavin, 1937	azerbaidžaninsärki		Caucasian Relict Fish — Azerbaijani Spring Roach
+MX.53271		Rutilus			Rutilus frisii 	(Nordmann, 1840)	pontokaspiansärki		
+MX.53271		Rutilus			Rutilus lacustris 	(Pallas, 1814)	siperiansärki		
+MX.53271		Rutilus			Rutilus meidingeri 	(Heckel, 1851)	itävallansärki		
+MX.53271		Rutilus			Rutilus ohridanus 	(Karaman, 1924)	ohridinsärki		
+MX.53271		Rutilus			Rutilus pigus 	(La Cepède, 1803)	adriansärki	tonavansärki	
+MX.53271		Rutilus			Rutilus prespensis 	(Karaman, 1924)	prespansärki		
+		Sarmarutilus	Bianco & Ketmaier, 2014		Sarmarutilus rubilio 	(Bonaparte, 1837)	italiansärki	etelänsärki	
+MX.53271		Rutilus		MX.53145	Rutilus rutilus 	(Linnaeus, 1758)    	särki		
+MX.53271		Rutilus			Rutilus virgo 	(Heckel, 1852)	tonavansärki		
+MX.53150	suku	Scardinius	Bonaparte, 1837				sorvat		
+MX.53150		Scardinius			Scardinius acarnanicus 	Economidis, 1991	akarnanikansorva		
+MX.53150		Scardinius			Scardinius dergle 	Heckel & Kner, 1858	kroatiansorva		
+MX.53150		Scardinius		MX.53151	Scardinius erythrophthalmus	(Linnaeus, 1758)	sorva		
+MX.53150		Scardinius			Scardinius graecus 	Stephanidis, 1937	ylikinsorva		
+MX.53150		Scardinius			Scardinius hesperidicus 	Bonaparte, 1845	italiansorva		
+MX.53150		Scardinius			Scardinius knezevici 	Bianco & Kottelat, 2005	skutarinsorva		
+MX.53150		Scardinius			Scardinius plotizza 	Heckel & Kner, 1858	neretvansorva		
+MX.53150		Scardinius			Scardinius racovitzai 	Müller, 1958	lähdesorva		
+MX.53150		Scardinius			Scardinius scardafa 	(Bonaparte, 1837)	apenniiniensorva		
+MX.206823	suku	Squalius	Bonaparte, 1837				turvat		
+MX.206823		Squalius			Squalius aphipsi 	(Aleksandrov, 1927)	kubaninturpa	kaukasianturpa	
+MX.206823		Squalius			Squalius aradensis 	(Coelho, Bogutskaya, Rodrigues & Collares-Pereira, 1998)	aradenturpa		
+MX.206823		Squalius			Squalius carolitertii 	(Doadrio, 1988)	iberianturpa		
+MX.206823		Squalius			Squalius castellanus 	Doadrio, Perea & Alonso, 2007	gallonturpa		
+MX.206823		Squalius		MX.53260	Squalius cephalus 	(Linnaeus, 1758)	turpa		
+MX.206823		Squalius			Squalius cii 	(Richardson, 1857)	lesboksenturpa		
+MX.206823		Squalius			Squalius fellowesii 	(Günther, 1868)	egeanturpa		
+MX.206823		Squalius			Squalius illyricus 	Heckel & Kner, 1858	illyrianturpa	illyrianseipi	
+MX.206823		Squalius			Squalius janae 	Bogutskaya & Zupancic, 2010	istrianturpa		
+MX.206823		Squalius			Squalius keadicus 	(Stephanidis, 1971)	lakonianturpa		
+MX.206823		Squalius			Squalius laietanus 	Doadrio, Kottelat & Sostoa, 2007	ebronturpa		
+MX.206823		Squalius			Squalius lucumonis 	(Bianco, 1983)	toscananturpa		
+MX.206823		Squalius			Squalius malacitanus 	Doadrio & Carmona, 2006	malaganturpa		
+MX.206823		Squalius			Squalius  microlepis 	Heckel, 1843	imotskonturpa		
+MX.206823		Squalius			Squalius moreoticus 	(Stephanidis, 1971)	korintinturpa		
+MX.206823		Squalius			Squalius orpheus 	Kottelat & Economidis, 2006	traakianturpa		
+MX.206823		Squalius			Squalius pamvoticus 	(Stephanidis, 1939)	epeiroksenturpa		
+MX.206823		Squalius			Squalius peloponensis 	(Valenciennes, 1844)	peloponnesoksenturpa		
+MX.206823		Squalius			Squalius platyceps 	Zupancic Maric Naseka & Bogutskaya, 2010    	albanianturpa		
+MX.206823		Squalius			Squalius prespensis 	(Fowler, 1977)	prespanturpa		
+MX.206823		Squalius			Squalius pyrenaicus 	(Günther, 1868)	iberianturpa		
+MX.206823		Squalius			Squalius squalus 	(Bonaparte, 1837)	italianturpa		
+MX.206823		Squalius			Squalius svallize 	Heckel & Kner, 1858	neretvanturpa		
+MX.206823		Squalius			Squalius tenellus 	Heckel, 1843	livnonturpa		
+MX.206823		Squalius			Squalius torgalensis 	(Coelho, Bogutskaya, Rodrigues & Collares-Pereira, 1998)	portugalinturpa		
+MX.206823		Squalius			Squalius valentinus 	Doadrio & Carmona, 2006	valencianturpa		
+MX.206823		Squalius			Squalius vardarensis 	Karaman, 1928	makedonianturpa		
+MX.206823		Squalius			Squalius zrmanjae 	Karaman, 1928	kroatianturpa		
+	suku	Telestes	Bonaparte, 1840				juovamudut		
+		Telestes			Telestes beoticus 	(Stephanidis, 1939)	kifissoksenjuovamutu		
+		Telestes			Telestes croaticus 	(Steindachner, 1866)	jadovanjuovamutu	kroatianmutu	
+		Telestes			Telestes dabar 	Bogutskaya, Zupan?i?, Bogut & Naseka, 2012	dabarinjuovamutu		
+		Telestes			Telestes fontinalis 	(Karaman, 1972)	krbavanjuovamutu		
+		Telestes			Telestes karsticus 	Mar?i? & Mrakov?i?, 2011	kroatianjuovamutu		
+		Telestes			Telestes metohiensis 	(Steindachner, 1901)	cernicanjuovamutu		
+		Telestes			Telestes miloradi 	Bogutskaya, Zupan?i?, Bogut & Naseka, 2012	ljutanjuovamutu		
+		Telestes			Telestes montenigrinus 	(Vukovi?, 1963)	skutarinjuovamutu		
+		Telestes			Telestes muticellus 	(Bonaparte, 1837)	italianjuovaamutu		
+		Telestes			Telestes pleurobipunctatus 	(Stephanidis, 1939)	kreikanjuovamutu		
+		Telestes			Telestes polylepis 	Steindachner, 1866	šmitovonjuovamutu		
+		Telestes			Telestes souffia 	(Risso, 1827)	alppijuovamutu		
+		Telestes			Telestes turskyi 	(Heckel, 1843)	cikolanjuovamutu	messinkiseipi	
+		Telestes			Telestes ukliva 	(Heckel, 1843)	cetinanjuovamutu	kyrmyniskaseipi	
+		Tropidophoxinellus	Stephanidis, 1974		Tropidophoxinellus hellenicus 	(Stephanidis, 1939)	hellaksenmutu		
+		Tropidophoxinellus			Tropidophoxinellus spartiaticus 	(Schmidt-Ries, 1943)	spartanmutu		
+MX.53164		Vimba	Fitzinger, 1873		Vimba melanops 	(Heckel, 1837)	balkaninvimpa		
+MX.53164		Vimba		MX.53165	Vimba vimba 	(Linnaeus, 1758)	vimpa		
+MX.5086444	heimo	Serrasalmidae							
+		Piaractus	Eigenmann, 1903		Piaractus brachypomus	(Cuvier, 1818)	paku		
+MX.5014775	heimo 	Plotosidae							
+MX.5014776		Plotosus	Lacepède, 1803	MX.5014777	Plotosus lineatus 	(Thunberg, 1787)	juovakorallimonni		
+MX.53176	heimo 	Siluridae							
+MX.53177		Silurus	Linnaeus, 1758		Silurus aristotelis 	Garman, 1890	kreikanmonni		
+MX.53177		Silurus		MX.53178	Silurus glanis 	Linnaeus, 1758	monni		
+MX.5086494	heimo	Ariidae							
+		Carlarius	Marceniuk & Menezes, 2007		Carlarius parkii 	(Günther, 1864)	afrikanmerimonni		
+MX.53179	heimo 	Ictaluridae							
+MX.206826		Ameiurus	Rafinesque, 1820	MX.5084366	Ameiurus melas 	(Rafinesque, 1820)	mustapiikkimonni		
+MX.206826		Ameiurus			Ameiurus natalis 	(Lesueur, 1819)	keltapiikkimonni		
+MX.206826		Ameiurus		MX.53181	Ameiurus nebulosus 	(Lesueur, 1819)	piikkimonni		
+MX.53180		Ictalurus	Rafinesque, 1820		Ictalurus punctatus 	(Rafinesque, 1818)	pilkkupiikkimonni		
+MX.5086506	heimo	Argentinidae							
+		Argentina	Linnaeus, 1758		Argentina silus 	(Ascanius, 1775)	kultakuore		
+		Argentina			Argentina sphyraena 	Linnaeus, 1758	hopeakuore		
+		Glossanodon	Guichenot, 1867		Glossanodon leioglossus 	(Valenciennes, 1848)	juovahopeakuore		
+MX.5086507	heimo 	Microstomatidae							
+		Microstoma	Cuvier, 1816		Microstoma microstoma 	(Risso, 1810)	puikkokuore		
+		Nansenia	Jordan & Evermann, 1896		Nansenia groenlandica 	(Reinhardt, 1840)	grönlanninpuikkokuore		
+		Nansenia			Nansenia iberica 	Matallanas, 1985	iberianpuikkokuore		
+		Nansenia			Nansenia oblita 	(Facciolà, 1887)	hopeapuikkokuore		
+MX.5086508	heimo	Bathylagidae							
+		Bathylagichthys	Kobyliansky, 1986		Bathylagichthys greyae 	(Cohen, 1958)	olkisyvännekuore		
+		Bathylagus	Günther, 1878		Bathylagus euryops 	Goode & Bean, 1896	tummasyvännekuore		
+		Dolicholagus	Kobyliansky, 1986		Dolicholagus longirostris 	(Maul, 1948)	valjusyvännekuore		
+		Melanolagus	Kobyliansky, 1986		Melanolagus bericoides 	(Borodin, 1929)	sysisyvännekuore		
+MX.5086509	heimo 	Opisthoproctidae							
+		Bathylychnops	Cohen, 1958		Bathylychnops exilis 	Cohen, 1958	peilikiikarikala		
+		Monacoa	Whitley, 1943		Monacoa grimaldii 	Zugmayer, 1911	kiikarikala		
+		Opisthoproctus	Vaillant, 1888		Opisthoproctus soleatus 	Vaillant, 1888	anturakiikarikala		
+MX.53116	heimo 	Esocidae							
+MX.53117		Esox	Linnaeus, 1758		Esox aquitanicus 	Denys, Dettai, Persat, Hautecœur & Keith, 2014	akvitanianhauki		
+MX.53117		Esox			Esox cisalpinus 	Bianco & Delmastro, 2011	italianhauki		
+MX.53117		Esox		MX.53118	Esox lucius 	Linnaeus, 1758	hauki		
+MX.5086512	heimo 	Umbridae							
+		Umbra	Kramer, 1777		Umbra krameri 	Walbaum, 1792	koirakala		
+		Umbra			Umbra pygmaea 	(DeKay, 1842) 	pikkukoirakala		
+MX.53298	heimo 	Salmonidae							
+MX.53131		Coregonus	Linnaeus, 1758	MX.53300	Coregonus albula 	(Linnaeus, 1758)	muikku		
+MX.53131		Coregonus			Coregonus autumnalis 	(Pallas, 1776)	omulsiika		
+MX.53131		Coregonus		MX.53132	Coregonus lavaretus sensu lato	(Linnaeus,, 1758)	siika		
+MX.53131		Coregonus			Coregonus muksun 	(Pallas, 1814)	muksunsiika		
+MX.53131		Coregonus		MX.206820	Coregonus nasus 	(Pallas, 1776)	pyörökuonosiika		
+MX.53131		Coregonus		MX.53001	Coregonus peled 	(Gmelin, 1789)	peledsiika		
+MX.53131		Coregonus			Coregonus sardinella 	Valenciennes, 1848	siperianmuikku		
+MX.206821		Stenodus	Richardson, 1836	MX.206822	Stenodus leucichthys 	(Güldenstädt, 1772)	kaspiannelma		
+MX.206821		Stenodus			Stenodus nelma 	(Pallas, 1773)	nelma		
+		Hucho	Günther, 1866		Hucho hucho 	(Linnaeus, 1758)	tonavanjokilohi		
+		Hucho			Hucho taimen 	(Pallas, 1773)	siperianjokilohi		
+MX.53126		Oncorhynchus	Suckley, 1861		Oncorhynchus clarkii 	(Richardson, 1836)	punakurkkulohi		
+MX.53126		Oncorhynchus		MX.52999	Oncorhynchus gorbuscha 	(Walbaum, 1792)	kyttyrälohi		
+MX.53126		Oncorhynchus		MX.53258	Oncorhynchus keta 	(Walbaum, 1792)	koiralohi		
+MX.53126		Oncorhynchus		MX.53128	Oncorhynchus kisutsch 	(Walbaum, 1792)	hopealohi		
+MX.53126		Oncorhynchus		MX.52998	Oncorhynchus mykiss 	(Walbaum, 1792)	kirjolohi		
+MX.53126		Oncorhynchus		MX.53129	Oncorhynchus nerka 	(Walbaum, 1792)	punalohi		
+MX.53126		Oncorhynchus		MX.53130	Oncorhynchus tshawytscha 	(Walbaum, 1792)	kuningaslohi		
+MX.53120		Salmo	Linnaeus, 1758		Salmo marmoratus 	Cuvier, 1829	marmoritaimen		
+MX.53120		Salmo			Salmo obtusirostris 	(Heckel, 1851)	adriantaimen		
+MX.53120		Salmo			Salmo ohridanus 	Steindachner, 1882	ohridintaimen		
+MX.53120		Salmo			Salmo caspius 	Kessler, 1877	kaspiantaimen		
+MX.53120		Salmo		MX.53121	Salmo salar 	Linnaeus, 1758	lohi		
+MX.53120		Salmo		MX.53123	Salmo trutta 	Linnaeus, 1758	taimen		
+MX.53301		Salvelinus	Richardson, 1836	MX.53137	Salvelinus alpinus 	(Linnaeus, 1758)	nieriä		
+MX.53301		Salvelinus		MX.52994	Salvelinus fontinalis 	(Mitchill, 1814)	puronieriä		
+MX.53301		Salvelinus		MX.52995	Salvelinus namaycush 	(Walbaum, 1792)	harmaanieriä		
+MX.53269		Thymallus	Linck, 1790	MX.53141	Thymallus thymallus 	(Linnaeus, 1758)	harjus		
+MX.53269		Thymallus			Thymallus arcticus 	(Pallas, 1776)	pohjanharjus		
+MX.53269		Thymallus			Thymallus aeliani	Valenciennes, 1848	adrianharjus		
+MX.53269		Thymallus			Thymallus ligericus	Persat et al., 2019	loirenharjus		
+MX.53302	heimo 	Osmeridae							
+		Hypomesus	Gill, 1862		Hypomesus olidus 	(Pallas, 1814)	pikkusuukuore		
+		Mallotus	Cuvier, 1829		Mallotus villosus 	(Müller, 1776)	villakuore		
+MX.53270		Osmerus	Linnaeus, 1758	MX.53142	Osmerus eperlanus 	(Linnaeus, 1758)	kuore		
+MX.53270		Osmerus			Osmerus dentex 	Steindachner & Kner, 1870	tyynenmerenkuore		
+MX.53270		Osmerus			Osmerus mordax 	(Mitchill, 1814)	amerikankuore		
+MX.5086516	heimo 	Gonostomatidae							
+		Bonapartia	Goode & Bean, 1896		Bonapartia pedaliota 	Goode & Bean, 1896	rihmasukasuu		
+		Cyclothone	Goode & Bean, 1883		Cyclothone acclinidens 	Garman, 1899	ruskosukasuu		
+		Cyclothone				Brauer, 1906	valkosukasuu		
+		Cyclothone				Jespersen & Tåning, 1926	tähtisukasuu		
+		Cyclothone				Brauer, 1902	tummasukasuu		
+		Cyclothone				(Günther, 1878)	huntusukasuu		
+		Cyclothone				Brauer, 1902	synkkäsukasuu		
+		Cyclothone				Brauer, 1902	kalvassukasuu		
+		Cyclothone				Mukhacheva, 1964	seepiasukasuu		
+		Cyclothone				Jespersen & Tåning, 1926	kääpiösukasuu		
+		Diplophos	Günther, 1873			Günther, 1873	puikkosukasuu		
+		Gonostoma	Rafinesque, 1810			Norman, 1930	atlantinsukasuu		
+		Gonostoma				Rafinesque, 1810	sukasuu		
+		Gonostoma				Günther, 1878	soukkasukasuu		
+		Manducus	Goode & Bean, 1896			(Johnson, 1890)	hopeasukasuu		
+		Margrethia	Jespersen & Tåning, 1919			espersen & Tåning, 1919	nuijasukasuu		
+		Sigmops	Gill, 1883			(Vaillant, 1884)	syvännesukasuu		
+MX.5086517	heimo 	Sternoptychidae							
+	alaheimo	Sternoptychinae					lättäkalat		
+		Argyropelecus	Cocco, 1829			Valenciennes, 1850	etelänlättäkala	atlantinhelmiäiskala	
+		Argyropelecus			Argyropelecus affinis 	Garman, 1899	lättäkala		
+		Argyropelecus			Argyropelecus gigas 	Norman, 1930	ulappalättäkala		
+		Argyropelecus			Argyropelecus hemigymnus 	Cocco, 1829	paljaslättäkala	hopealättäkala	
+		Argyropelecus			Argyropelecus lychnus 	Garman, 1899	tropiikinlättäkala		
+		Argyropelecus			Argyropelecus olfersii 	(Cuvier, 1829)	tummaselkälättäkala		
+		Argyropelecus			Argyropelecus sladeni 	Regan, 1908	loivalättäkala		
+		Polyipnus	Günther, 1887		Polyipnus polli 	Schultz, 1961	kiekkolättäkala		
+		Sternoptyx	Hermann, 1781		Sternoptyx diaphana 	Hermann, 1781	lasilättäkala		
+		Sternoptyx			Sternoptyx pseudobscura 	Baird, 1971	kölilättäkala		
+	alaheimo 	Maurolicinae					helmikyljet		
+		Argyripnus	Gilbert & Cramer, 1897		Argyripnus atlanticus 	Maul, 1952	isosilmähelmikylki		
+		Maurolicus	Cocco, 1838		Maurolicus amethystinopunctatus 	Cocco, 1838	ametistikylki		
+		Maurolicus			Maurolicus muelleri 	(Gmelin, 1789)	helmikylki		
+		Valenciennellus	Jordan & Evermann, 1896		Valenciennellus tripunctulatus 	(Esmark, 1871)	täplähelmikylki		
+MX.5086518	heimo 	Phosichthyidae							
+		Ichthyococcus	Bonaparte, 1840		Ichthyococcus ovatus 	(Cocco, 1838)	helmilyhtykala		
+		Pollichthys	Grey, 1959		Pollichthys mauli 	(Poll, 1953)	rivilyhtykala		
+		Polymetme	McCulloch, 1926		Polymetme corythaeola 	(Alcock, 1898)	tymmapyrstölyhtykala		
+		Polymetme			Polymetme thaeocoryla 	Parin & Borodulina, 1990	atlantinlyhtykala		
+		Vinciguerria	Jordan & Evermann, 1896		Vinciguerria attenuata 	(Cocco, 1838)	hämylyhtykala		
+		Vinciguerria			Vinciguerria nimbaria	(Jordan & Williams, 1895)	tropiikinlyhtykala	ulappalyhtykala	
+		Vinciguerria			Vinciguerria poweriae 	(Cocco, 1838)	syvännelyhtykala		
+		Yarrella	Goode & Bean, 1896		Yarrella blackfordi 	Goode & Bean, 1896	mustalyhtykala		
+MX.5086519	heimo 	Stomiidae							
+	alaheimo	Chauliodontinae					sapelisuut		
+		Chauliodus	Bloch & Schneider, 1801		Chauliodus danae 	Regan & Trewavas, 1929	atlantinsapelisuu		
+		Chauliodus			Chauliodus sloani 	Bloch & Schneider, 1801	sapelisuu		
+	alaheimo	Stomiinae					sapelisuut		
+		Stomias	Cuvier, 1816		Stomias boa 	(Risso, 1810)	käärmesapelisuu		
+		Stomias			Stomias brevibarbatus 	Ege, 1918	lyhytviiksisapelisuu		
+		Stomias			Stomias longibarbatus 	(Brauer, 1902)	pitkäviiksisapelisuu		
+	alaheimo	Astronethinae					naskalisuut		
+		Astronesthes	 Richardson, 1845		Astronesthes gemmifer 	Goode & Bean, 1896	mustanaskalisuu		
+		Astronesthes			Astronesthes indicus 	Brauer, 1902	laikkunaskalisuu		
+		Astronesthes			Astronesthes leucopogon 	Regan & Trewavas, 1929	nuijanaskalisuu		
+		Astronesthes			Astronesthes macropogon	Goodyear & Gibbs, 1970	sysinaskalisuu		
+		Astronesthes			Astronesthes micropogon 	Goodyear & Gibbs, 1970	tähtinaskalisuu		
+		Astronesthes			Astronesthes neopogon 	Regan & Trewavas, 1929	tappinaskalisuu		
+		Astronesthes			Astronesthes niger 	Richardson, 1845	nokinaskalisuu		
+		Borostomias	Regan, 1908		Borostomias abyssorum 	(Koehler, 1896)	ranskannaskalisuu		
+		Borostomias			Borostomias antarcticus 	(Lönnberg, 1905)	atlantinnaskalisuu		
+		Borostomias			Borostomias elucens 	(Brauer, 1906)	loistenaskalisuu		
+		Borostomias			Borostomias mononema 	(Regan & Trewavas, 1929)	pilkkanaskalisuu		
+		Neonesthes	Regan & Trewavas, 1929		Neonesthes capensis 	(Gilchrist & von Bonde, 1924)	torpedonaskalisuu		
+		Rhadinesthes	Regan & Trewavas, 1929		Rhadinesthes decimus 	(Zugmayer, 1911)	huiskunaskalisuu		
+	alaheimo	Melanostomiinae					piikkisuut		
+		Bathophilus	Giglioli, 1882		Bathophilus digitatus 	(Welsh, 1923)	siipipiikkisuu		
+		Bathophilus			Bathophilus longipinnis 	(Pappenheim, 1912)	valkoeväpiikkisuu		
+		Bathophilus			Bathophilus nigerrimus 	Giglioli, 1882	kiiltopiikkisuu		
+		Bathophilus			Bathophilus pawneei 	Parr, 1927	tropiikinpiikkisuu		
+		Bathophilus			Bathophilus vaillanti 	(Zugmayer, 1911)	soukkapiikkisuu		
+		Chirostomias			Chirostomias pliopterus 	Regan & Trewavas, 1930	liuskaviiksipiikkisuu		
+		Echiostoma	Lowe, 1843		Echiostoma barbatum 	Lowe, 1843	ripsuviiksipiikkisuu		
+		Eustomias	Vaillant, 1888		Eustomias braueri 	Zugmayer, 1911	vanupuikkopiikkisuu		
+		Eustomias			Eustomias filifer 	(Gilchrist, 1906)	pensaspiikkisuu		
+		Eustomias			Eustomias fissibarbis 	(Pappenheim, 1912)	haaraviiksipiikkisuu		
+		Eustomias			Eustomias lipochirus 	Regan & Trewavas, 1930	paksuviiksipiikkisuu		
+		Eustomias			Eustomias longibarba 	Parr, 1927	pitkäviiksipiikkisuu		
+		Eustomias			Eustomias macronema 	Regan & Trewavas, 1930	röyhyviiksipiikkisuu		
+		Eustomias			Eustomias obscurus 	Vaillant, 1884	puikkopiikkisuu		
+		Eustomias			Eustomias schmidti 	Regan & Trewavas, 1930	tupsuviiksipiikkisuu		
+		Eustomias			Eustomias simplex 	Regan & Trewavas, 1930	viiksipiikkisuu		
+		Eustomias			Eustomias tetranema 	Zugmayer, 1913	neliviiksipiikkisuu		
+		Flagellostomias	Parr, 1927		Flagellostomias boureei 	(Zugmayer, 1913)	rihmapiikkisuu		
+		Grammatostomias	Goode & Bean, 1896		Grammatostomias circularis 	Morrow, 1959	rengaspiikkisuu		
+		Grammatostomias			Grammatostomias flagellibarba 	Holt & Byrne, 1910	siimapiikkisuu		
+		Leptostomias	Gilbert, 1905		Leptostomias gladiator 	(Zugmayer, 1911)	ruoskapiikkisuu		
+		Leptostomias			Leptostomias haplocaulus	Regan & Trewavas, 1930	harjapiikkisuu		
+		Leptostomias			Leptostomias longibarba 	Regan & Trewavas, 1930	piiskapiikkisuu		
+		Melanostomias	Brauer, 1902		Melanostomias bartonbeani 	Parr, 1927	torpedopiikkisuu		
+		Melanostomias			Melanostomias biseriatus 	Regan & Trewavas, 1930	parijuovapiikkisuu		
+		Melanostomias			Melanostomias macrophotus 	Regan & Trewavas, 1930	kalvoviiksipiikkisuu		
+		Melanostomias			Melanostomias melanops 	Brauer, 1902	mustasilmäpiikkisuu		
+		Melanostomias			Melanostomias tentaculatus 	(Regan & Trewavas, 1930)	puikkopiikkisuu		
+		Melanostomias			Melanostomias valdiviae 	Brauer, 1902	raitapiikkisuu		
+		Pachystomias	Günther, 1887		Pachystomias microdon 	(Günther, 1878)	tasapiikkisuu		
+		Photonectes	Günther, 1887		Photonectes braueri 	(Zugmayer, 1913)	tuppoviiksipiikkisuu		
+		Photonectes			Photonectes dinema 	Regan & Trewavas, 1930	sormiviiksipiikkisuu		
+		Photonectes			Photonectes margarita 	(Goode & Bean, 1896)	helmipiikkisuu		
+		Photonectes			Photonectes parvimanus 	Regan & Trewavas, 1930	sipuliviiksipiikkisuu		
+		Trigonolampa	Regan & Trewavas, 1930		Trigonolampa miriceps 	Regan & Trewavas, 1930	linjapiikkisuu		
+	alaheimo	Malacosteinae					huiskukitakalat		
+		Aristostomias	Zugmayer, 1913		Aristostomias grimaldii 	Zugmayer, 1913	valoposkikitakala		
+		Aristostomias			Aristostomias lunifer 	Regan & Trewavas, 1930	kuukitakala		
+		Aristostomias			Aristostomias tittmanni 	Welsh, 1923	siimakitakala	siimapiikkisuu	
+		Malacosteus	Ayres, 1848		Malacosteus niger 	Ayres, 1848	mustakitakala		
+		Photostomias	Collett, 1889		Photostomias guernei 	Collett, 1889	huiskukitakala		
+	alaheimo	Idiacanthinae					kitakalat		
+		Idiacanthus	Peters, 1877		Idiacanthus fasciola 	Peters, 1877	nauhakitakala		
+MX.5086521	heimo 	Ateleopodidae							
+		Guentherus	Osório, 1917		Guentherus altivela 	Osório, 1917	purjenuijapää		
+		Ijimaia	Gordon & d'Hondt, 1997		Ijimaia loppei 	Roule, 1922	ruostenuijapää		
+MX.5086523	heimo 	Aulopidae							
+		Aulopus	Cloquet, 1816		Aulopus filamentosus 	(Bloch, 1792)	kuningasauloppi		
+MX.5086525	heimo 	Chlorophthalmidae							
+		Chlorophthalmus	Bonaparte, 1840		Chlorophthalmus agassizi 	Bonaparte, 1840	töppövihersilmä		
+MX.5086527	heimo 	Ipnopidae							
+		Bathymicrops	Hjort & Koefoed, 1912		Bathymicrops regis 	Hjort & Koefoed, 1912	vyölevysilmä		
+		Bathypterois	Günther, 1878		Bathypterois dubius 	Vaillant, 1888	mustavärttinäkala		
+		Bathypterois			Bathypterois grallator 	(Goode & Bean, 1886)	kolmijalkakala		
+		Bathypterois			Bathypterois longipes 	Günther, 1878	maskivärttinäkala		
+		Bathypterois			Bathypterois phenax 	Parr, 1928	mustaevävärttinäkala		
+		Bathytyphlops	Nybelin, 1957		Bathytyphlops marionae	(Norman, 1939)	lyhytevävärttinäkala		
+		Bathytyphlops			Bathytyphlops sewelli 	(Norman, 1939)	syvännevärttinäkala		
+MX.5086529	heimo 	Scopelarchidae							
+		Benthalbella	Zugmayer, 1911		Benthalbella dentata	(Chapman, 1939)	pohjanhelmisilmä		
+		Benthalbella			Benthalbella infans 	Zugmayer, 1911	juovahelmisilmä		
+		Scopelarchus	Alcock, 1896		Scopelarchus analis 	(Brauer, 1902)	tummavatsahelmisilmä		
+MX.5086530	heimo 	Notosudidae							
+		Ahliesaurus	Bertelsen, Krefft & Marshall, 1976		Ahliesaurus berryi 	Bertelsen, Krefft & Marshall,, 1976	tropiikinliskosilmä		
+		Scopelosaurus	Alcock, 1896		Scopelosaurus argenteus 	(Maul, 1954)	juovaliskosilmä	hopealiskosilmä	
+		Scopelosaurus			Scopelosaurus lepidus 	(Krefft & Maul, 1955)	mustaeväliskosilmä		
+		Scopelosaurus			Scopelosaurus smithii 	Bean, 1925	mustaliskosilmä		
+MX.5086534	heimo 	Synodontidae							
+		Saurida	Bertelsen, Krefft & Marshall, 1976		Saurida undosquamis 	(Richardson, 1848)	sahaliskokala		
+		Synodus	Scopoli, 1777		Synodus saurus 	(Linnaeus, 1758)	atlantinliskokala		
+		Synodus			Synodus synodus 	(Linnaeus, 1758)	timanttiliskokala		
+MX.5086535	heimo 	Bathysauridae							
+		Bathysaurus	Günther, 1878		Bathysaurus ferox 	Günther, 1878	syvänneliskokala		
+		Bathysaurus			Bathysaurus mollis 	Günther, 1878	valkoliskokala		
+MX.5086536	heimo 	Paralepididae							
+		Arctozenus	Gill, 1864		Arctozenus risso	(Bonaparte, 1840)	nauhabarrakudina		
+		Lestidiops	Hubbs, 1916		Lestidiops jayakari 	(Boulenger, 1889)	juovabarrakudina		
+		Lestidiops			Lestidiops sphyrenoides 	(Risso, 1820)	atlantinbarrakudina		
+		Macroparalepis	 Burton, 1934		Macroparalepis affinis 	Ege, 1933	mustajuovabarrakudina		
+		Macroparalepis			Macroparalepis brevis 	Ege, 1933	pikkubarrakudina		
+		Macroparalepis			Macroparalepis nigra 	(Maul, 1965)	mustabarrakudina		
+		Magnisudis	Harry, 1953		Magnisudis atlantica 	(Krøyer, 1868)	ruskobarrakudina		
+		Paralepis	Cuvier, 1816		Paralepis coregonoides 	Risso, 1820	pohjanbarrakudina		
+		Paralepis			Paralepis speciosa 	Bellotti, 1878	laikkubarrakudina		
+		Sudis	Rafinesque, 1810		Sudis hyalina 	Rafinesque, 1810	kalvasbarrakudina		
+		Uncisudis	Maul, 1956		Uncisudis longirostra 	Maul, 1956	tummabarrakudina		
+MX.5086538	heimo 	Evermannellidae							
+		Evermannella	Fowler, 1901		Evermannella balbo 	(Risso, 1820)	ruskosapelileuka		
+		Evermannella			Evermannella melanoderma 	Parr, 1928	atlantinsapelileuka		
+		Odontostomops	Fowler, 1934		Odontostomops normalops	(Parr, 1928)	pikisapelileuka		
+MX.5086540	heimo 	Alepisauridae							
+		Alepisaurus	Lowe, 1833		Alepisaurus brevirostris 	Gibbs, 1960	pohjanpurjeliskokala		
+		Alepisaurus			Alepisaurus ferox 	Lowe, 1833	purjeliskokala		
+MX.5086542	heimo 	Neoscopelidae							
+		Neoscopelus	Johnson, 1863		Neoscopelus macrolepidotus 	Johnson, 1863	pinkkivalottaja	suomuvalokala	
+		Neoscopelus			Neoscopelus microchir 	Matsubara, 1943	rusovalottaja		
+		Scopelengys	Alcock, 1890		Scopelengys tristis 	Alcock, 1890	ruskovalottaja		
+MX.5086543	heimo 	Myctophidae							
+		Benthosema	Goode & Bean, 1896		Benthosema glaciale 	(Reinhardt, 1837)	pohjanvalottaja	pohjanvalokala	
+		Benthosema			Benthosema suborbitale 	(Gilbert, 1913)	merkkivalottaja		
+		Bolinichthys	Paxton, 1972		Bolinichthys indicus 	(Nafpaktitis & Nafpaktitis, 1969)	silmävalottaja		
+		Centrobranchus	Fowler, 1904		Centrobranchus nigroocellatus 	(Günther, 1873)	pyörökuonovalottaja		
+		Ceratoscopelus	Günther, 1864		Ceratoscopelus maderensis 	(Lowe, 1839)	madeiranvalottaja		
+		Ceratoscopelus			Ceratoscopelus warmingii 	(Lütken, 1892)	tummavalottaja		
+		Diaphus	Eigenmann & Eigenmann, 1890		Diaphus adenomus 	Gilbert, 1905	valkolaikkuvalottaja		
+		Diaphus			Diaphus bertelseni 	Nafpaktitis, 1966	pattivalottaja		
+		Diaphus			Diaphus brachycephalus 	Tåning, 1928	nuijavalottaja		
+		Diaphus			Diaphus dumerilii	(Bleeker, 1856)	atlantinvalottaja		
+		Diaphus			Diaphus effulgens 	(Goode & Bean, 1896)	hohtovalottaja		
+		Diaphus			Diaphus holti 	Tåning, 1918	välimerenvalottaja		
+		Diaphus			Diaphus lucidus 	(Goode & Bean, 1896)	otsalamppuvalottaja	otsavalokala	
+		Diaphus			Diaphus metopoclampus 	(Cocco, 1829)	kuonovalottaja		
+		Diaphus			Diaphus mollis 	Tåning, 1928	turkoosivalottaja		
+		Diaphus			Diaphus perspicillatus 	(Ogilby, 1898)	silmälasivalottaja		
+		Diaphus			Diaphus rafinesquii 	(Cocco, 1838)	sinivalottaja		White-spotted lantern fish
+		Diaphus			Diaphus splendidus 	(Brauer, 1904)	nystyvalottaja		
+		Diaphus			Diaphus subtilis 	Nafpaktitis, 1968	loistovalottaja		
+		Diaphus			Diaphus termophilus 	Tåning, 1928	tropiikinvalottaja		
+		Diogenichthys	Bolin, 1939		Diogenichthys atlanticus 	(Tåning, 1928)	pitkäevävalottaja		
+		Electrona	Goode & Bean, 1896		Electrona risso 	(Cocco, 1829)	isosilmävalottaja		
+		Gonichthys	Gistel, 1850		Gonichthys cocco 	(Cocco, 1829)	safiirivalottaja		
+		Hygophum	Bolin, 1939		Hygophum benoiti 	(Cocco, 1838)	portugalinvalottaja		
+		Hygophum			Hygophum hygomii 	(Lütken, 1892)	bermudanvalottaja		
+		Hygophum			Hygophum reinhardtii 	(Lütken,, 1892)	kirjovalottaja		
+		Hygophum			Hygophum taaningi 	Becker, 1965	soikkotäplävalottaja		
+		Lampadena	Goode & Bean, 1893		Lampadena anomala 	Parr, 1928	etelänlamppukala		
+		Lampadena			Lampadena chavesi 	Collett, 1905	laikkulamppuklala		
+		Lampadena			Lampadena speculigera 	Goode & Bean, 1896	peililamppukala		
+		Lampadena			Lampadena urophaos 	Paxton, 1963	tyynenmerenlamppukala		
+		Lampanyctus	Bonaparte, 1840		Lampanyctus alatus 	Goode & Bean, 1896	siipivalottaja		
+		Lampanyctus			Lampanyctus ater 	Tåning, 1928	hämyvalottaja		
+		Lampanyctus			Lampanyctus crocodilus 	(Risso, 1810)	krokotiilivalottaja	krokotiilivalokala	
+		Lampanyctus			Lampanyctus cuprarius	Tåning, 1928	hentoevävalottaja		
+		Lampanyctus			Lampanyctus festivus 	Tåning, 1928	juhlavalottaja		
+		Lampanyctus			Lampanyctus intricarius 	Tåning, 1928	timanttivalottaja		
+		Lampanyctus			Lampanyctus lineatus 	Tåning, 1928	linjavalottaja		
+		Lampanyctus			Lampanyctus macdonaldi 	(Goode & Bean, 1896)	majakkavalottaja		
+		Lampanyctus			Lampanyctus pusillus 	(Johnson, 1890)	nysävalottaja		
+		Lepidophanes	 Fraser-Brunner, 1949		Lepidophanes gaussi 	(Brauer, 1906)	hoikkavalottaja		
+		Lepidophanes			Lepidophanes guentheri 	(Goode & Bean, 1896)	tropiikinsuomuvalottaja		
+		Lobianchia	Gatti, 1904		Lobianchia dofleini 	(Zugmayer, 1911)	selkävalottaja		
+		Lobianchia			Lobianchia gemellarii 	(Cocco, 1838)	vatsavalottaja		
+		Myctophum	Rafinesque, 1810		Myctophum nitidulum 	Garman, 1899	tilkkuvalottaja		
+		Myctophum			Myctophum punctatum 	Rafinesque, 1810	pistevalottaja	pistevalokala	
+		Myctophum			Myctophum selenops 	Tåning, 1928	kuusilmävalottaja		
+		Notolychnus	Fraser-Brunner, 1949		Notolychnus valdiviae 	(Brauer, 1904)	lyhtypyrstövalottaja		
+		Notoscopelus	Günther, 1864		Notoscopelus bolini 	Nafpaktitis, 1975	lyhtyposkivalottaja		
+		Notoscopelus			Notoscopelus caudispinosus 	(Johnson, 1863)	okapyrstövalottaja		
+		Notoscopelus			Notoscopelus elongatus 	(Costa, 1844)	pitkäsuomuvalottaja		
+		Notoscopelus			Notoscopelus kroyeri 	(Malm, 1861)	lohkovalottaja		
+		Notoscopelus			Notoscopelus resplendens 	(Richardson, 1845)	säihkevalottaja		
+		Protomyctophum	Fraser-Brunner, 1949		Protomyctophum arcticum 	(Lütken, 1892)	arktiksenvalottaja		
+		Symbolophorus	Bolin & Wisner, 1959		Symbolophorus veranyi 	(Moreau, 1888)	suomuvalottaja		
+		Taaningichthys	Bolin, 1959		Taaningichthys bathyphilus 	(Tåning, 1928)	syvännevalottaja		
+		Taaningichthys			Taaningichthys minimus 	(Tåning, 1928)	kituvalottaja		
+		Taaningichthys			Taaningichthys paurolychnus 	Davy, 1972	parkkivalottaja		
+MX.5086544	heimo 	Lampridae							
+		Lampris	Retzius, 1799		Lampris guttatus 	(Brünnich, 1788)	kiiltolahna		
+MX.5086546	heimo 	Lophotidae							
+		Lophotus	Giorna, 1809		Lophotus lacepede 	Giorna, 1809	töyhtönauhakala		
+MX.5086547	heimo 	Radiicephalidae							
+		Radiicephalus	Osório, 1917		Radiicephalus elongatus 	Osório, 1917	liuskapyrstö		
+MX.5086548	heimo 	Trachipteridae							
+		Trachipterus	Goüan, 1770		Trachipterus arcticus 	(Brünnich, 1788)	viikatekala		
+		Trachipterus			Trachipterus trachypterus	(Gmelin, 1789)	etelänviikatekala		
+		Zu	Walters & Fitch, 1960		Zu cristatus 	(Bonelli, 1819)	pykäläviikatekala		
+MX.5086549	heimo 	Regalecidae							
+		Regalecus	Ascanius, 1772		Regalecus glesne 	Ascanius, 1772	airokala		
+MX.5086555	heimo 	Oreosomatidae							
+		Neocyttus	Gilchrist, 1906		Neocyttus helgae 	(Holt & Byrne, 1908)	tummaoreo		
+MX.5086556	heimo 	Parazenidae							
+		Cyttopsis	Gill, 1862		Cyttopsis rosea 	(Lowe, 1843)	rusoparaseeni		
+MX.5086558	heimo 	Grammicolepididae							
+		Grammicolepis	Poey, 1873		Grammicolepis brachiusculus 	Poey, 1873	piikkivespo		
+MX.5086559	heimo 	Zeidae							
+		Zenopsis	Gill, 1862		Zenopsis conchifer	(Lowe, 1852)	hopeapietarinkala		
+		Zeus	Linnaeus, 1758		Zeus faber 	Linnaeus, 1758	pietarinkala		
+MX.5086562	heimo 	Bregmacerotidae							
+		Bregmaceros	Thompson, 1840		Bregmaceros atlanticus 	Goode & Bean, 1886	tumma-antenniturska		
+		Bregmaceros			Bregmaceros nectabanus 	Whitley, 1941	antenniturska		
+MX.5086563	heimo 	Phycidae							
+		Phycis	Thompson, 1840		Phycis blennoides 	(Brünnich, 1768)	suomuhankaturska		greater forkbeard
+		Phycis			Phycis phycis 	(Linnaeus, 1766)	hankaturska	luikeroturska	
+		Urophycis	Thompson, 1840		Urophycis tenuis	(Mitchill, 1814)	oliivihankaturska		white hake
+MX.5086564	heimo 	Gaidropsaridae							
+		Ciliata	Couch, 1832		Ciliata mustela 	(Linnaeus, 1758)	viisiviiksimade		
+		Ciliata			Ciliata septentrionalis 	(Collett, 1875)	kitaviiksimade		
+MX.206828		Enchelyopus	Bloch and Schneider, 1801	MX.53187	Enchelyopus cimbrius 	(Linnaeus, 1766)	neliviiksimade		
+		Gaidropsarus	Rafinesque, 1810		Gaidropsarus argentatus 	(Reinhardt, 1837)	jäämade		
+		Gaidropsarus			Gaidropsarus biscayensis	(Collett, 1890)	välimerenmade		
+		Gaidropsarus			Gaidropsarus granti 	(Regan, 1903)	korumade		
+		Gaidropsarus			Gaidropsarus macrophthalmus 	(Günther, 1867)	isosilmämade		
+		Gaidropsarus			Gaidropsarus mediterraneus 	(Linnaeus, 1758)	rantamade		
+		Gaidropsarus			Gaidropsarus vulgaris 	(Cloquet, 1824)	kolmiviiksimade		
+MX.206827	heimo 	Lotidae							
+		Brosme	Oken, 1817		Brosme brosme 	(Ascanius, 1772)	keila		
+MX.53185		Lota	Oken, 1817	MX.53186	Lota lota 	(Linnaeus, 1758)	made		
+		Molva	Lesueur, 1819		Molva dipterygia 	(Pennant, 1784)	tylppäpyrstömolva		
+		Molva			Molva macrophthalma 	(Rafinesque, 1810)	luikeromolva		
+		Molva			Molva molva 	(Linnaeus, 1758)	molva		
+MX.53182	heimo 	Gadidae							
+		Arctogadus	Dryagin, 1932		Arctogadus borisovi 	Dryagin, 1932	siperianturska		
+		Arctogadus			Arctogadus glacialis 	(Peters, 1872)	jäämerenturska		
+		Boreogadus	Günther, 1862		Boreogadus saida	(Lepechin, 1774)	jäämerenseiti		
+		Eleginus	Fischer, 1813		Eleginus nawaga 	(Koelreuter, 1770)	navaga		
+		Gadiculus	Guichenot, 1850		Gadiculus argenteus 	Guichenot, 1850	etelänhopeaturska	hopeaturska	Southern silvery pout
+		Gadiculus			Gadiculus thori	 Schmidt, 1913	pohjanhopeatuska		Northern silvery pout
+MX.53183		Gadus	Linnaeus, 1758		Gadus chalcogrammus	Pallas, 1814	alaskanseiti		
+MX.53183		Gadus		MX.53184	Gadus morhua 	Linnaeus, 1758	turska		
+MX.53183		Gadus			Gadus ogac 	Richardson, 1836	grönlanninturska		
+		Melanogrammus	Melanogrammus Gill, 1862		Melanogrammus aeglefinus	(Linnaeus, 1758)	kolja		
+		Merlangius	Garsault, 1764		Merlangius merlangus 	(Linnaeus, 1758)	valkoturska		
+		Micromesistius	Gill, 1863		Micromesistius poutassou 	(Risso, 1827)	mustakitaturska		
+		Pollachius	Nilsson, 1832		Pollachius pollachius 	(Linnaeus, 1758)	lyyraturska		
+		Pollachius			Pollachius virens 	(Linnaeus, 1758)	seiti		
+		Trisopterus	Rafinesque, 1814		Trisopterus esmarkii 	(Nilsson, 1855)	harmaaturska		
+		Trisopterus			Trisopterus luscus 	(Linnaeus, 1758)	partaturska		
+		Trisopterus			Trisopterus minutus 	(Linnaeus, 1758)	pikkuturska		poor cod
+		Trisopterus			Trisopterus capelanus	(Lacepède, 1800)	välimerenturska		capelan 
+MX.5086565	heimo 	Ranicipitidae							
+		Raniceps	Oken, 1817		Raniceps raninus 	(Linnaeus, 1758)	mustaturska		
+MX.5086566	heimo 	Merlucciidae							
+		Merluccius	Rafinesque, 1810		Merluccius merluccius 	(Linnaeus, 1758)	kummeliturska		
+MX.5086569	heimo 	Melanonidae							
+		Melanonus	Günther, 1878		Melanonus zugmayeri 	Norman, 1930	veitsiturska		arrowtail
+MX.5086571	heimo 	Moridae							
+		Antimora	Günther, 1878		Antimora rostrata 	(Günther, 1878)	sinimora		Blue hake
+		Eretmophorus	Giglioli, 1889		Eretmophorus kleinenbergi 	Giglioli, 1889	airomora		
+		Gadella	Lowe, 1843		Gadella maraldi 	(Risso, 1810)	sinivatsamora		
+		Guttigadus	Taki, 1953		Guttigadus latifrons 	(Holt & Byrne, 1908)	tummahuulimora		
+		Halargyreus	Günther, 1862		Halargyreus johnsonii 	Günther, 1862	sinipäämora		
+		Laemonema	Günther, 1862		Laemonema robustum 	Johnson, 1862	vankkamora		
+		Laemonema			Laemonema yarrellii 	(Lowe, 1838)	mustaevämora		
+		Lepidion	Swainson, 1838		Lepidion eques 	(Günther, 1887)	hepoantennimora		
+		Lepidion			Lepidion guentheri 	(Giglioli, 1880)	madeiranantennimora		
+		Lepidion			Lepidion lepidion 	(Risso, 1810)	antennimora		
+		Mora	Risso, 1827		Mora moro	(Risso, 1810)	mora		
+		Physiculus	Kaup, 1858		Physiculus dalwigki 	Kaup, 1858	ruostemora		
+		Rhynchogadus	Tortonese, 1948		Rhynchogadus hepaticus 	(Facciolà, 1884)	pystykuonomora		
+		Svetovidovia	Cohen, 1973		Svetovidovia lucullus 	(Jensen, 1953)	jäämora		
+MX.5086572	heimo 	Macruronidae							
+		Macruronus	Günther, 1873		Macruronus maderensis 	Maul, 1951	madeiranhoki		
+MX.5086573	heimo 	Lyconidae							
+		Lyconus	Günther, 1887		Lyconus brachycolus 	Holt & Byrne, 1906	syvännehoki		
+MX.5086576	heimo 	Macrouridae							
+		Bathygadus	Günther, 1878		Bathygadus favosus 	Goode & Bean, 1886	tummapäälestikala		
+		Bathygadus			Bathygadus melanobranchus 	Vaillant, 1888	mustakiduslestikala		
+		Cetonurus	Günther, 1887		Cetonurus globiceps 	(Vaillant, 1884)	pallopäälestikala		
+		Coelorinchus	Giorna, 1809		Coelorinchus caelorhinchus	(Risso, 1810)	kolonokkalestikala		
+		Coelorinchus			Coelorinchus caudani	(Koehler, 1896)	okalestikala		
+		Coelorinchus			Coelorinchus labiatus 	(Koehler, 1896)	huulilestikala		
+		Coelorinchus			Coelorinchus mediterraneus 	Iwamoto & Ungaro, 2002	adrianlestikala		
+		Coelorinchus			Coelorinchus occa 	(Goode & Bean, 1885)	miekkalestikala		
+		Coryphaenoides	Gunnerus, 1765		Coryphaenoides armatus 	(Hector, 1875)	syvännelestikala		Abyssal grenadier
+		Coryphaenoides			Coryphaenoides brevibarbis 	(Goode & Bean, 1896)	grönlanninlestikala		
+		Coryphaenoides			Coryphaenoides carapinus 	Goode & Bean, 1883	kastanjalestikala		
+		Coryphaenoides			Coryphaenoides guentheri 	(Vaillant, 1888)	piikkikuonolestikala		
+		Coryphaenoides			Coryphaenoides leptolepis	Günther, 1877	tummahuulilestikala		
+		Coryphaenoides			Coryphaenoides mediterraneus 	(Giglioli, 1893)	ruskolestikala		
+		Coryphaenoides			Coryphaenoides profundicolus 	(Nybelin, 1957)	kyttyrälestikala		
+		Coryphaenoides			Coryphaenoides rupestris 	Gunnerus, 1765	lestikala		
+		Coryphaenoides			Coryphaenoides thelestomus 	Maul, 1951	tylppäkuonolestikala		
+		Gadomus	Regan, 1903		Gadomus arcuatus 	(Goode & Bean, 1886)	kaarilestikala		
+		Gadomus			Gadomus dispar 	(Vaillant, 1888)	pitkäviiksilestikala		
+		Gadomus			Gadomus longifilis 	(Goode & Bean, 1885)	rihmalestikala		
+		Hymenocephalus	Giglioli, 1884		Hymenocephalus gracilis 	Gilbert & Hubbs, 1920	sirolestikala		
+		Hymenocephalus			Hymenocephalus italicus 	Giglioli, 1884	lasilestikala		Glasshead grenadier 
+		Kumba	Marshall, 1973		Kumba dentoni 	Marshall, 1973	biskajanlestikala		
+		Macrourus	Bloch, 1786		Macrourus berglax 	Lacépède, 1801	jäälestikala		Roughhead grenadier
+		Malacocephalus	Günther, 1862		Malacocephalus laevis 	(Lowe, 1843)	lyhtylestikala		softhead grenadier
+		Nezumia	Jordan, 1904		Nezumia aequalis 	(Günther, 1878)	atlantinlestikala		
+		Nezumia			Nezumia longebarbata 	(Roule & Angel, 1933)	tummaevälestikala		
+		Nezumia			Nezumia sclerorhynchus 	(Valenciennes, 1838)	purppuralestikala		
+		Odontomacrurus	Norman, 1939		Odontomacrurus murrayi 	Norman, 1939	nuijalestikala		
+		Paracetonurus	Marshall, 1973		Paracetonurus flagellicauda 	(Koefoed, 1927)	viirilestikala		
+		Sphagemacrurus	Fowler, 1925		Sphagemacrurus hirundo 	(Collett, 1896)	suklaalestikala		
+		Trachonurus	Günther, 1887		Trachonurus sulcatus 	(Goode & Bean, 1885)	sukaslestikala		Bristly grenadier
+		Trachonurus			Trachonurus villosus 	(Günther, 1877)	mustalestikala		
+		Trachyrincus	Giorna, 1809		Trachyrincus murrayi 	Günther, 1887	atlantinnokkalestikala		
+		Trachyrincus	 		Trachyrincus scabrus 	(Rafinesque, 1810)	raspinokkalestikala		
+MX.5086578	heimo 	Polymixiidae							
+		Polymixia	Lowe, 1836		Polymixia nobilis 	Lowe, 1836	atlantinpartakala		
+MX.5086580	heimo 	Berycidae							
+		Beryx	Cuvier, 1829		Beryx decadactylus 	Cuvier, 1829	pohjanlimapää		
+		Beryx			Beryx splendens 	Lowe, 1834	hohtolimapää		
+MX.5086581	heimo 	Melamphaidae							
+		Melamphaes	Günther, 1864		Melamphaes longivelis 	Parr, 1933	soukkasärmäpää		
+		Melamphaes			Melamphaes microps 	(Günther, 1878)	pienisilmäsärmäpää		
+		Poromitra	Goode & Bean, 1883		Poromitra capito 	Goode & Bean, 1883	koukkusärmäpää		
+		Poromitra			Poromitra crassiceps 	(Günther, 1878)	särmäpää	töyhtöpää	
+		Scopeloberyx	Zugmayer, 1911		Scopeloberyx rubriventer 	(Koefoed, 1953)	punavatsasärmäpää		
+		Scopelogadus	Vaillant, 1888		Scopelogadus beanii 	(Günther, 1887)	käpysärmäpää		
+MX.5086583	heimo 	Stephanoberycidae							
+		Acanthochaenus	Gill, 1884		Acanthochaenus luetkenii 	Gill, 1884	ulappaokakala		
+MX.5086586	heimo 	Rondeletiidae							
+		Rondeletia	Goode & Bean, 1895		Rondeletia loricata 	Abe & Hotta, 1963	punasuu		
+MX.5086587	heimo  	Barbourisiidae							
+		Barbourisia	Parr, 1945		Barbourisia rufa 	Parr, 1945	samettikala		
+MX.5086588	heimo 	Cetomimidae							
+		Cetomimus	Goode & Bean, 1895		Cetomimus hempeli 	Maul, 1969	atlantinvalaanpää		
+		Cetostoma	Zugmayer, 1914		Cetostoma regani 	Zugmayer, 1914	pinkkivalaanpää		
+		Ditropichthys	Parr, 1934		Ditropichthys storeri 	(Goode & Bean, 1895)	kölivalaanpää		
+		Eutaeniophorus	Bertelsen & Marshall, 1958		Eutaeniophorus festivus 	(Bertelsen & Marshall, 1956)	nauhapyrstö		
+		Mirapinna	Bertelsen & Marshall, 1956		Mirapinna esau 	Bertelsen & Marshall, 1956	karvakala		
+MX.5086591	heimo 	Trachichthyidae							
+		Gephyroberyx	Boulenger, 1902		Gephyroberyx darwinii 	(Johnson, 1866)	rusoroussi		
+		Hoplostethus	Cuvier, 1829		Hoplostethus atlanticus 	Collett, 1889	keltaroussi		
+		Hoplostethus			Hoplostethus cadenati 	Quéro, 1974	mustaroussi		
+		Hoplostethus			Hoplostethus mediterraneus 	Cuvier, 1829	välimerenroussi		
+		Paratrachichthys	Waite, 1899		Paratrachichthys sajademalensis 	Kotlyar, 1979	rusoeväroussi		
+MX.5086593	heimo 	Diretmidae							
+		Diretmichthys	Kotlyar, 1990		Diretmichthys parini 	(Post & Quéro, 1981)	tummatalkakala		
+		Diretmoides	Post & Quero, 1981		Diretmoides pauciradiatus 	(Woods, 1973)	mustatalkakala		
+		Diretmus	Johnson, 1864		Diretmus argenteus 	Johnson, 1864	hopeatalkakala	hopeapää	
+MX.5086594	heimo 	Anoplogastridae							
+		Anoplogaster	Günther, 1859		Anoplogaster cornuta 	(Valenciennes, 1833)	naskalikala		
+MX.5086596	heimo 	Holocentridae							
+		Sargocentron	Fowler, 1904		Sargocentron hastatum 	(Cuvier, 1829)	pikkuhusaarikala		
+		Sargocentron			Sargocentron rubrum 	(Forsskål, 1775)	rubiinihusaarikala		
+MX.5086598	heimo 	Ophidiidae							
+	alaheimo	Brotulotaenilinae					okanilkat		
+		Brotulotaenia	Parr, 1933		Brotulotaenia brevicauda	Cohen, 1974	töpöokanilkka		
+		Brotulotaenia			Brotulotaenia crassa 	Parr, 1934	siniokanilkka		
+		Brotulotaenia			Brotulotaenia nigra 	Parr, 1933	tummaokanilkka		
+	alaheimo	Ophidiinae					käärmenilkat		
+		Ophidion	Linnaeus, 1758		Ophidion barbatum 	Linnaeus, 1758	rihmakäärmenilkka		
+		Ophidion			Ophidion lozanoi 	Matallanas, 1990	espanjankäärmenilkka		
+		Ophidion			Ophidion rochei 	Müller, 1845	mustasaumakäärmenilkka		
+		Parophidion	Tortonese, 1954		Parophidion vassali 	(Risso, 1810)	kultakäärmenilkka		
+	alaheimo	Neobythitinae							
+		Barathrites	Zugmayer, 1911		Barathrites iris 	Zugmayer, 1911	nuijakäärmenilkka		
+		Bassozetus	Gill, 1883		Bassozetus taenia 	(Günther, 1887)	puikkokäärmenilkka		
+		Bathyonus	Goode & Bean, 1885		Bathyonus laticeps 	(Günther, 1878)	atlantinkäärmenilkka		
+		Benthocometes	Goode & Bean, 1896		Benthocometes robustus 	(Goode & Bean, 1886)	vankkakäärmenilkka		
+		Holcomycteronus	Garman, 1899		Holcomycteronus squamosus 	(Roule, 1916)	ruostekäärmenilkka		
+		Monomitopus	 Alcock, 1890		Monomitopus metriostoma 	(Vaillant, 1888)	mustaeväkäärmenilkka		
+		Penopus	Goode & Bean, 1896		Penopus microphthalmus 	(Vaillant, 1888)	nokkakäärmenilkka		
+		Porogadus	Goode & Bean, 1885		Porogadus miles 	Goode & Bean, 1885	maskilouhinilkka		
+		Spectrunculus	Jordan & Thompson, 1914		Spectrunculus grandis 	(Günther, 1877)	pulskakäärmenilkka		
+MX.5086599	heimo 	Carapidae							
+		Carapus	Rafinesque, 1810		Carapus acus 	(Brünnich, 1768)	neulakala		
+		Echiodon	Thompson, 1837		Echiodon dentatus 	(Cuvier, 1829)	hammasneulakala		
+		Echiodon			Echiodon drummondii	Thompson, 1837	isoneulakala		
+MX.5086601	heimo 	Bythitidae							
+	alaheimo	Aphyoninae					toukkabrotulat		
+		Aphyonus	Günther, 1878		Aphyonus gelatinosus 	Günther, 1878	hyytelöbrotula		
+		Barathronus	Goode & Bean, 1886		Barathronus parfaiti 	(Vaillant, 1888)	kuultotoukkabrotula		
+		Barathronus			Barathronus unicolor 	Nielsen, 1984	atlantintoukkabrotula		
+		Sciadonus	Garman, 1899		Sciadonus cryptophthalmus 	(Zugmayer, 1911)	pippuritoukkabrotula		
+		Sciadonus			Sciadonus galatheae 	(Nielsen, 1969)	puikkotoukkabrotula		
+	alaheimo	Bythitinae							
+		Bellottia	Giglioli, 1883		Bellottia apoda 	Giglioli, 1883	piikkikidusbrotula		
+		Bythites	Reinhardt, 1835		Bythites islandicus 	Nielsen & Cohen, 1973	islanninbrotula		
+		Cataetyx	Günther, 1887		Cataetyx alleni 	(Byrne, 1906)	ruskobrotula		
+		Cataetyx			Cataetyx laticeps 	Koefoed, 1927	lattapääbrotula		
+		Grammonus	Gill, 1896		Grammonus ater 	(Risso, 1810)	nystykuonobrotula		
+		Leucobrotula	Koefoed, 1952		Leucobrotula adipata 	Koefoed, 1952	valkobrotula		
+		Melodichthys	Nielsen & Cohen, 1986		Melodichthys hadrocephalus 	Nielsen & Cohen, 1986	pulskabrotula		
+		Parabrotula	Zugmayer, 1911		Parabrotula plagiophthalma 	Zugmayer, 1911	liskobrotula	valebrotula	
+		Thalassobathia	Cohen, 1963		Thalassobathia pelagica 	Cohen, 1963	meduusabrotula		
+MX.5086603	heimo 	Batrachoididae							
+		Halobatrachus	Ogilby, 1908		Halobatrachus didactylus 	(Bloch & Schneider, 1801)	piikkikonnakala		
+MX.5086606	heimo 	Centrolophidae							
+		Centrolophus	Lacepède, 1802		Centrolophus niger 	(Gmelin, 1789)	mustameduusakala		
+		Hyperoglyphe	Günther, 1859		Hyperoglyphe perciformis 	(Mitchill, 1818)	pohjanmeduusakala		
+		Schedophilus	Cocco, 1839		Schedophilus medusophagus 	(Cocco, 1839)	ruskomeduusakala		
+		Schedophilus			Schedophilus ovalis 	(Cuvier, 1833)	keisarimeduusakala		
+MX.5086607	heimo 	Nomeidae							
+		Cubiceps	Lowe, 1843		Cubiceps capensis 	(Smith, 1845)	purppurapolyyppikala		
+		Cubiceps			Cubiceps gracilis 	(Lowe, 1843)	siropolyyppikala		
+		Nomeus	Cuvier, 1816		Nomeus gronovii 	(Gmelin, 1789)	polyyppikala		
+		Psenes	Valenciennes, 1833		Psenes pellucidus 	Lütken, 1880	sinieväpolyyppikala		
+MX.5086608	heimo 	Tetragonuridae							
+		Tetragonurus	Risso, 1810		Tetragonurus cuvieri 	Risso, 1810	ristipyrstö		
+MX.5086610	heimo 	Stromateidae							
+		Pampus	Bonaparte, 1834		Pampus argenteus 	(Euphrasen, 1788)	hopeavoikala		
+		Stromateus	Linnaeus, 1758		Stromateus fiatola 	Linnaeus, 1758	sinivoikala		
+MX.5086612	heimo 	Pomatomidae							
+		Pomatomus	Lacepède, 1802		Pomatomus saltatrix 	(Linnaeus, 1776)	sinikala		
+MX.5086615	heimo 	Chiasmodontidae							
+		Chiasmodon	Johnson, 1864		Chiasmodon bolangeri 	Osório, 1909	ruskonielijämakrilli		
+		Chiasmodon			Chiasmodon niger 	Johnson, 1864	mustanielijämakrilli	mustanielijäahven	
+MX.53241	heimo 	Scombridae							
+		Acanthocybium	Gill, 1862		Acanthocybium solandri 	(Cuvier, 1832)	raitamakrilli		
+		Auxis	Cuvier, 1829		Auxis rochei 	(Risso, 1810)	kuulamakrilli		
+		Auxis			Auxis thazard 	(Lacépède, 1800)	fregattimakrilli		
+		Euthynnus	Lütken, 1883		Euthynnus alletteratus 	(Rafinesque, 1810)	pikkuboniitti		
+		Katsuwonus	Kishinouye, 1915		Katsuwonus pelamis 	(Linnaeus, 1758)	boniitti		
+		Orcynopsis	Gill, 1862		Orcynopsis unicolor 	(Geoffroy Saint–Hilaire, 1817)	silosarda		
+		Rastrelliger	Jordan & Starks, 1908		Rastrelliger kanagurta 	(Cuvier, 1816)	kitamakrilli		
+MX.53242		Scomber	Linnaeus, 1758		Scomber colias 	Gmelin, 1789	espanjanmakrilli		
+MX.53242		Scomber			Scomber japonicus 	Houttuyn, 1782	japaninmakrilli		
+MX.53242		Scomber		MX.53243	Scomber scombrus 	Linnaeus, 1758	makrilli		
+		Scomberomorus	 Lacepède, 1801		Scomberomorus commerson 	(Lacépède, 1800)	seepramakrilli		
+		Scomberomorus			Scomberomorus tritor 	(Cuvier, 1832)	afrikanmakrilli		
+		Thunnus	South, 1845		Thunnus alalunga 	(Bonnaterre, 1788)	valkotonnikala		
+		Thunnus			Thunnus albacares 	(Bonnaterre, 1788)	keltaevätonnikala		
+		Thunnus			Thunnus obesus 	(Lowe, 1839)	isosilmätonnikala		
+		Thunnus			Thunnus thynnus 	(Linnaeus, 1758)	tonnikala		
+MX.5086616	heimo 	Caristiidae							
+		Paracaristius	Kukuev & Parin, 2006		Paracaristius maderensis	(Maul, 1949)	mokkaharjakala		
+		Platyberyx	Zugmayer, 1911		Platyberyx opalescens 	Zugmayer, 1911	harjakala		
+MX.5086617	heimo 	Bramidae							
+		Brama	Bloch & Schneider, 1801		Brama brama 	(Bonnaterre, 1788)	pomfretti		
+		Pteraclis	Gronow, 1772		Pteraclis carolinus 	Valenciennes, 1833	mustaeväpomfretti		
+		Pterycombus	Fries, 1837		Pterycombus brama 	Fries, 1837	hopeapomfretti		
+		Taractes	Lowe, 1843		Taractes asper 	Lowe, 1843	viuhkapomfretti		
+		Taractichthys	Mead & Maul, 1958		Taractichthys longipinnis 	(Lowe, 1843)	sirppipomfretti		
+MX.5086618	heimo 	Scombrolabracidae							
+		Scombrolabrax	Roule, 1921		Scombrolabrax heterolepis 	Roule, 1921	leukamakrilli	makrilliahven	
+MX.5086619	heimo 	Gempylidae							
+		Diplospinus	Maul, 1948		Diplospinus multistriatus 	Maul, 1948	juovakäärmemakrilli		
+		Gempylus	Cuvier, 1829		Gempylus serpens 	Cuvier, 1829	käärmemakrilli		
+		Lepidocybium	Gill, 1862		Lepidocybium flavobrunneum 	(Smith, 1843)	sysikäärmemakrilli		
+		Nealotus	Johnson, 1865		Nealotus tripes 	Johnson, 1865	tummakäärmemakrilli		
+		Nesiarchus	Johnson, 1862		Nesiarchus nasutus 	Johnson, 1862	leukakäärmemakrilli		
+		Promethichthys	Gill, 1893		Promethichthys prometheus 	(Cuvier, 1832)	mustaeväkäärmemakrilli		
+		Ruvettus	Cocco, 1833		Ruvettus pretiosus 	Cocco, 1833	öljykala		
+MX.5086620	heimo 	Trichiuridae							
+		Aphanopus	Lowe, 1839		Aphanopus carbo 	Lowe, 1839	mustahuotrakala		
+		Aphanopus			Aphanopus intermedius 	Parin, 1983	tummahuotrakala		
+		Benthodesmus	Goode & Bean, 1882		Benthodesmus simonyi 	(Steindachner, 1891)	atlantinhuotrakala		
+		Lepidopus	Goüan, 1770		Lepidopus caudatus 	(Euphrasen, 1788)	hopeahuotrakala		
+		Trichiurus	Linnaeus, 1758		Trichiurus lepturus 	Linnaeus, 1758	huotrakala		
+MX.5086623	heimo 	Dactylopteridae							
+		Dactylopterus	Lacépède, 1801		Dactylopterus volitans 	(Linnaeus, 1758)	perhosevä	perhossimppu	
+MX.5086627	heimo 	Callionymidae							
+		Callionymus	Linnaeus, 1758		Callionymus fasciatus 	Valenciennes, 1837	raitamerikokki		
+		Callionymus			Callionymus filamentosus 	Valenciennes, 1837	rihmamerikokki		
+		Callionymus			Callionymus lyra 	Linnaeus, 1758	isomerikokki		
+		Callionymus			Callionymus maculatus 	Rafinesque, 1810	pikkumerikokki		
+		Callionymus			Callionymus pusillus 	Delaroche, 1809	purjemerikokki		sailfin dragonet
+		Callionymus			Callionymus reticulatus 	Valenciennes, 1837	verkkomerikokki		reticulated dragonet
+		Callionymus			Callionymus risso 	Lesueur, 1814	laikkumerikokki		
+		Synchiropus	Gill, 1859		Synchiropus phaeton 	(Günther, 1861)	rusomerikokki		
+		Synchiropus			Synchiropus sechellensis 	Regan, 1908	korumerikokki		
+MX.5086628	heimo 	Draconettidae							
+		Centrodraco	Regan, 1913		Centrodraco acanthopoma 	(Regan, 1904)	rusolouhikokki		
+MX.5086625	heimo 	Mullidae							
+		Mullus	Linnaeus, 1758		Mullus barbatus 	Linnaeus, 1758	rusotäplämullo		
+		Mullus			Mullus surmuletus 	Linnaeus, 1758	keltajuovamullo		
+		Parupeneus	Bleeker, 1863		Parupeneus barberinus 	(Lacépède, 1801)	mustajuovamullo		
+		Parupeneus			Parupeneus forsskali 	(Fourmanoir & Guézé, 1976)	kaarimullo		
+		Pseudupeneus	Bleeker, 1862		Pseudupeneus prayensis 	(Cuvier, 1829)	hurmemullo		
+		Upeneus	Cuvier, 1829		Upeneus moluccensis 	(Bleeker, 1855)	kultajuovamullo		
+		Upeneus			Upeneus pori	 Ben–Tuvia & Golani, 1989	raitaevämullo		
+MX.5086631	heimo  	Fistulariidae							
+		Fistularia	Linnaeus, 1758		Fistularia petimba 	Lacépède, 1803	punakornettikala	oliivikornettikala	
+		Fistularia			Fistularia commersoni 	Rüppell,, 1838	sinipilkkukornettikala	puikkokornettikala	
+MX.5086632	heimo 	Centriscidae							
+		Macroramphosus	Lacépède, 1803		Macroramphosus scolopax	(Linnaeus, 1758)	torvikala		
+MX.53325	heimo 	Syngnathidae							
+		Cosmocampus	Dawson, 1979		Cosmocampus retropinnis	Dawson, 1982	mauritanianneula		
+		Entelurus	Duméril, 1870		Entelurus aequoreus 	(Linnaeus, 1758)	merineula		
+		Hippocampus	Rafinesque, 1810		Hippocampus fuscus 	Rüppell, 1838	laikkumerihevonen		
+		Hippocampus			Hippocampus guttulatus 	Cuvier, 1829	harjamerihevonen		
+		Hippocampus			Hippocampus hippocampus	(Linnaeus, 1758)	lyhytkuonomerihevonen		
+		Minyichthys	Herald & Randall, 1972		Minyichthys sentus 	Dawson, 1982	raitaposkineula		
+MX.53194		Nerophis			Nerophis lumbriciformis 	(Jenyns, 1835)	käyränokkaneula		
+MX.53194		Nerophis	Rafinesque, 1810		Nerophis maculatus 	Rafinesque, 1810	rengasneula		
+MX.53194		Nerophis		MX.53312	Nerophis ophidion 	(Linnaeus, 1758)	siloneula		
+MX.53195		Syngnathus	Linnaeus, 1758		Syngnathus abaster 	Risso, 1827	lyhytkuononeula		
+MX.53195		Syngnathus			Syngnathus acus 	Linnaeus, 1758	isoneula		
+MX.53195		Syngnathus			Syngnathus pelagicus 	Linnaeus, 1758	sargassoneula		
+MX.53195		Syngnathus			Syngnathus phlegon 	Risso, 1827	kaarinokkaneula		
+MX.53195		Syngnathus			Syngnathus rostellatus 	Nilsson, 1855	pikkuneula		
+MX.53195		Syngnathus			Syngnathus schmidti 	Popov, 1927	mustanmerenneula		
+MX.53195		Syngnathus			Syngnathus taenionotus 	Canestrini, 1871	tummaselkäneula		
+MX.53195		Syngnathus			Syngnathus tenuirostris 	Canestrini, 1871	pillinokkaneula		
+MX.53195		Syngnathus		MX.53263	Syngnathus typhle 	Linnaeus, 1758	särmäneula		
+MX.53195		Syngnathus			Syngnathus variegatus 	Pallas, 1814	kirjoraitaneula		
+MX.5086636	heimo 	Apogonidae							
+		Apogon	Lacepède, 1801		Apogon imberbis 	(Linnaeus, 1758)	kardinaaliahven		
+		Apogonichthyoides	Smith, 1949		Apogonichthyoides nigripinnis 	Cuvier, 1828	mustaeväkardinaaliahven		
+		Jaydia	Smith, 1961		Jaydia queketti 	 (Gilchrist 1903)	täpläeväkardinaaliahven		spotfin cardinal
+		Jaydia			Jaydia smithi 	(Kotthaus, 1970)	raitaeväkardinaaliahven		smith's cardinal
+		Apogonichthyoides	Smith, 1949		Apogonichthyoides taeniatus 	Cuvier, 1828	puoliraitakardinaaliahven		
+MX.53625	heimo 	Odontobutidae							
+MX.53532		Perccottus	Dybowski, 1877	MX.53003	Perccottus glenii 	Dybowski, 1877	rohmutokko		
+MX.53326	heimo 	Gobiidae							
+		Anatirostrum	Iljin, 1930		Anatirostrum profundorum 	(Berg, 1927) 	lattakuonotokko		
+		Aphia	Risso, 1827		Aphia minuta	(Risso, 1810)	kuultotokko		
+MX.212056		Babka	Iljin, 1927	MX.206843	Babka gymnotrachelus 	(Kessler, 1857)	paljasniskatokko		
+MX.212056		Babka			Babka macrophthalma 	(Kessler, 1877)	isosilmätokko		
+		Bathygobius	Bleeker, 1878		Bathygobius cyclopterus	(Valenciennes, 1837)	täpläröyhelötokko		
+	suku	Benthophiloides	Beling & Iljin, 1927				simpputokot		
+		Benthophiloides			Benthophiloides brauneri 	Beling & Iljin, 1927	satulasimpputokko		
+		Benthophiloides			Benthophiloides turcomanus 	(Iljin, 1941) 			
+	suku	Benthophilus	Eichwald, 1831				simpputokot		
+		Benthophilus			Benthophilus abdurahmanovi 	Ragimov, 1978)			
+		Benthophilus			Benthophilus baeri 	Kessler, 1877 	okasimpputokko		
+		Benthophilus			Benthophilus casachicus 	Ragimov, 1978	kasakkasimpputokko		
+		Benthophilus			Benthophilus ctenolepidus 	Kessler, 1877	kampasimpputokko		
+		Benthophilus			Benthophilus durrelli 	Boldyrev & Bogutskaya, 2004 	nystysimpputokko		
+		Benthophilus			Benthophilus granulosus 	Kessler, 1877 	nyppysimpputokko		
+		Benthophilus			Benthophilus grimmi 	Kessler, 1877	ryppysimpputokko		
+		Benthophilus			Benthophilus kessleri 	Berg, 1927	kääpiösimpputokko		
+		Benthophilus			Benthophilus leobergius 	Berg, 1949 	rupisimpputokko		
+		Benthophilus			Benthophilus leptocephalus 	Kessler, 1877	lättäsimpputokko		
+		Benthophilus			Benthophilus leptorhynchus 	Kessler, 1877 	soukkasimpputokko		
+		Benthophilus			Benthophilus macrocephalus 	(Pallas, 1787) 	kaspiansimpputokko		
+		Benthophilus			Benthophilus magistri 	Iljin, 1927	asovansimpputokko		
+		Benthophilus			Benthophilus mahmudbejovi 	Ragimov, 1976 	otasimpputokko		
+		Benthophilus			Benthophilus nudus 	Berg, 1898  	silosimpputokko		
+		Benthophilus			Benthophilus pinchuki 	Ragimov, 1982	hapsusimpputokko		
+		Benthophilus			Benthophilus ragimovi 	Boldyrev & Bogutskaya, 2004	nupusimpputokko		
+		Benthophilus			Benthophilus spinosus 	Kessler, 1877  	piikkisimpputokko		
+		Benthophilus			Benthophilus stellatus 	(Sauvage, 1874) 	tähtisimpputokko		
+		Benthophilus			Benthophilus svetovidovi 	Pinchuk & Ragimov, 1979			
+		Buenia	Iljin, 1930		Buenia affinis	Iljin, 1930	raitavatsatokkonen		
+		Buenia			Buenia jeffreysii	(Günther, 1867)	turkoositokkonen		
+		Buenia			Buenia lombartei	Kova?i?, Ordines & Schliewen, 2018	kuultotokkonen		
+		Buenia			Buenia massutii	Kovacic, Ordines & Schliewen, 2017	marmoritokkonen		
+		Caspiosoma	Iljin, 1927		Caspiosoma caspium 	(Kessler, 1877)	kaspiantokko		
+	suku	Chromogobius	de Buen, 1930				väritokot		
+		Chromogobius			Chromogobius britoi 	Van Tassell, 2001	uturaitatokko		
+		Chromogobius			Chromogobius quadrivittatus 	(Steindachner, 1863) 	valkoniskatokko	raitaposkitokko	
+		Chromogobius			Chromogobius zebratus 	(Kolombatovi?, 1891) 	seepraraitatokko		
+		Corcyrogobius	Miller, 1972		Corcyrogobius liechtensteini	(Kolombatovic,, 1891)	punaraitatokkonen		
+		Coryogalops	Smith, 1958		Coryogalops ocheticus 	(Norman,, 1927)	suezintähystäjätokko		
+		Cryptocentrus	Valenciennes, 1837		Cryptocentrus caeruleopunctatus	(Rüppell, 1830)	harlekiiniraputokko		
+		Crystallogobius	Gill, 1863		Crystallogobius linearis	(Düben, 1845)	lasitokko		
+		Deltentosteus	Gill, 1863		Deltentosteus collonianus 	(Risso, 1820) 	satulatäplätokko		
+		Deltentosteus			Deltentosteus quadrimaculatus 	(Valenciennes, 1837)	nelitäplätokko		
+		Didogobius	Miller, 1966		Didogobius schlieweni  	Miller, 1993	lumihiutaletokko		
+		Didogobius			Didogobius splechtnai 	Miller, 1993	vyölumitokko		
+	suku	Economidichthys	Bianco et al., 1987				kreikantokot		
+		Economidichthys			Economidichthys pygmaeus 	(Holly, 1929) 	kreikantokko		
+		Economidichthys			Economidichthys trichonis 	Economidis & Miller, 1990	kääpiökreikantokko		
+		Favonigobius	Whitley, 1930		Favonigobius melanobranchus	(Fowler, 1934)	mustakurkkutokko		
+		Gammogobius	Bath, 1971		Gammogobius steinitzi	Bath, 1971	valkovyötokko		
+		Gnatholepis	Bleeker, 1874		Gnatholepis thompsoni	Jordan, 1904	kultatäplätokko		
+MX.53237		Gobius	Linnaeus, 1758		Gobius ater	Bellotti, 1888	kastanjatokko		
+MX.53237		Gobius			Gobius auratus 	Risso, 1810	kultatokko		
+MX.53237		Gobius			Gobius bucchichi 	Steindachner, 1870	viirupäätokko	vuokkotokko	
+MX.53237		Gobius			Gobius cobitis 	Pallas, 1814 	isotokko		
+MX.53237		Gobius			Gobius couchi	Miller & El-Tawil, 1974	marmoritäplätokko		
+MX.53237		Gobius			Gobius cruentatus 	Gmelin, 1789	punahuulitokko		
+MX.53237		Gobius			Gobius fallax	Sarato, 1889	viirulinjatokko		
+MX.53237		Gobius			Gobius gasteveni	Miller, 1974	viirusilmätokko		
+MX.53237		Gobius			Gobius geniporus 	Valenciennes, 1837	viiruposkitokko		
+MX.53237		Gobius			Gobius incognitus 	Kova?i? & Sanda, 2016	vuokkotokko		
+MX.53237		Gobius		MX.53286	Gobius niger 	Linnaeus, 1759	mustatokko		
+MX.53237		Gobius			Gobius ophiocephalus 	Pallas, 1814	ajokastokko	levätokko	
+MX.53237		Gobius			Gobius paganellus 	Linnaeus, 1759	luototokko		
+MX.53237		Gobius			Gobius roulei	de Buen, 1928	katkojuovatokko		
+MX.53237		Gobius			Gobius vittatus 	Vinciguerra, 1883	tummajuovatokko		
+MX.53237		Gobius			Gobius xanthocephalus 	Heymer & Zander	keltapäätokko		
+		Gymnesigobius	Kova?i? et al., 2019		Gymnesigobius medits 	Kova?i?, Ordines, Ramirez-Amaro & Schliewen, 2019	keltasuomutokko		
+		Hazeus	Jordan & Snyder, 1901		Hazeus ingressus 	Engin, Larson & Irmak, 2018	pisamatäplätokko		
+		Hyrcanogobius	Iljin, 1928		Hyrcanogobius bergi 	Iljin, 1928	kääpiösilotokko		
+	suku	Knipowitschia	Iljin, 1927				silotokot		
+		Knipowitschia			Knipowitschia byblisia 	Ahnelt, 2011 	järvisilotokko		
+		Knipowitschia			Knipowitschia cameliae 	Nalbant & O?el, 1995 	romaniansilotokko		
+		Knipowitschia			Knipowitschia caucasica 	(Berg, 1916) 	silotokko	asovantokko	
+		Knipowitschia			Knipowitschia caunosi 	Ahnelt, 2011	kaunosinsilotokko		
+		Knipowitschia			Knipowitschia croatica 	Mrakov?i?, Kerovec, Mišeti? & Schneider, 1996 	bosniansilotokko		
+		Knipowitschia			Knipowitschia ephesi 	Ahnelt, 1995	efesoksensilotokko		
+		Knipowitschia			Knipowitschia goerneri 	Ahnelt, 1991 	korfunsilotokko		
+		Knipowitschia			Knipowitschia iljini 	Berg, 1931	syvännesilotokko		
+		Knipowitschia			Knipowitschia longecaudata 	(Kessler, 1877) 	soukkasilotokko	pitkäpyrstötokko	
+		Knipowitschia			Knipowitschia mermere 	Ahnelt, 1995	marmaransilotokko		
+		Knipowitschia			Knipowitschia milleri 	(Ahnelt & Bianco, 1990) 	kreikansilotokko		
+		Knipowitschia			Knipowitschia montenegrina 	Kova?i? & Šanda, 2007	montenegronsilotokko		
+		Knipowitschia			Knipowitschia mrakovcici 	Miller, 2009	kroatiansilotokko		
+		Knipowitschia			Knipowitschia panizzae 	(Verga, 1841) 	adriansilotokko		
+		Knipowitschia			Knipowitschia punctatissima 	(Canestrini, 1864) 	italiansilotokko		
+		Knipowitschia			Knipowitschia radovici 	Kova?i?, 2005 	neretvansilotokko		
+		Knipowitschia			Knipowitschia thessala 	(Vinciguerra, 1921) 	thessaliansilotokko		
+		Lebetus	Winther, 1877		Lebetus guilleti 	(Le Danois, 1913)	lumievätokko		
+		Lebetus			Lebetus patzneri 	Schliewen, Kova?i? & Ordines, 2019	aprikoositokko		
+		Lebetus			Lebetus scorpioides	(Collett, 1874)	turkoosievätokko		
+		Lesueurigobius	Whitley, 1950		Lesueurigobius friesii 	(Malm, 1874)	kultaevätokko	suippopyrstötokko	
+		Lesueurigobius			Lesueurigobius sanzi	(de Buen, 1918)	seeprarihmatokko		
+		Lesueurigobius			Lesueurigobius suerii	(Risso, 1810)	kultaviirutokko		
+	suku	Mesogobius	Bleeker, 1874				konnatokot		
+		Mesogobius			Mesogobius batrachocephalus 	(Pallas, 1814)	konnatokko		
+		Mesogobius			Mesogobius nigronotatus 	(Kessler, 1877)			
+		Mesogobius			Mesogobius nonultimus 	(Iljin, 1936)	kaspiankonnatokko		
+		Millerigobius	Bath, 1973		Millerigobius macrocephalus	(Kolombatovic, 1891)	valkopantatokko		
+MX.53524	suku	Neogobius	Iljin, 1927				täplätokot		
+MX.53524		Neogobius			Neogobius caspius 	(Eichwald, 1831)	kaspiantäplätokko		
+MX.53524		Neogobius		MX.206842	Neogobius fluviatilis 	(Pallas, 1814)	jokitäplätokko		
+MX.53524		Neogobius		MX.53000	Neogobius melanostomus 	(Pallas, 1814)	mustatäplätokko		
+MX.53524		Neogobius			Neogobius pallasi 	(Berg, 1916) 	volgantäplätokko		
+		Ninnigobius	Whitley, 1951		Ninnigobius canestrinii 	(Ninni, 1883)	venetsiantokko		
+		Odondebuenia	de Buen, 1930		Odondebuenia balearica  	(Pellegrin & Fage, 1907)	täpläselkätokko		
+		Oxyurichthys			Oxyurichthys petersii 	(Klunzinger, 1871) 	siniviiritokko		
+	suku	Padogobius	Gilbert, 1971						
+		Padogobius			Padogobius bonelli 	(Bonaparte, 1846) 	sinievätokko		
+		Padogobius			Padogobius nigricans 	(Canestrini, 1867) 	arnontokko		
+MX.53255	suku	Pomatoschistus	Gill, 1863				hietatokot		
+MX.53255		Pomatoschistus			Pomatoschistus anatoliae 	Engin & Innal, 2017	turkinhietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus bathi 	Miller, 1982	nokihietatokko		
+MX.53255		Pomatoschistus		MX.53240	Pomatoschistus flavescens 	(Fabricius, 1779)	seitsenruototokko		
+MX.53255		Pomatoschistus			Pomatoschistus knerii 	(Steindachner, 1861) 	rusohietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus lozanoi 	(de Buen, 1923)	kuultohietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus marmoratus 	(Risso, 1810)	marmorihietatokko	kuultohietatokko	
+MX.53255		Pomatoschistus		MX.53320	Pomatoschistus microps 	(Krøyer, 1838) 	liejutokko		
+MX.53255		Pomatoschistus		MX.53238	Pomatoschistus minutus 	(Pallas, 1770)	hietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus montenegrensis 	Miller & Šanda, 2008	skadarinhietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus nanus 	Engin & Seyhan, 2017	kääpiöhietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus norvegicus 	(Collett, 1902) 	norjanhietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus pictus 	(Malm, 1865) 	kivikkotokko		
+MX.53255		Pomatoschistus			Pomatoschistus quagga 	(Heckel, 1837) 	koruhietatokko		
+MX.53255		Pomatoschistus			Pomatoschistus tortonesei 	Miller, 1969  	kirjohietatokko		
+MX.212055	suku	Ponticola					kuonotokot		
+MX.212055		Ponticola			Ponticola bathybius 	(Kessler, 1877)	syvännekuonotokko		
+MX.212055		Ponticola			Ponticola cephalargoides 	(Pinchuk, 1976)	kirjokuonotokko		
+MX.212055		Ponticola			Ponticola constructor 	(Nordmann, 1840)	kaukasiankuonotokko		
+MX.212055		Ponticola			Ponticola cyrius 	(Kessler, 1874)	marmorikuonotokko		
+MX.212055		Ponticola			Ponticola eurycephalus 	(Kessler, 1874) 	paksukuonotokko		
+MX.212055		Ponticola			Ponticola goebelii 	(Kessler, 1874)			
+MX.212055		Ponticola			Ponticola gorlap 	(Iljin, 1949) 	pulloposkitokko		
+MX.212055		Ponticola			Ponticola iljini 	(Vasil'eva & Vasil'ev, 1996)  	kaspiankuonotokko		
+MX.212055		Ponticola			Ponticola iranicus 	Vasil'eva, Mousavi-Sabet & Vasil'ev, 2015	iraninkuonotokko		
+MX.212055		Ponticola		MX.206844	Ponticola kessleri 	(Günther, 1861) 	tonavankuonotokko		
+MX.212055		Ponticola			Ponticola odessicus 	(Pinchuk, 1977)	odessankuonotokko		
+MX.212055		Ponticola			Ponticola platyrostris 	(Pallas, 1814) 	paksuhuulitokko		
+MX.212055		Ponticola			Ponticola ratan 	(Nordmann, 1840) 	kirjokuonotokko		
+MX.212055		Ponticola			Ponticola rhodioni 	(Vasil'eva & Vasil'ev, 1994)	pilkkukuonotokko		
+MX.212055		Ponticola			Ponticola rizensis 	(Kova?i? & Engin, 2008)	purokuonotokko		
+MX.212055		Ponticola			Ponticola syrman 	(Nordmann, 1840) 	laikkukuonotokko		
+MX.212055		Ponticola			Ponticola turani 	(Kova?i? & Engin, 2008) 	tummakuonotokko		
+MX.53541	suku	Proterorhinus	Smitt, 1900				putkisieraintokot		
+MX.53541		Proterorhinus		MX.53002	Proterorhinus marmoratus 	(Pallas, 1814)	putkisieraintokko	putkinenätokko, putkikuonotokko	
+MX.53541		Proterorhinus		MX.5075407	Proterorhinus nasalis 	(De Filippi, 1863) 	idänsieraintokko		
+MX.53541		Proterorhinus		MX.5075406	Proterorhinus semilunaris 	(Heckel, 1837)	tonavansieraintokko		
+		Pseudaphya	Iljin, 1930		Pseudaphya ferreri 	(de Buen & Fage, 1908)	neonkuultotokko		
+		Silhouettea	Smith, 1959		Silhouettea aegyptia	(Chabanaud, 1933)	egyptintokko		
+		Speleogobius	Zander & Jelinek, 1976		Speleogobius llorisi 	Kova?i?, Ordines & Schliewen, 2016	tulipäätokko		
+		Speleogobius			Speleogobius trigloides	Zander & Jelinek, 1976	tulikylkitokko		
+		Thorogobius	Miller, 1969		Thorogobius ephippiatus 	(Lowe, 1839)	pantteritokko		
+		Thorogobius			Thorogobius macrolepis 	(Kolombatovic, 1891)	pikkupantteritokko		
+		Vanderhorstia	Smith, 1949		Vanderhorstia mertensi	Klausewitz, 1974	timanttiraputokko		
+	suku	Vanneaugobius	Brownell, 1978				kaunotokot		
+		Vanneaugobius			Vanneaugobius canariensis	Van Tassell, Miller & Brito, 1988	kanariankaunotokko		
+		Vanneaugobius			Vanneaugobius dollfusi 	Brownell, 1978	rusokaunotokko		
+		Vanneaugobius			Vanneaugobius pruvoti 	(Fage, 1907)			
+		Zebrus	de Buen, 1930		Zebrus zebrus 	(Risso, 1827)	valkokaulustokko		
+MX.5086671	heimo 	Sphyraenidae							
+		Sphyraena	Artedi, 1793		Sphyraena chrysotaenia 	Klunzinger, 1884	keltajuovabarrakuda	keltapyrstöbarrakuda	
+		Sphyraena			Sphyraena flavicauda 	Rüppell, 1838	keltapyrstöbarrakuda	keltajuovabarrakuda	
+		Sphyraena			Sphyraena intermedia 	Pastore, 2009	välimerenbarrakuda		
+		Sphyraena			Sphyraena obtusata 	Cuvier, 1829	kultapyrstöbarrakuda		
+		Sphyraena			Sphyraena pinguis 	Günther, 1874	linjabarrakuda		
+		Sphyraena			Sphyraena sphyraena 	(Linnaeus, 1758)	atlantinbarrakuda	pikkubarrakuda	
+		Sphyraena			Sphyraena viridensis 	Cuvier, 1829	keltasuubarrakuda		
+MX.5086672	heimo 	Polynemidae							
+		Galeoides	Günther, 1860		Galeoides decadactylus 	(Bloch, 1795)	täpläsiimaevä		
+MX.5086674	heimo 	Citharidae							
+		Citharus	Artedi, 1793		Citharus linguatula 	(Linnaeus, 1758)	välimerenkampela		
+MX.206833	heimo 	Scophthalmidae							
+		Lepidorhombus	Günther, 1862		Lepidorhombus boscii 	(Risso, 1810)	nelitäpläkampela		
+		Lepidorhombus			Lepidorhombus whiffiagonis 	Walbaum, 1792)	lasikampela		
+		Phrynorhombus	Günther, 1862		Phrynorhombus norvegicus 	(Günther, 1862)	pikkukampela		
+MX.206834		Scophthalmus	Rafinesque, 1810		Scophthalmus maeoticus 	(Pallas, 1814)	mustanmerenkampela		
+MX.206834		Scophthalmus		MX.53246	Scophthalmus maximus	(Linnaeus, 1758)	piikkikampela		
+MX.206834		Scophthalmus		MX.206835	Scophthalmus rhombus 	(Linnaeus, 1758)	silokampela		
+		Zeugopterus	Gottsche, 1835		Zeugopterus punctatus 	(Bloch, 1787)	kalliokampela		
+		Zeugopterus			Zeugopterus regius 	(Bonnaterre, 1788)	palettikampela		
+MX.53289	heimo 	Bothidae							
+		Arnoglossus	Bleeker, 1862		Arnoglossus grohmanni	(Bonaparte, 1837	täpläeväkampela		
+		Arnoglossus			Arnoglossus imperialis 	(Rafinesque, 1810)	rihmaeväkampela		
+		Arnoglossus			Arnoglossus laterna 	(Walbaum, 1792)	harvasuomukampela		
+		Arnoglossus			Arnoglossus rueppelii 	(Cocco, 1844)	laikkueväkampela		
+		Arnoglossus			Arnoglossus thori 	Kyle, 1913	atlantintöyhtökampela		
+		Bothus	Rafinesque, 1810		Bothus podas 	(Delaroche, 1809)	kukkakampela		
+MX.53247	heimo 	Pleuronectidae							
+		Glyptocephalus	Gottsche, 1835		Glyptocephalus cynoglossus 	(Linnaeus, 1758)	mustaeväkampela		
+		Hippoglossoides	Gottsche, 1835		Hippoglossoides platessoides 	(Fabricius, 1780)	liejukampela		
+		Hippoglossus	Cuvier, 1816		Hippoglossus hippoglossus 	(Linnaeus, 1758)	ruijanpallas		
+MX.53252		Limanda	Gottsche, 1835	MX.53253	Limanda limanda 	(Linnaeus, 1758)	hietakampela		
+		Liopsetta	Gill, 1864		Liopsetta glacialis 	(Pallas, 1776)	jääkampela		
+		Microstomus	Gottsche, 1835		Microstomus kitt 	(Walbaum, 1792)	pikkupääkampela		
+MX.53248		Platichthys	Girard, 1854	MX.53249	Platichthys flesus sensu lato	(Linnaeus, 1758)	kampela		
+MX.53248		Platichthys		MX.5009930	Platichthys flesus 	(Linnaeus, 1758)	euroopankampela		
+MX.53248		Platichthys		MX.5008086	Platichthys solemdali 	Momigliano, Denys, Jokinen & Merilä, 2018	itämerenkampela		
+MX.53250		Pleuronectes	Linnaeus, 1758	MX.53251	Pleuronectes platessa 	Linnaeus, 1758	punakampela		
+		Reinhardtius	Gill, 1861		Reinhardtius hippoglossoides 	(Walbaum, 1792)	grönlanninpallas	sinipallas	
+MX.5086683	heimo 	Poecilopsettidae							
+		Poecilopsetta	Günther, 1880		Poecilopsetta beanii 	(Goode, 1881)	täpläpyrstökampelainen		
+MX.5086684	heimo 	Soleidae							
+		Bathysolea	Roule, 1916		Bathysolea profundicola 	(Vaillant, 1888)	runatäpläantura		
+		Buglossidium	Chabanaud, 1930		Buglossidium luteum 	(Risso, 1810)	anturainen		
+		Dagetichthys	Stauch & Blanc, 1964		Dagetichthys lusitanicus	(Brito Capello, 1868)	portugalinantura		
+		Dicologlossa	Chabanaud, 1927		Dicologlossa cuneata 	(Moreau, 1881	kiila-antura		
+		Microchirus			Microchirus azevia 	(de Brito Capello, 1867)	ruosteantura		
+		Microchirus			Microchirus boscanion 	(Chabanaud, 1926)	viirueväantura		
+		Microchirus	Bonaparte, 1833		Microchirus hexophthalmus 	(Bennett, 1831)	kuusitäpläantura		
+		Microchirus			Microchirus ocellatus 	(Linnaeus, 1758)	rengasantura	nelisilmäantura	
+		Microchirus			Microchirus variegatus 	(Donovan, 1808)	paksuselkäantura		
+		Monochirus	Rafinesque, 1814		Monochirus hispidus 	Rafinesque, 1814	pianoantura		
+		Pegusa	Günther, 1862		Pegusa impar 	(Bennett, 1831)	ruskotäpläantura		
+		Pegusa			Pegusa lascaris 	(Bleeker, 1863)	hieta-antura		
+		Solea	Quensel, 1806		Solea aegyptiaca 	Chabanaud, 1927	egyptinantura		
+		Solea			Solea senegalensis 	Kaup, 1858	senegalinanturantura		
+		Solea			Solea solea 	(Linnaeus, 1758)	meriantura		
+		Synapturichthys	Chabanaud, 1927		Synapturichthys kleinii 	(Risso, 1827)	laikkuantura		
+MX.5086685	heimo 	Cynoglossidae							
+		Cynoglossus	Hamilton, 1822		Cynoglossus sinusarabici	(Chabanaud, 1931)	arabiankielikampela		
+		Symphurus	Rafinesque, 1810		Symphurus insularis 	Munroe Brito & Hernández, 2000	marmorikielikampela		
+		Symphurus			Symphurus nigrescens 	Rafinesque, 1810	kirjokielikampela		
+		Symphurus			Symphurus reticulatus 	Munroe, 1990	verkkokilelikampela		
+MX.5086693	heimo 	Xiphiidae							
+		Xiphias	Linnaeus, 1758		Xiphias gladius 	Linnaeus, 1758	miekkakala		
+MX.5086694	heimo 	Istiophoridae							
+		Istiophorus	Lacepède, 1801		Istiophorus platypterus 	(Shaw, 1792)	purjekala		
+		Makaira	Lacepède, 1802		Makaira nigricans 	Lacépède, 1802	sinimarliini		
+		Kajikia	Hirasaka & Nakamura, 1947		Kajikia albida 	(Poey, 1860)	valkomarliini		
+		Tetrapturus	Rafinesque, 1810		Tetrapturus belone 	Rafinesque, 1810	marliini		
+		Tetrapturus			Tetrapturus georgii 	Lowe, 1841	vaeltajamarliini		
+		Tetrapturus			Tetrapturus pfluegeri 	Robins & de Sylva, 1963	purjemarliini		
+MX.5086696	heimo 	Carangidae							
+		Alectis	Rafinesque, 1815		Alectis alexandrinus 	(Geoffroy Saint–Hilaire, 1817)	afrikanrihmapompano		
+		Alepes	Swainson, 1839		Alepes djedaba 	(Forsskål, 1775)	katkapiikkimakrilli	katkatrevalli	
+		Campogramma	Regan, 1903		Campogramma glaycos 	(Lacépède, 1801)	aaltopompano		
+		Caranx	Lacepède, 1801		Caranx crysos 	(Mitchill, 1815)	sinipiikkimakrilli	turkoospiikkimakrillii	
+		Caranx			Caranx fischeri 	Smith–Vaniz & Carpenter, 2007	sirppipiikkimakrilli		
+		Caranx			Caranx hippos 	(Linnaeus, 1766)	hevospiikkimakrilli		
+		Caranx			Caranx lugubris 	Poey, 1860	mustapiikkimakrilli		
+		Caranx			Caranx rhonchus 	Geoffroy Saint–Hilaire, 1817	täpläeväpiikkimakrilli		
+		Decapterus	Bleeker, 1851		Decapterus macarellus 	(Cuvier, 1833)	punapyrstöpiikkimakrilli		
+		Decapterus			Decapterus punctatus 	(Cuvier, 1829)	pilkkupiikkimakrilli		
+		Elagatis	Bennett, 1840		Elagatis bipinnulata 	(Quoy & Gaimard, 1825)	sateenkaariharppoja		
+		Lichia	Cuvier, 1816		Lichia amia 	(Linnaeus, 1758)	ahmattipiikkimakrilli	amiapompano	
+		Naucrates	Rafinesque, 1810		Naucrates ductor 	(Linnaeus, 1758)	luotsikala		
+		Pseudocaranx	Bleeker, 1863		Pseudocaranx dentex 	(Bloch & Schneider, 1801)	sinitrevalli		
+		Selene	Lacepède, 1802		Selene dorsalis 	(Gill, 1863)	afrikanmurjottaja		
+		Seriola	Cuvier, 1816		Seriola carpenteri 	Mather, 1971	viirupiikkimakrilli		
+		Seriola			Seriola dumerili 	(Risso, 1810)	isopiikkimakrilli		
+		Seriola			Seriola fasciata 	(Bloch, 1793)	pinkkipiikkimakrilli		
+		Seriola			Seriola hippos 	Günther, 1876	australianpiikkimakrilli		
+		Seriola			Seriola rivoliana 	Valenciennes, 1833	riuttapiikkimakrilli		
+		Trachinotus	Lacepède, 1801		Trachinotus ovatus 	(Linnaeus, 1758)	nuijapompano		
+		Trachurus	Rafinesque, 1810		Trachurus mediterraneus 	(Steindachner, 1868)	välimerenpiikkimakrilli	hevospiikkimakrilli	
+		Trachurus			Trachurus picturatus 	(Bowdich, 1825)	sinipiikkimakrilli		
+		Trachurus			Trachurus trachurus 	(Linnaeus, 1758)	piikkimakrilli		
+MX.5086697	heimo 	Echeneidae							
+		Echeneis	Linnaeus, 1758		Echeneis naucrates 	Linnaeus, 1758	isoremora		
+		Remora	Gill, 1862		Remora australis 	(Bennett, 1840)	valasremora		
+		Remora			Remora brachyptera 	(Love, 1839)	tummaremora		
+		Remora			Remora osteochir 	(Cuvier, 1829)	marliiniremora		
+		Remora			Remora remora 	(Linnaeus, 1758)	remora		
+MX.5086698	heimo 	Rachycentridae							
+		Rachycentron	Rachycentron Kaup, 1826		Rachycentron canadum 	(Linnaeus, 1766)	okamakrilli	oka-ahven	
+MX.5086699	heimo 	Coryphaenidae							
+		Coryphaena	Linnaeus, 1758		Coryphaena hippurus 	Linnaeus, 1758	dolfiini		
+		Coryphaena			Coryphaena equiselis 	Linnaeus, 1758	pikkudolfiini		
+MX.5086707	heimo	Cichlidae							
+		Australoheros	Rícan & Kullander, 2006		Australoheros facetus 	(Jenyns, 1842)	kalterikirjoahven		
+		Hemichromis	Peters, 1857		Hemichromis fasciatus 	Peters, 1857	laikkutimanttiahven		
+		Hemichromis			Hemichromis guttatus 	Günther, 1862	rusotimanttiahven		
+		Amatitlania	Schmitter-Soto, 2007		Amatitlania nigrofasciata 	(Günther, 1867)	seeprakirjoahven		
+		Heterotilapia	Pellegrin, 1904		Herotilapia multispinosa 	(Günther, 1867	sateenkaariahven		
+		Oreochromis	Günther, 1889		Oreochromis aureus	(Steindachner, 1864)	kultatilapia		
+		Oreochromis			Oreochromis niloticus 	(Linnaeus, 1758)	niilintilapia		
+		Rocio	Schmitter-Soto, 2007		Rocio octofasciata	(Regan, 1903)	helmikirjoahven		Jack Dempsey
+MX.5086713	heimo 	Pomacentridae							
+		Chromis	Cuvier, 1814		Chromis chromis 	(Linnaeus, 1758)	ruskoneitokala		
+		Chromis			Chromis limbata 	(Valenciennes, 1833)	pronssineitokala		
+		Similiparma	Hensley, 1986		Similiparma lurida 	(Cuvier, 1830)	kanariankoralliahven		
+		Abudefduf	Fabricius, 1775		Abudefduf vaigiensis 	(Quoy & Gaimard, 1825)	korallikersanttikala		
+		Abudefduf			Abudefduf saxatilis 	(Linnaeus, 1758)	ylikersanttikala		
+MX.5086715	heimo 	Atherinidae							
+		Atherina	 Linnaeus, 1758		Atherina boyeri 	Risso, 1810	suomuhopeakylki		
+		Atherina			Atherina hepsetus 	Linnaeus, 1758	isohopeakylki		
+		Atherina			Atherina presbyter 	Cuvier, 1829	hopeakylki		
+		Atherinomorus	Fowler, 1903		Atherinomorus lacunosus 	(Forster, 1801)	viherhopeakylki		
+MX.5087327	heimo 	Atherinopsidae							
+		Odontesthes	Evermann & Kendall, 1906		Odontesthes bonariensis 	(Valenciennes, 1835)	kuningashopeakylki		
+MX.5086731	heimo 	Fundulidae							
+MX.5084364		Fundulus	Lacepède, 1803	MX.5084365	Fundulus heteroclitus 	(Linnaeus, 1766)	siniraitakilli		
+MX.5086739	heimo 	Aphaniidae							
+		Aphanius	Nardo, 1827		Aphanius almiriensis 	Kottelat Barbieri & Stoumboudi, 2007	kreikankillinen		
+		Aphanius			Aphanius fasciatus 	(Valenciennes, 1821)	seeprakillinen		
+		Aphanius			Aphanius iberus 	(Valenciennes, 1846)	turkoosikillinen		
+		Apricaphanius	Freyhof & Yo?urtçuo?lu, 2020		Apricaphanius baeticus 	Doadrio Carmona & Fernández–Delgado, 2002	sevillankillinen		
+MX.5086736	heimo 	Poeciliidae							
+MX.5084373		Gambusia	Poey, 1854	MX.5084374	Gambusia affinis 	(Baird et Girard, 1853)	moskiittokala		
+MX.5084373		Gambusia		MX.5084375	Gambusia holbrooki 	Girard, 1859	marmorimoskiittokala		
+		Poecilia	Bloch & Schneider, 1801		Poecilia reticulata 	Peters, 1860	miljoonakala		
+		Poecilia			Poecilia sphenops 	Valenciennes, 1846	molli		
+		Xiphophorus	Heckel, 1848		Xiphophorus helleri 	Heckel, 1848	miekkapyrstö		
+MX.5086740	heimo 	Valenciidae							
+		Valencia	Myers, 1928		Valencia hispanica 	(Valenciennes, 1846)	espanjankilli		
+		Valencia			Valencia letourneuxi 	(Sauvage, 1880)	korfunkilli		
+MX.5086742	heimo 	Scomberesocidae							
+		Cololabis	Gill, 1896		Cololabis saira 	(Breevort, 1856)	saira		
+		Scomberesox	Lacepède, 1803		Scomberesox saurus 	(Walbaum, 1792)	makrillihauki		
+		Scomberesox			Scomberesox simulans 	(Hubbs & Wisner, 1980)	pikkumakrillihauki		
+MX.53311	heimo 	Belonidae							
+MX.53331		Belone	Cuvier, 1816	MX.53192	Belone belone 	(Linnaeus, 1761)	nokkakala		
+MX.53331		Belone			Belone svetovidovi 	Collette & Parin, 1970	atlantinnokkakala		
+		Tylosurus	Cocco, 1833		Tylosurus acus 	(Lacépède, 1803)	sininokkakala		
+		Tylosurus			Tylosurus choram 	(Rüppell, 1837)	riuttanokkakala		
+MX.5086743	heimo 	Hemiramphidae							
+		Hemiramphus	Cuvier, 1816		Hemiramphus balao 	Lesueur, 1821	balao		
+		Hemiramphus			Hemiramphus far 	(Forsskål, 1775)	täplänokkakala		
+		Hyporhamphus	Hyporhamphus Gill, 1859		Hyporhamphus affinis	(Günther, 1866)	neonnokkakala		
+		Hyporhamphus			Hyporhamphus picarti 	(Valenciennes, 1847)	afrikannokkakala		
+MX.5086745	heimo 	Exocoetidae							
+		Cheilopogon	Lowe, 1841		Cheilopogon heterurus 	(Rafinesque, 1810)	atlantinliitokala		
+		Cheilopogon			Cheilopogon pinnatibarbatus 	(Bennett, 1831)	juovaliitokala		
+		Exocoetus	Linnaeus, 1758		Exocoetus obtusirostris 	Günther, 1866	saumaliitokala		
+		Exocoetus			Exocoetus volitans 	Linnaeus, 1758	liitokala		
+		Hirundichthys	Breder, 1928		Hirundichthys rondeletii 	(Valenciennes, 1847)	sysisiipikala		
+		Hirundichthys			Hirundichthys speculiger 	(Valenciennes, 1847)	peilisiipikala		
+		Parexocoetus	Bleeker, 1865		Parexocoetus mento 	(Valenciennes, 1847)	afrikanliitokala		
+MX.5086746	heimo 	Adrianichthyidae							
+		Oryzias	Jordan & Snyder, 1906		Oryzias sinensis 	Chen Uwa & Chu, 1989	kiinanmedaka		
+MX.53226	heimo 	Mugilidae							
+MX.53318		Chelon	Artedi, 1793	MX.53228	Chelon labrosus 	(Risso, 1827)	paksuhuulikeltti		Thicklip grey mullet
+MX.53318		Chelon			Chelon auratus	(Risso, 1810)	kultakeltti		Golden grey mullet
+MX.53318		Chelon		MX.53282	Chelon ramada 	(Risso, 1810)	ohuthuulikeltti		Thinlip grey mullet
+MX.53318		Chelon			Chelon saliens 	(Risso, 1810)	hyppijäkeltti		Leaping mullet
+		Planiliza	Whitley, 1945		Planliza carinata	(Valenciennes, 1836)	kölikeltti		
+		Planiliza			Planiliza haematocheilus 	(Temminck & Schlegel, 1845)	punahuulikeltti		
+		Mugil	Linnaeus, 1758		Mugil capurrii 	(Perugia, 1892)	soukkapääkeltti		
+		Mugil			Mugil cephalus 	Linnaeus, 1758	juovakeltti		
+		Oedalechilus	 Fowler, 1903		Oedalechilus labeo 	(Cuvier, 1829)	pikkukeltti		
+MX.5086748	heimo 	Gobiesocidae							
+		Apletodon	Briggs, 1955		Apletodon dentatus 	(Facciolà, 1887)	lattaimuri		
+		Apletodon			Apletodon incognitus 	Hofrichter & Patzner, 1997	rokkotäpläimuri		
+		Apletodon			Apletodon pellegrini 	(Chabanaud, 1925)	purppuraimuri		
+		Diplecogaster	Fraser-Brunner, 1938		Diplecogaster bimaculata 	(Bonnaterre, 1788)	kaksitäpläimuri		
+		Diplecogaster			Diplecogaster ctenocrypta 	Briggs, 1955	syvänneimuri		
+WARNING ei kala Putkilokasvit: 		Gouania	Nardo, 1833		Gouania willdenowi 	(Risso, 1810)	töppöimuri		
+		Lepadogaster	Goüan, 1770		Lepadogaster candolii 	Risso, 1810	koruimuri		
+		Lepadogaster			Lepadogaster lepadogaster 	(Bonnaterre, 1788)	rantaimuri		
+		Lepadogaster			Lepadogaster purpurea 	(Bonnaterre, 1788)	silmätäpläimuri		
+		Opeatogenys	Briggs, 1955		Opeatogenys cadenati 	Briggs, 1957	lehväimuri		
+		Opeatogenys			Opeatogenys gracilis 	(Canestrini, 1864)	siroimuri		
+MX.5086749	heimo 	Tripterygiidae							
+		Tripterygion	Risso, 1827		Tripterygion delaisi 	Cadenat & Blache, 1970	kultaluikertaja		
+		Tripterygion			Tripterygion melanurus 	Guichenot, 1850	tuliluikertaja		
+		Tripterygion			Tripterygion tartessicum 	Carreras–Carbonell Pascual & Macpherson, 2007	marmoriluikertaja		
+		Tripterygion			Tripterygion tripteronotus 	(Risso, 1810)	rubiiniluikertaja	mustapääluikertaja	
+MX.5086750	heimo 	Labrisomidae							
+		Labrisomus	Swainson, 1839		Labrisomus nuchipinnis 	(Quoy & Gaimard, 1824)	seepratupsukas	karvatupsukas	
+MX.5086751	heimo 	Clinidae							
+		Clinitrachus	Swainson, 1839		Clinitrachus argentatus 	(Risso, 1810)	kirjoklini		
+MX.5086754	heimo 	Blenniidae							
+		Aidablennius	Whitley, 1947		Aidablennius sphynx 	(Valenciennes, 1836)	neonviiruluikero	oliiviluikero	
+		Blennius	Linnaeus, 1758		Blennius ocellaris 	Linnaeus, 1758	purjeluikero		
+		Coryphoblennius	Norman, 1944		Coryphoblennius galerita 	(Linnaeus, 1758)	helmiluikero		
+		Hypleurochilus	Gill, 1861		Hypleurochilus bananensis 	(Poll, 1959)	kirjovyöluikero		
+		Hypleurochilus			Hypleurochilus fissicornis 	(Quoy & Gaimard, 1824)	täpläkylkiluikero		
+		Microlipophrys	Almada et al., 2005		Microlipophrys adriaticus 	(Steindachner & Kolombatovic, 1883)	valkovatsaluikero		
+		Microlipophrys			Microlipophrys canevae 	(Vinciguerra, 1880)	verkkoluikero		
+		Microlipophrys			Microlipophrys dalmatinus 	(Steindachner & Kolombatovic, 1883)	valkoviiruluikero		
+		Microlipophrys			Microlipophrys nigriceps 	(Vinciguerra, 1883)	tuliluikero		
+		Lipophrys	Gill, 1896		Lipophrys pholis 	(Linnaeus, 1758)	luikero		
+		Lipophrys			Lipophrys trigloides 	(Valenciennes, 1836)	torkkuluikero		
+		Ophioblennius	Gill, 1860		Ophioblennius atlanticus 	(Valenciennes, 1836)	punahuuliluikero		
+		Parablennius	Miranda Ribeiro, 1915		Parablennius gattorugine 	(Linnaeus, 1758)	isoluikero		
+		Parablennius			Parablennius incognitus 	(Bath, 1968	hämyluikero		
+		Parablennius			Parablennius parvicornis 	(Valenciennes, 1836)	lammikkoluikero		
+		Parablennius			Parablennius pilicornis 	(Cuvier, 1829)	sokkeloluikero		
+		Parablennius			Parablennius rouxi 	(Cocco, 1833)	juovaluikero		
+		Parablennius			Parablennius ruber 	(Valenciennes, 1836)	rubiiniluikero		
+		Parablennius			Parablennius sanguinolentus 	(Pallas, 1814)	mosaiikkiluikero	harmaaluikero	
+		Parablennius			Parablennius tentacularis 	(Brünnich, 1768)	sarviluikero		
+		Parablennius			Parablennius zvonimiri 	(Kolombatovic, 1892)	valkopilkkuluikero	ruskoluikero	
+		Petroscirtes	Rüppell, 1830		Petroscirtes ancylodon 	Rüppell, 1835	arabianluikero		
+		Salaria	Fossskål, 1775		Salaria basilisca 	(Valenciennes, 1836)	seepraluikero		
+		Salaria			Salaria economidisi 	Kottelat, 2004	kreikanluikero		
+		Salaria			Salaria fluviatilis 	(Asso, 1801)	jokiluikero		
+		Salaria			Salaria pavo 	(Risso, 1810)	riikinkukkoluikero		
+		Scartella	Jordan, 1886		Scartella cristata 	(Linnaeus, 1758)	molliluikero		
+		Spaniblennius	Bath & Wirtz, 1989		Spaniblennius riodourensis 	(Metzelaar, 1919)	valkoharjaluikero		
+MX.53280	heimo 	Moronidae							
+MX.53222		Dicentrarchus	Gill, 1860	MX.53223	Dicentrarchus labrax 	(Linnaeus, 1758)	meribassi		
+MX.53222		Dicentrarchus			Dicentrarchus punctatus 	(Bloch, 1792)	täpläbassi		
+MX.5086828	heimo 	Callanthiidae							
+		Callanthias	Lowe, 1839		Callanthias ruber 	(Rafinesque, 1810)	kaijasiroahven		
+MX.5086829	heimo 	Priacanthidae							
+		Heteropriacanthus	Fitch & Crooke, 1984		Heteropriacanthus cruentatus 	(Lacépède, 1801)	lasisilmä		
+		Priacanthus	Oken, 1817		Priacanthus arenatus 	Cuvier, 1829	suurisilmä		
+		Priacanthus			Priacanthus hamrur 	(Forsskål, 1775)	sirppisuurisilmä		
+MX.5086830	heimo 	Sillaginidae							
+		Sillago	Cuvier, 1816		Sillago sihama 	(Forsskål, 1775)	hopeavihiahven		silver sillago
+MX.5086834	heimo 	Lutjanidae							
+		Lutjanus	Bloch, 1790		Lutjanus argentimaculatus 	(Forsskål, 1775)	mangrovenapsija		
+MX.5086836	heimo 	Haemulidae							
+		Parapristipoma	Bleeker, 1873		Parapristipoma humile 	(Bowdich, 1825)	kultapyrstömurisija		guinean grunt
+		Parapristipoma			Parapristipoma octolineatum 	(Valenciennes, 1833)	nelijuovamurisija		
+		Plectorhinchus	Lacepède, 1801		Plectorhinchus mediterraneus 	(Guichenot, 1850)	kumihuulimurisija		
+		Pomadasys	Lacepède, 1802		Pomadasys incisus 	(Bowdich, 1825)	keltaevämurisija		
+		Pomadasys			Pomadasys stridens 	(Forsskål, 1775)	kolmijuovamurisija		striped piggy
+MX.5086837	heimo 	Sparidae							
+		Boops	Cuvier, 1814		Boops boops 	(Linnaeus, 1758)	boga		
+		Centracanthus	Rafinesque, 1810		Centracanthus cirrus 	Rafinesque, 1810	rusopikarelli		Curled picarel
+		Crenidens	Valenciennes, 1830		Crenidens crenidens 	(Forsskål, 1775)	lovihammasahven		
+		Dentex	Cuvier, 1814		Dentex angolensis 	Poll & Maul, 1953	angolanhammasahven		
+		Dentex			Dentex canariensis 	Steindachner, 1881	kanarianhammasahven		
+		Dentex			Dentex dentex 	(Linnaeus, 1758)	hammasahven		
+		Dentex			Dentex gibbosus 	(Rafinesque, 1810)	pattihammasahven		
+		Dentex			Dentex macrophthalmus 	(Bloch, 1791)	isosilmähammasahven		
+		Dentex			Dentex maroccanus 	Valenciennes, 1830	marokonhammasahven		
+		Diplodus	Rafinesque, 1810		Diplodus annularis 	Linnaeus, 1758)	rengassargi		
+		Diplodus			Diplodus bellottii 	(Steindachner, 1882)	pyrstötäpläsargi		Senegal seabream
+		Diplodus			Diplodus cervinus 	(Lowe, 1838)	seeprasargi		
+		Diplodus			Diplodus puntazzo 	(Cetti, 1777)	nokkasargi		
+		Diplodus			Diplodus sargus 	(Linnaeus, 1758)	isosargi		
+		Diplodus			Diplodus vulgaris 	(Geoffroy Saint–Hilaire, 1817)	kaulussargi		
+		Lithognathus	Swainson, 1839		Lithognathus mormyrus 	(Linnaeus, 1758)	seeprapagelli	marmoripagelli	sand steenbras
+		Oblada	Cuvier, 1829		Oblada melanura 	(Linnaeus, 1758)	satulasargi		
+		Pagellus	Valenciennes, 1830		Pagellus acarne 	(Risso, 1827)	täpläpagelli		
+		Pagellus			Pagellus bellottii 	Steindachner, 1882	pistepagelli		
+		Pagellus			Pagellus bogaraveo 	(Brünnich, 1768)	pilkkupagelli		
+		Pagellus			Pagellus erythrinus 	(Linnaeus, 1758)	punapagelli		
+		Pagrus	Cuvier, 1816		Pagrus auriga 	Valenciennes, 1843	punaraitapargo		
+		Pagrus			Pagrus caeruleostictus 	(Valenciennes, 1830)	sinipilkkupargo		
+		Pagrus			Pagrus pagrus 	(Linnaeus, 1758)	pargo		
+		Rhabdosargus	Fowler, 1933		Rhabdosargus haffara 	(Forsskål, 1775)	juovasargi		
+		Sarpa	Bonaparte, 1831		Sarpa salpa 	(Linnaeus, 1758)	sarpa	juovaboga	
+		Sparus	Linnaeus, 1758		Sparus aurata 	Linnaeus, 1758	kultaotsasargi		Gilthead seabream
+		Spicara	Rafinesque, 1810		Spicara maena 	(Linnaeus, 1758)	täpläpikarelli		blotched picarel
+		Spicara			Spicara melanurus 	(Valenciennes, 1830)	täpläpyrstöpikarelli		blackspot picarel
+		Spicara			Spicara smaris 	(Linnaeus, 1758)	pikarelli		
+		Spondyliosoma	Cantor, 1849		Spondyliosoma cantharus 	(Linnaeus, 1758)	tummasargi		
+MX.5086839	heimo 	Nemipteridae							
+		Nemipterus	Swainson, 1839		Nemipterus japonicus 	(Bloch, 1791)	japaninpenta		
+MX.5086840	heimo 	Sciaenidae							
+		Argyrosomus	Agassiz, 1850		Argyrosomus regius 	(Asso, 1801)	kotkakala		
+		Cynoscion	Gill, 1861		Cynoscion nebulosus 	(Cuvier, 1830)	pilkkuveltto		
+		Pseudotolithus	Bleeker, 1863		Pseudotolithus senegalensis 	(Valenciennes, 1833)	kassavarummuttaja		
+		Sciaena	Linnaeus, 1758		Sciaena umbra 	Linnaeus, 1758	rummuttaja		
+		Umbrina	Cuvier, 181 6 		Umbrina canariensis 	Valenciennes, 1843	messinkirummuttaja		Canary drum
+		Umbrina			Umbrina cirrosa 	(Linnaeus, 1758)	kihararummuttaja	patarummuttaja	
+		Umbrina			Umbrina ronchus 	Valenciennes, 1843	tummaevärummuttaja		
+MX.5086842	heimo 	Cepolidae							
+		Cepola	Linnaeus, 1764		Cepola macrophthalma 	(Linnaeus, 1758)	liekkikala		
+MX.5086755	heimo 	Serranidae							
+		Serranus	Cuvier, 1816		Serranus atricauda 	Günther, 1874	mustapyrstösaha-ahven		
+		Serranus			Serranus cabrilla 	(Linnaeus, 1758)	pastellisaha-ahven	pastellimeriahven	
+		Serranus			Serranus hepatus 	(Linnaeus, 1758)	ruskosaha-ahven		
+		Serranus			Serranus scriba 	(Linnaeus, 1758)	raitasaha-ahven		
+MX.5086756	heimo 	Anthiadidae							
+		Anthias	Bloch, 1792		Anthias anthias 	(Linnaeus, 1758)	koruahven		
+MX.5086757	heimo 	Epinephelidae							
+		Epinephelus	Bloch, 1793		Epinephelus aeneus 	(Geoffroy Saint–Hilaire, 1817)	valkomeriahven		
+		Epinephelus			Epinephelus caninus 	(Valenciennes, 1843)	koirameriahven		
+		Epinephelus			Epinephelus coioides 	(Hamilton, 1822)	oranssitäplämeriahven		
+		Epinephelus			Epinephelus costae 	(Steindachner, 1878)	kultakylkimeriahven		goldblotch grouper
+		Epinephelus			Epinephelus haifensis 	Ben–Tuvia, 1953	mokkameriahven		haifa grouper
+		Epinephelus			Epinephelus malabaricus	(Lowe, 1834)	usvameriahven		
+		Epinephelus			Epinephelus marginatus 	(Lowe, 1834)	tummameriahven		
+		Epinephelus			Epinephelus tauvina 	(Forsskål, 1775)	rasvameriahven		
+		Mycteroperca	Gill, 1862		Mycteroperca fusca 	(Lowe, 1838)	saarimeriahven		island grouper
+		Mycteroperca			Mycteroperca rubra 	(Bloch, 1793)	viiruposkimeriahven		mottled grouper
+MX.53316	heimo 	Percidae							
+MX.53221		Gymnocephalus	Bloch, 1793		Gymnocephalus acerina 	(Güldenstädt, 1774)	doninkiiski		
+MX.53221		Gymnocephalus			Gymnocephalus baloni 	Hol?ík & Hensel, 1974	marmorikiiski		
+MX.53221		Gymnocephalus		MX.53317	Gymnocephalus cernua 	(Linnaeus, 1758)	kiiski		
+MX.53221		Gymnocephalus			Gymnocephalus schraetser 	(Linnaeus, 1758)	tonavankiiski		
+MX.53218		Perca	Linnaeus, 1758	MX.53219	Perca fluviatilis 	Linnaeus, 1758	ahven		
+		Percarina	Nordmann, 1840		Percarina demidoffii 	Nordmann, 1840	perkarina		
+		Percarina			Percarina maeotica 	Kuznetsov, 1888	asovanperkarina		Azov percarina
+		Romanichthys	Dumitrescu, Banarescu & Stoica, 1957		Romanichthys valsanicola 	Dumitrescu Banarescu & Stoica, 1957	simppukiiski		
+MX.206829		Sander	Oken, 1817	MX.53220	Sander lucioperca 	(Linnaeus, 1758)	kuha		
+MX.206829		Sander			Sander marinus 	(Cuvier, 1828)	suistokuha		estuarine perch
+MX.206829		Sander			Sander volgensis 	(Gmelin, 1789)	idänkuha		
+		Zingel	Cloquet, 1817		Zingel asper 	(Linnaeus, 1758)	rhônentsingeli	hyppijätsingeli	
+		Zingel			Zingel balcanicus 	(Karaman, 1937)	vardarintsingeli		
+		Zingel			Zingel streber 	(Siebold, 1863)	tonavantsingeli		
+		Zingel			Zingel zingel 	(Linnaeus, 1766)	tsingeli		
+MX.5086763	heimo 	Labridae							
+		Acantholabrus	Valenciennes, 1839		Acantholabrus palloni 	(Risso, 1810)	täpläselkähuulikala		Scale-rayed wrasse
+		Bodianus	Bloch, 1790		Bodianus scrofa 	(Valenciennes, 1839)	karjuhuulikala		
+		Bodianus			Bodianus speciosus 	(Bowdich, 1825)	kiilahuulikala		
+		Symphodus	Rafinesque, 1810		Symphodus caeruleus 	 (Azevedo 1999)	kirjohuulikala		
+		Centrolabrus	Günther, 1861		Centrolabrus exoletus 	(Linnaeus, 1758)	levähuulikala		
+		Centrolabrus			Centrolabrus trutta 	(Lowe, 1834)	ruohohuulikala		Emerald wrasse
+		Coris	Lacepède, 1801		Coris julis 	(Linnaeus, 1758)	korujunkkeri		
+		Ctenolabrus	Valenciennes, 1839		Ctenolabrus rupestris 	(Linnaeus, 1758)	kivihuulikala		
+		Labrus	Linnaeus, 1758		Labrus bergylta 	Ascanius, 1767	viherhuulikala		
+		Labrus			Labrus merula 	Linnaeus, 1758	ruskohuulikala		
+		Labrus			Labrus mixtus 	Linnaeus, 1758	sinihuulikala		
+		Labrus			Labrus viridis 	Linnaeus, 1758	oliivihuulikala		
+		Lappanella	Jordan, 1890		Lappanella fasciata 	(Cocco, 1833)	helohuulikala		
+		Pteragogus	Peters, 1855		Pteragogus trispilus	Randall, 2013	kolmitäplähuulikala		
+		Symphodus	Rafinesque, 1810		Symphodus bailloni 	(Valenciennes, 1839)	suomuposkihuulikala		
+		Symphodus			Symphodus cinereus 	(Bonnaterre, 1788)	hietahuulikala		
+		Symphodus			Symphodus doderleini 	Jordan, 1890	pähkinähuulikala		
+		Symphodus			Symphodus mediterraneus 	(Linnaeus, 1758)	välimerenhuulikala		
+		Symphodus			Symphodus melanocercus 	(Risso, 1810)	mustapyrstöhuulikala		
+		Symphodus			Symphodus melops 	(Linnaeus, 1758)	rantahuulikala		
+		Symphodus			Symphodus ocellatus 	(Forsskål, 1775)	silmähuulikala		
+		Symphodus			Symphodus roissali 	(Risso, 1810)	laikkuhuulikala		
+		Symphodus			Symphodus rostratus 	(Bloch, 1791)	kuonohuulikala		
+		Symphodus			Symphodus tinca 	(Linnaeus, 1758)	mustehuulikala		
+		Thalassoma	Swainson, 1839		Thalassoma pavo 	(Linnaeus, 1758)	riikinkukkohuulikala		
+		Xyrichtys	Cuvier, 1814		Xyrichtys novacula 	(Linnaeus, 1758)	töppöhuulikala		
+MX.5086765	heimo 	Scaridae							
+		Scarus	Forsskål, 1775		Scarus ghobban 	Forsskål, 1775	turkoosipapukaijakala		blue-barred parrotfish
+		Sparisoma	Swainson, 1839		Sparisoma cretense 	(Linnaeus, 1758)	papukaijakala		
+MX.53188	heimo 	Zoarcidae							
+		Gymnelus	Reinhardt, 1834		Gymnelus andersoni 	Chernova, 1998	täpläselkänilkka		
+		Gymnelus			Gymnelus hemifasciatus 	Andriashev, 1937	puoliraitanilkka		
+		Gymnelus			Gymnelus retrodorsalis 	Le Danois, 1913	puikkonilkka		
+		Gymnelus			Gymnelus viridis 	(Fabricius, 1780)	laikkuraitanilkka	vihernilkka	
+		Lycenchelys	Gill, 1884		Lycenchelys kolthoffi 	Jensen, 1904	ruutukalpapyrstö		checkered wolf eel
+		Lycenchelys			Lycenchelys muraena 	(Collett, 1878)	mureenakalpapyrstö		
+		Lycenchelys			Lycenchelys platyrhina 	(Jensen, 1902)	lattakuonokalpapyrstö		
+		Lycenchelys			Lycenchelys sarsii 	(Collett, 1871)	pikkukalpapyrstö		
+		Lycodes	Reinhardt, 1831		Lycodes adolfi 	Nielsen & Fosså, 1993	ruskokalpapyrstö		
+		Lycodes			Lycodes esmarkii 	Collett, 1875	isokalpapyrstö		
+		Lycodes			Lycodes eudipleurostictus 	Jensen, 1902	satulakalpapyrstö		
+		Lycodes			Lycodes frigidus 	Collett, 1879	pohjankalpapyrstö		
+		Lycodes			Lycodes gracilis 	Sars, 1867	sirokalpapyrstö		checked eelpout
+		Lycodes			Lycodes jugoricus 	Knipowitsch, 1906	kiilakalpapyrstö		
+		Lycodes			Lycodes luetkenii 	Collett, 1880	valkoraitakalpapyrstö		
+		Lycodes			Lycodes marisalbi 	Knipowitsch, 1906	vienankalpapyrstö		
+		Lycodes			Lycodes paamiuti 	Møller, 2001	grönlanninkalpapyrstö		
+		Lycodes			Lycodes pallidus 	Collett, 1879	valjukalpapyrstö		
+		Lycodes			Lycodes polaris 	(Sabine, 1824)	jääkalpapyrstö		
+		Lycodes			Lycodes reticulatus 	Reinhardt, 1835	verkkokalpapyrstö		
+		Lycodes			Lycodes rossi 	Malmgren, 1865	läppäkalpapyrstö		
+		Lycodes			Lycodes sagittarius 	McAllister, 1976	vasamakalpapyrstö		archer eelpout
+		Lycodes			Lycodes seminudus 	Reinhardt, 1837	seeprakalpapyrstö		
+		Lycodes			Lycodes squamiventer 	Jensen, 1904	suomuvatsakalpapyrstö		
+		Lycodes			Lycodes terraenovae 	Collett, 1896	tummakalpapyrstö		
+		Lycodes			Lycodes vahlii 	Reinhardt, 1831	kalpapyrstö		
+		Lycodonus	Goode & Bean, 1883		Lycodonus flagellicauda 	(Jensen, 1902)	siimanilkka		
+		Melanostigma	Günther, 1881		Melanostigma atlanticum 	Koefoed, 1952	velttonilkka		
+		Pachycara	Zugmayer, 1911		Pachycara bulbiceps 	(Garman, 1899)	nuijakalpapyrstö		snubnose eelpout
+		Pachycara			Pachycara crassiceps 	(Roule, 1916)	paksupääkalpapyrstö		
+		Pachycara			Pachycara microcephalum 	(Jensen, 1902)	olkikalpapyrstö		
+MX.53189		Zoarces	Cuvier, 1829	MX.53190	Zoarces viviparus 	(Linnaeus, 1758)	kivinilkka		
+MX.5086766	heimo 	Anarhichadidae							
+		Anarhichas			Anarhichas denticulatus 	Krøyer, 1845	sinimerikissa		
+		Anarhichas			Anarhichas lupus 	Linnaeus, 1758	merikissa		
+		Anarhichas			Anarhichas minor 	Olafsen, 1772	täplämerikissa		
+MX.53229	heimo 	Stichaeidae							
+		Chirolophis	Swainson, 1839		Chirolophis ascanii 	(Walbaum, 1792)	sarvielaska		
+MX.5084705	heimo	Lumpenidae							
+		Anisarchus	Gill, 1864		Anisarchus medius 	(Reinhardt, 1837)	jääelaska		stout eelblenny
+		Leptoclinus	Gill, 1861		Leptoclinus maculatus 	(Fries, 1838)	piikkielaska		daubed shanny
+MX.53230		Lumpenus	Reinhardt, 1836		Lumpenus fabricii 	Reinhardt, 1836	laikkuelaska		slender eelblenny
+MX.53230		Lumpenus		MX.53319	Lumpenus lampretaeformis	(Walbaum, 1792)	elaska		
+MX.53283	heimo 	Pholidae							
+MX.53231		Pholis	Scopoli, 1777	MX.53265	Pholis gunellus 	(Linnaeus, 1758)	teisti		
+MX.53284	heimo 	Ammodytidae							
+MX.53235		Ammodytes	Linnaeus, 1758		Ammodytes dubius 	Reinhardt, 1837	pohjantuulenkala		
+MX.53235		Ammodytes			Ammodytes marinus 	Raitt, 1934	merituulenkala		
+MX.53235		Ammodytes		MX.53236	Ammodytes tobianus 	Linnaeus, 1758	pikkutuulenkala		
+		Gymnammodytes	Duncker & Mohr, 1935		Gymnammodytes cicerelus 	(Rafinesque, 1810)	juovatuulenkala		
+		Gymnammodytes			Gymnammodytes semisquamatus 	(Jourdain, 1879)	silotuulenkala		
+MX.53233		Hyperoplus	Günther, 1862		Hyperoplus immaculatus 	(Corbin, 1950)	hietatuulenkala		
+MX.53233		Hyperoplus		MX.53234	Hyperoplus lanceolatus 	(Le Sauvage, 1824)	isotuulenkala		
+MX.5086787	heimo 	Trachinidae							
+		Echiichthys	Bleeker, 1861		Echiichthys vipera 	(Cuvier, 1829)	pikkulouhikala		
+		Trachinus	Linnaeus, 1758		Trachinus araneus 	Cuvier, 1829	täplälouhikala		
+		Trachinus			Trachinus draco 	Linnaeus, 1758	louhikala		
+		Trachinus			Trachinus radiatus 	Cuvier, 1829	pantterilouhikala		
+MX.5086788	heimo 	Uranoscopidae							
+		Uranoscopus	Linnaeus, 1758		Uranoscopus scaber 	Linnaeus, 1758	taivaantähystäjä		
+MX.5086814	alaheimo	Sebastinae							
+		Helicolenus	Goode & Bean, 1896		Helicolenus dactylopterus 	(Delaroche, 1809)	sinisuusimppu		
+		Sebastes	Cuvier, 1829		Sebastes fasciatus 	Storer, 1854	kanadanpunasimppu	amerikanpunasimppu	
+		Sebastes			Sebastes mentella 	Travin, 1951	pohjolanpunasimppu		
+		Sebastes			Sebastes norvegicus 	(Ascanius, 1772)	punasimppu	puna-ahven	
+		Sebastes			Sebastes viviparus 	Krøyer, 1845	pikkupunasimppu		
+		Trachyscorpia	Ginsburg, 1953		Trachyscorpia cristulata	(Goode & Bean 1896)	kypäräkorusimppu		spiny scorpionfish
+MX.5086812	alaheimo	Setarchinae							
+		Setarches	Johnson, 1862		Setarches guentheri	Johnson, 1862	syvännekitasimppu		
+MX.5084355	heimo 	Scorpaenidae							
+		Pontinus	Poey, 1860		Pontinus kuhlii 	(Bowdich, 1825)	ulappaskorpionisimppu		offshore rockfish
+MX.5084356		Pterois	Oken, 1817	MX.5084357	Pterois miles 	(Bennett, 1828)	paholaissiipisimppu		
+MX.5084356		Pterois			Pterois volitans	(Linnaeus, 1758)	siipisimppu		
+		Scorpaena	Linnaeus, 1758		Scorpaena azorica 	Eschmeyer, 1969	azorienskorpionisimppu		
+		Scorpaena			Scorpaena canariensis 	(Sauvage, 1878)	kanarianskorpionisimppu		
+		Scorpaena			Scorpaena elongata 	Cadenat, 1943	soukkaskorpionisimppu		slender rockfish
+		Scorpaena			Scorpaena laevis 	Troschel, 1866	senegalinskorpionisimppu		senegalese rockfish
+		Scorpaena			Scorpaena loppei 	Cadenat, 1943	välimerenskorpionisimppu		Cadenat's rockfish
+		Scorpaena			Scorpaena maderensis 	Valenciennes, 1833	madeiranskorpionisimppu		
+		Scorpaena			Scorpaena notata 	Rafinesque, 1810	täpläskorpionisimppu		small red scorpionfish
+		Scorpaena			Scorpaena porcus 	Linnaeus, 1758	tummaskorpionisimppu		black scorpionfish
+		Scorpaena			Scorpaena scrofa 	Linnaeus, 1758	skorpionisimppu		
+		Scorpaenodes	Bleeker, 1857		Scorpaenodes arenai 	Torchio, 1962	messinanskorpionisimppu		Messina rockfish
+		Sebastapistes	Gill, 1877		Sebastapistes strongia 	(Cuvier, 1829)	kaunoskorpionisimppu		
+MX.5086795	heimo 	Triglidae							
+		Chelidonichthys	Kaup, 1873		Chelidonichthys cuculus 	(Linnaeus, 1758)	punakurnusimppu		
+		Chelidonichthys			Chelidonichthys lucerna 	(Linnaeus, 1758)	isokurnusimppu		
+		Chelidonichthys			Chelidonichthys obscurus 	(Bloch & Schneider, 1801)	töyhtökurnusimppu		
+		Eutrigla	Fraser-Brunner, 1938		Eutrigla gurnardus 	(Linnaeus, 1758)	kyhmykurnisimppu		
+		Lepidotrigla	Günther, 1860		Lepidotrigla cavillone 	(Lacépède, 1801)	suomukurnusimppu		
+		Lepidotrigla			Lepidotrigla dieuzeidei 	Blanc & Hureau, 1973	okakurnusimppu		
+		Trigla	Linnaeus, 1758		Trigla lyra 	Linnaeus, 1758	piikkikurnusimppu		
+		Trigloporus	Smith, 1934		Trigloporus lastoviza 	(Bonnaterre, 1788)	punaposkikurnusimppu		streaked gurnard
+MX.5086793	heimo 	Platycephalidae							
+		Elates	Jordan & Seale, 1907		Elates ransonnettii 	(Steindachner, 1876)	kääpiölättäsimppu		dwarf flathead
+		Cociella	Whitley, 1940		Cociella crocodilus	(Tilesius, 1812)	krokotiilisimppu		crocodile flathead
+		Platycephalus	Bloch, 1795		Platycephalus indicus 	(Linnaeus, 1758)	pyrstölättäsimppu		bartail flathead
+		Papilloculiceps	Fowler & Steinitz, 1956		Papilloculiceps longiceps 	(Cuvier, 1829)	nystykrokotiilisimppu		tentacled flathead/crocodilefish
+		Sorsogona	Herre, 1934		Sorsogona prionota 	(Sauvage, 1873)	piikkilättäsimppu		halfspined flathead
+MX.53196	heimo 	Gasterosteidae							
+MX.53313		Culaea	Whitley, 1950	MX.53201	Culaea inconstans 	(Mitchill, 1815)	viisipiikki		
+MX.53197		Gasterosteus	Linnaeus, 1758	MX.53198	Gasterosteus aculeatus 	Linnaeus, 1758	kolmipiikki		
+MX.53199		Pungitius	Linnaeus, 1758		Pungitius hellenicus 	Stephanidis, 1971	kreikankymmenpiikki		
+MX.53199		Pungitius			Pungitius laevis 	(Cuvier, 1829)	lännenkymmenpiikki		
+MX.53199		Pungitius			Pungitius platygaster 	(Kessler, 1859)	ukrainankymmenpiikki		
+MX.53199		Pungitius		MX.53200	Pungitius pungitius 	(Linnaeus, 1758)	kymmenpiikki		
+MX.53202		Spinachia	Cuvier, 1816	MX.53203	Spinachia spinachia 	(Linnaeus, 1758)	vaskikala		
+MX.53204	heimo 	Cottidae							
+		Artediellus	Jordan, 1885		Artediellus atlanticus 	Jordan & Evermann, 1898	atlantinkoukkusimppu		
+		Artediellus			Artediellus scaber 	Knipowitsch, 1907	siperiankoukkusimppu		
+		Artediellus			Artediellus uncinatus	(Reinhardt, 1834)	koukkusimppu		Arctic hookear sculpin
+MX.53205	suku	Cottus	Linnaeus, 1758				kivisimput		
+MX.53205		Cottus		MX.53206	Cottus gobio sensu lato		kivisimppu		
+MX.53205		Cottus			Cottus aturi 	Freyhof, Kottelat & Nolte, 2005	adourinkivisimppu		
+MX.53205		Cottus			Cottus duranii 	Freyhof, Kottelat & Nolte, 2005	loirenkivisimppu		
+MX.53205		Cottus			Cottus gobio 	Linnaeus, 1758	rannikkokivisimppu		
+MX.53205		Cottus			Cottus gratzianowi	Sideleva, Naseka & Zhidkov, 2015	onegankivisimppu		
+MX.53205		Cottus			Cottus haemusi 	Marinov & Dikov,, 1986	bulgariankivisimppu		
+MX.53205		Cottus			Cottus hispaniolensis 	B?cescu & B?cescu–Mester, 1964	pyreneidenkivisimppu		
+MX.53205		Cottus			Cottus koshewnikowi 	Gratzianov, 1907	järvikivisimppu		
+MX.53205		Cottus			Cottus metae 	Freyhof, Kottelat & Nolte, 2005	sloveniankivisimppu		
+MX.53205		Cottus			Cottus microstomus 	Heckel, 1837	puolankivisimppu		
+MX.53205		Cottus			Cottus perifretum 	Freyhof, Kottelat & Nolte, 2005	lännenkivisimppu		
+MX.53205		Cottus			Cottus petiti 	Bacescu & Bacescu–Mester, 1964	lezinkivisimppu		
+MX.53205		Cottus		MX.53207	Cottus poecilopus 	Heckel, 1837	kirjoeväsimppu		
+MX.53205		Cottus			Cottus rhenanus 	Freyhof, Kottelat & Nolte, 2005	reininkivisimppu		
+MX.53205		Cottus			Cottus rondeleti 	Freyhof, Kottelat & Nolte, 2005	héraultinkivisimppu		
+MX.53205		Cottus			Cottus sabaudicus 	Sideleva, 2009	rhônenkivisimppu		
+MX.53205		Cottus			Cottus transsilvaniae 	Freyhof, Kottelat & Nolte, 2005	romaniankivisimppu		
+MX.5084709	heimo	Psychrolutidae 							
+		Gymnocanthus	Swainson, 1839		Gymnocanthus tricuspis 	(Reinhardt, 1830)	haarasimppu		Arctic staghorn sculpin
+		Icelus			Icelus bicornis 	(Reinhardt, 1840)	sarvisimppu		
+		Icelus	Krøyer, 1845		Icelus spatula 	Gilbert & Burke, 1912	lastasimppu		
+		Micrenophrys	Andriashev, 1954		Micrenophrys lilljeborgii 	(Collett, 1875)	känsäsimppu		
+MX.53209		Myoxocephalus	Tilesius, 1811	MX.53315	Myoxocephalus quadricornis 	(Linnaeus, 1758)	härkäsimppu		
+MX.53209		Myoxocephalus			Myoxocephalus scorpioides 	(Fabricius, 1780)	grönlanninsimppu		
+MX.53209		Myoxocephalus		MX.53210	Myoxocephalus scorpius 	(Linnaeus, 1758)	isosimppu		
+MX.53332		Taurulus	Gratzianov, 1907	MX.53208	Taurulus bubalis 	(Euphrasen, 1786)	piikkisimppu		
+		Triglops	Reinhardt, 1830		Triglops murrayi 	Günther, 1888	satulajääsimppu		moustache sculpin
+		Triglops			Triglops nybelini 	Jensen, 1944	isosilmäjääsimppu		bigeye sculpin
+		Triglops			Triglops pingelii 	Reinhardt, 1837	laikkujääsimppu		ribbed sculpin
+		Cottunculus	Jordan & Starks, 1904		Cottunculus microps 	Collett, 1875	pohjanpallosimppu		Polar sculpin
+		Cottunculus			Cottunculus subspinosus 	Jensen, 1902	islanninpallosimppu		smooth polar sculpin
+		Cottunculus			Cottunculus thomsonii 	(Günther, 1882	valjupallosimppu		
+		Ebinania	Sakamoto, 1932		Ebinania costaecanariae 	(Cervigón, 1961)	tummapallosimppu		
+MX.53211	heimo	Agonidae							
+MX.53212		Agonus	Bloch & Schneider, 1801	MX.53213	Agonus cataphractus 	(Linnaeus, 1758)	partasimppu		
+		Leptagonus	Gill, 1861		Leptagonus decagonus 	(Bloch & Schneider, 1801)	okapartasimppu		Atlantic poacher
+		Aspidophoroides	Lacepède, 1801		Aspidophoroides olrikii 	 Lütken, 1877	jääpartasimppu		Arctic alligatorfish
+MX.53214	heimo	Cyclopteridae							
+MX.53215		Cyclopterus	Linnaeus, 1758	MX.53264	Cyclopterus lumpus 	Linnaeus, 1758	rasvakala		
+		Eumicrotremus	Gill 1862		Eumicrotremus jordani 	Soldatov, 1929	nystyrasvakala		smooth lumpfish
+		Eumicrotremus			Eumicrotremus  mcalpini 	(Fowler, 1914)	jäärasvakala		Arctic lumpsucker
+		Eumicrotremus			Eumicrotremus derjugini 	Popov, 1926	sokkelorasvakala		leatherfin lumpsucker
+		Eumicrotremus			Eumicrotremus spinosus 	(Fabricius, 1776)	rokkorasvakala		Atlantic spiny lumpsucker
+MX.5084708	heimo 	Liparidae							
+		Careproctus	Krøyer, 1862		Careproctus aciculipunctatus 	Andriashev & Chernova, 1997			
+		Careproctus			Careproctus derjugini 	Chernova, 2005	barentsinimukala		
+		Careproctus			Careproctus macrophthalmus 	Chernova, 2005	isosilmäimukala		
+		Careproctus			Careproctus merretti 	Andriashev & Chernova, 1988			
+		Careproctus			Careproctus micropus 	(Günther, 1887)	islanninimukala		smaleye tadpole
+		Careproctus			Careproctus reinhardti 	(Krøyer, 1862)	pinkki-imukala	valkoimukala	
+		Eutelichthys	Tortonese, 1959		Eutelichthys leptochirus 	Tortonese, 1959	välimerenimukala		
+MX.53277		Liparis	Scopoli, 1777		Liparis bathyarcticus 	Parr, 1931	kirjoimukala		nebulous (variegated) snailfish
+MX.53277		Liparis			Liparis fabricii 	Krøyer, 1847	hyytelöimukala		gelatinous snailfish
+MX.53277		Liparis			Liparis gibbus 	Bean, 1881	harlekiini-imukala		
+MX.53277		Liparis		MX.53216	Liparis liparis 	(Linnaeus, 1766)	imukala		
+MX.53277		Liparis			Liparis montagui 	(Donovan, 1804)	pikkuimukala		
+MX.53277		Liparis			Liparis tunicatus 	Reinhardt, 1836	kelppi-imukala		Kelp snailfish
+		Paraliparis	Collett, 1879		Paraliparis abyssorum 	Andriashev & Chernova, 1997	syvännelipari		
+		Paraliparis			Paraliparis bathybius 	(Collett, 1879)	mustalipari		
+		Paraliparis			Paraliparis bipolaris 	Andriashev, 1997	irlanninlipari		
+		Paraliparis			Paraliparis copei 	Goode & Bean, 1896	maskilipari		blacksnout snailfis
+		Paraliparis			Paraliparis edwardsi 	(Vaillant, 1888)	marokonlipari		
+		Paraliparis			Paraliparis hystrix 	Merrett, 1983	hebridienlipari		
+		Paraliparis			Paraliparis murieli 	Matallanas, 1984	espanjanlipari		
+		Psednos	Barnard, 1927		Psednos andriashevi 	Chernova, 2001			tunnetaan vain holotyyppi
+		Psednos			Psednos christinae 	Andriashev, 1992	euroopanlipari		European dwarf snailfish
+		Psednos			Psednos gelatinosus 	Chernova, 2001	hyytelölipari		gelatinous dwarf snailfish
+		Psednos			Psednos islandicus 	Chernova & Stein, 2002	islanninlipari		
+		Psednos			Psednos melanocephalus 	Chernova & Stein, 2002	sysipäälipari		
+		Psednos			Psednos micruroides 	Chernova, 2001	nysälipari		
+		Psednos			Psednos spirohira 	Chernova & Stein, 2002	kierrelipari		
+		Rhodichthys	Collett, 1879		Rhodichthys regina 	Collett, 1879	rihmalipari	rihmaimukala	threadfin seasnail
+MX.5086847	heimo 	Terapontidae							
+		Pelates	Cuvier, 1829		Pelates quadrilineatus 	(Bloch, 1790)	neliviiruahven		
+		Terapon	Cuvier, 1829		Terapon puta 	Cuvier, 1829	pienisuomuviiruahven		
+MX.5086851	heimo 	Kyphosidae							
+		Kyphosus	Lacepède, 1801		Kyphosus sectatrix	(Linnaeus, 1758)	juovaruoriahven		
+MX.5086852	heimo 	Girellidae							
+		Girella	Gray, 1835		Girella zonata 	Günther, 1859	vyönapostelija		
+MX.53224	heimo 	Centrarchidae							
+		Ambloplites	Rafinesque, 1820		Ambloplites rupestris 	(Rafinesque, 1817)	kiviahven		
+MX.206831		Lepomis	Rafinesque, 1819	MX.206832	Lepomis gibbosus 	(Linnaeus, 1758)	aurinkoahven		
+MX.53254		Micropterus	Lacepède, 1802	MX.206830	Micropterus salmoides 	(Lacépède, 1802)	isobassi		
+MX.53254		Micropterus		MX.53225	Micropterus dolomieu	Lacepede, 1802	pikkubassi		
+MX.5086874	heimo 	Pempheridae							
+		Pempheris	 Cuvier 1829		Pempheris mangula 	Cuvier, 1829        	intianpyyhältäjä		
+		Pempheris			Pempheris rhomboidea 	Kossmann & Räuber, 1877	hopeapyyhältäjä		
+		Pempheris			Pempheris vanicolensis 	Cuvier, 1831	mustasaumapyyhältäjä		
+MX.5086879	heimo 	Polyprionidae							
+		Polyprion	Oken, 1817		Polyprion americanus 	(Bloch & Schneider, 1801)	hylkyahven		
+MX.5086876	heimo 	Synagropidae							
+		Synagrops	Günther, 1887		Synagrops japonicus 	(Döderlein, 1883)	mustalyhtyahven		
+MX.5086884	heimo 	Epigonidae							
+		Epigonus	Rafinesque, 1810		Epigonus denticulatus 	Dieuzeide, 1950	hammassyvänneahven		
+		Epigonus			Epigonus constanciae 	(Giglioli, 1880)	kobolttisyvänneahven		
+		Epigonus			Epigonus telescopus 	(Risso, 1810)	hohtosyvänneahven		
+		Microichthys	Rüppell, 1852		Microichthys atlanticus 	Fricke, Ordines & Williston, 2020	atlantinmikroahven		
+		Microichthys			Microichthys coccoi 	Rüppell, 1852	raitasyvänneahven		
+		Microichthys			Microichthys sanzoi 	Sparta, 1950	messinansyvänneahven		
+MX.5086890	heimo 	Lobotidae							
+		Lobotes	Cuvier, 1829		Lobotes surinamensis 	(Bloch, 1790)	kolmipyrstö		
+MX.5086893	heimo 	Chaetodontidae							
+		Chaetodon	Linnaeus, 1758		Chaetodon hoefleri 	Steindachner, 1881	nelivyöperhokala		
+MX.5086894	heimo 	Ephippidae							
+		Platax	Cuvier, 1816		Platax teira 	Forsskål, 1775	raitalepakkokala		
+MX.5086895	heimo 	Leiognathidae							
+		Equulites	Fowler, 1904		Equulites klunzingeri 	(Steindachner, 1898)	marmorilima-ahven		
+MX.5086897	heimo	Antigoniidae							
+		Antigonia	Lowe, 1843		Antigonia capros 	Lowe, 1843	kölikarjukala		
+MX.5086898	heimo 	Siganidae							
+		Siganus	Fabricius, 1775		Siganus luridus 	(Rüppell, 1829)	suklaakaniinikala		
+		Siganus			Siganus rivulatus 	Forsskål, 1775	viirukaniinikala		
+MX.5086899	heimo 	Caproidae							
+		Capros	Lacepède, 1802		Capros aper 	(Linnaeus, 1758)	karjukala		
+MX.5086900	heimo 	Luvaridae							
+		Luvarus	Rafinesque, 1810		Luvarus imperialis 	Rafinesque, 1810	luvari		
+MX.5086902	heimo 	Acanthuridae							
+		Acanthurus	Forsskål, 1775		Acanthurus monroviae 	Steindachner, 1876	keltaveitsivälskäri		
+MX.5086904	heimo 	Lophiidae							
+		Lophius	Linnaeus, 1758		Lophius budegassa 	Spinola, 1807	mustavatsakrotti		
+		Lophius			Lophius piscatorius 	Linnaeus, 1758	merikrotti		
+MX.5086910	heimo 	Antennariidae							
+		Abantennarius	Schultz, 1957		Abantennarius nummifer 	(Cuvier, 1817)	täpläeväantennikrotti		Spotfin frogfish
+		Fowlerichthys	Barbour, 1941		Fowlerichthys radiosus 	Garman, 1896	täpläantennikrotti		
+		Fowlerichthys			Fowlerichthys senegalensis 	Cadenat, 1959	senegalinantennikrotti		
+		Histrio	Fischer, 1813		Histrio histrio 	(Linnaeus, 1758)	sargassonkrotti		
+MX.5086916	heimo 	Chaunacidae							
+		Chaunax	Lowe, 1846		Chaunax pictus 	Lowe, 1846	rusokonnakrotti		
+MX.5086921	heimo 	Himantolophidae							
+		Himantolophus	Fischer, 1813		Himantolophus albinares 	Maul, 1961	ruskopallokrotti		
+		Himantolophus			Himantolophus compressus 	(Osório, 1912)	portugalinpallokrotti		
+		Himantolophus			Himantolophus groenlandicus 	Reinhardt, 1837	atlantinpallokrotti		
+		Himantolophus			Himantolophus mauli 	Bertelsen & Krefft, 1988	hankapallokrotti		
+MX.5086923	heimo 	Oneirodidae							
+		Oneirodes	Lütken, 1871		Oneirodes eschrichtii 	Lütken, 1871	patukkatorkkujakotti		
+		Oneirodes			Oneirodes macronema 	(Regan & Trewavas, 1932)	rihmatorkkujakrotti		
+MX.5086926	heimo 	Ceratiidae							
+		Ceratias	Krøyer, 1845		Ceratias holboelli 	Krøyer, 1845	syvännekrotti		
+		Cryptopsaras	Gill, 1883		Cryptopsaras couesii 	Gill, 1883	syyläsyvännekrotti		
+MX.5086927	heimo 	Gigantactinidae							
+		Gigantactis	Brauer, 1902		Gigantactis vanhoeffeni 	Brauer, 1902	tupsusiimakrotti		
+MX.5086928	heimo 	Linophrynidae							
+		Haplophryne	Regan, 1912		Haplophryne mollis 	(Brauer, 1902)	sarvikuultokrotti		
+		Linophryne	Collett, 1886		Linophryne algibarbata 	Waterman, 1939	leväpensaskrotti		
+		Linophryne			Linophryne arcturi 	(Beebe, 1926)	laippapensaskrotti		
+		Linophryne			Linophryne brevibarbata 	Beebe, 1932	lyhtypensaskrotti		
+		Linophryne			Linophryne coronata 	Parr, 1927	kruunupensaskrotti		
+		Linophryne			Linophryne lucifer 	Collett, 1886	pirupensaskrotti		
+		Linophryne			Linophryne maderensis 	Maul, 1961	madeiranpensakrotti		
+		Linophryne			Linophryne polypogon 	Regan, 1925	partapensaskrotti		
+		Linophryne			Linophryne sexfilis 	Bertelsen, 1973	haravapensaskrotti		
+MX.5086933	heimo 	Molidae							
+		Masturus	Gill, 1884		Masturus lanceolatus 	(Liénard, 1840)	peitsimöhkäkala		
+		Mola	Koelreuter, 1766		Mola mola 	(Linnaeus, 1758)	möhkäkala		
+		Ranzania	Nardo, 1840		Ranzania laevis 	(Pennant, 1776)	pikkumöhkäkala		
+MX.5086934	heimo 	Diodontidae							
+		Chilomycterus	Brisout de Barneville, 1846		Chilomycterus reticulatus 	(Linnaeus, 1758)	pippurisiilikala		
+		Cyclichthys	Kaup, 1855		Cyclichthys spilostylus 	(Leis & Randall, 1982)	pilkkusiilikala		
+		Diodon	Linnaeus, 1758		Diodon hystrix 	Linnaeus, 1758	isosiilikala		
+MX.5084351	heimo 	Tetraodontidae							
+		Arothron	Müller, 1841		Arothron hispidus 	(Linnaeus, 1758)	raspipallokala	harmaapallokala	
+		Canthigaster	Swainson, 1839		Canthigaster capistrata 	(Lowe, 1839)	saumapallokala		
+		Ephippion	 Bibron, 1855		Ephippion guttifer 	(Bennett, 1831)	hiutalepallokala		
+MX.5084352		Lagocephalus	Swainson, 1839		Lagocephalus lagocephalus 	(Linnaeus, 1758)	mustaeväpallokala		
+MX.5084352		Lagocephalus		MX.5084353	Lagocephalus sceleratus 	(Gmelin, 1789)	hopeaposkipallokala		
+MX.5084352		Lagocephalus			Lagocephalus spadiceus	(Richardson, 1845)	kultakylkipallokala		
+MX.5084352		Lagocephalus			Lagocephalus suezensis 	Clark & Gohar, 1953	suezinpallokala		
+		Sphoeroides	Anonymous [Lacepède], 1798		Sphoeroides marmoratus 	(Lowe, 1838)	marmoripallokala		
+		Sphoeroides			Sphoeroides pachygaster 	(Müller & Troschel, 1848)	raitapyrstöpallokala		
+		Torquigener	Torquigener Whitley, 1930		Torquigener flavimaculosus 	Hardy & Randall, 1983	keltapilkkupallokala		
+		Tylerius	Hardy, 1984		Tylerius spinosissimus 	(Regan, 1908)	piikkipallokala		
+MX.5086937	heimo 	Ostraciidae							
+		Acanthostracion	Bleeker, 1865		Acanthostracion notacanthus 	(Bleeker, 1863)	kuusiolosserokala		
+		Lactophrys	Swainson, 1839		Lactophrys trigonus 	(Linnaeus, 1758)	kyhmylosserokala		
+		Tetrosomus	Swainson, 1839		Tetrosomus gibbosus 	(Linnaeus, 1758)	kamelilosserokala		
+MX.5086938	heimo 	Monacanthidae							
+		Stephanolepis	Gill, 1861		Stephanolepis diaspros 	Fraser–Brunner, 1940	ornamenttiviilakala		
+MX.5086939	heimo 	Balistidae							
+		Balistes	Linnaeus, 1758		Balistes capriscus 	Gmelin, 1789	porsassäppikala		
+		Balistes			Balistes punctatus 	Gmelin, 1789	pilkkusäppikala		
+		Balistes			Balistes vetula 	Linnaeus, 1758	kuningatarsäppikala		
+		Canthidermis	Swainson, 1839		Canthidermis maculata 	(Bloch, 1786)	täpläsäppikala		
+									
+									
+									
+									
+									
