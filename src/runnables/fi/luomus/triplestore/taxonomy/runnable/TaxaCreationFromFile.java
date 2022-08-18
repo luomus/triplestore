@@ -42,8 +42,8 @@ public class TaxaCreationFromFile {
 	private static final String API_USERNAME = "...";
 	private static final String API_PASSWORD = "....";
 
-	private static final String FILENAME_IN = "E:\\esko-local\\temp\\kalat.txt";
-	private static final String FILENAME_OUT = "E:\\esko-local\\temp\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
+	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\EUROOPAN KALAT.txt";
+	private static final String FILENAME_OUT = "E:\\apache-tomcat\\webapps\\triplestore\\data\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
 	private static final boolean DRY_RUN = true; // XXX
 
 	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: All created new taxa have the same created timestamp making it easy to identify them - to fix/undo things gone wrong...
@@ -68,23 +68,25 @@ public class TaxaCreationFromFile {
 			create();
 			if (warnings.isEmpty()) {
 				System.out.println("end - success");
+			} else {
+				System.out.println("end - with warnings:");
+				warnings.forEach(w->System.out.println(w));
 			}
-			System.out.println("end - with warnings:");
-			warnings.forEach(w->System.out.println(w));
+
+			// Or maybe add old names (manually?) as alternative names?
+			System.out.println("Remember to run the following: ");
+			System.out.println("--delete from rdf_statement where statementid in ( ");
+			System.out.println("	select subjectname, langcodefk, count(1), min(statementid) ");
+			System.out.println("	from s ");
+			System.out.println("	where predicatename = 'MX.vernacularName' ");
+			System.out.println("	group by subjectname, langcodefk ");
+			System.out.println("	having count(1) > 1 ");
+			System.out.println("); ");
+			System.out.println("exit");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("end - fail");
 		}
-		// Or maybe add old names (manually?) as alternative names?
-		System.out.println("Remember to run the following: ");
-		System.out.println("--delete from rdf_statement where statementid in ( ");
-		System.out.println("	select subjectname, langcodefk, count(1), min(statementid) ");
-		System.out.println("	from s ");
-		System.out.println("	where predicatename = 'MX.vernacularName' ");
-		System.out.println("	group by subjectname, langcodefk ");
-		System.out.println("	having count(1) > 1 ");
-		System.out.println("); ");
-		System.out.println("exit");
 	}
 
 	private static void create() throws Exception {
@@ -214,8 +216,9 @@ public class TaxaCreationFromFile {
 	}
 
 	private static void debug(Taxon t) {
-		String indent = TaxonRank.fromTaxon(t).indent();
-		Utils.debug(indent, t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts());
+		List<Object> s = Utils.list(TaxonRank.fromTaxon(t).indent(), t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts());
+		String debug = s.stream().map(o->o==null?"":o.toString()).collect(Collectors.joining("\t"));
+		System.out.println(debug);
 	}
 
 	private static void resolveParents(List<Taxon> taxa) {
@@ -251,19 +254,23 @@ public class TaxaCreationFromFile {
 	private static List<Taxon> taxa(List<Map<String, String>> data) {
 		List<Taxon> taxa = new ArrayList<>();
 		for (Map<String, String> d : data) {
-			taxa.add(createTaxon(d));
+			createTaxon(d).stream().filter(t->t!=null).forEach(taxa::add);
 		}
 		return taxa;
 	}
 
-	private static Taxon createTaxon(Map<String, String> data) {
-		Qname taxonId = resolveTaxonId(data.get("TaxonID"));
-		Taxon taxon = new Taxon(taxonId, null);
-		taxon.setChecklist(new Qname("MR.1"));
+	private static Taxon prevTaxon = null;
+
+	private static Collection<Taxon> createTaxon(Map<String, String> data) {
+		Taxon taxon = createNewTaxon(resolveTaxonId(data.get("TaxonID")));
+		Taxon species = null;
+
 		for (String field : data.keySet()) {
 			if (field.startsWith("#")) continue;
 			if (field.equals("TaxonID")) continue;
+			if (field.endsWith("SpeciesID")) continue;
 			String value = data.get(field);
+			if (!given(value)) continue;
 			if (field.equals("TaxonRank")) {
 				taxon.setTaxonRank(parseTaxonRank(value));
 				continue;
@@ -274,24 +281,66 @@ public class TaxaCreationFromFile {
 				taxon.setScientificNameAuthorship(value);
 				continue;
 			} else if (field.equals("VernacularFI")) {
-				taxon.addVernacularName("fi", value);
+				taxon(taxon, species).addVernacularName("fi", value);
 				continue;
 			} else if (field.equals("AlternativeFI")) {
-				taxon.addAlternativeVernacularName("fi", value);
+				for (String s : multi(value)) {
+					taxon(taxon, species).addAlternativeVernacularName("fi", s);
+				}
 				continue;
 			} else if (field.equals("VernacularEN")) {
-				taxon.addVernacularName("en", Utils.upperCaseFirst(value));
+				taxon(taxon, species).addVernacularName("en", Utils.upperCaseFirst(value));
 				continue;
 			} else if (field.equals("AlternativeEN")) {
-				taxon.addAlternativeVernacularName("en", Utils.upperCaseFirst(value));
+				for (String s : multi(value)) {
+					taxon(taxon, species).addAlternativeVernacularName("en", Utils.upperCaseFirst(s));
+				}
 				continue;
 			} else if (field.equals("ObsoleteVernacularNameFI")) {
-				taxon.addObsoleteVernacularName("fi", value);
+				for (String s : multi(value)) {
+					taxon(taxon, species).addObsoleteVernacularName("fi", s);
+				}
+				continue;
+			} else if (field.equals("SpeciesScientificName")) {
+				Qname speciesId = resolveTaxonId(data.get("SpeciesID"));
+				species = createNewTaxon(speciesId);
+				species.setTaxonRank(new Qname("MX.species"));
+				species.setScientificName(value);
+				continue;
+			} else if (field.equals("SpeciesAuthor")) {
+				if (species == null) throw new IllegalStateException("Species author without species name: " + data);
+				species.setScientificNameAuthorship(value);
 				continue;
 			}
 			throw new IllegalStateException("Unknown field " + field);
 		}
 		validate(taxon, data);
+		if (prevTaxon != null && prevTaxon.getScientificName().equals(taxon.getScientificName())) {
+			taxon = null;
+		} else {
+			prevTaxon = taxon;
+		}
+		if (species != null) {
+			validate(species, data);
+		}
+		return Utils.list(taxon, species);
+	}
+
+	private static List<String> multi(String value) {
+		List<String> values = new ArrayList<>();
+		for (String s : value.split(Pattern.quote(";") )) {
+			values.add(s.trim());
+		}
+		return values;
+	}
+
+	private static Taxon taxon(Taxon taxon, Taxon species) {
+		return species == null ? taxon : species;
+	}
+
+	private static Taxon createNewTaxon(Qname taxonId) {
+		Taxon taxon = new Taxon(taxonId, null);
+		taxon.setChecklist(new Qname("MR.1"));
 		return taxon;
 	}
 
@@ -374,6 +423,7 @@ public class TaxaCreationFromFile {
 		RANK_MAP.put("alalahko", new Qname("MX.suborder"));
 		RANK_MAP.put("heimo", new Qname("MX.family"));
 		RANK_MAP.put("alaheimo", new Qname("MX.subfamily"));
+		RANK_MAP.put("suku", new Qname("MX.genus"));
 	}
 
 	private static Qname parseTaxonRank(String value) {
@@ -399,7 +449,7 @@ public class TaxaCreationFromFile {
 			Iterator<String> header = headers.iterator();
 			Map<String, String> map = new LinkedHashMap<>();
 			for (String s : line.split(Pattern.quote("\t"))) {
-				map.put(header.next(), s.trim());
+				map.put(header.next(), s.trim()); // XXX
 			}
 			data.add(map);
 		}

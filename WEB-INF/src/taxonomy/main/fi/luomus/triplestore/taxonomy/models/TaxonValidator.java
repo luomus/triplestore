@@ -115,7 +115,7 @@ public class TaxonValidator {
 
 	private static final Set<Character> ALPHAS = Utils.set(
 			'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë', '×');
+			'w', 'x', 'y', 'z', 'å', 'ä', 'ö', 'é', 'ü', 'æ', 'í', 'ë', '×', 'ô', 'š', 'ž');
 
 	private static final Set<Character> VERNACULAR_ALLOWED = Utils.set('-', ' ');
 
@@ -153,7 +153,7 @@ public class TaxonValidator {
 		for (char c : name.toCharArray()) {
 			if (c == '\'' && "en".equals(locale)) continue;
 			if (!ALPHAS.contains(c) && !VERNACULAR_ALLOWED.contains(c)) {
-				setError(fieldName, "Name must not contain the character '" + c+"'");
+				setWarning(fieldName, "Name should not contain the character '" + c+"'");
 				return;
 			}
 		}

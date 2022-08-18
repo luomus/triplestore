@@ -675,7 +675,7 @@ MX.53148	suku	Phoxinus			Phoxinus strymonicus 	Kottelat, 2007	strumanmutu
 	suku	Leucos			Leucos panosi 	(Bogutskaya & Iliadou, 2006)	kreikansärki			
 	suku	Leucos			Leucos ylikiensis 	(Economidis, 1991)	ylikinsärki			
 MX.53271	suku	Rutilus	Rafinesque, 1820				särjet			
-MX.53271	suku	Rutilus			Rutilus atropatenus	Derjavin, 1937	azerbaidžaninsärki		Caucasian Relict Fish — Azerbaijani Spring Roach	
+MX.53271	suku	Rutilus			Rutilus atropatenus	Derjavin, 1937	azerbaidžaninsärki		Caucasian Relict Fish	Azerbaijani Spring Roach
 MX.53271	suku	Rutilus			Rutilus frisii 	(Nordmann, 1840)	pontokaspiansärki			
 MX.53271	suku	Rutilus			Rutilus lacustris 	(Pallas, 1814)	siperiansärki			
 MX.53271	suku	Rutilus			Rutilus meidingeri 	(Heckel, 1851)	itävallansärki			
@@ -836,7 +836,7 @@ MX.5086516	heimo 	Gonostomatidae
 	suku	Gonostoma			Gonostoma elongatum 	Günther, 1878	soukkasukasuu			
 	suku	Manducus	Goode & Bean, 1896		Manducus maderensis 	(Johnson, 1890)	hopeasukasuu			
 	suku	Margrethia	Jespersen & Tåning, 1919		Margrethia obtusirostra 	espersen & Tåning, 1919	nuijasukasuu			
-	suku	Sigmops	Gill, 1883		Sigmops (Gonostoma) bathyphilus 	(Vaillant, 1884)	syvännesukasuu			
+	suku	Sigmops	Gill, 1883		Sigmops bathyphilus 	(Vaillant, 1884)	syvännesukasuu			
 MX.5086517	heimo 	Sternoptychidae								
 	alaheimo	Sternoptychinae					lättäkalat			
 	suku	Argyropelecus	Cocco, 1829		Argyropelecus aculeatus	Valenciennes, 1850	etelänlättäkala	atlantinhelmiäiskala		
@@ -1511,7 +1511,7 @@ MX.212055	suku	Ponticola			Ponticola rizensis 	(Kovačić & Engin, 2008)	purokuo
 MX.212055	suku	Ponticola			Ponticola syrman 	(Nordmann, 1840) 	laikkukuonotokko			
 MX.212055	suku	Ponticola			Ponticola turani 	(Kovačić & Engin, 2008) 	tummakuonotokko			
 MX.53541	suku	Proterorhinus	Smitt, 1900				putkisieraintokot			
-MX.53541	suku	Proterorhinus		MX.53002	Proterorhinus marmoratus 	(Pallas, 1814)	putkisieraintokko	putkinenätokko, putkikuonotokko		
+MX.53541	suku	Proterorhinus		MX.53002	Proterorhinus marmoratus 	(Pallas, 1814)	putkisieraintokko	putkinenätokko; putkikuonotokko		
 MX.53541	suku	Proterorhinus		MX.5075407	Proterorhinus nasalis 	(De Filippi, 1863) 	idänsieraintokko			
 MX.53541	suku	Proterorhinus		MX.5075406	Proterorhinus semilunaris 	(Heckel, 1837)	tonavansieraintokko			
 	suku	Pseudaphya	Iljin, 1930		Pseudaphya ferreri 	(de Buen & Fage, 1908)	neonkuultotokko			
@@ -1980,7 +1980,7 @@ MX.5086793	heimo 	Platycephalidae
 	suku	Elates	Jordan & Seale, 1907		Elates ransonnettii 	(Steindachner, 1876)	kääpiölättäsimppu		dwarf flathead	
 	suku	Cociella	Whitley, 1940		Cociella crocodilus	(Tilesius, 1812)	krokotiilisimppu		crocodile flathead	
 	suku	Platycephalus	Bloch, 1795		Platycephalus indicus 	(Linnaeus, 1758)	pyrstölättäsimppu		bartail flathead	
-	suku	Papilloculiceps	Fowler & Steinitz, 1956		Papilloculiceps longiceps 	(Cuvier, 1829)	nystykrokotiilisimppu		tentacled flathead/crocodilefish	
+	suku	Papilloculiceps	Fowler & Steinitz, 1956		Papilloculiceps longiceps 	(Cuvier, 1829)	nystykrokotiilisimppu		tentacled flathead	crocodilefish
 	suku	Sorsogona	Herre, 1934		Sorsogona prionota 	(Sauvage, 1873)	piikkilättäsimppu		halfspined flathead	
 MX.53196	heimo 	Gasterosteidae								
 MX.53313	suku	Culaea	Whitley, 1950	MX.53201	Culaea inconstans 	(Mitchill, 1815)	viisipiikki			
@@ -2045,7 +2045,7 @@ MX.5084708	heimo 	Liparidae
 	suku	Careproctus			Careproctus micropus 	(Günther, 1887)	islanninimukala		smaleye tadpole	
 	suku	Careproctus			Careproctus reinhardti 	(Krøyer, 1862)	pinkki-imukala	valkoimukala		
 	suku	Eutelichthys	Tortonese, 1959		Eutelichthys leptochirus 	Tortonese, 1959	välimerenimukala			
-MX.53277	suku	Liparis	Scopoli, 1777		Liparis bathyarcticus 	Parr, 1931	kirjoimukala		nebulous (variegated) snailfish	
+MX.53277	suku	Liparis	Scopoli, 1777		Liparis bathyarcticus 	Parr, 1931	kirjoimukala		nebulous snailfish	variegated snailfish
 MX.53277	suku	Liparis			Liparis fabricii 	Krøyer, 1847	hyytelöimukala		gelatinous snailfish	
 MX.53277	suku	Liparis			Liparis gibbus 	Bean, 1881	harlekiini-imukala			
 MX.53277	suku	Liparis		MX.53216	Liparis liparis 	(Linnaeus, 1766)	imukala			
