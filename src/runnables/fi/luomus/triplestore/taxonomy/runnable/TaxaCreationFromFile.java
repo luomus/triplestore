@@ -38,9 +38,9 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
-	private static final String API_URL = "https://.../uri/MX";
+	private static final String API_URL = "https://triplestore.../uri/MX";
 	private static final String API_USERNAME = "...";
-	private static final String API_PASSWORD = "....";
+	private static final String API_PASSWORD = "...";
 
 	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\EUROOPAN KALAT.txt";
 	private static final String FILENAME_OUT = "E:\\apache-tomcat\\webapps\\triplestore\\data\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
@@ -449,7 +449,7 @@ public class TaxaCreationFromFile {
 			Iterator<String> header = headers.iterator();
 			Map<String, String> map = new LinkedHashMap<>();
 			for (String s : line.split(Pattern.quote("\t"))) {
-				map.put(header.next(), s.trim()); // XXX
+				map.put(header.next(), s.trim());
 			}
 			data.add(map);
 		}
