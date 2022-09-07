@@ -64,8 +64,8 @@ CREATE MATERIALIZED VIEW "TAXON_SEARCH_MATERIALIZED_V2" ("CHECKLIST", "QNAME", "
   	select * from rdf_taxon_search 
   	union
   	select * from rdf_taxon_search_synonyms_v2
-);
-    
+  );
+
 CREATE INDEX ix_taxon_search ON taxon_search_materialized_v2 (checklist, name);
 CREATE INDEX ix_taxon_search_reverse ON taxon_search_materialized_v2 (checklist, REVERSE(name));
 CREATE INDEX ix_taxon_search_2 ON taxon_search_materialized_v2 (COALESCE(checklist, '.'), name);
