@@ -735,6 +735,7 @@
 	
 	<#if user.isAdmin()>
 		<@portletHeader "Misc (Admin only)" "initiallyClosed" />
+			<@labeledSelect "MX.autoNonWild" "taxonValue" "requireAdminPermissions" />
 			<@labeledInput "MX.customReportFormLink" "on" />
 			<hr />
 			<label>External links</label>
