@@ -14,7 +14,7 @@ import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
@@ -38,8 +38,8 @@ public class IUCNValidatorTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
-		ErrorReporter errorReporter = new ErrorReporingToSystemErr();
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr());
+		ErrorReporter errorReporter = new ErrorReportingToSystemErr();
 		validator = new Validator(dao, errorReporter);
 	}
 

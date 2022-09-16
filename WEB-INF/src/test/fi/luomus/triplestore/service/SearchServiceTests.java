@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.xml.Document.Node;
 import fi.luomus.commons.xml.XMLReader;
 import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -31,7 +31,7 @@ public class SearchServiceTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReporingToSystemErr());
+		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr());
 	}
 
 	@AfterClass

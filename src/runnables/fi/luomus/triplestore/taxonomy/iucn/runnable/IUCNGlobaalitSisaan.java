@@ -12,7 +12,7 @@ import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse;
 import fi.luomus.commons.taxonomy.TaxonSearchResponse.Match;
@@ -39,13 +39,13 @@ public class IUCNGlobaalitSisaan {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReporingToSystemErr());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
 
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
-			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr()); 
+			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr()); 
 
 			// dev mode
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReportingToSystemErr());
 
 			process();
 			taxonomyDAO.close();

@@ -4,7 +4,7 @@
 //import fi.luomus.commons.containers.rdf.Model;
 //import fi.luomus.commons.containers.rdf.Qname;
 //import fi.luomus.commons.containers.rdf.Statement;
-//import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+//import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 //import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 //import fi.luomus.commons.taxonomy.TaxonSearch;
 //import fi.luomus.commons.utils.FileUtils;
@@ -33,7 +33,7 @@
 //			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 //			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 //			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-//			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
+//			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 //			doit();
 //		} catch (Exception e) {
 //			e.printStackTrace();

@@ -3,7 +3,7 @@
 //import fi.luomus.commons.config.ConfigReader;
 //import fi.luomus.commons.containers.Publication;
 //import fi.luomus.commons.containers.rdf.Qname;
-//import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+//import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 //import fi.luomus.commons.utils.FileUtils;
 //import fi.luomus.commons.utils.Utils;
 //import fi.luomus.triplestore.dao.DataSourceDefinition;
@@ -36,7 +36,7 @@
 //			//dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 //			dataSource = null;
 //			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
-//			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
+//			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 //			process();
 //		} catch (Exception e) {
 //			e.printStackTrace();

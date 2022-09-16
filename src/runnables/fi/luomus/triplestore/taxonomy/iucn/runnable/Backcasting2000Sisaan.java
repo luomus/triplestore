@@ -13,7 +13,7 @@ import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonSearch;
@@ -77,8 +77,8 @@ public class Backcasting2000Sisaan {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReporingToSystemErr());
-			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReporingToSystemErr());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
+			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 			doit();
 		} catch (Exception e) {
 			e.printStackTrace();

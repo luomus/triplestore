@@ -12,7 +12,7 @@ import fi.luomus.commons.containers.rdf.ObjectLiteral;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.NoSuchTaxonException;
 import fi.luomus.commons.taxonomy.Taxon;
@@ -29,7 +29,7 @@ public class TaxonValidatorTests {
 	private static final Qname SUBGENUS = new Qname("MX.subgenus");
 	private final TriplestoreDAO triplestoreDAO = new TriplestoreDAOStub();
 	private final ExtendedTaxonomyDAO taxonomyDAO = new TestTaxonDAO();
-	private final ErrorReporter errorReporter = new ErrorReporingToSystemErr();
+	private final ErrorReporter errorReporter = new ErrorReportingToSystemErr();
 	private static TaxonContainer taxonContainer = new TestTaxonContainer();
 	
 	private static final Qname SPECIES = new Qname("MX.species");

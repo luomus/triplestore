@@ -16,7 +16,7 @@ import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReporingToSystemErr;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
@@ -40,7 +40,7 @@ public class IUCNValidointi {
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 	private static DataSource dataSource;
-	private static ErrorReporter errorReporter = new ErrorReporingToSystemErr();
+	private static ErrorReporter errorReporter = new ErrorReportingToSystemErr();
 	private static File validationFile = new File("c:/temp/iucn/validointi_" + DateUtils.getFilenameDatetime() + ".txt");
 	private static File statusChangeFile = new File("c:/temp/iucn/luokka_muuttunut_RLI_" + DateUtils.getFilenameDatetime() + ".txt");
 	private static File automaticChangesFile = new File("c:/temp/iucn/automaattiset_muutokset_" + DateUtils.getFilenameDatetime() + ".txt");
@@ -65,12 +65,12 @@ public class IUCNValidointi {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReporingToSystemErr());
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
 
 		// all data mode XXX
-		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReporingToSystemErr());
+		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr());
 		// limited data mode
-		// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReporingToSystemErr());
+		// taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReportingToSystemErr());
 
 		taxonomyDAO.getIucnDAO().getIUCNContainer().makeSureEvaluationDataIsLoaded();
 		validate();

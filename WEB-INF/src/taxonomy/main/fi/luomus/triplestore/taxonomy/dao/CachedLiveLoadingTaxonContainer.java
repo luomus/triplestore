@@ -514,7 +514,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 
 	@Override
 	public Set<Qname> orderAdministrativeStatuses(Set<Qname> administrativeStatuses) {
-		return cachedAdministrativeStatusContainer.get().orderaAdministrativeStatuses(administrativeStatuses);
+		return cachedAdministrativeStatusContainer.get().orderAdministrativeStatuses(administrativeStatuses);
 	}
 
 	@Override
