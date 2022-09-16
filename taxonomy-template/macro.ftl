@@ -231,7 +231,11 @@
 					<#if cleanedName == 'typeOfOccurrenceInFinland' && (optionValue.qname == 'MX.typeOfOccurrenceOccurs' || optionValue.qname == 'MX.doesNotOccur')>
 						<#--  skip  -->
 					<#else>
-						<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+						<#if cleanedName == 'hasAdminStatus'>
+							<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("fi")!optionValue.qname}</option>
+						<#else>
+							<option value="${optionValue.qname}" <#if same(value, optionValue.qname)>selected="selected"</#if>>${optionValue.label.forLocale("en")!optionValue.qname}</option>
+						</#if>
 					</#if>
 				</#list>
 			</select>

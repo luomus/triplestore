@@ -101,6 +101,9 @@ label {
 select, input {
 	width: 185px;
 }
+select.hasAdminStatus {
+	width: 550px;
+}
 #groupForm select {
 	width: 400px;
 }
