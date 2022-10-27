@@ -24,8 +24,9 @@ import fi.luomus.commons.utils.FileUtils;
 
 public class ChecklistComparison {
 
-	private static final String PREV_YEAR = "2020";
-	private static final String LATEST_YEAR = "2021";
+	private static final String FOLDER = "E:/esko-local/temp/checklist";
+	private static final String PREV_YEAR = "2021";
+	private static final String LATEST_YEAR = "2022";
 
 	private static final String TAB = "\t";
 	private static final String NEWLINE = "\n";
@@ -46,16 +47,16 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File("E:/esko-local/temp/checklist2021/2021.tsv");
-		File previous = new File("E:/esko-local/temp/checklist2021/2020.tsv");
+		File latest = new File(FOLDER, "lajiluettelo_2022-10-27.txt");
+		File previous = new File(FOLDER, "Lajiluettelo2021.txt");
 
 		Comparison c = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),
 				new ChecklistReader().read(previous));
 
-		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2021/checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), c.human.toString());
-		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2021/checklist_diff_"+DateUtils.getFilenameDatetime()+".tsv"), c.machine.toString());
-		FileUtils.writeToFile(new File("E:/esko-local/temp/checklist2021/checklist_removed_"+DateUtils.getFilenameDatetime()+".tsv"), c.deleted.toString());
+		FileUtils.writeToFile(new File(FOLDER, "checklist_comparison_"+DateUtils.getFilenameDatetime()+".tsv"), c.human.toString());
+		FileUtils.writeToFile(new File(FOLDER, "checklist_diff_"+DateUtils.getFilenameDatetime()+".tsv"), c.machine.toString());
+		FileUtils.writeToFile(new File(FOLDER, "checklist_removed_"+DateUtils.getFilenameDatetime()+".tsv"), c.deleted.toString());
 	}
 
 	private static class Difference {
