@@ -42,6 +42,7 @@ public class TaxaCreationFromFile {
 	private static final String API_USERNAME = "...";
 	private static final String API_PASSWORD = "...";
 
+	// Note: Example data file can be found from /data folder of this repo
 	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\EUROOPAN KALAT.txt";
 	private static final String FILENAME_OUT = "E:\\apache-tomcat\\webapps\\triplestore\\data\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
 	private static final boolean DRY_RUN = true; // XXX
