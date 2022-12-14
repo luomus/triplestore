@@ -14,6 +14,6 @@ public class GreetServlet extends EditorBaseServlet {
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		if (req.getParameter("exceptiontest") != null) throw new Exception("Exception test.");
-		return super.initResponseData(req, true).setViewName("greet");
+		return super.initResponseData(req, true).setViewName("index");
 	}
 }
