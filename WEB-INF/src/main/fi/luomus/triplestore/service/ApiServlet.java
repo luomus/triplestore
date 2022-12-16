@@ -268,8 +268,8 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 		if (!model.getSubject().getQname().equals(qname.toString())) {
 			throw new IllegalArgumentException("Request qname and data subject do not match");
-		}
-		if (!qname.toString().contains(":")) {
+		}		
+		if (!qname.toString().contains(":") || qname.getNamespace().equals("taxonid")) {
 			dao.addResource(qname);
 		}
 		dao.store(model);
