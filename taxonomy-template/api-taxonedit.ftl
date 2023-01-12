@@ -152,9 +152,9 @@
 				
 				For example 'muurain', 'metsämänty'
 				
-				Käytetään lajinimihaussa, näytetään lajikortilla otsikossa. 
+				Käytetään lajinimihaussa, näytetään lajikortilla otsikossa, käytetään havaintojen linkityksessä. 
 				
-				Used in taxon name search, shown on taxon card in title."></span>
+				Used in taxon name search, shown on taxon card in title, used in occurrence linking."></span>
 		</div>
 		<table id="vernacularNameTable">
 			<tr>
@@ -274,9 +274,9 @@
 				
 				For example 'hilla', 'vaahtera', 'juolavehnä'
 				
-				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortin otsikossa (suluissa).
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortin otsikossa (suluissa). Käytetään havaintojen linkityksessä.
 				
-				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card title (in brackets)."></span>
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card title (in brackets). Used in occurrence linking."></span>
 		</div>
 		<table>
 			<thead>
@@ -314,9 +314,9 @@
 				
 				For example 'lörppösorsa', 'punatatti', 'pientarekukka'
 				
-				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä.
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä. Käytetään havaintojen linkityksessä.
 				
-				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab."></span>
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab. Used in occurrence linking."></span>
 		</div>
 		<table>
 			<thead>
@@ -354,9 +354,9 @@
 				
 				For example 'ankka', 'kukkakaali', 'purovainokas'
 				
-				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä.
+				Käytetään lajinimihaussa, mutta suositeltu yleiskielinen nimi näytetään (ja tämä nimi suluissa). Tämä nimi näytetään lajikortilla ainoastaan taksonomia -välilehdellä. Käytetään havaintojen linkityksessä.
 				
-				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab."></span>
+				Used in taxon name search, but primary common name is shown (and this name in brackets). This name is shown on taxon card only in taxonomy -tab. Used in occurrence linking."></span>
 		</div>
 		<table>
 			<thead>
