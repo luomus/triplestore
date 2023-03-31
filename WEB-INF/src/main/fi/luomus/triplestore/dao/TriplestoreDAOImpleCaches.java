@@ -31,7 +31,7 @@ class TriplestoreDAOImpleCaches {
 	private static final String MA_FULL_NAME = "MA.fullName";
 	private static final String MA_PERSON = "MA.person";
 	private static final Qname SPECIES_DESC_VARIABLES = new Qname("MX.speciesDescriptionVariables");
-	
+
 	private final TriplestoreDAOImple dao;
 
 	TriplestoreDAOImpleCaches(TriplestoreDAOImple dao) {
@@ -46,7 +46,7 @@ class TriplestoreDAOImpleCaches {
 				Collection<Model> persons = dao.getSearchDAO().search(
 						new SearchParams(Integer.MAX_VALUE, 0)
 						.type(MA_PERSON)
-						.predicates(PERSON_ROLE_PREDICATES)); 
+						.predicates(PERSON_ROLE_PREDICATES));
 				for (Model m : persons) {
 					RdfProperty rangeValue = new RdfProperty(new Qname(m.getSubject().getQname()), null);
 					String personName = m.getSubject().getQname();
@@ -57,6 +57,7 @@ class TriplestoreDAOImpleCaches {
 					rangeValue.setLabels(new LocalizedText().set("fi", personName).set("en", personName).set("sv", personName).set(null, personName));
 					rangeValues.add(rangeValue);
 				}
+				Collections.sort(rangeValues);
 				return rangeValues;
 			} catch (Exception e) {
 				throw dao.exception("Person cache", e);
@@ -92,14 +93,14 @@ class TriplestoreDAOImpleCaches {
 
 	final Cached<String, RdfProperties> properties = new Cached<>(new PropertiesCacheLoader(), 1, TimeUnit.HOURS, 500);
 
-	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" + 
-			" SELECT DISTINCT propertyName 										" + 
+	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" +
+			" SELECT DISTINCT propertyName 										" +
 			" FROM																" +
 			" ((																" +
 			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
 			" 	 FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview v 							" +
-			"    WHERE v.subjectname IN ( 										" +																				
-			" 	   SELECT DISTINCT subjectname FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ?		" + 				
+			"    WHERE v.subjectname IN ( 										" +
+			" 	   SELECT DISTINCT subjectname FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ?		" +
 			" 	 ) 																" +
 			" ) UNION (															" +
 			"   SELECT DISTINCT subjectname as propertyName						" +
@@ -114,6 +115,7 @@ class TriplestoreDAOImpleCaches {
 			TransactionConnection con = null;
 			PreparedStatement p = null;
 			ResultSet rs = null;
+			String currentPropery = null;
 			try {
 				con = dao.openConnection();
 				p = con.prepareStatement(GET_PROPERTIES_BY_CLASSNAME_SQL);
@@ -126,12 +128,13 @@ class TriplestoreDAOImpleCaches {
 					propertyQnames.add(new Qname(rs.getString(1)));
 				}
 				for (Model model : dao.getSearchDAO().get(propertyQnames)) {
+					currentPropery = model.getSubject().toString();
 					RdfProperty property = dao.createProperty(model);
 					properties.addProperty(property);
 				}
 				return properties;
 			} catch (Exception e) {
-				throw dao.exception("Properties cache loader for classname " + className + ". " + e.getMessage(), e);
+				throw dao.exception("Properties cache loader for classname " + className + " property " + currentPropery + ". " + e.getMessage(), e);
 			}
 			finally {
 				Utils.close(p, rs, con);
@@ -156,7 +159,7 @@ class TriplestoreDAOImpleCaches {
 
 	}
 
-	final SingleObjectCache<List<RdfProperty>> descriptionGroups = 
+	final SingleObjectCache<List<RdfProperty>> descriptionGroups =
 			new SingleObjectCache<>(
 					new SingleObjectCache.CacheLoader<List<RdfProperty>>() {
 						@Override
@@ -169,7 +172,7 @@ class TriplestoreDAOImpleCaches {
 						}
 					}, 1, TimeUnit.HOURS);
 
-	final SingleObjectCache<Map<String, List<RdfProperty>>> descriptionGroupVariables = 
+	final SingleObjectCache<Map<String, List<RdfProperty>>> descriptionGroupVariables =
 			new SingleObjectCache<>(
 					new SingleObjectCache.CacheLoader<Map<String, List<RdfProperty>>>() {
 						@Override
@@ -185,7 +188,7 @@ class TriplestoreDAOImpleCaches {
 							}
 						}
 					}, 1, TimeUnit.HOURS);
-	
+
 	public void invalidateAll() {
 		properties.invalidateAll();
 		propery.invalidateAll();
