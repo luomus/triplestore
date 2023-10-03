@@ -1,0 +1,231 @@
+TaxonID	TaxonRank	ScientificName	Author	SpeciesScientificName	SpeciesAuthor
+MX.5103481	order	TROMBIDIFORMES			
+	yläheimo	Hydrachnoidea	Leach, 1815		
+	heimo	Hydrachnidae	Leach, 1815		
+	suku	Hydrachna	Müller, 1776		
+	suku	Hydrachna	Müller, 1777	Hydrachna conjecta	Koenike, 1895
+	suku	Hydrachna	Müller, 1778	Hydrachna cruenta	Müller, 1776
+	suku	Hydrachna	Müller, 1779	Hydrachna geographica	O.F.Müller, 1776 
+	suku	Hydrachna	Müller, 1780	Hydrachna globosa	De Geer, 1778 
+	suku	Hydrachna	Müller, 1781	Hydrachna uniscutata	Thor, 1897 
+	suku	Hydrachna	Müller, 1782	Hydrachna processifera	Koenike, 1903 
+	yläheimo	Eylaioidea	Leach, 1815	 	
+	heimo	Limnocharidae	Grube, 1859	 	
+	suku	Limnochares	Latreille, 1796	Limnochares aquatica	Linnaeus, 1758
+	heimo	Eylaidae	Leach, 1815
+	suku	Eylais	Latreille, 1796	 	
+	suku	Eylais	Latreille, 1797	Eylais discreta	Koenike, 1897
+	suku	Eylais	Latreille, 1798	Eylais extendens	(O.F.Müller, 1776)
+	suku	Eylais	Latreille, 1799	Eylais hamata	Koenike, 1897
+	suku	Eylais	Latreille, 1800	Eylais infundibulifera	Koenike, 1897
+	suku	Eylais	Latreille, 1801	Eylais koenikei	Halbert, 1903
+	suku	Eylais	Latreille, 1802	Eylais mutila	Koenike, 1897
+	suku	Eylais	Latreille, 1803	Eylais setosa	Koenike, 1897
+	suku	Eylais	Latreille, 1804	Eylais tantilla	Koenike, 1897
+	yläheimo	Hydryphantoidea	Piersig, 1896	 	
+	heimo	Hydryphantidae	Piersig, 1896	 	
+	suku	Hydryphantes	Koch, 1841	 	
+	suku	Hydryphantes	Koch, 1842	Hydryphantes dispar	Schaub, 1888
+	suku	Hydryphantes	Koch, 1843	Hydryphantes ruber	(De Geer, 1778)
+	suku	Hydryphantes	Koch, 1844	Hydryphantes placationis	Thon, 1899
+	suku	Pseudohydryphantes	Viets, 1926	 	
+	suku	Pseudohydryphantes	Viets, 1927	Pseudohydryphantes parvulus	Viets, 1907
+	suku	Panisus	Koenike, 1896	 	
+	suku	Panisus	Koenike, 1897	Panisus torrenticolus	Piersig, 1898
+	suku	Thyas	Koch, 1836	 	
+	suku	Thyas	Koch, 1837	Thyas barbigera	Viets, 1908
+	suku	Thyas	Koch, 1838	Thyas pachystoma	Koenike, 1912
+	heimo	Hydrodromidae	Viets, 1936	 	
+	suku	Hydrodroma	Koch, 1837	 	
+	suku	Hydrodroma	Koch, 1838	Hydrodroma despiciens	Müller, 1776
+	yläheimo	Lebertioidea	Thor, 1900	 	
+	heimo	Lebertiidae	Thor, 1900	 	
+	suku	Lebertia	Neuman, 1880	 	
+	suku	Lebertia	Neuman, 1881	Lebertia brigantina	Viets, 1933
+	suku	Lebertia	Neuman, 1882	Lebertia dubia	Thor, 1899
+	suku	Lebertia	Neuman, 1883	Lebertia fimbriata	Thor, 1899
+	suku	Lebertia	Neuman, 1884	Lebertia inaequalis	Koch, 1837
+	suku	Lebertia	Neuman, 1885	Lebertia insignis	Neuman, 1880
+	suku	Lebertia	Neuman, 1886	Lebertia glabra	Thor, 1897
+	suku	Lebertia	Neuman, 1887	Lebertia oudemansi	Koenike, 1898
+	suku	Lebertia	Neuman, 1888	Lebertia porosa	Thor, 1900
+	heimo	Oxidae	Oudemans, 1941	 	
+	suku	Oxus	Kramer, 1877	 	
+	suku	Oxus	Kramer, 1878	Oxus angustipositus	Viets, 1908
+	suku	Oxus	Kramer, 1879	Oxus ovalis	(O.F.Müller, 1776)
+	suku	Oxus	Kramer, 1880	Oxus setosus	Koenike, 1898
+	suku	Frontipoda	Koenike, 1891	 	
+	suku	Frontipoda	Koenike, 1892	Frontipoda carpenteri	Halbert, 1911
+	suku	Frontipoda	Koenike, 1893	Frontipoda musculus	(O.F.Müller, 1776)
+	heimo	Sperchontidae	Thor, 1900	 	
+	suku	Sperchonopsis	Piersig, 1896	 	
+	suku	Sperchonopsis	Piersig, 1897	Sperchonopsis verrucosa	(Protz, 1896)
+	suku	Sperchon	Kramer, 1877	 	
+	suku	Sperchon	Kramer, 1878	Sperchon brevirostris	Koenike, 1895
+	suku	Sperchon	Kramer, 1879	Sperchon clupeifer	Piersig, 1896
+	suku	Sperchon	Kramer, 1880	Sperchon glandulosus	Koenike, 1886
+	suku	Sperchon	Kramer, 1881	Sperchon setiger	Thor, 1898
+	suku	Sperchon	Kramer, 1882	Sperchon squamosus	Kramer, 1879
+	suku	Sperchon	Kramer, 1883	Sperchon papillosus	Thor, 1901
+	heimo	Teutoniidae	Koenike, 1910	 	
+	suku	Teutonia	Koenike, 1889	 	
+	suku	Teutonia	Koenike, 1890	Teutonia cometes	Koch, 1837
+	suku	Teutonia	Koenike, 1891	Teutonia subalpina	Thor, 1897
+	heimo	Torrenticolidae	Piersig, 1902	 	
+	suku	Torrenticola	Piersig, 1892	 	
+	suku	Torrenticola	Piersig, 1893	Torrenticola amplexa	Koenike, 1908
+	yläheimo	Hygrobatoidea	Koch, 1842	 	
+	heimo	Hygrobatidae	Koch, 1842	 	
+	suku	Hygrobates	Koch, 1837	 	
+	suku	Hygrobates	Koch, 1838	Hygrobates calliger	Piersig, 1896
+	suku	Hygrobates	Koch, 1839	Hygrobates fluviatilis	Ström, 1768
+	suku	Hygrobates	Koch, 1840	Hygrobates foreli	(Lebert, 1874)
+	suku	Hygrobates	Koch, 1841	Hygrobates longipalpis	(Hermann, 1804)
+	suku	Hygrobates	Koch, 1842	Hygrobates longiporus	Thor, 1898
+	suku	Hygrobates	Koch, 1843	Hygrobates nigromaculatus	Lebert, 1879
+	suku	Hygrobates	Koch, 1844	Hygrobates norvegicus	(Thor, 1897)
+	suku	Hygrobates	Koch, 1845	Hygrobates trigonicus	Koenike, 1895
+	suku	Mesobates	Thor, 1901	 	
+	suku	Mesobates	Thor, 1902	Mesobates forcipatus	Thor, 1901
+	suku	Atractides	Koch, 1842	 	
+	suku	Atractides	Koch, 1843	Atractides lacustris	Lundblad, 1925
+	suku	Atractides	Koch, 1844	Atractides nodipalpis	Thor, 1899
+	suku	Atractides	Koch, 1845	Atractides tener	Thor, 1899
+	heimo	Limnesiidae	Thor, 1900	 	
+	suku	Limnesia	Koch, 1836	 	
+	suku	Limnesia	Koch, 1837	Limnesia connata	Koenike, 1895
+	suku	Limnesia	Koch, 1838	Limnesia fulgida	Koch, 1836
+	suku	Limnesia	Koch, 1839	Limnesia koenikei	Piersig, 1894
+	suku	Limnesia	Koch, 1840	Limnesia maculata	(O.F.Müller, 1776)
+	suku	Limnesia	Koch, 1841	Limnesia polonica	Schechtel, 1910
+	suku	Limnesia	Koch, 1842	Limnesia undulata	(O.F.Müller, 1781)
+	heimo	Unionicolidae	Oudemans, 1909	 	
+	suku	Unionicola	Haldeman, 1842	 	
+	suku	Unionicola	Haldeman, 1843	Unionicola aculeata	(Koenike, 1890)
+	suku	Unionicola	Haldeman, 1844	Unionicola crassipes	(O.F.Müller, 1776)
+	suku	Unionicola	Haldeman, 1845	Unionicola figuralis	(Koch, 1836)
+	suku	Unionicola	Haldeman, 1846	Unionicola gracilipalpis	(Viets, 1908)
+	suku	Unionicola	Haldeman, 1847	Unionicola intermedia	(Koenike, 1882)
+	suku	Unionicola	Haldeman, 1848	Unionicola minor	(Soar, 1900)
+	suku	Unionicola	Haldeman, 1849	Unionicola parvipora	Lundblad, 1920
+	suku	Unionicola	Haldeman, 1850	Unionicola ypsilophora	(Bonz, 1783)
+	suku	Neumania	Lebert, 1879	 	
+	suku	Neumania	Lebert, 1880	Neumania callosa	(Koenike, 1895)
+	suku	Neumania	Lebert, 1881	Neumania limosa	(Koch, 1836)
+	suku	Neumania	Lebert, 1882	Neumania spinipes	(O.F.Müller, 1776)
+	suku	Neumania	Lebert, 1883	Neumania vernalis	(O.F.Müller, 1776)
+	heimo	Feltriidae	Viets, 1926	 	
+	suku	Feltria	Koenike, 1892	 	
+	suku	Feltria	Koenike, 1893	Feltria minuta	Koenike, 1892
+	suku	Huitfeldtia	Thor, 1989	 	
+	suku	Huitfeldtia	Thor, 1990	Huitfeldtia rectipes	Thor, 1898
+	heimo	Pionidae	Thor, 1900	 	
+	suku	Piona	Koch, 1842	 	
+	suku	Piona	Koch, 1843	Piona alpicola	(Neuman, 1880)
+	suku	Piona	Koch, 1844	Piona ambigua	(Piersig, 1894)
+	suku	Piona	Koch, 1845	Piona brehmi	Walter, 1910
+	suku	Piona	Koch, 1846	Piona carnea	(Koch, 1836)
+	suku	Piona	Koch, 1847	Piona coccinea	(Koch, 1836)
+	suku	Piona	Koch, 1848	Piona conglobata	(Koch, 1836)
+	suku	Piona	Koch, 1849	Piona dentipes	Lundblad, 1962
+	suku	Piona	Koch, 1850	Piona discrepans	(Koenike, 1895)
+	suku	Piona	Koch, 1851	Piona disparilis	(Koenike, 1895)
+	suku	Piona	Koch, 1852	Piona gyrophora	Lundblad, 1924
+	suku	Piona	Koch, 1853	Piona longipalpis	(Krendowsky, 1878)
+	suku	Piona	Koch, 1854	Piona nodata	(O.F.Müller, 1776)
+	suku	Piona	Koch, 1855	Piona paucipora	(Thor, 1897)
+	suku	Piona	Koch, 1856	Piona pusilla	(Neuman, 1875)
+	suku	Piona	Koch, 1857	Piona rotundoides	(Thor, 1897)
+	suku	Piona	Koch, 1858	Piona stjordalensis	(Thor, 1897)
+	suku	Piona	Koch, 1859	Piona variabilis	(Koch, 1836)
+	suku	Hydrochoreutes	Koch, 1837	 	
+	suku	Hydrochoreutes	Koch, 1838	Hydrochoreutes krameri	Piersig, 1896
+	suku	Hydrochoreutes	Koch, 1839	Hydrochoreutes ungulatus	(Koch, 1836)
+	alaheimo	Tiphyinae	Oudemans, 1941	 	
+	suku	Tiphys	Koch, 1836	 	
+	suku	Tiphys	Koch, 1837	Tiphys lapponicus	(Neuman, 1880)
+	suku	Tiphys	Koch, 1838	Tiphys ornatus	(Koch, 1836)
+	suku	Tiphys	Koch, 1839	Tiphys scaurus	(Koenike, 1892)
+	suku	Pionopsis	Piersig, 1894		
+	suku	Pionopsis	Piersig, 1895	Pionopsis lutescens	(Hermann, 1804)
+	suku	Pionacercus	Piersig, 1894	 	
+	suku	Pionacercus	Piersig, 1895	Pionacercus leuckarti	(Piersig, 1894)
+	suku	Pionacercus	Piersig, 1896	Pionacercus uncinatus	(Koenike, 1885)
+	suku	Pionacercus	Piersig, 1897	Pionacercus vatrax	(Koenike, 1837)
+	suku	Forelia	Haller, 1882	 	
+	suku	Forelia	Haller, 1883	Forelia brevipes	(Neuman, 1880)
+	suku	Forelia	Haller, 1884	Forelia longipalpis	Maglio, 1924
+	suku	Forelia	Haller, 1885	Forelia liliacea	(O.F.Müller, 1776)
+	suku	Forelia	Haller, 1886	Forelia variegator	(Koch, 1837)
+	heimo	Aturidae	Thor 1900	 	
+	suku	Aturus	Kramer, 1875	 	
+	suku	Aturus	Kramer, 1876	Aturus scaber	Kramer, 1875
+	suku	Brachypoda	Lebert, 1879	 	
+	suku	Brachypoda	Lebert, 1880	Brachypoda versicolor	(O.F.Müller, 1776)
+	suku	Ljania	Thor, 1898	 	
+	suku	Ljania	Thor, 1899	Ljania bipapillata	Thor, 1898
+	suku	Neobrachypoda	Koenike, 1914	 	
+	suku	Neobrachypoda	Koenike, 1915	Neobrachypoda ekmani	(Walter, 1911)
+	yläheimo	Arrenuroidea	Thor, 1900	 	
+	heimo	Acalyptonotidae	Walter, 1911	 	
+	suku	Acalyptonototus	Walter, 1911	 	
+	suku	Acalyptonototus	Walter, 1912	Acalyptonototus violaceus	Walter, 1911
+	heimo	Mideidae	Thor, 1911	 	
+	suku	Midea	Bruzelius, 1854	 	
+	suku	Midea	Bruzelius, 1855	Midea orbiculata	(O.F.Müller, 1776)
+	heimo	Mideopsidae	Koenike, 1910	 	
+	suku	Mideopsis	Neuman, 1880	 	
+	suku	Mideopsis	Neuman, 1881	Mideopsis crassipes	Soar, 1904
+	suku	Mideopsis	Neuman, 1882	Mideopsis orbicularis	(O.F.Müller, 1776)
+	heimo	Arrenuridae	Thor, 1900	 	
+	suku	Arrenurus	Walter, 1911	 	
+	suku	Arrenurus	Walter, 1912	Arrenurus stjoerdalensis	Thor, 1899
+	suku	Arrenurus	Walter, 1913	Arrenurus albator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1914	Arrenurus bicuspidator	Berlese, 1885
+	suku	Arrenurus	Walter, 1915	Arrenurus biscissus	Lebert, 1879
+	suku	Arrenurus	Walter, 1916	Arrenurus buccinator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1917	Arrenurus coronator	Thor, 1900
+	suku	Arrenurus	Walter, 1918	Arrenurus crassicaudatus	Kramer, 1875
+	suku	Arrenurus	Walter, 1919	Arrenurus forpicatus	Neuman, 1880
+	suku	Arrenurus	Walter, 1920	Arrenurus globator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1921	Arrenurus neumani	Piersig, 1895
+	suku	Arrenurus	Walter, 1922	Arrenurus membranator	Thor, 1901
+	suku	Arrenurus	Walter, 1923	Arrenurus nobilis	Neuman, 1880
+	suku	Arrenurus	Walter, 1924	Arrenurus pustulator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1925	Arrenurus robustus	Koenike, 1894
+	suku	Arrenurus	Walter, 1926	Arrenurus securiformis	Piersig, 1894
+	suku	Arrenurus	Walter, 1927	Arrenurus subarcticus	Lundblad, 1917
+	suku	Arrenurus	Walter, 1928	Arrenurus tubulator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1929	Arrenurus tricuspidator	(O.F.Müller, 1776)
+	suku	Arrenurus	Walter, 1930	Arrenurus zachariae	Koenike, 1896
+	suku	Arrenurus	Walter, 1931	Arrenurus wereschtschagini	Sokolow, 1926
+	heimo	Krendowskiidae	Viets, 1929	 	
+	suku	Krendowskia	Viets, 1929	 	
+	suku	Krendowskia	Viets, 1930	Krendowskia latissima	Piersig, 1895
+	heimo	Momoniidae	Viets, 1926	 	
+	suku	Momonia	Halbert, 1906	 	
+	suku	Momonia	Halbert, 1907	Momonia karelica	(Sokolow, 1926)
+	yläheimo	Halacaroidea		 	 
+	heimo	Halacaridae	Murray, 1877	 	
+	alaheimo	Rhambognathinae	Viets, 1927	 	
+	suku	Rhambognathides	Trouessart, 1888	 	
+	suku	Rhambognathides	Trouessart, 1889	Rhambognathides seahami	(Hodge, 1860)
+	alaheimo	Halacarinae	Murray, 1877	 	
+	suku	Halacarus	Gosse, 1855	 	
+	suku	Halacarus	Gosse, 1856	Halacarus basteri	Johnston, 1836
+	alaheimo	Porohalacarinae	Viets, 1933	 	
+	suku	Porohalacarus	Thor, 1922	 	
+	suku	Porohalacarus	Thor, 1923	Porohalacarus alpinus	(Thor, 1910)
+	suku	Porohalacarus	Thor, 1924	Porohalacarus hydrachnoides	(Lohmann, 1889)
+	suku	Lobohalacarus	Viets, 1939	 	
+	suku	Lobohalacarus	Viets, 1940	Lobohalacarus weberi	(Rominj & Viets, 1924)
+	alaheimo	Limnohalacarinae	Viets, 1939	 	
+	suku	Limnohalacarus	Walter, 1917	 	
+	suku	Limnohalacarus	Walter, 1918	Limnohalacarus wackeri	(Walter, 1914)
+	suku	Soldadellonyx	Walter, 1917	 	
+	suku	Soldadellonyx	Walter, 1918	Soldadellonyx chappuisi	Walter, 1917
+	suku	Soldadellonyx	Walter, 1919	Soldadellonyx monardi	Walter, 1919
+	alaheimo	Porolohmannellinae	Viets, 1933	 	
+	suku	Porolohmannella	Viets, 1933	 	
+	suku	Porolohmannella	Viets, 1934	Porolohmannella violacea	(Kramer, 1879)
+					

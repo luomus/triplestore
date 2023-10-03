@@ -43,7 +43,7 @@ public class TaxaCreationFromFile {
 	private static final String API_PASSWORD = "...";
 
 	// Note: Example data file can be found from /data folder of this repo
-	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\EUROOPAN KALAT.txt";
+	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\vesipunkit.txt";
 	private static final String FILENAME_OUT = "E:\\apache-tomcat\\webapps\\triplestore\\data\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
 	private static final boolean DRY_RUN = true; // XXX
 
@@ -421,7 +421,9 @@ public class TaxaCreationFromFile {
 		RANK_MAP.put("yläluokka", new Qname("MX.superclass"));
 		RANK_MAP.put("luokka", new Qname("MX.class"));
 		RANK_MAP.put("lahko", new Qname("MX.order"));
+		RANK_MAP.put("order", new Qname("MX.order"));
 		RANK_MAP.put("alalahko", new Qname("MX.suborder"));
+		RANK_MAP.put("yläheimo", new Qname("MX.superfamily"));
 		RANK_MAP.put("heimo", new Qname("MX.family"));
 		RANK_MAP.put("alaheimo", new Qname("MX.subfamily"));
 		RANK_MAP.put("suku", new Qname("MX.genus"));
