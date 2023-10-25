@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import fi.luomus.commons.utils.Utils;
 
@@ -51,16 +52,32 @@ public class ConnectionLimiter {
 
 	public Access delayAccessIfNecessary(String remoteUser) throws AccessNotGrantedTooManyPendingRequests {
 		if (remoteUser == null) remoteUser = "NULL";
-		Set<Access> opened = getAccesses(remoteUser);
-		int i = 0;
-		while (opened.size() >= maxPerUser) {
-			if (i++ > 3) {
-				throw new AccessNotGrantedTooManyPendingRequests(opened.size(), maxPerUser, remoteUser);
+		Access access = new Access(this, remoteUser);
+		AtomicBoolean tooManyPending = new AtomicBoolean(false);
+		open.compute(remoteUser, (key, grantedAccesses) -> {
+			if (grantedAccesses == null) {
+				grantedAccesses = Collections.newSetFromMap(new ConcurrentHashMap<>());
+				grantedAccesses.add(access);
+				return grantedAccesses;
 			}
-			sleep();
+
+			int i = 0;
+			while (grantedAccesses.size() >= maxPerUser) {
+				if (i++ > 3) {
+					tooManyPending.set(true);
+					return grantedAccesses;
+				}
+				sleep();
+			}
+
+			grantedAccesses.add(access);
+			return grantedAccesses;
+		});
+
+		if (tooManyPending.get()) {
+			throw new AccessNotGrantedTooManyPendingRequests(open.size(), maxPerUser, remoteUser);
 		}
-		Access access = new Access(this, remoteUser); 
-		opened.add(access);
+
 		return access;
 	}
 
