@@ -6,15 +6,15 @@ import static org.junit.Assert.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fi.luomus.triplestore.utils.ConnectionLimiter;
-import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
-import fi.luomus.triplestore.utils.ConnectionLimiter.AccessNotGrantedTooManyPendingRequests;
+import fi.luomus.triplestore.utils.AccessLimiter;
+import fi.luomus.triplestore.utils.AccessLimiter.Access;
+import fi.luomus.triplestore.utils.AccessLimiter.AccessNotGrantedTooManyPendingRequests;
 
-public class ConnectionLimiterTests {
+public class AcessLimiterTests {
 
 	@Test
 	public void test() throws AccessNotGrantedTooManyPendingRequests {
-		ConnectionLimiter limiter = new ConnectionLimiter(2);
+		AccessLimiter limiter = new AccessLimiter(2);
 		Access a1 = limiter.delayAccessIfNecessary("a");
 		limiter.delayAccessIfNecessary("a");
 		limiter.delayAccessIfNecessary("b");
@@ -31,7 +31,7 @@ public class ConnectionLimiterTests {
 	@Test
 	@Ignore
 	public void tes2t() throws InterruptedException {
-		final ConnectionLimiter limiter = new ConnectionLimiter(2);
+		final AccessLimiter limiter = new AccessLimiter(2);
 		Thread t1 = new Thread(new Runnable() {
 			int i = 0;
 			@Override

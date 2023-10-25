@@ -30,17 +30,17 @@ import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
-import fi.luomus.triplestore.utils.ConnectionLimiter;
-import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
+import fi.luomus.triplestore.utils.AccessLimiter;
+import fi.luomus.triplestore.utils.AccessLimiter.Access;
 
 @WebServlet(urlPatterns = {"/*"})
 public class ApiServlet extends EditorBaseServlet {
 
 	private static final long serialVersionUID = -1697198692074454503L;
 
-	private static final ConnectionLimiter limiter = new ConnectionLimiter(30);
+	private static final AccessLimiter limiter = new AccessLimiter(30);
 
-	protected ConnectionLimiter getConnectionLimiter() {
+	protected AccessLimiter getAccessLimiter() {
 		return limiter;
 	}
 
@@ -56,7 +56,7 @@ public class ApiServlet extends EditorBaseServlet {
 			return status404(res);
 		}
 
-		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		Access access = getAccessLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
 			return processGetWithAccess(req, res, qnames);
 		} finally {

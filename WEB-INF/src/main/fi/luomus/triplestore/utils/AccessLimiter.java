@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import fi.luomus.commons.utils.Utils;
 
-public class ConnectionLimiter {
+public class AccessLimiter {
 
 	public class AccessNotGrantedTooManyPendingRequests extends Exception {
 		private static final long serialVersionUID = -3769561443667075468L;
@@ -18,10 +18,10 @@ public class ConnectionLimiter {
 	}
 
 	public static class Access {
-		private final ConnectionLimiter granter;
+		private final AccessLimiter granter;
 		private final String id;
 		private final String remoteUser;
-		private Access(ConnectionLimiter granter, String remoteUser) {
+		private Access(AccessLimiter granter, String remoteUser) {
 			this.id = Utils.generateGUID();
 			this.granter = granter;
 			this.remoteUser = remoteUser;
@@ -46,7 +46,7 @@ public class ConnectionLimiter {
 	private final Map<String, Set<Access>> open = new ConcurrentHashMap<>();
 	private final int maxPerUser;
 
-	public ConnectionLimiter(int maxPerUser) {
+	public AccessLimiter(int maxPerUser) {
 		this.maxPerUser = maxPerUser;
 	}
 
@@ -93,12 +93,8 @@ public class ConnectionLimiter {
 	}
 
 	private Set<Access> getAccesses(String remoteUser) {
-		Set<Access> set = open.get(remoteUser);
-		if (set == null) {
-			set = Collections.newSetFromMap(new ConcurrentHashMap<Access, Boolean>());
-			open.put(remoteUser, set);
-		}
-		return set;
+		open.putIfAbsent(remoteUser, Collections.newSetFromMap(new ConcurrentHashMap<Access, Boolean>()));
+		return open.get(remoteUser);
 	}
 
 }

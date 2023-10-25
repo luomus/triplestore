@@ -19,7 +19,7 @@ import fi.luomus.commons.xml.Document;
 import fi.luomus.commons.xml.XMLWriter;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
-import fi.luomus.triplestore.utils.ConnectionLimiter.Access;
+import fi.luomus.triplestore.utils.AccessLimiter.Access;
 
 @WebServlet(urlPatterns = {"/search/*"})
 public class SearchServlet extends ApiServlet {
@@ -49,7 +49,7 @@ public class SearchServlet extends ApiServlet {
 				.objectresources(objectresources).objectliterals(objectliterals)
 				.type(type);
 
-		Access access = getConnectionLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		Access access = getAccessLimiter().delayAccessIfNecessary(req.getRemoteUser());
 		try {
 			return processGetWithAccess(req, format, searchParams);
 		} finally {
