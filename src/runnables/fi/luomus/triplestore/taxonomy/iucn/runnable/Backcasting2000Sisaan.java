@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
@@ -30,13 +32,13 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 @SuppressWarnings("unused")
 public class Backcasting2000Sisaan {
 
-	private static org.apache.tomcat.jdbc.pool.DataSource dataSource;
+	private static HikariDataSource dataSource;
 	private static TriplestoreDAOImple triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 
 	private static final Map<String, Set<Qname>> INFORMAL_GROUP;
 	static {
-		INFORMAL_GROUP = new HashMap<String, Set<Qname>>();
+		INFORMAL_GROUP = new HashMap<>();
 		INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.233")));
 		INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(new Qname("MVL.38")));
 		INFORMAL_GROUP.put("Lichens", Utils.set(new Qname("MVL.25")));
@@ -84,11 +86,11 @@ public class Backcasting2000Sisaan {
 			e.printStackTrace();
 		} finally {
 			if (dataSource != null) dataSource.close();
-		} 
+		}
 		System.out.println("done");
 	}
 
-	
+
 	private static void doit() throws Exception {
 		File f = new File("C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/RLI/2000_AllData.csv");
 		int i = 0;
@@ -142,7 +144,7 @@ public class Backcasting2000Sisaan {
 
 		Collection<Taxon> taxons = getTaxons(sciname);
 		if (taxons.isEmpty()) return null;
-		
+
 		Taxon taxon = getAcceptedTaxon(taxons, group);
 		if (taxon == null) {
 			return null;
@@ -151,7 +153,7 @@ public class Backcasting2000Sisaan {
 	}
 
 	private static Taxon getAcceptedTaxon(Collection<Taxon> taxons, String group) {
-		Set<Qname> acceptedGroups = INFORMAL_GROUP.get(group);  
+		Set<Qname> acceptedGroups = INFORMAL_GROUP.get(group);
 		for (Taxon t : taxons) {
 			Set<Qname> taxonsGroups = t.getInformalTaxonGroups();
 			for (Qname g : taxonsGroups) {
@@ -212,7 +214,7 @@ public class Backcasting2000Sisaan {
 		for (Match m : res.getExactMatches()) {
 			t.add(m.getTaxon());
 		}
-		return t; 
+		return t;
 	}
 
 }

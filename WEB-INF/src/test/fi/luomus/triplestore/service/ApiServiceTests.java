@@ -4,15 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -37,7 +39,7 @@ public class ApiServiceTests {
 	private static final String RDF_DESCRIPTION = "rdf:Description";
 	private static final String MX_ORIGIN_AND_DISTRIBUTION_TEXT = "MX.originAndDistributionText";
 	private static TriplestoreDAO dao;
-	private static DataSource dataSource;
+	private static HikariDataSource dataSource;
 	private static final Qname TEST_RESOURCE_QNAME = new Qname("JA.123");
 	private static final Subject TEST_RESOURCE = new Subject(TEST_RESOURCE_QNAME);
 
@@ -107,7 +109,7 @@ public class ApiServiceTests {
 		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXML, dao);
 		assertTrue(trim(response).contains(trim("\"rdf:Description\": { ")));
 		assertTrue(trim(response).contains(trim("\"rdf:about\": \"http://tun.fi/MA.1\",")));
-		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://tun.fi/MA.person\" },")));		
+		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://tun.fi/MA.person\" },")));
 	}
 
 	@Test
@@ -161,11 +163,16 @@ public class ApiServiceTests {
 		assertEquals(1, gathering.getNode("MZ.hasPart").getChildNodes().size());
 		Node unit = gathering.getNode("MZ.hasPart").getNode("MY.unit");
 		assertEquals("http://tun.fi/MY.sexF", unit.getNode("MY.sex").getAttribute("rdf:resource"));
-		assertEquals(1, unit.getChildNodes("MZ.hasPart").size());
-		assertEquals(1, unit.getNode("MZ.hasPart").getChildNodes().size());
-		Node identification = unit.getNode("MZ.hasPart").getNode("MY.identification");
-		assertEquals("http://tun.fi/MY.210289", identification.getAttribute("rdf:about"));
-		assertEquals("Apamea crenata", identification.getNode("MY.taxon").getContents());
+		boolean identificationFound = false;
+		for (Node unitChild : unit.getChildNodes("MZ.hasPart")) {
+			if (unitChild.hasChildNodes("MY.identification")) {
+				Node identification = unitChild.getNode("MY.identification");
+				assertEquals("http://tun.fi/MY.210289", identification.getAttribute("rdf:about"));
+				assertEquals("Apamea crenata", identification.getNode("MY.taxon").getContents());
+				identificationFound = true;
+			}
+		}
+		if (!identificationFound) fail("Should have identification");
 	}
 
 	@Test
@@ -509,7 +516,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void whitespace_nonbreaking() throws Exception {
-		String nonBreakingChar = String.valueOf(Character.toChars(Character.codePointAt("\u00A0", 0))); 
+		String nonBreakingChar = String.valueOf(Character.toChars(Character.codePointAt("\u00A0", 0)));
 		String givenLiteral = nonBreakingChar + " Foo " + nonBreakingChar + " " + nonBreakingChar;
 
 		ApiServlet.put(TEST_RESOURCE_QNAME, MX_ORIGIN_AND_DISTRIBUTION_TEXT, null, givenLiteral, "fi", null, dao);

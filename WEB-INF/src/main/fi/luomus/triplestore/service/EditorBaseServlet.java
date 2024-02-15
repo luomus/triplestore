@@ -11,7 +11,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -178,19 +178,19 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected TriplestoreDAO getTriplestoreDAO(HttpServletRequest req) {
-		DataSource datasource = getDataSource();
+		HikariDataSource datasource = getDataSource();
 		User user = getUser(req);
 		return new TriplestoreDAOImple(datasource, user.getQname(), getErrorReporter());
 	}
 
 	protected TriplestoreDAO getTriplestoreDAO() {
-		DataSource datasource = getDataSource();
+		HikariDataSource datasource = getDataSource();
 		return new TriplestoreDAOImple(datasource, TriplestoreDAO.SYSTEM_USER, getErrorReporter());
 	}
 
-	private static DataSource dataSource = null;
+	private static HikariDataSource dataSource = null;
 
-	private DataSource getDataSource() {
+	private HikariDataSource getDataSource() {
 		if (dataSource == null) {
 			synchronized (LOCK) {
 				if (dataSource == null) {

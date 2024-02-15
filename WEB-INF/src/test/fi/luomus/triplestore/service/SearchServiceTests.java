@@ -4,10 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -24,7 +25,7 @@ import fi.luomus.triplestore.service.EditorBaseServlet.Format;
 public class SearchServiceTests {
 
 	private static TriplestoreDAO dao;
-	private static DataSource dataSource;
+	private static HikariDataSource dataSource;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -89,7 +90,7 @@ public class SearchServiceTests {
 
 	@Test
 	public void test_search_default_limit_and_offset() throws Exception {
-		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("rdf:type").objectresource("MX.taxon");
+		SearchParams searchParams = new SearchParams(SearchServlet.DEFAULT_MAX_RESULT_COUNT, 0).predicate("rdf:type").objectresource("MA.person");
 		String response = SearchServlet.search(searchParams, Format.RDFXML, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(SearchServlet.DEFAULT_MAX_RESULT_COUNT, n.getChildNodes().size());

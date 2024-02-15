@@ -63,7 +63,7 @@ public class ServletTests {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/login"));
-			assertTrue(response.contains("Use your organization's login"));
+			assertTrue(response.contains("Log in to Triplestore Editor"));
 		} finally {
 			noAutenticationClient.close();
 		}

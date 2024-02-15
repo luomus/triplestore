@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.containers.Checklist;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -117,11 +117,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			" ORDER BY predicatename                                                       ";
 
 	private final Qname userQname;
-	private final DataSource datasource;
+	private final HikariDataSource datasource;
 	private final ErrorReporter errorReporter;
 	private static TriplestoreDAOImpleCaches cached;
 
-	public TriplestoreDAOImple(DataSource datasource, Qname userQname, ErrorReporter errorReporter) {
+	public TriplestoreDAOImple(HikariDataSource datasource, Qname userQname, ErrorReporter errorReporter) {
 		this.datasource = datasource;
 		this.userQname = userQname;
 		this.errorReporter = errorReporter;

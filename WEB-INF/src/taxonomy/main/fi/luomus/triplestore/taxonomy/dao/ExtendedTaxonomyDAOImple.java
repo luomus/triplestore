@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.apache.http.client.methods.HttpGet;
-import org.apache.tomcat.jdbc.pool.DataSource;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.containers.Area;
@@ -65,7 +66,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final Cached<TaxonSearch, TaxonSearchResponse> cachedTaxonSearches;
 	private final Cached<Qname, Boolean> cachedDwUses;
-	private final DataSource dataSource;
+	private final HikariDataSource dataSource;
 	private final Config config;
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final boolean devMode;

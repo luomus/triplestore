@@ -10,14 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
@@ -39,7 +39,7 @@ public class IUCNValidointi {
 	private static final int VALIDATION_YEAR = 2019;
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
-	private static DataSource dataSource;
+	private static HikariDataSource dataSource;
 	private static ErrorReporter errorReporter = new ErrorReportingToSystemErr();
 	private static File validationFile = new File("c:/temp/iucn/validointi_" + DateUtils.getFilenameDatetime() + ".txt");
 	private static File statusChangeFile = new File("c:/temp/iucn/luokka_muuttunut_RLI_" + DateUtils.getFilenameDatetime() + ".txt");

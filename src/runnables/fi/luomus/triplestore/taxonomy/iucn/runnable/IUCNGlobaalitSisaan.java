@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -34,7 +34,7 @@ public class IUCNGlobaalitSisaan {
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
 
 	public static void main(String[] args) {
-		DataSource dataSource = null;
+		HikariDataSource dataSource = null;
 		try {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
@@ -42,7 +42,7 @@ public class IUCNGlobaalitSisaan {
 			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
 
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
-			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr()); 
+			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr());
 
 			// dev mode
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, true, triplestoreDAO, new ErrorReportingToSystemErr());
@@ -113,7 +113,7 @@ public class IUCNGlobaalitSisaan {
 			process(data, response.getExactMatches().get(0), f);
 		} catch (Exception e) {
 			reportError(e, data, f);
-		}	
+		}
 	}
 
 	private static TaxonSearchResponse searchByScientificName(String scientificName, TaxonSearchResponse response) throws Exception {

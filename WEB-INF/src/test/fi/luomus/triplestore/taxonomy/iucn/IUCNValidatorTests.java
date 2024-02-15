@@ -4,18 +4,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
-import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.reporting.ErrorReporter;
+import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
 import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
@@ -30,7 +31,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 public class IUCNValidatorTests {
 
 	private static TriplestoreDAO dao;
-	private static DataSource dataSource;
+	private static HikariDataSource dataSource;
 	private static Validator validator;
 
 	@BeforeClass
@@ -56,7 +57,7 @@ public class IUCNValidatorTests {
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals(
-				"[Ohjelmointivirhe: rdf:type puuttuu!, Ohjelmointivirhe: MKV.evaluatedTaxon puuttuu!, Ohjelmointivirhe: MKV.evaluationYear puuttuu!, Ohjelmointivirhe: MKV.state puuttuu!]", 
+				"[Ohjelmointivirhe: rdf:type puuttuu!, Ohjelmointivirhe: MKV.evaluatedTaxon puuttuu!, Ohjelmointivirhe: MKV.evaluationYear puuttuu!, Ohjelmointivirhe: MKV.state puuttuu!]",
 				result.listErrors().toString());
 	}
 
@@ -99,7 +100,7 @@ public class IUCNValidatorTests {
 				"[Epäkelpo luku kentässä Levinneisyysalueen koko, max.: alpha, "+
 				"Epäkelpo luku kentässä Sukupolvi: 6,5, "+
 				"Ohjelmointivirhe: Virheellinen arvo MX.invalidEnum muuttujalle MKV.redListStatus, "+
-				"Ohjelmointivirhe: Literaali asetettu muuttujalle MKV.state jonka pitäisi olla joukossa MKV.stateEnum]", 
+				"Ohjelmointivirhe: Literaali asetettu muuttujalle MKV.state jonka pitäisi olla joukossa MKV.stateEnum]",
 				result.listErrors().toString());
 	}
 
@@ -111,7 +112,7 @@ public class IUCNValidatorTests {
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals(
-				"[Pakollinen tieto: Luokka]", 
+				"[Pakollinen tieto: Luokka]",
 				result.listErrors().toString());
 	}
 
@@ -320,7 +321,7 @@ public class IUCNValidatorTests {
 		assertEquals("" +
 				"[Levinneisyysalueen koko on ilmoitettava käytettäessä kriteeriä B1, "+
 				"Esiintymisalueen koko on ilmoitettava käytettäessä kriteeriä B2, "+
-				"Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A]", 
+				"Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A]",
 				result.listErrors().toString());
 	}
 
@@ -349,7 +350,7 @@ public class IUCNValidatorTests {
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertEquals("" +
-				"[Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A, " + 
+				"[Tarkastelujakson pituus on ilmoitettava käytettäessä kriteeriä A, " +
 				"Esiintymisalueet on täytettävä luokille NT-CR, "+
 				"Uhkatekijät on täytettävä luokille NT-CR]",
 				result.listErrors().toString());
@@ -459,7 +460,7 @@ public class IUCNValidatorTests {
 		ValidationResult result = validator.validate(givenData, null);
 		assertEquals(""+
 				"[Luokan alennusta/korotusta ei saa käyttää luokille DD, NA, NE, RE, EW, EX, " +
-				"DD syy on ilmoitettava, " + 
+				"DD syy on ilmoitettava, " +
 				"Arvoa \"DD – Puutteellisesti tunnetut\" ei voi käyttää arvovälinä, "+
 				"Luokkaa \"DD – Puutteellisesti tunnetut\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
 				"Luokkaa \"NA – Arviointiin soveltumattomat\" ei voi käyttää kriteerin aiheuttamana luokkana, "+
@@ -472,14 +473,14 @@ public class IUCNValidatorTests {
 		while (longtext.length() < 4500) {
 			longtext += longtext;
 		}
-		
+
 		Model givenModel = new Model(new Qname("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.DISTRIBUATION_AREA_NOTES, longtext);
 		ValidationResult result = validator.validate(givenData, null);
-		assertEquals("[Liian pitkä teksti kentässä Yksityiset muistiinpanot levinneisyysalueen koosta]", 
+		assertEquals("[Liian pitkä teksti kentässä Yksityiset muistiinpanot levinneisyysalueen koosta]",
 				result.listErrors().toString());
 	}
-	
+
 }

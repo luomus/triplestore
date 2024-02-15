@@ -80,7 +80,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			taxonSearch.addInformalTaxonGroup(q);
 		}
 		if (onlyExact) taxonSearch.onlyExact();
-		
+
 		int version = getVersion(req);
 
 		Format format = getFormat(req);
@@ -132,14 +132,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		json.setString(ID, match.getName());
 		json.setString(MATCHING_NAME, match.getAttribute(MATCHING_NAME));
 		if (match.hasAttribute(SCIENTIFIC_NAME)) {
-			json.setString(SCIENTIFIC_NAME, match.getAttribute(SCIENTIFIC_NAME));			
+			json.setString(SCIENTIFIC_NAME, match.getAttribute(SCIENTIFIC_NAME));
 		}
 		if (match.hasAttribute(SCIENTIFIC_NAME_AUTHORSHIP)) {
 			json.setString(SCIENTIFIC_NAME_AUTHORSHIP, match.getAttribute(SCIENTIFIC_NAME_AUTHORSHIP));
 		}
 		Qname taxonRank = getTaxonRank(match);
 		if (given(taxonRank)) {
-			json.setString(TAXON_RANK_ID, taxonRank.toString());	
+			json.setString(TAXON_RANK_ID, taxonRank.toString());
 		}
 		json.setBoolean(SPECIES, Taxon.isSpecies(taxonRank));
 		json.setBoolean(CURSIVE_NAME, Taxon.shouldCursive(taxonRank));
@@ -192,8 +192,8 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	public static Qname parseChecklist(HttpServletRequest req) {
 		String checklistParameter = req.getParameter(CHECKLIST);
 		if (!given(checklistParameter)) {
-			return TaxonSearch.MASTER_CHECKLIST;
-		} 
+			return Taxon.MASTER_CHECKLIST;
+		}
 		if (checklistParameter.equals(NULL)) {
 			return null;
 		}
@@ -228,7 +228,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		}
 		throw new UnsupportedOperationException("Version " + version);
 	}
-	
+
 	private String toJsonpv2(Document results, String callback) {
 		JSONObject res = new JSONObject();
 		Set<String> alreadyAdded = new HashSet<>();
@@ -238,14 +238,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 				String name = match.getAttribute(MATCHING_NAME).replace("'", "\\'");
 				String test = id+name;
 				if (alreadyAdded.contains(test)) continue;
-				String group = match.hasChildNodes(INFORMAL_GROUPS) && match.getNode(INFORMAL_GROUPS).hasChildNodes() ? 
+				String group = match.hasChildNodes(INFORMAL_GROUPS) && match.getNode(INFORMAL_GROUPS).hasChildNodes() ?
 						match.getNode(INFORMAL_GROUPS).getChildNodes().get(0).getAttribute(EN) : null;
-				String label = group == null ? name : name + " [" + group + "]";
-				JSONObject resultEntry = new JSONObject();
-				resultEntry.setString("value", id);
-				resultEntry.setString("label", label);
-				res.getArray("result").appendObject(resultEntry);
-				alreadyAdded.add(test);
+						String label = group == null ? name : name + " [" + group + "]";
+						JSONObject resultEntry = new JSONObject();
+						resultEntry.setString("value", id);
+						resultEntry.setString("label", label);
+						res.getArray("result").appendObject(resultEntry);
+						alreadyAdded.add(test);
 			}
 		}
 		return callback + "(" + res.toString() + ");";

@@ -4,10 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.tomcat.jdbc.pool.DataSource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
 import fi.luomus.commons.config.ConfigReader;
@@ -26,7 +27,7 @@ public class PublicTaxonSearchApiTests {
 
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
-	private static DataSource dataSource;
+	private static HikariDataSource dataSource;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -37,7 +38,7 @@ public class PublicTaxonSearchApiTests {
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 	}
 
-	@AfterClass 
+	@AfterClass
 	public static void tearDownAfterClass() {
 		dataSource.close();
 		taxonomyDAO.close();
@@ -92,7 +93,7 @@ public class PublicTaxonSearchApiTests {
 		assertTrue(n.getNode("partialMatches").getChildNodes().size() > 30);
 	}
 
-	@Test 
+	@Test
 	public void test_filter_by_informal_groups() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
@@ -103,7 +104,7 @@ public class PublicTaxonSearchApiTests {
 		assertFalse(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
 
-	@Test 
+	@Test
 	public void test_filter_by_informal_groups_2() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
@@ -113,7 +114,7 @@ public class PublicTaxonSearchApiTests {
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
 
-	@Test 
+	@Test
 	public void test_filter_by_informal_groups_3() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
@@ -124,7 +125,7 @@ public class PublicTaxonSearchApiTests {
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
 	}
 
-	@Test 
+	@Test
 	public void test_filter_by_informal_groups_4() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
