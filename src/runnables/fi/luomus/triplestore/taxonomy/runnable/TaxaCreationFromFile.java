@@ -38,14 +38,14 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
-	private static final String API_URL = "https://triplestore.../uri/MX";
+	private static final String API_URL = "https://triplestore.luomus.fi/uri/MX";
 	private static final String API_USERNAME = "...";
 	private static final String API_PASSWORD = "...";
 
 	// Note: Example data file can be found from /data folder of this repo
-	private static final String FILENAME_IN = "E:\\apache-tomcat\\webapps\\triplestore\\data\\vesipunkit.txt";
-	private static final String FILENAME_OUT = "E:\\apache-tomcat\\webapps\\triplestore\\data\\taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
-	private static final boolean DRY_RUN = true; // XXX
+	private static final String FILENAME_IN = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\63 KIRJOAHVENET 2024_MUOKATTU.txt";
+	private static final String FILENAME_OUT = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\kirjoahvenet_taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
+	private static final boolean DRY_RUN = false; // XXX
 
 	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: All created new taxa have the same created timestamp making it easy to identify them - to fix/undo things gone wrong...
 
@@ -62,6 +62,7 @@ public class TaxaCreationFromFile {
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
 	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
 	private static final String MX_TAXON = "MX.taxon";
+	private static final String MX_IS_PART_OF_INFORMAL_GROUP = "MX.isPartOfInformalTaxonGroup";
 
 	public static void main(String[] args) {
 		System.out.println("running");
@@ -142,6 +143,9 @@ public class TaxaCreationFromFile {
 					statements.add("DELETE FROM s WHERE subjectname = '"+taxon.getId()+"' AND predicatename = 'MX.isPartOf';");
 					model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
 				}
+				for (Qname groupId : taxon.getExplicitlySetInformalTaxonGroups()) {
+					model.addStatementIfObjectGiven(MX_IS_PART_OF_INFORMAL_GROUP, groupId);
+				}
 				vernacularNameStatements(taxon, model);
 				statements.addAll(generateStatements(model));
 			} else {
@@ -153,6 +157,9 @@ public class TaxaCreationFromFile {
 				model.addStatementIfObjectGiven(MX_TAXON_RANK, taxon.getTaxonRank());
 				model.addStatementIfObjectGiven(MX_NAME_ACCORDING_TO, taxon.getChecklist());
 				model.addStatementIfObjectGiven(MX_IS_PART_OF, taxon.getParentQname());
+				for (Qname groupId : taxon.getExplicitlySetInformalTaxonGroups()) {
+					model.addStatementIfObjectGiven(MX_IS_PART_OF_INFORMAL_GROUP, groupId);
+				}
 				vernacularNameStatements(taxon, model);
 				model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(CREATED_TIMESTAMP)));
 				statements.addAll(generateStatements(model));
@@ -210,6 +217,11 @@ public class TaxaCreationFromFile {
 
 	private static List<Map<String, String>> readData() throws FileNotFoundException, IOException {
 		List<String> lines = FileUtils.readLines(new File(FILENAME_IN));
+		for (int i = 0; i < lines.size(); i++) {
+			String line = lines.get(i);
+			line = line.replace("\u00A0", " ");
+			lines.set(i, line);
+		}
 		Iterator<String> i = lines.iterator();
 		List<String> headers = headers(i.next());
 		List<Map<String, String>> data = parseData(headers, i);
@@ -217,7 +229,7 @@ public class TaxaCreationFromFile {
 	}
 
 	private static void debug(Taxon t) {
-		List<Object> s = Utils.list(TaxonRank.fromTaxon(t).indent(), t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts());
+		List<Object> s = Utils.list(TaxonRank.fromTaxon(t).indent(), t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts(), t.getExplicitlySetInformalTaxonGroups());
 		String debug = s.stream().map(o->o==null?"":o.toString()).collect(Collectors.joining("\t"));
 		System.out.println(debug);
 	}
@@ -263,57 +275,72 @@ public class TaxaCreationFromFile {
 	private static Taxon prevTaxon = null;
 
 	private static Collection<Taxon> createTaxon(Map<String, String> data) {
-		Taxon taxon = createNewTaxon(resolveTaxonId(data.get("TaxonID")));
+		Taxon taxon = createNewTaxon(resolveTaxonId(data.get("taxonid")));
 		Taxon species = null;
 
 		for (String field : data.keySet()) {
+			field = field.toLowerCase().trim();
 			if (field.startsWith("#")) continue;
-			if (field.equals("TaxonID")) continue;
-			if (field.endsWith("SpeciesID")) continue;
+			if (field.equals("taxonid")) continue;
+			if (field.endsWith("speciesid")) continue;
 			String value = data.get(field);
 			if (!given(value)) continue;
-			if (field.equals("TaxonRank")) {
+			value = Utils.removeWhitespaceAround(value);
+			if (!given(value)) continue;
+			if (field.equals("taxonrank") || field.equals("rank")) {
 				taxon.setTaxonRank(parseTaxonRank(value));
 				continue;
-			} else if (field.equals("ScientificName")) {
+			} else if (field.equals("scientificname") || field.equals("taxon")) {
 				taxon.setScientificName(value);
 				continue;
-			} else if (field.equals("Author")) {
+			} else if (field.equals("author")) {
 				taxon.setScientificNameAuthorship(value);
 				continue;
-			} else if (field.equals("VernacularFI")) {
+			} else if (field.equals("vernacularfi")) {
 				taxon(taxon, species).addVernacularName("fi", value);
 				continue;
-			} else if (field.equals("AlternativeFI")) {
+			} else if (field.equals("alternativefi")) {
 				for (String s : multi(value)) {
 					taxon(taxon, species).addAlternativeVernacularName("fi", s);
 				}
 				continue;
-			} else if (field.equals("VernacularEN")) {
+			} else if (field.equals("vernacularen")) {
 				taxon(taxon, species).addVernacularName("en", Utils.upperCaseFirst(value));
 				continue;
-			} else if (field.equals("AlternativeEN")) {
+			} else if (field.equals("alternativeen")) {
 				for (String s : multi(value)) {
 					taxon(taxon, species).addAlternativeVernacularName("en", Utils.upperCaseFirst(s));
 				}
 				continue;
-			} else if (field.equals("ObsoleteVernacularNameFI")) {
+			} else if (field.equals("obsoletevernacularnamefi") || field.equals("obsoletefi")) {
 				for (String s : multi(value)) {
 					taxon(taxon, species).addObsoleteVernacularName("fi", s);
 				}
 				continue;
-			} else if (field.equals("SpeciesScientificName")) {
-				Qname speciesId = resolveTaxonId(data.get("SpeciesID"));
+			} else if (field.equals("speciesscientificname")) {
+				Qname speciesId = resolveTaxonId(data.get("speciesid"));
 				species = createNewTaxon(speciesId);
 				species.setTaxonRank(new Qname("MX.species"));
 				species.setScientificName(value);
 				continue;
-			} else if (field.equals("SpeciesAuthor")) {
+			} else if (field.equals("speciesauthor")) {
 				if (species == null) throw new IllegalStateException("Species author without species name: " + data);
 				species.setScientificNameAuthorship(value);
 				continue;
+			} else if (field.equals("informalgroup")) {
+				if (value.contains(",")) {
+					for (String id : value.split(Pattern.quote(","))) {
+						taxon(taxon, species).addInformalTaxonGroup(new Qname(id.trim()));
+					}
+				} else {
+					taxon(taxon, species).addInformalTaxonGroup(new Qname(value.trim()));
+				}
+				continue;
 			}
 			throw new IllegalStateException("Unknown field " + field);
+		}
+		if (species == null && taxon.getTaxonRank() == null) {
+			taxon.setTaxonRank(new Qname("MX.species"));
 		}
 		validate(taxon, data);
 		if (prevTaxon != null && prevTaxon.getScientificName().equals(taxon.getScientificName())) {
@@ -426,6 +453,7 @@ public class TaxaCreationFromFile {
 		RANK_MAP.put("yläheimo", new Qname("MX.superfamily"));
 		RANK_MAP.put("heimo", new Qname("MX.family"));
 		RANK_MAP.put("alaheimo", new Qname("MX.subfamily"));
+		RANK_MAP.put("tribe", new Qname("MX.tribe"));
 		RANK_MAP.put("suku", new Qname("MX.genus"));
 	}
 
@@ -439,7 +467,7 @@ public class TaxaCreationFromFile {
 	private static List<String> headers(String line) {
 		List<String> headers = new ArrayList<>();
 		for (String s : line.split(Pattern.quote("\t"))) {
-			headers.add(s.trim());
+			headers.add(s.trim().toLowerCase());
 		}
 		return headers;
 	}

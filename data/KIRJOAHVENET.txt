@@ -1,0 +1,1281 @@
+TaxonID	rank	taxon	author	vernacularFI	obsoleteFI	informalgroup	
+MX.5086700	lahko	Cichliformes		kirjoahvenkalat			
+							
+MX.5086707	heimo	Cichlidae		kirjoahvenet 			
+MX.5086711	alaheimo	Cichlinae	Bonaparte, 1835	amerikankirjoahvenet 		MVL.1284	
+	tribe	Retroculini		koskitonkijat			
+	suku	Retroculus	Eigenmann & Bray, 1894				
+		Retroculus acherontos 	Landim, Moreira & Figueiredo, 2015	kyhmykoskitonkija		MVL.1285	
+		Retroculus lapidifer	(Castelnau, 1855)	koskitonkija		MVL.1285	
+		Retroculus septentrionalis 	Gosse, 1971	vuollekoskitonkija		MVL.1285	
+		Retroculus xinguensis	Gosse, 1971	viherkoskitonkija		MVL.1285	
+	tribe	Cichlini		kiklat			
+	suku	Cichla	Bloch & Schneider, 1801				
+		Cichla kelberi	Kullander & Ferreira, 2006	pilkkueväkikla		MVL.1285	
+		Cichla monoculus	Agassiz, 1831	satulakikla		MVL.1285	
+		Cichla nigromaculata 	Jardine & Schomburgk, 1843	mustaeväkikla		MVL.1285	
+		Cichla ocellaris	Bloch & Schneider, 1801	isokikla		MVL.1285	
+		Cichla orinocensis	Humboldt, 1821	keltakikla		MVL.1285	
+		Cichla pinima	Kullander & Ferreira, 2006	hunajakikla		MVL.1285	
+		Cichla piquiti 	Kullander & Ferreira, 2006	seeprakikla		MVL.1285	
+		Cichla pleiozona 	Kullander & Ferreira, 2006	raitakikla		MVL.1285	
+		Cichla temensis	Humboldt, 1821	helmikikla		MVL.1285	
+	tribe 	Chaetobranchini					
+	suku	Chaetobranchopsis	Steindachner, 1875				
+		Chaetobranchopsis australis 	Eigenmann & Ward, 1907	etelänseuloja-ahven		MVL.1285	
+		Chaetobranchopsis orbicularis 	(Steindachner, 1875)	seuloja-ahven		MVL.1285	
+		Chaetobranchus flavescens 	Heckel, 1840	keltaseuloja-ahven		MVL.1285	
+		Chaetobranchus semifasciatus 	Steindachner, 1875	kiilaseuloja-ahven		MVL.1285	
+	tribe	Geophagini					
+	suku	Crenicichla	Heckel, 1840	sukkula-ahvenet			
+		Crenicichla acutirostris	Günther, 1862	pienasukkula-ahven		MVL.1285	
+		Crenicichla albopunctata	Pellegrin, 1904	helmisukkula-ahven		MVL.1285	
+		Crenicichla alta	Eigenmann, 1912	tähtisukkula-ahven		MVL.1285	
+		Crenicichla anthurus	Cope, 1872	perunsukkula-ahven		MVL.1285	
+		Crenicichla cametana	Steindachner, 1911	tummasukkula-ahven		MVL.1285	
+		Crenicichla cincta	Regan, 1905	kalterisukkula-ahven		MVL.1285	
+		Crenicichla compressiceps	Ploeg, 1986	kultaraitasukkula-ahven		MVL.1285	
+		Crenicichla cyanonotus	Cope, 1870	tulieväsukkula-ahven		MVL.1285	
+		Crenicichla cyclostoma	Ploeg, 1986	leukasukkula-ahven		MVL.1285	
+		Crenicichla frenata	Gill, 1858	ohjassukkula-ahven		MVL.1285	
+		Crenicichla geayi	Pellegrin, 1903	keltavatsasukkula-ahven		MVL.1285	
+		Crenicichla heckeli	Ploeg, 1989	sirosukkula-ahven		MVL.1285	
+		Crenicichla jaguarensis	Haseman 1911	jaguaarisukkula-ahven		MVL.1285	
+		Crenicichla jegui	Ploeg, 1986	madesukkula-ahven		MVL.1285	
+		Crenicichla johanna	Heckel, 1840	palettisukkula-ahven		MVL.1285	
+		Crenicichla labrina	(Spix & Agassiz, 1831)	keltaposkisukkula-ahven		MVL.1285	
+		Crenicichla lacustris 	(Castelnau, 1855)	rengassukkula-ahven		MVL.1285	
+		Crenicichla lenticulata	Heckel, 1840	pippurisukkula-ahven		MVL.1285	
+		Crenicichla lepidota	Heckel, 1840	sukkula-ahven		MVL.1285	
+		Crenicichla lucius	Cope, 1870	haukisukkula-ahven		MVL.1285	
+		Crenicichla lugubris	Heckel, 1840	valkosaumasukkula-ahven		MVL.1285	
+		Crenicichla macrophthalma	Heckel, 1840	isosilmäsukkula-ahven		MVL.1285	
+		Crenicichla marmorata	Pellegrin, 1904	marmorisukkula-ahven		MVL.1285	
+		Crenicichla menezesi	Ploeg, 1991	välkesukkula-ahven		MVL.1285	
+		Crenicichla multispinosa	Pellegrin, 1903	piikkisukkula-ahven		MVL.1285	
+		Crenicichla notophthalmus	Regan, 1913	silmäsukkula-ahven		MVL.1285	
+		Crenicichla percna	Kullander, 1991	kuhasukkula-ahven		MVL.1285	
+		Crenicichla phaiospilus	Kullander, 1991	linjasukkula-ahven		MVL.1285	
+		Crenicichla proteus	Cope, 1872	sinisukkula-ahven		MVL.1285	
+		Crenicichla punctata	Hensel, 1870	täpläjuovasukkula-ahven		MVL.1285	
+		Crenicichla regani	Ploeg, 1989	korusukkula-ahven		MVL.1285	
+		Crenicichla reticulata	(Heckel, 1840)	verkkosukkula-ahven		MVL.1285	
+		Crenicichla saxatilis	(Linnaeus, 1758)	louhisukkula-ahven		MVL.1285	
+		Crenicichla semifasciata	(Heckel, 1840)	puoliraitasukkula-ahven		MVL.1285	
+		Crenicichla stocki	Ploeg, 1991	sysisukkula-ahven		MVL.1285	
+		Crenicichla strigata	Günther, 1862	viirusukkula-ahven		MVL.1285	
+		Crenicichla sveni	Ploeg, 1991	metansukkula-ahven		MVL.1285	
+		Crenicichla ternetzi	Norman, 1926	mustajuovasukkula-ahven		MVL.1285	
+		Crenicichla tigrina	Ploeg, Jégu & Ferreira, 1991	tiikerisukkula-ahven		MVL.1285	
+		Crenicichla urosema	Kullander, 1990	pastellisukkula-ahven		MVL.1285	
+		Crenicichla vittata	Heckel, 1840	juovasukkula-ahven		MVL.1285	
+		Crenicichla zebrina 	Montaña, López-Fernández & Taphorn, 2008	seeprasukkula-ahven		MVL.1285	
+	suku	Acarichthys	Eigenmann, 1912				
+		Acarichthys heckelii	(Müller & Troschel, 1848)	rihmakirjoahven		MVL.1285	
+	suku	Apistogramma	Regan, 1913	kääpiöahvenet			
+		Apistogramma acrensis 	Staeck, 2003			MVL.1285	
+		Apistogramma agassizii	(Steindachner, 1875)	loistokääpiöahven		MVL.1285	
+		Apistogramma allpahuayo 	Römer, Beninde, Duponchelle, Vela Díaz, Ortega, Hahn, Soares, Díaz Cachay, García-Dávila, Sirvas-Cornejo & Renno, 2012	mustaleukakääpiöahven		MVL.1285	
+		Apistogramma arua	Römer & Warzel, 1998	metallikääpiöahven		MVL.1285	
+		Apistogramma atahualpa	Römer, 1997	aurinkokääpiöahven		MVL.1285	
+		Apistogramma baenschi 	Römer, Hahn, Römer, Soares & Wöhler, 2004	inkakääpiöahven		MVL.1285	
+		Apistogramma barlowi 	Römer & Hahn, 2008	hautojakääpiöahven		MVL.1285	
+		Apistogramma bitaeniata	Pellegrin, 1936	korukääpiöahven		MVL.1285	
+		Apistogramma borellii	(Regan, 1906)	keltakääpiöahven		MVL.1285	
+		Apistogramma brevis	Kullander, 1980	pujokääpiöahven		MVL.1285	
+		Apistogramma cacatuoides	Hoedeman, 1951	töyhtökääpiöahven		MVL.1285	
+		Apistogramma caetei	Kullander, 1980	turkoosikääpiöahven		MVL.1285	
+		Apistogramma commbrae	(Regan, 1906)	katkokääpiöahven		MVL.1285	
+		Apistogramma cruzi	Kullander, 1986	linjatäpläkääpiöahven		MVL.1285	
+		Apistogramma diplotaenia	Kullander, 1987	parijuovakääpiöahven		MVL.1285	
+		Apistogramma elizabethae	Kullander, 1980	soukkakääpiöahven		MVL.1285	
+		Apistogramma erythrura 	Staeck & Schindler, 2008	hehkukääpiöahven		MVL.1285	
+		Apistogramma eunotus	Kullander, 1981	kyrmykääpiöahven		MVL.1285	
+		Apistogramma geisleri	Meinken, 1971	helmiäiskääpiöahven		MVL.1285	
+		Apistogramma gephyra	Kullander, 1980	siltakääpiöahven		MVL.1285	
+		Apistogramma gibbiceps	Meinken, 1969	sinikääpiöahven		MVL.1285	
+		Apistogramma gossei	Kullander, 1982	ruskokääpiöahven		MVL.1285	
+		Apistogramma guttata 	Antonio, Kullander & Lasso, 1989	pilkkukääpiöahven		MVL.1285	
+		Apistogramma hippolytae	Kullander, 1982	satulakääpiöahven		MVL.1285	
+		Apistogramma hoignei	Meinken, 1965	purjekääpiöahven		MVL.1285	
+		Apistogramma hongsloi	Kullander, 1979	tulikääpiöahven		MVL.1285	
+		Apistogramma inconspicua	Kullander, 1983	safiirikääpiöahven		MVL.1285	
+		Apistogramma iniridae	Kullander, 1979	viuhkakääpiöahven		MVL.1285	
+		Apistogramma juruensis	Kullander, 1986	juruankääpiöahven		MVL.1285	
+		Apistogramma linkei	Koslowski, 1985	hohdekääpiöahven		MVL.1285	
+		Apistogramma luelingi	Kullander, 1976	kultakääpiöahven		MVL.1285	
+		Apistogramma macmasteri	Kullander, 1979	rubiinikääpiöahven		MVL.1285	
+		Apistogramma megaptera 	Mesa S. & Lasso, 2011	lippukääpiöahven		MVL.1285	
+		Apistogramma meinkeni	Kullander, 1980	raitapyrstökääpiöahven		MVL.1285	
+		Apistogramma mendezi	Römer, 1994	nelijuovakääpiöahven		MVL.1285	
+		Apistogramma moae	Kullander, 1980	keltakuvekääpiöahven		MVL.1285	
+		Apistogramma nijsseni	Kullander, 1979	pandakääpiöahven		MVL.1285	
+		Apistogramma norberti	Staeck, 1991	huulikääpiöahven		MVL.1285	
+		Apistogramma ortegai 	Britzke, Oliveira & Kullander, 2014	kaijakääpiöahven		MVL.1285	
+		Apistogramma ortmanni	(Eigenmann, 1912)	savukääpiöahven		MVL.1285	
+		Apistogramma panduro	Römer, 1997	palettikääpiöahven		MVL.1285	
+		Apistogramma paucisquamis	Kullander & Staeck, 1988	linjakääpiöahven		MVL.1285	
+		Apistogramma payaminonis	Kullander, 1986	neonkääpiöahven		MVL.1285	
+		Apistogramma personata	Kullander, 1980	naamiokääpiöahven		MVL.1285	
+		Apistogramma pertensis	(Haseman, 1911)	verkkokääpiöahven		MVL.1285	
+		Apistogramma piauiensis	Kullander, 1980	kirjokääpiöahven		MVL.1285	
+		Apistogramma psammophila	Staeck & Schindler, 2019	hietakääpiöahven		MVL.1285	
+		Apistogramma pulchra	Kullander, 1980	kennokääpiöahven		MVL.1285	
+		Apistogramma regani	Kullander, 1980	seeprakääpiöahven		MVL.1285	
+		Apistogramma resticulosa	Kullander, 1980	viirukääpiöahven		MVL.1285	
+		Apistogramma rositae 	Römer, Römer & Hahn, 2006	kalterikääpiöahven		MVL.1285	
+		Apistogramma rubrolineata	Hein, Zarske & Zapata, 2002	karmiinikääpiöahven		MVL.1285	
+		Apistogramma rupununi	Fowler, 1914	teräskääpiöahven		MVL.1285	
+		Apistogramma staecki	Koslowski, 1985	oranssikääpiöahven		MVL.1285	
+		Apistogramma steindachneri	(Regan, 1908)	kultaselkäkääpiöahven		MVL.1285	
+		Apistogramma taeniata	(Günther, 1862)	hohtokääpiöahven		MVL.1285	
+		Apistogramma trifasciata	(Eigenmann & Kennedy, 1903)	juovakääpiöahven		MVL.1285	
+		Apistogramma uaupesi	Kullander, 1980	lyyrakääpiöahven		MVL.1285	
+		Apistogramma urteagai	Kullander, 1986	laikkukääpiöahven		MVL.1285	
+		Apistogramma velifera 	Staeck, 2003	purjekääpiöahven		MVL.1285	
+		Apistogramma viejita	Kullander, 1979	punakääpiöahven		MVL.1285	
+		Apistogrammoides pucallpaensis	Meinken, 1965	kiilakääpiöahven		MVL.1285	
+	suku	Biotodoma	Eigenmann & Kennedy, 1903				
+		Biotodoma cupido	(Heckel, 1840)	neitotonkija		MVL.1285	
+		Biotodoma wavrini	(Gosse, 1963)	sironeitotonkija		MVL.1285	
+		Biotoecus dicentrarchus	Kullander, 1989	kuultoakara		MVL.1285	
+		Biotoecus opercularis	(Steindachner, 1875)	perhosakara		MVL.1285	
+		Crenicara latruncularium	Kullander & Staeck, 1990	verkkoakara		MVL.1285	
+		Crenicara punctulatum	(Günther, 1863)	isoakara		MVL.1285	
+	suku	Dicrossus	Steindachner, 1875				
+		Dicrossus filamentosus	(Ladiges, 1958)	ruutuakara		MVL.1285	
+		Dicrossus foirni 	Römer, Hahn & Vergara, 2010	pastelliakara		MVL.1285	
+		Dicrossus gladicauda 	Schindler & Staeck, 2008	miekka-akara		MVL.1285	
+		Dicrossus maculatus	Steindachner, 1875	täpläakara		MVL.1285	
+	suku	Geophagus	Heckel, 1840				
+		Geophagus abalios 	López-Fernández & Taphorn, 2004	orinocontonkija		MVL.1285	
+		Geophagus altifrons	Heckel, 1840	viiritonkija		MVL.1285	
+		Geophagus argyrostictus	Kullander, 1991	hopeatäplätonkija		MVL.1285	
+		Geophagus brachybranchus	Kullander & Nijssen, 1989	mangotonkija		MVL.1285	
+		Geophagus brasiliensis	(Quoy & Gaimard, 1824)	helmiäistonkija		MVL.1285	
+		Geophagus brokopondo	Kullander & Nijssen, 1989	helmipyrstötonkija		MVL.1285	
+		Geophagus camopiensis	Pellegrin, 1903	tinatonkija		MVL.1285	
+		Geophagus crassilabris	Steindachner, 1876	huulitonkija		MVL.1285	
+		Geophagus dicrozoster 	López-Fernández & Taphorn, 2004	raitatonkija		MVL.1285	
+		Geophagus grammepareius	Kullander & Taphorn, 1992	ruskotonkija		MVL.1285	
+		Geophagus harreri	Gosse, 1976	selkätäplätonkija		MVL.1285	
+		Geophagus megasema 	Heckel, 1840	pälvitonkija		MVL.1285	
+		Geophagus parnaibae 	Staeck & Schindler, 2006	parnaibantonkija		MVL.1285	
+		Geophagus pellegrini	Regan, 1912	keltakyhmytonkija		MVL.1285	
+		Geophagus proximus	(Castelnau, 1855)	laikkutonkija		MVL.1285	
+		Geophagus pyrocephalus 	Chuctaya, Nitschke, Andrade, Wingert & Malabarba, 2022	punaotsatonkija		MVL.1285	
+		Geophagus pyrineusi 	Deprá, Ohara & Silva, 2022	täpläjuovatonkija		MVL.1285	
+		Geophagus steindachneri	Eigenmann & Hildebrand, 1922	kyhmytonkija		MVL.1285	
+		Geophagus surinamensis	(Bloch, 1791)	punaevätonkija		MVL.1285	
+		Geophagus sveni 	Lucinda, de Lucena & Assis, 2010	loistotonkija		MVL.1285	
+		Geophagus taeniopareius	Kullander & Royero, 1992	kultatonkija		MVL.1285	
+		Geophagus winemilleri 	López-Fernández & Taphorn, 2004	kardinaalitonkija		MVL.1285	
+	suku	Guianacara	Kullander & Nijssen, 1989				
+		Guianacara dacrya 	Arbour & López-Fernández, 2011	laikkuklovnitonkija		MVL.1285	
+		Guianacara geayi	(Pellegrin, 1902)	klovnitonkija		MVL.1285	
+		Guianacara oelemariensis	Kullander & Nijssen, 1989	ruutuklovnitonkija		MVL.1285	
+		Guianacara owroewefi	Kullander & Nijssen, 1989	punaklovnitonkija		MVL.1285	
+		Guianacara sphenozona	Kullander & Nijssen, 1989	suistoklovnitonkija		MVL.1285	
+	suku	Gymnogeophagus	Miranda Ribeiro, 1918				
+		Gymnogeophagus australis	(Eigenmann, 1907)	kirjotonkija		MVL.1285	
+		Gymnogeophagus balzanii	(Perugia, 1891)	seepratonkija		MVL.1285	
+		Gymnogeophagus caaguazuensis 	Staeck, 2006	rivitäplätonkija		MVL.1285	
+		Gymnogeophagus gymnogenys	(Hensel, 1870)	tummatonkija		MVL.1285	
+		Gymnogeophagus labiatus	(Hensel, 1870)	turpatonkija		MVL.1285	
+		Gymnogeophagus lacustris	Reis & Malabarba, 1988	laguunitonkija		MVL.1285	
+		Gymnogeophagus meridionalis	Reis & Malabarba, 1988	neontonkija		MVL.1285	
+		Gymnogeophagus rhabdotus	(Hensel, 1870)	sinijuovatonkija		MVL.1285	
+	suku	Mazarunia	Kullander, 1990				
+		Mazarunia mazarunii	Kullander, 1990	matsaruni		MVL.1285	
+	suku	Mikrogeophagus	Frey, 1957				
+		Mikrogeophagus altispinosus	(Haseman, 1911)	rusokirjoahven		MVL.1285	
+		Mikrogeophagus maculicauda 	Staeck, Ottoni & Schindler, 2022	täpläperhosahven		MVL.1285	
+		Mikrogeophagus ramirezi	(Myers & Harry, 1948)	perhoskirjoahven		MVL.1285	
+	suku	Satanoperca	Günther, 1862				
+		Satanoperca acuticeps	(Heckel, 1840)	vihertonkija		MVL.1285	
+		Satanoperca curupira	Ota et al., 2018	viirukuonotonkija		MVL.1285	
+		Satanoperca daemon	Heckel, 1840	paholaistonkija		MVL.1285	
+		Satanoperca jurupari	(Heckel, 1840)	pronssitonkija		MVL.1285	
+		Satanoperca leucosticta	(Müller & Troschel, 1848)	timanttitonkija		MVL.1285	
+		Satanoperca lilith	Kullander & Ferreira, 1988	noitatonkija		MVL.1285	
+		Satanoperca mapiritensis	(Férnandes-Yépez, 1950)	helmipäätonkija		MVL.1285	
+		Satanoperca pappaterra	(Heckel, 1840)	mustajuovatonkija		MVL.1285	
+		Satanoperca rhynchitis 	Kullander, 2012 	punahuulitonkija		MVL.1285	
+		Satanoperca setepele 	Ota, Deprá, Kullander, Graça & Pavanelli, 2022	oliiivitonkija		MVL.1285	
+	suku	Taeniacara	Myers, 1935				
+		Taeniacara candidi	Myers, 1935	oliivikääpiöahven		MVL.1285	
+	suku	Teleocichla	Kullander, 1988	tokkoakarat			
+		Teleocichla centisquama	Zuanon & Sazima, 2002	pikkutokkoakara	pikkutokkoahven	MVL.1285	
+		Teleocichla centrarchus	Kullander, 1988	aurinkotokkoakara	aurinkotokkoahven	MVL.1285	
+		Teleocichla cinderella	Kullander, 1988	tuhkimotokkoakara	tuhkimotokkoahven	MVL.1285	
+		Teleocichla gephyrogramma	Kullander, 1988	satulatokkoakara	satulatokkoahven	MVL.1285	
+		Teleocichla monogramma	Kullander, 1988	juovatokkoakara	juovatokkoahven	MVL.1285	
+		Teleocichla preta	Varella, Zuanon, Kullander & López-Fernández, 2016	mustatokkoakara		MVL.1285	
+		Teleocichla prionogenys	Kullander, 1988	sahatokkoakara	sahatokkoahven	MVL.1285	
+		Teleocichla proselytus	Kullander, 1988	vihertokkoakara	vihertokkoahven	MVL.1285	
+		Teleocichla wajapi 	Varella & Moreira, 2013	pastellitokkoakara		MVL.1285	
+	tribe	Astronotini		oskarit			
+	suku	Astronotus	Swainson, 1839				
+		Astronotus crassipinnis	(Heckel, 1840)	paksueväoskari		MVL.1285	
+		Astronotus ocellatus	(Agassiz, 1831)	riikinkukkoahven eli oskari		MVL.1285	
+	tribe	Cichlasomatini					
+	suku	Acaronia	Myers, 1940				
+		Acaronia nassa	(Heckel, 1840)	rysäkirjoahven		MVL.1285	
+		Acaronia vultuosa	Kullander, 1989	maskikirjoahven		MVL.1285	
+	suku	Aequidens	Eigenmann & Bray, 1894				
+		Aequidens chimantanus	Inger, 1956	suokirjoahven		MVL.1285	
+		Aequidens diadema	(Heckel, 1840)	kuviokirjoahven		MVL.1285	
+		Aequidens epae	Kullander, 1995	epankirjoahven		MVL.1285	
+		Aequidens mauesanus	Kullander, 1997	selkätäpläkirjoahven		MVL.1285	
+		Aequidens metae	Eigenmann, 1922	valjaskirjoahven		MVL.1285	
+		Aequidens michaeli	Kullander, 1995	sokkelokirjoahven		MVL.1285	
+		Aequidens pallidus	(Heckel, 1840)	paritäpläkirjoahven		MVL.1285	
+		Aequidens patricki	Kullander, 1984	ruostepääkirjoahven		MVL.1285	
+		Aequidens plagiozonatus	Kullander, 1984	vinoraitakirjoahven		MVL.1285	
+		Aequidens potaroensis	Eigenmann, 1912	kuukirjoahven		MVL.1285	
+		Aequidens rondoni	(Miranda Ribeiro, 1918)	täpläselkäkirjoahven		MVL.1285	
+		Aequidens superomaculatum 	Hernández-Acevedo, Machado-Allison & Lasso, 2015	laikkukirjoahven		MVL.1285	
+		Aequidens tetramerus	(Heckel, 1840)	satulakirjoahven		MVL.1285	
+		Aequidens viridis	(Heckel, 1840)	viherselkäkirjoahven		MVL.1285	
+	suku	Andinoacara	Musilová, Říĉan & Novák, 2009				
+		Andinoacara  biseriatus	(Regan, 1913)	kookoskirjoahven		MVL.1285	
+		Andinoacara blombergi 	Wijkmark, Kullander & Barriga, 2012	valkosaumakirjoahven		MVL.1285	
+		Andinoacara coeruleopunctatus	(Kner, 1863)	sinipilkkukirjoahven		MVL.1285	
+		Andinoacara latifrons	(Steindachner, 1878)	kyrmykirjoahven		MVL.1285	
+		Andinoacara pulcher	(Gill, 1858)	sinikirjoahven		MVL.1285	
+		Andinoacara rivulatus	(Günther, 1860)	saumakirjoahven		MVL.1285	
+		Andinoacara sapayensis	(Regan, 1903)	sapankirjoahven		MVL.1285	
+		Andinoacara stalsbergi 	Musilová, Schindler & Staeck, 2009	hopeasaumakirjoahven		MVL.1285	
+	suku	Bujurquina	Kullander, 1986				
+		Bujurquina apoparuana	Kullander, 1986	vuoksikirjoahven		MVL.1285	
+		Bujurquina mariae	(Eigenmann, 1922)	mustaotsakirjoahven 	mariankirjoahven	MVL.1285	
+		Bujurquina moriorum	Kullander, 1986	luomikirjoahven		MVL.1285	
+		Bujurquina peregrinabunda	Kullander, 1986	tinakirjoahven		MVL.1285	
+		Bujurquina robusta	Kullander, 1986	messinkikirjoahven		MVL.1285	
+		Bujurquina syspilus	(Cope, 1872)	ruoste-eväkirjoahven		MVL.1285	
+		Bujurquina tambopatae	Kullander, 1986	laikkukuonokirjoahven		MVL.1285	
+		Bujurquina vittata	(Heckel, 1840)	kultaposkikirjoahven		MVL.1285	
+	suku	Cichlasoma	Swainson, 1839				
+		Cichlasoma amazonarum	Kullander, 1983	nauriskirjoahven		MVL.1285	
+		Cichlasoma araguaiense	Kullander, 1983	nuottakirjoahven		MVL.1285	
+		Cichlasoma bimaculatum	(Linnaeus, 1758)	täpläkirjoahven		MVL.1285	
+		Cichlasoma boliviense	Kullander, 1983	kaarnakirjoahven		MVL.1285	
+		Cichlasoma dimerus	(Heckel, 1840)	kaksoskirjoahven		MVL.1285	
+		Cichlasoma geddesi	(Regan, 1905)	sepelkirjoahven		MVL.1285	
+		Cichlasoma istlanum	(Jordan & Snyder, 1899)	komeettakirjoahven		MVL.1285	
+		Cichlasoma orinocense	Kullander, 1983	orinoconkirjoahven		MVL.1285	
+		Cichlasoma portalegrense	(Hensel, 1870)	verkkokirjoahven		MVL.1285	
+		Cichlasoma taenia	(Bennett, 1831)	ametistikirjoahven		MVL.1285	
+	suku	Cleithracara	Kullander & Nijssen, 1989				
+		Cleithracara maronii	(Steindachner, 1881)	avainkirjoahven		MVL.1285	
+	suku	Cribroheros 	Říčan & Piálek, 2016				
+		Cribroheros alfari 	(Meek, 1907)	pastellikirjoahven		MVL.1285	
+		Cribroheros altifrons	(Kner, 1863)	viisiraitakirjoahven		MVL.1285	
+		Cribroheros diquis 	(Bussing, 1974)	resorikirjoahven		MVL.1285	
+		Cribroheros longimanus 	(Günther, 1867)	punavatsakirjoahven		MVL.1285	
+		Cribroheros rhytisma 	(López S., 1983)	katkokirjoahven		MVL.1285	
+		Cribroheros robertsoni 	(Regan, 1905)	opaalikirjoahven		MVL.1285	
+		Cribroheros rostratus 	(Gill, 1877)	kuonokirjoahven		MVL.1285	
+	suku	Darienheros	Říčan & Novák, 2016				
+		Darienheros calobrensis 	(Meek & Hildebrand, 1913)	ruostepistekirjoahven		MVL.1285	
+	suku	Ivanacara	Römer & Hahn, 2007				
+		Ivanacara adoketa 	(Kullander & Prada-Pedreros, 1993)	seepra-akara		MVL.1285	
+		Ivanacara bimaculata 	(Eigenmann, 1912)	kaksitäpläakara		MVL.1285	
+	suku	Krobia	Kullander & Nijssen, 1989				
+		Krobia guianensis	(Regan, 1905)	rusodelfiiniakara 	isodelfiinikirjoahven	MVL.1285	
+		Krobia itanyi	(Puyo, 1943)	delfiiniakara	delfiinikirjoahven	MVL.1285	
+		Krobia xinguensis 	Kullander, 2012	tulidelfiiniakara		MVL.1285	
+	suku	Kronoheros	Říčan & Piálek, 2016				
+		Kronoheros (Cichlasoma) umbrifer 	(Meek & Hildebrand, 1913)	helmisuomukirjoahven		MVL.1285	
+	suku	Laetacara	Kullander, 1986				
+		Laetacara araguaiae 	Ottoni & Costa, 2009	kultasuomuakara		MVL.1285	
+		Laetacara curviceps	(Ahl, 1923)	lippuakara		MVL.1285	
+		Laetacara dorsigera	(Heckel, 1840)	ruosteakara		MVL.1285	
+		Laetacara flamannellus 	Ottoni, Bragança, Amorim & Gama, 2012	liekkiakara		MVL.1285	
+		Laetacara flavilabris	(Cope, 1870)	inkivääriakara		MVL.1285	
+		Laetacara fulvipinnis 	Staeck & Schindler, 2007	kultaeväakara		MVL.1285	
+		Laetacara thayeri	(Steindachner, 1875)	oliiviakara		MVL.1285	
+	suku	Nannacara	Regan, 1905				
+		Nannacara anomala	Regan, 1905	kääpiöakara		MVL.1285	
+		Nannacara aureocephalus	Allgayer, 1983	kulta-akara		MVL.1285	
+		Nannacara quadrispinae 	Staeck & Schindler, 2004	piikkiakara		MVL.1285	
+		Nannacara taenia	Regan, 1912	juova-akara		MVL.1285	
+	suku	Rondonacara	Ottoni & Mattos, 2015				
+		Rondonacara hoehnei	(Miranda-Ribeiro, 1918)	raitaeväakara	raitaeväkirjoahven	MVL.1285	
+	suku	Tahuantinsuyoa	Kullander, 1986				
+		Tahuantinsuyoa macantzatza	Kullander, 1986	safiirikirjoahven		MVL.1285	
+MX.5105985	tribe	Heroini					
+MX.5089993	suku	Amatitlania	Schmitter-Soto, 2007				
+		Amatitlania altoflava 	(Allgayer, 2001)	kuutamokirjoahven		MVL.1285	
+		Amatitlania coatepeque 	Schmitter-Soto, 2007	tummaseepra-ahven		MVL.1285	
+		Amatitlania kanna	Schmitter-Soto, 2007	keltaseepra-ahven		MVL.1285	
+		Amatitlania myrnae 	(Loiselle, 1997)	topaasikirjoahven		MVL.1285	
+		Amatitlania nanolutea	(Allgayer, 1994)	keltakylkikirjoahven		MVL.1285	
+MX.5089994		Amatitlania nigrofasciata 	(Günther, 1867)	seeprakirjoahven		MVL.1285	
+		Amatitlania sajica 	(Bussing, 1974)	sinileukakirjoahven		MVL.1285	
+		Amatitlania septemfasciata 	(Regan, 1908)	sinisilmäkirjoahven		MVL.1285	
+		Amatitlania siquia	Schmitter-Soto, 2007 	siniseepra-ahven		MVL.1285	
+	suku	Amphilophus	Agassiz, 1859				
+		Amphilophus amarillo 	Stauffer & McKaye, 2002	keltasitruuna-ahven		MVL.1285	
+		Amphilophus astorquii	Stauffer, McCrary & Black, 2008	mustasitruuna-ahven		MVL.1285	
+		Amphilophus chancho 	Stauffer, McCrary & Black, 2008	sikasitruuna-ahven		MVL.1285	
+		Amphilophus citrinellus	(Günther, 1864)	sitruunakirjoahven		MVL.1285	
+		Amphilophus flaveolus 	Stauffer, McCrary & Black, 2008	tiikerisitruuna-ahven		MVL.1285	
+		Amphilophus globosus 	Geiger, McCrary & Stauffer, 2010	täpläsitruuna-ahven		MVL.1285	
+		Amphilophus hogaboomorum	(Carr & Giovannoli, 1950)	hondurasinkirjoahven		MVL.1285	
+		Amphilophus labiatus	(Günther, 1864)	huulikirjoahven		MVL.1285	
+		Amphilophus lyonsi	(Gosse 1966)	oktaavikirjoahven		MVL.1285	
+		Amphilophus margaritifer 	(Günther, 1862)	helmikylkikirjoahven		MVL.1285	
+		Amphilophus sagittae 	Stauffer & McKaye, 2002	nuolisitruuna-ahven		MVL.1285	
+		Amphilophus supercilius 	Geiger, McCrary & Stauffer, 2010	pyöröpyrstösitruuna-ahven		MVL.1285	
+		Amphilophus tolteca 	Recknagel, Kusche, Elmer & Meyer, 2013	suippositruuna-ahven		MVL.1285	
+		Amphilophus trimaculatus	(Günther, 1867)	punasilmäkirjoahven		MVL.1285	
+		Amphilophus viridis 	Recknagel, Kusche, Elmer & Meyer, 2013	limettikirjoahven		MVL.1285	
+		Amphilophus xiloaensis 	Stauffer & McKaye, 2002	xiloansitruuna-ahven		MVL.1285	
+		Amphilophus zaliosus	(Barlow, 1976)	ulappakirjoahven		MVL.1285	
+	suku	Archocentrus	Gill, 1877				
+		Archocentrus centrarchus	(Gill, 1877)	vihereväkirjoahven		MVL.1285	
+	suku	Astatheros	Pellegrin, 1904				
+		Astatheros macracanthus 	(Günther, 1864)	takaraitakirjoahven		MVL.1285	
+MX.5089987	suku	Australoheros	Rícan & Kullander, 2006				
+MX.5089988		Australoheros facetus 	(Jenyns, 1842)	kalterikirjoahven		MVL.1285	
+	suku	Caquetaia	Fowler, 1945				
+		Caquetaia kraussii	(Steindachner 1878)	variskirjoahven		MVL.1285	
+		Caquetaia myersi	(Schultz, 1944)	kaksiraitakirjoahven		MVL.1285	
+		Caquetaia spectabilis	(Steindachner, 1875)	närhikirjoahven		MVL.1285	
+	suku	Chortiheros	Říčan & Dragová, 2016				
+		Chortiheros wesseli	Miller, 1996	aavekirjoahven		MVL.1285	
+		Cryptoheros cutteri 	(Fowler, 1932)	pariraitakirjoahven		MVL.1285	
+	suku	Cryptoheros	Říčan & Piálek, 2016				
+		Cryptoheros spilurus 	(Günther, 1862)	raitakirjoahven		MVL.1285	
+	suku	Heroina	Kullander, 1996				
+		Heroina isonycterina	Kullander, 1996	laikkuvanneahven		MVL.1285	
+		Heros efasciatus	Heckel, 1840	vanneahven		MVL.1285	
+		Heros liberifer 	Staeck & Schindler, 2015	rubiinivanneahven		MVL.1285	
+		Heros notatus	(Jardine, 1843)	täplävanneahven		MVL.1285	
+		Heros severus	Heckel, 1840	raitavanneahven		MVL.1285	
+		Heros spurius 	Heckel, 1840	pippurivanneahven		MVL.1285	
+MX.5089995	suku	Herotilapia					
+MX.5089996		Herotilapia multispinosa	(Günther, 1867)	sateenkaariahven		MVL.1285	
+	suku	Hoplarchus	Kaup, 1860				
+		Hoplarchus psittacus	(Heckel, 1840)	kaijakirjoahven		MVL.1285	
+	suku	Hypselecara	Kullander, 1986				
+		Hypselecara coryphaenoides	(Heckel, 1840)	suklaakirjoahven		MVL.1285	
+		Hypselecara temporalis	(Günther, 1862)	smaragdikirjoahven		MVL.1285	
+	suku	Hypsophrys	Agassiz, 1859				
+		Hypsophrys nicaraguensis	(Günther, 1864)	turkoosikirjoahven		MVL.1285	
+	suku	Isthmoheros	Říčan & Novák, 2016				
+		Isthmoheros (Vieja) tuyrensis	(Meek & Hildebrand, 1913)	kekälekirjoahven		MVL.1285	
+	suku	Mesonauta	Günther, 1862				
+		Mesonauta acora	(Castelnau, 1855)	marmoriviiva-ahven		MVL.1285	
+		Mesonauta egregius	Kullander & Silfvergrip, 1991	savanniviiva-ahven		MVL.1285	
+		Mesonauta festivus	(Heckel, 1840)	viivakirjoahven		MVL.1285	
+		Mesonauta guyanae 	Schindler, 1998	verkkoviiva-ahven		MVL.1285	
+		Mesonauta insignis	(Heckel, 1840)	hohtoviiva-ahven		MVL.1285	
+		Mesonauta mirificus	Kullander & Silfvergrip, 1991	keltaviiva-ahven		MVL.1285	
+	suku	Neetroplus	Günther, 1867				
+		Neetroplus nematopus	Günther, 1867	leväkirjoahven		MVL.1285	
+	suku	Panamius	Schmitter-Soto, 2007				
+		Panamius panamensis	(Meek & Hildebrand, 1913)	panamankirjoahven		MVL.1285	
+	suku	Parachromis	Agassiz, 1859				
+		Parachromis dovii	(Günther, 1864)	leopardikirjoahven		MVL.1285	
+		Parachromis friedrichsthalii	(Heckel, 1840)	puumakirjoahven		MVL.1285	
+		Parachromis loisellei	(Bussing, 1989)	oselottikirjoahven		MVL.1285	
+		Parachromis managuensis	(Günther, 1867)	pantterikirjoahven		MVL.1285	
+		Parachromis motaguensis	(Günther, 1867)	jaguaarikirjoahven		MVL.1285	
+	suku	Petenia	Günther, 1862				
+		Petenia splendida	Günther, 1862	vaanijakirjoahven		MVL.1285	
+	suku	Pterophyllum	Heckel, 1840				
+		Pterophyllum altum	Pellegrin, 1903	lippulehtikala		MVL.1285	
+		Pterophyllum leopoldi	(Gosse, 1963)	pikkulehtikala		MVL.1285	
+		Pterophyllum scalare	(Schultze, 1823)	lehtikala		MVL.1285	
+MX.5090001	suku	Rocio	Schmitter-Soto, 2007				
+MX.5090002		Rocio octofasciata 	(Regan, 1903)	helmikirjoahven		MVL.1285	
+		Rocio spinosissima 	(Vaillant & Pellegrin, 1902)	piikkieväkirjoahven		MVL.1285	
+	suku	Symphysodon	Heckel, 1840				
+		Symphysodon aequifasciatus	Pellegrin, 1904	sinikiekkokala		MVL.1285	
+		Symphysodon discus	Heckel, 1840	kiekkokala		MVL.1285	
+		Symphysodon tarzoo	Lyons, 1959	viherkiekkokala		MVL.1285	
+	suku	Talamancaheros	Říčan & Novák, 2016				
+		Talamancaheros sieboldii 	(Kner, 1863)	mustaleukakirjoahven		MVL.1285	
+	suku	Tomocichla	Regan, 1908				
+		Tomocichla asfraci 	Allgayer, 2002	kultapilkkukirjoahven		MVL.1285	
+		Tomocichla tuba	(Meek, 1912)	tuubakirjoahven		MVL.1285	
+	suku	Uaru	Heckel, 1840				
+		Uaru amphiacanthoides	Heckel, 1840	kiilakirjoahven		MVL.1285	
+		Uaru fernandezyepezi	Stawikowski, 1989	raitauaru		MVL.1285	
+	suku	Chiapaheros	McMahan & Piller, 2015				
+		Chiapaheros grammodes 	(Taylor & Miller, 1980)	sihtikirjoahven		MVL.1285	
+	suku	Chuco	Fernández-Yépez, 1969				
+		Chuco godmanni	(Günther, 1862)	hartiatäpläkirjoahven		MVL.1285	
+		Chuco intermedium	(Günther, 1862)	kulmakirjoahven		MVL.1285	
+		Chuco microphthalmus	(Günther, 1862)	revontulikirjoahven		MVL.1285	
+	suku	Cincelichthys	McMahan & K. R. Piller, 2015				
+		Cincelichthys bocourti 	(Vaillant & Pellegrin, 1902)	kultakirjoahven		MVL.1285	
+		Cincelichthys pearsei 	(Hubbs, 1936)	kaakaokirjoahven		MVL.1285	
+	suku	Herichthys	Baird & Girard, 1854				
+		Herichthys bartoni	(Bean, 1892)	pippurikirjoahven		MVL.1285	
+		Herichthys carpintis	(Jordan & Snyder, 1899)	meksikonkirjoahven	texasinkirjoahven	MVL.1285	
+		Herichthys cyanoguttatus	(Baird & Girard, 1854)	texasinkirjoahven	helmiäiskirjoahven	MVL.1285	
+		Herichthys deppii	(Heckel, 1840)	viherpippurikirjoahven		MVL.1285	
+		Herichthys labridens 	(Pellegrin, 1903)	raspikirjoahven		MVL.1285	
+		Herichthys minckleyi	(Kornfield & Taylor, 1983)	hohtopistekirjoahven		MVL.1285	
+		Herichthys pantostictus 	(Taylor & Miller, 1983)	suistokirjoahven		MVL.1285	
+		Herichthys tamasopoensis	Artigas Azas, 1993	tähtikirjoahven		MVL.1285	
+	suku	Maskaheros	McMahan & Piller, 2015				
+		Maskaheros argenteus 	(Allgayer 1991)	hopeakirjoahven		MVL.1285	
+		Maskaheros regani 	(Miller, 1974)	metallikirjoahven		MVL.1285	
+	suku	Mayaheros	Říčan & Piálek, 2016				
+		Mayaheros beani	(Jordan, 1889)	varaanikirjoahven		MVL.1285	
+		Mayaheros urophthalmus 	(Günther, 1862)	rengaskirjoahven		MVL.1285	
+		Mesoheros atromaculatus	(Regan, 1905)	mustatäpläkirjoahven		MVL.1285	
+	suku	Mesoheros	McMahan & Chakrabarty, 2015				
+		Mesoheros festae 	(Boulenger, 1899)	tiikerikirjoahven		MVL.1285	
+		Mesoheros gephyrus	(Eigenmann, 1922)	kaunokirjoahven		MVL.1285	
+		Mesoheros ornatus 	(Regan, 1905)	korukirjoahven		MVL.1285	
+	suku	Oscura	McMahan & Chakrabarty, 2015				
+		Oscura heterospila	(Hubbs, 1936)	nokikirjoahven		MVL.1285	
+	suku	Paraneetroplus	Regan, 1905				
+		Paraneetroplus bulleri	Regan, 1905	virta-ahven		MVL.1285	
+		Paraneetroplus gibbiceps	(Steindachner, 1864)	kyhmyvirta-ahven		MVL.1285	
+		Paraneetroplus nebulifer	(Günther, 1860)	kultavirta-ahven		MVL.1285	
+		Paraneetroplus omonti	Allgayer, 1988	keltavirta-ahven		MVL.1285	
+	suku	Rheoheros	McMahan & Matamoros, 2015				
+		Rheoheros coeruleus 	(Stawikowski & Werner, 1987)	sinieväkirjoahven		MVL.1285	
+		Rheoheros lentiginosus 	(Steindachner, 1864)	pistekirjoahven		MVL.1285	
+	suku	Theraps	Günther, 1862				
+		Theraps irregularis	Günther, 1862	soukkakirjoahven		MVL.1285	
+	suku	Thorichthys	Meek, 1904				
+		Thorichthys affinis	(Günther, 1862)	oranssisuu		MVL.1285	
+		Thorichthys aureus	(Günther, 1862)	kultasuu		MVL.1285	
+		Thorichthys callolepis	(Regan, 1904)	sirotulisuu		MVL.1285	
+		Thorichthys helleri	(Steindachner, 1864)	hehkusuu		MVL.1285	
+		Thorichthys maculipinnis 	(Steindachner, 1864)	liekkisuu		MVL.1285	
+		Thorichthys meeki	Brind, 1918	tulisuu		MVL.1285	
+		Thorichthys panchovillai 	Del Moral-Flores, López-Segovia & Hernández-Arellano, 2017	helosuu		MVL.1285	
+		Thorichthys pasionis	(Rivas, 1962)	keltasuu		MVL.1285	
+		Thorichthys socolofi	(Miller & Taylor, 1984)	ruususuu		MVL.1285	
+	suku	Trichromis	McMahan & Chakrabarty, 2015				
+		Trichromis salvini 	(Günther, 1862)	tulijuovakirjoahven		MVL.1285	
+	suku	Vieja	Fernández-Yépez, 1969				
+		Vieja bifasciata	(Steindachner, 1864)	liekkikirjoahven		MVL.1285	
+		Vieja breidohri	(Werner & Stawikowski, 1987)	jääkirjoahven		MVL.1285	
+		Vieja fenestrata	(Günther 1860)	pätsikirjoahven		MVL.1285	
+		Vieja guttulata	(Günther, 1864)	marmorikirjoahven		MVL.1285	
+		Vieja hartwegi	(Taylor & Miller, 1980)	hiilloskirjoahven		MVL.1285	
+		Vieja maculicauda	(Regan, 1905)	hiilikirjoahven		MVL.1285	
+		Vieja melanurus	(Günther, 1862)	tulikirjoahven		MVL.1285	
+		Vieja zonata	(Meek, 1905)	loimukirjoahven		MVL.1285	
+	suku	Wajpamheros	Říčan & Piálek, 2016				
+		Wajpamheros nourissati 	(Allgayer, 1989)	sysikirjoahven		MVL.1285	
+	suku	Nandopsis	Gill, 1862	Nandopsis-ryhmä			
+		Nandopsis haitiensis	(Tee-Van, 1935)	haitinkirjoahven		MVL.1285	
+		Nandopsis ramsdeni	(Fowler, 1938)	ruskokirjoahven		MVL.1285	
+		Nandopsis tetracanthus	(Valenciennes, 1831)	kuubankirjoahven		MVL.1285	
+							
+MX.5086710	alaheimo	Pseudocrenilabrinae	Fowler, 1934	afrikankirjoahvenet		MVL.1284	
+							
+	tribe	Heterochromidini					
+	suku	Heterochromis	Regan, 1922				
+		Heterochromis multidens	(Pellegrin, 1900)	hammastilapia		MVL.1285	
+				 			
+	tribe	Tylochromini		afrikanseulojat			
+	suku	Tylochromis	Regan, 1920				
+		Tylochromis bangwelensis 	Regan, 1920 	kyhmyseuloja		MVL.1285	
+		Tylochromis elongatus 	Stiassny, 1989	soukkaseuloja		MVL.1285	
+		Tylochromis intermedius 	(Boulenger, 1916)	mustaotsaseuloja		MVL.1285	
+		Tylochromis labrodon 	Regan, 1920	huuliseuloja		MVL.1285	
+		Tylochromis lateralis 	(Boulenger, 1898)	kongonseuloja		MVL.1285	
+		Tylochromis leonensis 	Stiassny, 1989	punaeväseuloja		MVL.1285	
+		Tylochromis sudanensis 	Daget, 1954	sudaninseuloja		MVL.1285	
+		Tylochromis polylepis	(Boulenger, 1900)	metallimutahautoja		MVL.1285, MVL.1286	
+							
+MX.5105987	tribe	Hemichromini					
+	suku	Anomalochromis	Greenwood, 1985				
+		Anomalochromis thomasi	(Boulenger, 1915)	timanttikirjoahven		MVL.1285	
+MX.5089989	suku	Hemichromis	Peters, 1857				
+		Hemichromis angolensis 	Steindachner, 1865	angolantimanttiahven		MVL.1285	
+		Hemichromis bimaculatus 	Gill, 1862	pilkkutimanttiahven		MVL.1285	
+		Hemichromis cerasogaster 	(Boulenger, 1899)	oranssitimanttiahven		MVL.1285	
+		Hemichromis cristatus 	Loiselle, 1979	hehkutimanttiahven		MVL.1285	
+		Hemichromis elongatus 	(Guichenot, 1861) 	hohtotimanttiahven		MVL.1285	
+		Hemichromis exsul 	(Trewavas, 1933) 	neontimanttiahven		MVL.1285	
+MX.5089990		Hemichromis fasciatus 	Peters, 1857 	laikkutimanttiahven		MVL.1285	
+		Hemichromis frempongi 	Loiselle, 1979	täplätimanttiahven		MVL.1285	
+MX.5089992		Hemichromis guttatus 	Günther, 1862	rusotimanttiahven		MVL.1285	
+		Hemichromis letourneuxi 	Sauvage, 1880	ruskotimanttiahven		MVL.1285	
+		Hemichromis lifalili 	Loiselle, 1979	punatimanttiahven		MVL.1285	
+		Hemichromis saharae 	Sauvage, 1880	pastellitimanttiahven		MVL.1285	
+		Hemichromis stellifer 	Loiselle, 1979	helotimanttiahven		MVL.1285	
+							
+	tribe	Pelmatochromini					
+	suku	Pelmatochromis	Steindachner, 1894				
+		Pelmatochromis buettikoferi 	(Steindachner, 1894)	punahuulipalettikala		MVL.1285	
+		Pelmatochromis nigrofasciatus 	(Pellegrin, 1900)	raitapalettikala		MVL.1285	
+		Pelmatochromis ocellifer 	Boulenger, 1899	täpläpalettikala		MVL.1285	
+							
+	tribe	Chromidotilapiini					
+	suku	Benitochromis	Lamboj, 2001				
+		Benitochromis batesii 	(Boulenger, 1901)	raitapalettihautoja		MVL.1285	
+		Benitochromis conjunctus 	Lamboj, 2001	okrapalettihautoja		MVL.1285	
+		Benitochromis finleyi 	(Trewavas, 1974)	metallipalettihautoja		MVL.1285	
+		Benitochromis nigrodorsalis 	Lamboj, 2001	sysipalettihautoja		MVL.1285	
+		Benitochromis riomuniensis 	(Thys van den Audenaerde, 1981)	täpläpalettihautoja		MVL.1285	
+		Benitochromis ufermanni 	Lamboj, 2001	kiilapalettihautoja		MVL.1285	
+	suku	Chromidotilapia	Boulenger, 1898				
+		Chromidotilapia cavalliensis 	(Thys van den Audenaerde & Loiselle, 1971)	juovapalettihautoja		MVL.1285	
+		Chromidotilapia elongata 	Lamboj, 1999	soukkapalettihautoja		MVL.1285	
+		Chromidotilapia guntheri 	(Sauvage, 1882) 	viherpalettihautoja		MVL.1285	
+		Chromidotilapia kingsleyae 	Boulenger, 1898	kuonopalettihautoja		MVL.1285	
+		Chromidotilapia linkei 	Staeck, 1980	safiiripalettihautoja		MVL.1285	
+		Chromidotilapia mamonekenei 	Lamboj, 1999	oliivipalettihautoja		MVL.1285	
+		Chromidotilapia melaniae 	Lamboj, 2003	rusopalettihautoja		MVL.1285	
+		Chromidotilapia mrac 	Lamboj, 2002	laikkupalettihautoja		MVL.1285	
+		Chromidotilapia nana 	Lamboj, 2003	pikkupalettihautoja		MVL.1285	
+		Chromidotilapia regani 	(Pellegrin, 1906)	leukapalettihautoja		MVL.1285	
+		Chromidotilapia schoutedeni 	(Poll & Thys van den Audenaerde, 1967)	kongonpalettihautoja		MVL.1285	
+	suku	Congochromis	Stiassny & Schliewen, 2007				
+		Congochromis sabinae 	(Lamboj, 2005)	hehkupalettikala		MVL.1285	
+		Congochromis squamiceps 	(Boulenger, 1902)	punaeväpalettikala		MVL.1285	
+	suku	Enigmatochromis	Lamboj, 2009				
+		Enigmatochromis lucanusi 	Lamboj, 2009	turkoosipalettikala		MVL.1285	
+	suku	Nanochromis	Pellegrin, 1904				
+		Nanochromis consortus 	Roberts & Stewart, 1976	hunajapalettikala		MVL.1285	
+		Nanochromis dimidiatus 	(Pellegrin, 1900)	purppurapalettikala		MVL.1285	
+		Nanochromis minor 	Roberts & Stewart, 1976	pikkupalettikala		MVL.1285	
+		Nanochromis nudiceps 	(Boulenger, 1899)	sinipalettikala		MVL.1285	
+		Nanochromis parilus 	Roberts & Stewart, 1976	sinieväpalettikala		MVL.1285	
+		Nanochromis splendens 	Roberts & Stewart, 1976	loistopalettikala		MVL.1285	
+		Nanochromis transvestitus 	Roberts & Stewart, 1984	seeprapalettikala		MVL.1285	
+	suku	Neochromis	Regan, 1920				
+		Neochromis nigricans 	(Boulenger, 1906)	tummahautoja		MVL.1285	
+		Neochromis rufocaudalis 	Seehausen & Bouton, 1998	tulipyrstöhautoja		MVL.1285	
+	suku	Parananochromis	Greenwood, 1987				
+		Parananochromis caudifasciatus 	(Boulenger, 1913)	raitapyrstöpalettikala		MVL.1285	
+		Parananochromis gabonicus 	Trewavas, 1975	okrapalettikala		MVL.1285	
+		Parananochromis longirostris 	(Boulenger, 1903)	verkkopalettikala		MVL.1285	
+	suku	Pelvicachromis	Thys van den Audenaerde, 1968				
+		Pelvicachromis drachenfelsi 	Lamboj, Bartel & dell’Ampio, 2014	keltaposkipalettikala		MVL.1285	
+		Pelvicachromis kribensis 	Boulenger, 1911	turkoosipalettikala		MVL.1285	
+		Pelvicachromis pulcher 	Boulenger, 1901	palettikala		MVL.1285	
+		Pelvicachromis roloffi 	Thys van den Audenaerde, 1968	ruusupalettikala		MVL.1285	
+		Pelvicachromis sacrimontis 	Paulo, 1977 	tulipalettikala		MVL.1285	
+		Pelvicachromis silviae	Lamboj, 2013	korupalettikala		MVL.1285	
+		Pelvicachromis subocellatus 	Günther, 1872	keltapalettikala		MVL.1285	
+		Pelvicachromis taeniatus 	Boulenger, 1901	kirjopalettikala		MVL.1285	
+	suku	Teleogramma	Boulenger, 1899				
+		Teleogramma brichardi 	Poll, 1959	madeahven		MVL.1285	
+		Teleogramma gracile 	Boulenger, 1899	hentomadeahven		MVL.1285	
+		Teleogramma monogramma 	(Pellegrin, 1927)	merkkimadeahven		MVL.1285	
+	suku	Thysochromis	Daget, 1988				
+		Thysochromis ansorgii 	Boulenger, 1901	täpläpalettiahven		MVL.1285	
+	suku	Wallaceochromis	Lamboj, Trummer & Metscher, 2016				
+		Wallaceochromis humilis 	(Boulenger, 1916)	rusopalettikala		MVL.1285	
+		Wallaceochromis rubrolabiatus 	(Lamboj, 2004)	rusohuulipalettikala		MVL.1285	
+		Wallaceochromis signatus	(Lamboj, 2004	täpläpalettikala		MVL.1285	
+							
+MX.5105986	tribe	Oreochromini					
+	suku	Danakilia	Thys van den Audenaerde, 1969				
+		Danakilia dinicolai 	Stiassny, de Marchi & Lamboj, 2010			MVL.1285	
+		Danakilia franchettii 	(Vinciguerra, 1931)	danakilia		MVL.1285	
+	suku	Iranocichla	Coad, 1982				
+		Iranocichla hormuzensis 	Coad, 1982	iraninkirjoahven		MVL.1285	
+		Iranocichla persa	Esmaeili, Sayyadzadeh & Seehausen, 2016	persiankirjoahven		MVL.1285	
+	suku	Konia	Trewavas, 1972				
+		Konia eisentrauti 	(Trewavas, 1962)	konia		MVL.1285	
+	suku	Myaka	Trewavas, 1972				
+		Myaka myaka	Trewavas, 1972	myaka		MVL.1285	
+MX.5089997	suku	Oreochromis	Günther, 1889	tilapiat			
+		Oreochromis shiranus	Boulenger, 1897	tummaleukatilapia		MVL.1285, MVL.1287	
+		Oreochromis alcalicus 	(Hilgendorf, 1905)	soodatilapia		MVL.1285	
+		Oreochromis andersonii 	(Castelnau, 1861) 	kolmitäplätilapia		MVL.1285	
+MX.5089998		Oreochromis aureus 	(Steindachner, 1864) 	kultatilapia		MVL.1285	
+		Oreochromis esculentus 	(Graham, 1928) 	pronssitilapia		MVL.1285	
+		Oreochromis jipe 	(Lowe, 1955) 	panganintilapia		MVL.1285	
+		Oreochromis karomo 	(Poll, 1948) 	valkopäätilapia		MVL.1285	
+		Oreochromis leucostictus 	(Trewavas, 1933)	valkotäplätilapia		MVL.1285	
+		Oreochromis macrochir 	(Boulenger, 1912) 	tummatilapia		MVL.1285	
+		Oreochromis mortimeri 	(Trewavas, 1966) 	karibantilapia		MVL.1285	
+		Oreochromis mossambicus 	(Peters, 1852) 	valkoleukatilapia		MVL.1285	
+MX.5090000		Oreochromis niloticus 	(Linnaeus, 1758) 	niilintilapia		MVL.1285	
+		Oreochromis placidus 	(Trewavas, 1941)	mustatilapia		MVL.1285	
+		Oreochromis rukwaensis 	(Hilgendorf & Pappenheim, 1903) 	rukwantilapia		MVL.1285	
+		Oreochromis salinicola 	(Poll, 1948)	suolatilapia		MVL.1285	
+		Oreochromis spilurus 	(Günther, 1894)	kuparitilapia		MVL.1285	
+		Oreochromis tanganicae	(Günther 1894)	tanganjikantilapia		MVL.1285, MVL.1286	
+		Oreochromis urolepis 	(Norman, 1922)	oliivitilapia		MVL.1285	
+		Oreochromis variabilis 	(Boulenger, 1906) 	hopeatilapia		MVL.1285	
+	suku	Pungu	Greenwood, 1980				
+		Pungu maclareni	(Trewavas, 1962)	pungu		MVL.1285	
+	suku	Sarotherodon	Rüppell, 1852				
+		Sarotherodon caudomarginatus 	(Boulenger, 1916)	sinipyrstötilapia		MVL.1285	
+		Sarotherodon galilaeus 	(Linnaeus, 1758)	galileantilapia		MVL.1285	
+		Sarotherodon linnellii 	(Lönnberg, 1903) 	mustaevätilapia		MVL.1285	
+		Sarotherodon lohbergeri 	(Holly, 1930) 	mustajuovatilapia		MVL.1285	
+		Sarotherodon melanotheron 	Rüppell, 1852 	mustaleukatilapia		MVL.1285	
+		Sarotherodon occidentalis 	(Daget ,1962)	platinatilapia		MVL.1285	
+		Sarotherodon steinbachi 	(Trewavas, 1962) 	kuonotilapia		MVL.1285	
+		Sarotherodon tournieri 	(Daget, 1965)	messinkitilapia		MVL.1285	
+	suku	Tristramella	Trewavas, 1942				
+		Tristramella simonis	(Günther, 1864)	jordanintilapia		MVL.1285	
+							
+	tribe	Gobiocichlini					
+	suku	Paragobiocichla	Schliewen & Weiss, 2019				
+		Paragobiocichla irvinei 	(Trewavas, 1943)	tummakyhmyotsa		MVL.1285	
+							
+	tribe	Coelotilapiini					
+	suku	Coelotilapia	Dunz & Schliewen, 2013				
+		Coelotilapia joka	(Thys van den Audenaerde, 1969)	valkoraitatilapia		MVL.1285	
+							
+	tribe	Heterotilapiini					
+	suku	Heterotilapia	Archocentrus Gill, 1877 				
+		Heterotilapia buttikoferi 	(Hubrecht, 1881) 	seepratilapia		MVL.1285	
+		Heterotilapia cessiana 	(Thys van den Audenaerde, 1968)	raitatilapia		MVL.1285	
+							
+	tribe	Coptodonini		parihammastilapiat			
+	suku	Coptodon	Gervais, 1853				
+		Coptodon bakossiorum 	(Stiassny, Schliewen & Dominey, 1992) 			MVL.1285	
+		Coptodon dageti 	(Thys van den Audenaerde, 1971) 	ruskoevätilapia		MVL.1285	
+		Coptodon guineensis 	(Günther, 1862) 	guineantilapia		MVL.1285	
+		Coptodon kottae 	(Lönnberg, 1904) 	mustavatsatilapia		MVL.1285	
+		Coptodon louka 	(Thys van den Audenaerde, 1969) 	keltatilapia		MVL.1285	
+		Coptodon margaritacea 	(Boulenger, 1916) 	helmitilapia		MVL.1285	
+		Coptodon nyongana 	(Thys van den Audenaerde, 1971) 	ruskoraitatilapia		MVL.1285	
+		Coptodon rendalli 	(Boulenger, 1897) 	punarintatilapia		MVL.1285	
+		Coptodon rheophila 	(Daget, 1962) 	virtatilapia		MVL.1285	
+		Coptodon snyderae 	(Stiassny, Schliewen & Dominey, 1992) 	kääpiötilapia		MVL.1285	
+		Coptodon tholloni 	(Sauvage, 1884) 	kirjotilapia		MVL.1285	
+		Coptodon walteri 	(Thys van den Audenaerde, 1968) 	ruskotilapia		MVL.1285	
+		Coptodon zillii 	(Gervais, 1848)	punavatsatilapia		MVL.1285	
+							
+	tribe	Pelmatolapiini					
+	suku	Pelmatolapia	Thys van den Audenaerde, 1969				
+		Pelmatolapia mariae 	(Boulenger, 1899)	täplätilapia		MVL.1285	
+							
+	tribe	Steatocranini					
+	suku	Steatocranus	Boulenger, 1899				
+		Steatocranus casuarius 	Poll, 1939 	kyhmyotsa		MVL.1285	
+		Steatocranus gibbiceps 	Boulenger, 1899	tylppäkyhmyotsa		MVL.1285	
+		Steatocranus glaber 	Roberts & Stewart, 1976	kuparikyhmyotsa		MVL.1285	
+		Steatocranus rouxi 	(Pellegrin, 1928)	hoikkakyhmyotsa		MVL.1285	
+		Steatocranus tinanti 	(Poll, 1939)	soukkakyhmyotsa		MVL.1285	
+		Steatocranus ubanguiensis	Roberts & Stewart, 1976	rusokyhmyotsa		MVL.1285	
+							
+	tribe	Tilapiini					
+	suku	Tilapia	Smith, 1840				
+		Tilapia brevimanus 	Boulenger, 1911	kaksijuovatilapia		MVL.1285	
+		Tilapia busumana 	(Günther, 1903)	täpläselkätilapia		MVL.1285	
+		Tilapia guinasana 	Trewavas, 1936 	sinitilapia		MVL.1285	
+		Tilapia sparrmanii 	Smith, 1840	vihertilapia		MVL.1285	
+							
+	suku	Serranochromis	Regan, 1920				
+		Serranochromis robustus 	(Günther, 1864) 	vankkakitahautoja 		MVL.1285	
+							
+	tribe	Orthochromini		koskiahvenet			
+		Orthochromis stormsi 	(Boulenger, 1902)	koskiahven		MVL.1285	
+							
+	tribe	Haplochromini					
+	suku	Pseudocrenilabrus	Fowler, 1934				
+		Pseudocrenilabrus multicolor 	(Schöller, 1903) 	kirjosuuhautoja		MVL.1285	
+		Pseudocrenilabrus nicholsi 	(Pellegrin, 1928)	purppurasuuhautoja		MVL.1285	
+		Pseudocrenilabrus philander 	(Weber, 1897) 	messinkisuuhautoja		MVL.1285	
+	suku	Astatoreochromis	Pellegrin, 1904				
+		Astatoreochromis straeleni 	(Poll, 1944)	sinihuulihautoja		MVL.1285	
+	suku	Haplochromis	Hilgendorf, 1888				
+		Haplochromis brownae 	Greenwood, 1962	kultakylkihautoja		MVL.1285	
+		Haplochromis polli 	Thys van den Audenaerde, 1964	kongonhautoja		MVL.1285	
+	suku	Pundamilia	Trewavas, 1972				
+		Pundamilia nyererei 	(Witte-Maas & Witte, 1985)	kuparihautoja		MVL.1285	
+	suku	Schwetzochromis	Poll, 1948				
+		Schwetzochromis neodon 	Poll, 1948	juovakoskiahven		MVL.1285	
+							
+	suku	Thoracochromis	Greenwood, 1979				
+		Thoracochromis brauschi 	(Poll & Thys van den Audenaerde, 1965) 	punakurkkuhautoja		MVL.1285	
+		Thoracochromis demeusii 	(Boulenge,r 1899) 	kyhmyhautoja		MVL.1285	
+		Thoracochromis wingatii 	(Boulenger 1902)	turkoosihautoja		MVL.1285	
+	suku	Astatotilapia	Pellegrin, 1904				
+		Astatotilapia bloyeti 	(Sauvage, 1883)	koruhautoja		MVL.1285	
+		Astatotilapia burtoni	(Günther, 1894)	sinisuuhautoja		MVL.1285	
+		Astatotilapia desfontainii 	(Lacepède, 1802)	metallihautoja		MVL.1285	
+		Astatotilapia flaviijosephi 	(Lortet, 1883)	jordaninhautoja		MVL.1285	
+		Astatotilapia stappersii	(Poll, 1943)	punaevähautoja		MVL.1285, MVL.1286	
+		Astatotilapia calliptera 	(Günther, 1894)	kaunisevähautoja		MVL.1285, MVL.1287	
+							
+	suku	Abactochromis	Oliver & Arnegard, 2010				
+		Abactochromis labrosus 	(Trewavas, 1935)	mutrumalawinahven		MVL.1285, MVL.1287	
+	suku	Alticorpus	Stauffer & McKaye, 1988				
+		Alticorpus macrocleithrum 	(Stauffer & McKaye, 1985) 	olkaluotaaja		MVL.1285, MVL.1287	
+		Alticorpus mentale 	Stauffer & McKaye, 1988 	ruskoluotaaja		MVL.1285, MVL.1287	
+		Alticorpus pectinatum 	Stauffer & McKaye, 1988	viherluotaaja		MVL.1285, MVL.1287	
+		Alticorpus profundicola	Stauffer & McKaye, 1988	syvänneluotaaja		MVL.1285, MVL.1287	
+	suku	Aristochromis	Trewavas, 1935				
+		Aristochromis christyi 	Trewavas, 1935	jalomalawinahven		MVL.1285, MVL.1287	
+	suku	Aulonocara	Regan, 1922				
+		Aulonocara auditor 	(Trewavas, 1935)	raitakeisariahven		MVL.1285, MVL.1287	
+		Aulonocara baenschi 	Meyer & Riehl, 1985 	keltakeisariahven		MVL.1285, MVL.1287	
+		Aulonocara brevirostre 	(Trewavas, 1935)	lyhytkuonokeisariahven		MVL.1285, MVL.1287	
+		Aulonocara ethelwynnae 	Meyer, Riehl, & Zetzsche, 1987	ruskokeisariahven		MVL.1285, MVL.1287	
+		Aulonocara gertrudae 	Konings, 1995 	turkoosikeisariahven		MVL.1285, MVL.1287	
+		Aulonocara guentheri 	Eccles, 1989 	keltaleukakeisariahven		MVL.1285, MVL.1287	
+		Aulonocara hansbaenschi 	Meyer, Riehl, & Zetzsche, 1987	kuparikeisariahven		MVL.1285, MVL.1287	
+		Aulonocara hueseri 	Meyer, Riehl, & Zetzsche, 1987	keltavatsakeisariahven		MVL.1285, MVL.1287	
+		Aulonocara jacobfreibergi 	(Johnson, 1974)	keijukeisariahven		MVL.1285, MVL.1287	
+		Aulonocara korneliae 	Meyer, Riehl, & Zetzsche, 1987	kultavyökeisariahven		MVL.1285, MVL.1287	
+		Aulonocara maylandi 	Trewavas, 1984	rikkikeisariahven		MVL.1285, MVL.1287	
+		Aulonocara nyassae 	Regan, 1922 	keisariahven		MVL.1285, MVL.1287	
+		Aulonocara rostratum 	Trewavas, 1935	kuonokeisariahven		MVL.1285, MVL.1287	
+		Aulonocara saulosi 	Meyer, Riehl, & Zetzsche, 1987	viherkeisariahven		MVL.1285, MVL.1287	
+		Aulonocara steveni 	Meyer, Riehl, & Zetzsche, 1987	neonkeisariahven		MVL.1285, MVL.1287	
+		Aulonocara stuartgranti 	Meyer & Riehl, 1985	keltaeväkeisariahven		MVL.1285, MVL.1287	
+		Aulonocara trematocephalum 	(Boulenger, 1901)	sokkelokeisariahven		MVL.1285, MVL.1287	
+	suku	Buccochromis	Eccles & Trewavas, 1989				
+		Buccochromis atritaeniatus 	(Regan, 1922) 	tummaverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis heterotaenia	(Trewavas, 1935) 	viivaverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis lepturus 	(Regan, 1922) 	viherverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis nototaenia 	(Boulenger, 1902) 	turkoosiverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis oculatus 	(Trewavas, 1935)	rengasverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis rhoadesii 	(Boulenger, 1908) 	keltaverkkoahven		MVL.1285, MVL.1287	
+		Buccochromis spectabilis 	(Trewavas, 1935)	siniverkkoahven		MVL.1285, MVL.1287	
+	suku	Caprichromis	Eccles & Trewavas, 1989				
+		Caprichromis liemi 	(McKaye & Mackenzie, 1982) 	leukamalawinahven		MVL.1285, MVL.1287	
+		Caprichromis orthognathus 	(Trewavas, 1935)	suoraleukamalawinahven		MVL.1285, MVL.1287	
+	suku	Champsochromis	Boulenger, 1915				
+		Champsochromis caeruleus 	(Boulenger, 1908) 	sinirautuahven		MVL.1285, MVL.1287	
+		Champsochromis spilorhynchus	(Regan, 1922) 	luomirautuahven		MVL.1285, MVL.1287	
+	suku	Cheilochromis	Eccles & Trewavas, 1989				
+		Cheilochromis euchilus 	(Trewavas, 1935) 	pususuuhautoja		MVL.1285, MVL.1287	
+		Chilotilapia rhoadesii	Boulenger, 1908 	kotilosuuhautoja		MVL.1285, MVL.1287	
+	suku	Chindongo	Li, Konings & Stauffer, 2016				
+		Chindongo bellicosus 	Li, Konings, & Stauffer, 2016 	räyhämalawinahven		MVL.1285, MVL.1287	
+		Chindongo demasoni 	(Konings, 1994)	kuusiraitamalawinahven		MVL.1285, MVL.1287	
+		Chindongo elongatus 	(Fryer, 1956)	torpedomalawinahven		MVL.1285, MVL.1287	
+		Chindongo flavus 	(Stauffer, 1988) 	keltaraitamalawinahven		MVL.1285, MVL.1287	
+		Chindongo minutus 	(Fryer, 1956)	pikkumalawinahven		MVL.1285, MVL.1287	
+		Chindongo saulosi 	(Konings, 1990)	sinikeltamalawinahven		MVL.1285, MVL.1287	
+		Chindongo socolofi 	(Johnson, 1974)	sinihohtomalawinahven		MVL.1285, MVL.1287	
+	suku	Copadichromis	Eccles & Trewavas, 1989				
+		Copadichromis azureus 	Konings, 1990 	siniutaka		MVL.1285, MVL.1287	
+		Copadichromis borleyi 	(Iles, 1960)	valkosaumautaka		MVL.1285, MVL.1287	
+		Copadichromis chrysonotus 	(Boulenger, 1908)	kultaselkäutaka		MVL.1285, MVL.1287	
+		Copadichromis cyaneus 	(Trewavas, 1935)	kobolttiutaka		MVL.1285, MVL.1287	
+		Copadichromis geertsi 	Konings, 1999 	laukkiutaka		MVL.1285, MVL.1287	
+		Copadichromis ilesi 	Konings, 1999	valkoharjautaka		MVL.1285, MVL.1287	
+		Copadichromis insularis 	Stauffer & Konings, 2006 	saariutaka		MVL.1285, MVL.1287	
+		Copadichromis jacksoni 	(Iles, 1960)	siniotsautaka		MVL.1285, MVL.1287	
+		Copadichromis likomae 	(Iles, 1960)	kaksitäpläutaka		MVL.1285, MVL.1287	
+		Copadichromis mbenjii 	Konings, 1990 	keltakylkiutaka		MVL.1285, MVL.1287	
+		Copadichromis melas 	Stauffer & Konings, 2006	tummautaka		MVL.1285, MVL.1287	
+		Copadichromis mloto	(Iles, 1960)	tähtiutaka		MVL.1285, MVL.1287	
+		Copadichromis nkatae 	(Iles, 1960)	valkoselkäutaka		MVL.1285, MVL.1287	
+		Copadichromis parvus 	Stauffer & Konings, 2006	pikku-utaka		MVL.1285, MVL.1287	
+		Copadichromis pleurostigma 	(Trewavas, 1935)	täpläutaka		MVL.1285, MVL.1287	
+		Copadichromis pleurostigmoides 	(Iles, 1960)	kolmipisteutaka		MVL.1285, MVL.1287	
+		Copadichromis quadrimaculatus 	(Regan, 1922)	nelitäpläutaka		MVL.1285, MVL.1287	
+		Copadichromis trewavasae 	Konings, 1999 	tummavatsautaka		MVL.1285, MVL.1287	
+		Copadichromis trimaculatus 	(Iles, 1960)	kolmitäpläutaka		MVL.1285, MVL.1287	
+		Copadichromis verduyni 	Konings, 1990 	siniselkäutaka		MVL.1285, MVL.1287	
+		Copadichromis virginalis 	(Iles, 1960)	punaharjautaka		MVL.1285, MVL.1287	
+	suku	Corematodus	Boulenger, 1897				
+		Corematodus shiranus 	Boulenger, 1897 	harmaasuomunsyöjä		MVL.1285, MVL.1287	
+		Corematodus taeniatus 	Trewavas, 1935	vihersuomunsyöjä		MVL.1285, MVL.1287	
+	suku	Ctenopharynx	Eccles & Trewavas, 1989				
+		Ctenopharynx nitidus 	(Trewavas, 1935) 	ruskovaljuahven		MVL.1285, MVL.1287	
+		Ctenopharynx pictus 	(Trewavas, 1935)	sinivaljuahven		MVL.1285, MVL.1287	
+	suku	Cyathochromis	Trewavas, 1935				
+		Cyathochromis obliquidens 	Trewavas, 1935	lusikkamalawinahven		MVL.1285, MVL.1287	
+	suku	Cynotilapia	Regan, 1922				
+		Cynotilapia afra	(Günther, 1894) 	sinikoiratilapia		MVL.1285, MVL.1287	
+		Cynotilapia aurifrons 	(Tawil, 2011) 	kultakoiratilapia		MVL.1285, MVL.1287	
+		Cynotilapia axelrodi 	Burgess, 1976	koiratilapia		MVL.1285, MVL.1287	
+		Cynotilapia zebroides 	(Johnson, 1975)	seeprakoiratilapia		MVL.1285, MVL.1287	
+	suku	Cyrtocara	Boulenger, 1902				
+		Cyrtocara moorii 	Boulenger, 1902	kyhmysuuhautoja		MVL.1285, MVL.1287	
+	suku	Dimidiochromis	Eccles & Trewavas, 1989				
+		Dimidiochromis compressiceps 	(Boulenger, 1908) 	veitsihautoja		MVL.1285, MVL.1287	
+		Dimidiochromis dimidiatus 	(Günther, 1864) 	hopeaveitsihautoja		MVL.1285, MVL.1287	
+		Dimidiochromis kiwinge 	(Ahl, 1926) 	siniveitsihautoja		MVL.1285, MVL.1287	
+		Dimidiochromis strigatus 	(Regan, 1922)	viherveitsihautoja		MVL.1285, MVL.1287	
+	suku	Diplotaxodon	Trewavas, 1935				
+		Diplotaxodon aeneus 	Turner & Stauffer, 1998 	ulappahautoja		MVL.1285, MVL.1287	
+		Docimodus evelynae 	Eccles & Lewis, 1976	juovaputsarihautoja		MVL.1285, MVL.1287	
+		Docimodus johnstoni 	Boulenger, 1897	putsarihautoja		MVL.1285, MVL.1287	
+	suku	Exochochromis	Eccles & Trewavas, 1989				
+		Exochochromis anagenys 	Oliver, 1989	ohjusmalawinahven		MVL.1285, MVL.1287	
+	suku	Fossorochromis	Eccles & Trewavas, 1989				
+		Fossorochromis rostratus 	(Boulenger, 1899) 	metallimalawinahven		MVL.1285, MVL.1287	
+		Genyochromis mento	Trewavas, 1935	evänsyöjäahven		MVL.1285, MVL.1287	
+		Gephyrochromis lawsi 	Fryer, 1957 	keltaselkämalawinahven		MVL.1285, MVL.1287	
+		Gephyrochromis moorii 	Boulenger, 1901	kultaselkämalawinahven		MVL.1285, MVL.1287	
+	suku	Hemitaeniochromis	Eccles & Trewavas, 1989				
+		Hemitaeniochromis urotaenia	(Regan, 1922)	kirjopetoutaka		MVL.1285, MVL.1287	
+	suku	Hemitilapia	Boulenger, 1902				
+		Hemitilapia oxyrhyncha 	Boulenger, 1902	vihermalawinhautoja		MVL.1285, MVL.1287	
+	suku	Iodotropheus	Oliver & Loiselle, 1972				
+		Iodotropheus sprengerae 	Oliver & Loiselle, 1972	ruostemalawinahven		MVL.1285, MVL.1287	
+		Iodotropheus stuartgranti 	Konings, 1990	helmimalawinahven		MVL.1285, MVL.1287	
+	suku	Labeotropheus	Ahl, 1926				
+		Labeotropheus artatorostris 	Pauers, 2017	kobolttinenäahven		MVL.1285, MVL.1287	
+		Labeotropheus chlorosiglos 	Pauers, 2016	keltakylkinenäahven		MVL.1285, MVL.1287	
+		Labeotropheus fuelleborni 	Ahl, 1926	sininenäahven		MVL.1285, MVL.1287	
+		Labeotropheus simoneae 	Pauers, 2016	rusonenähven		MVL.1285, MVL.1287	
+		Labeotropheus trewavasae 	Fryer, 1956	kirjonenäahven		MVL.1285, MVL.1287	
+	suku	Labidochromis	Trewavas, 1935				
+		Labidochromis caeruleus 	Fryer, 1956 	sinihuuliahven		MVL.1285, MVL.1287	
+		Labidochromis chisumulae 	Lewis, 1982 	valkohuuliahven		MVL.1285, MVL.1287	
+		Labidochromis flavigulis 	Lewis, 1982 	helmihuuliahven		MVL.1285, MVL.1287	
+		Labidochromis freibergi 	Johnson, 1974 	keijuhuuliahven		MVL.1285, MVL.1287	
+		Labidochromis gigas 	Lewis, 1982 	isohuuliahven		MVL.1285, MVL.1287	
+		Labidochromis heterodon 	Lewis, 1982 	oliivihuuliahven		MVL.1285, MVL.1287	
+		Labidochromis ianthinus 	Lewis, 1982	malvahuuliahven		MVL.1285, MVL.1287	
+		Labidochromis (M.) joanjohnsonae 	Johnson, 1974	sinimalawinahven		MVL.1285, MVL.1287	
+		Labidochromis lividus 	Lewis, 1982 	luolahuuliahven		MVL.1285, MVL.1287	
+		Labidochromis maculicauda 	Lewis, 1982	kirjopyrstöhuuliahven		MVL.1285, MVL.1287	
+		Labidochromis mbenjii 	Lewis, 1982	ruutuhuuliahven		MVL.1285, MVL.1287	
+		Labidochromis mylodon 	Lewis, 1982	aavehuuliahven		MVL.1285, MVL.1287	
+		Labidochromis pallidus 	Lewis, 1982	kalpeahuuliahven		MVL.1285, MVL.1287	
+		Labidochromis shiranus 	Lewis, 1982	etelänhuuliahven		MVL.1285, MVL.1287	
+		Labidochromis strigatus 	Lewis, 1982	violettihuuliahven		MVL.1285, MVL.1287	
+		Labidochromis textilis 	Oliver, 1975	verkkohuuliahven		MVL.1285, MVL.1287	
+		Labidochromis vellicans 	Trewavas, 1935 	ruskohuuliahven		MVL.1285, MVL.1287	
+		Labidochromis zebroides 	Lewis, 1982	raitahuuliahven		MVL.1285, MVL.1287	
+	suku	Lethrinops	Regan, 1922				
+		Lethrinops albus 	Regan, 1922	valkomalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops argenteus 	Ahl, 1926	hopeamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops auritus 	(Regan, 1922)	kultamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops christyi 	Trewavas, 1931	jalomalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops furcifer 	Trewavas, 1931	vihermalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops leptodon	Regan, 1922	hoikkamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops lethrinus 	(Günther, 1894) 	malawintonkija		MVL.1285, MVL.1287	
+		Lethrinops longimanus 	Trewavas, 1931	airomalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops longipinnis 	Eccles & Lewis, 1978	sulkamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops lunaris 	Trewavas, 1931	kuumalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops macracanthus 	Trewavas, 1931	piikkimalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops macrochir 	(Regan, 1922)	melamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops macrophthalmus 	(Boulenger, 1908)	isosilmämalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops marginatus 	Ahl, 1926	raitamalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops microstoma	Trewavas, 1931	pilkkumalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops mylodon 	Eccles & Lewis, 1979	aavemalawintonkija		MVL.1285, MVL.1287	
+		Lethrinops oculatus 	Trewavas, 1931	linssimalawintonkija		MVL.1285, MVL.1287	
+	suku	Lichnochromis	Trewavas, 1935				
+		Lichnochromis acuticeps 	Trewavas, 1935	lattakuonoahven		MVL.1285, MVL.1287	
+	suku	Maylandia	Meyer & Foerster, 1984				
+		Maylandia aurora 	(Burgess, 1976)	aurinkomalawinahven		MVL.1285, MVL.1287	
+		Maylandia barlowi 	(McKaye & Stauffer, 1986)	hunajamalawinahven		MVL.1285, MVL.1287	
+		Maylandia callainos 	(Stauffer & Hert, 1992)	kobolttimalawinahven		MVL.1285, MVL.1287	
+		Maylandia chrysomallos 	(Stauffer, Bowers, Kellogg, & McKaye, 1997)	keltaleukamalawinahven		MVL.1285, MVL.1287	
+		Maylandia emmiltos 	(Stauffer, Bowers, Kellogg, & McKaye, 1997)	punaevämalawinahven		MVL.1285, MVL.1287	
+		Maylandia estherae 	(Konings, 1995)	oranssimalawinahven		MVL.1285, MVL.1287	
+		Maylandia fainzilberi 	(Staeck, 1976)	kultaevämalawinahven		MVL.1285, MVL.1287	
+		Maylandia flavicauda 	(Li, Konings, & Stauffer, 2016)	keltapyrstömalawinahven		MVL.1285, MVL.1287	
+		Maylandia gallireyae 	(Miller, Konings & Stauffer 2021)	keltakotiloahven 	kotiloahven	MVL.1285, MVL.1287	
+		Maylandia greshakei 	(Meyer & Foerster, 1984) 	ruoste-evämalawinahven		MVL.1285, MVL.1287	
+		Maylandia hajomaylandi 	(Meyer & Schartl, 1984)	keltapäämalawinahven		MVL.1285, MVL.1287	
+		Maylandia lanisticola	(Burgess, 1976) 	kotilomalawinahven		MVL.1285, MVL.1287	
+		Maylandia lombardoi 	(Burgess, 1977)	keltamalawinahven		MVL.1285, MVL.1287	
+		Maylandia ngarae 	(Miller, Konings & Stauffer 2021)	saumakotiloahven		MVL.1285, MVL.1287	
+		Maylandia pulpican	(Tawil, 2002)	kiusamalawinahven		MVL.1285, MVL.1287	
+		Maylandia pyrsonotos 	(Stauffer, Bowers, Kellogg, & McKaye, 1997)	liekkimalawinahven		MVL.1285, MVL.1287	
+		Maylandia xanstomachus	 (Stauffer & Boltz, 1989)	keltakurkkumalawinahven		MVL.1285, MVL.1287	
+		Maylandia zebra 	(Boulenger, 1899) 	seepramalawinahven		MVL.1285, MVL.1287	
+	suku	Mchenga	Stauffer & Konings, 2006				
+		Mchenga conophoros 	(Stauffer, LoVullo, & McKaye, 1993)	kartiopesäutaka		MVL.1285, MVL.1287	
+		Mchenga cyclicos 	(Stauffer, LoVullo, & McKaye, 1993)	rengaspesäutaka		MVL.1285, MVL.1287	
+		Mchenga eucinostomus 	(Regan, 1922)	sinimustautaka		MVL.1285, MVL.1287	
+		Mchenga flavimanus 	(Iles, 1960)	keltaeväutaka		MVL.1285, MVL.1287	
+		Mchenga thinos 	(Stauffer, LoVullo, & McKaye, 1993)	raitautaka		MVL.1285, MVL.1287	
+	suku	Melanochromis	Trewavas, 1935				
+		Melanochromis auratus 	(Boulenger, 1897)	kultamalawinahven		MVL.1285, MVL.1287	
+		Melanochromis chipokae 	Johnson, 1975	mustemalawinahven		MVL.1285, MVL.1287	
+		Melanochromis loriae syn. parallelus	Johnson, 1975 	safiirimalawinahven		MVL.1285, MVL.1287	
+		Melanochromis melanopterus 	Trewavas, 1935	mustaevämalawinahven		MVL.1285, MVL.1287	
+		Melanochromis simulans 	Eccles, 1973	valemalawinahven		MVL.1285, MVL.1287	
+		Melanochromis vermivorus 	Trewavas, 1935	linjamalawinahven		MVL.1285, MVL.1287	
+	suku	Mylochromis	Regan, 1920				
+		Mylochromis anaphyrmus 	(Burgess & Axelrod, 1973)	kirjoviistoahven		MVL.1285, MVL.1287	
+		Mylochromis epichorialis 	(Trewavas, 1935)	kobolttiviistoahven		MVL.1285, MVL.1287	
+		Mylochromis ericotaenia	(Regan, 1922)	kalteriviistoahven		MVL.1285, MVL.1287	
+		Mylochromis formosus 	(Trewavas, 1935)	hohtoviistoahven		MVL.1285, MVL.1287	
+		Mylochromis incola	(Trewavas, 1935)	kultaviistoahven		MVL.1285, MVL.1287	
+		Mylochromis labidodon	(Trewavas, 1935)	täpläviistoahven		MVL.1285, MVL.1287	
+		Mylochromis lateristriga 	(Günther, 1864) 	safiiriviistoahven		MVL.1285, MVL.1287	
+		Mylochromis melanotaenia	(Regan, 1922)	mustajuovaviistoahven		MVL.1285, MVL.1287	
+		Mylochromis mola	(Trewavas, 1935)	siniviistoahven		MVL.1285, MVL.1287	
+		Mylochromis semipalatus 	(Trewavas, 1935)	keltaviistoahven		MVL.1285, MVL.1287	
+		Mylochromis sphaerodon	(Regan, 1922)	oranssieväviistoahven		MVL.1285, MVL.1287	
+	suku	Naevochromis	Eccles & Trewavas, 1989				
+		Naevochromis chrysogaster 	(Trewavas, 1935)	kultavatsamalawinahven		MVL.1285, MVL.1287	
+	suku	Nimbochromis	Eccles & Trewavas, 1989				
+		Nimbochromis fuscotaeniatus 	(Regan, 1922)	tummajuovamalawinhautoja		MVL.1285, MVL.1287	
+		Nimbochromis linni 	(Burgess & Axelrod, 1974)	nokkasuuhautoja		MVL.1285, MVL.1287	
+		Nimbochromis livingstonii 	(Günther, 1894) 	torkkusuuhautoja		MVL.1285, MVL.1287	
+		Nimbochromis polystigma	(Regan, 1922)	täpläsuuhautoja		MVL.1285, MVL.1287	
+		Nimbochromis venustus 	(Boulenger, 1908) 	riikinkukkohautoja		MVL.1285, MVL.1287	
+	suku	Nyassachromis	Eccles & Trewavas, 1989				
+		Nyassachromis boadzulu	(Iles, 1960)	teräspääutaka		MVL.1285, MVL.1287	
+		Nyassachromis breviceps	(Regan, 1922) 	lyhytpääutaka		MVL.1285, MVL.1287	
+		Nyassachromis leuciscus 	(Regan, 1922)	viherutaka		MVL.1285, MVL.1287	
+		Nyassachromis microcephalus 	(Trewavas, 1935)	pikkupääutaka		MVL.1285, MVL.1287	
+		Nyassachromis nigritaeniatus 	(Trewavas, 1935)	mustajuovautaka		MVL.1285, MVL.1287	
+		Nyassachromis prostoma	(Trewavas, 1935)	keltaotsautaka		MVL.1285, MVL.1287	
+		Nyassachromis purpurans 	(Trewavas, 1935)	purppurautaka		MVL.1285, MVL.1287	
+	suku	Otopharynx	Regan, 1920				
+		Otopharynx auromarginatus 	(Boulenger, 1908) 	kultasaumautaka		MVL.1285, MVL.1287	
+		Otopharynx decorus 	(Trewavas, 1935)	koristeutaka		MVL.1285, MVL.1287	
+		Otopharynx heterodon	(Trewavas, 1935) 	hammasutaka		MVL.1285, MVL.1287	
+		Otopharynx lithobates 	Oliver, 1989	kivikkoutaka		MVL.1285, MVL.1287	
+		Otopharynx ovatus 	(Trewavas, 1935)	munautaka		MVL.1285, MVL.1287	
+		Otopharynx selenurus 	Regan, 1922	hiekkautaka		MVL.1285, MVL.1287	
+		Otopharynx tetraspilus 	(Trewavas, 1935)	täpläselkäutaka		MVL.1285, MVL.1287	
+		Otopharynx tetrastigma	(Günther, 1894)	laikku-utaka		MVL.1285, MVL.1287	
+	suku	Petrotilapia	Trewavas, 1935				
+		Petrotilapia genalutea	Marsh, 1983	okralevänraastaja		MVL.1285, MVL.1287	
+		Petrotilapia tridentiger 	Trewavas, 1935 	kobolttilevänraastaja 	paksuhuuliahven	MVL.1285, MVL.1287	
+		Petrotilapia xanthos 	Lundeba, Stauffer, & Konings, 2011	keltalevänraastaja		MVL.1285, MVL.1287	
+	suku	Placidochromis	Eccles & Trewavas, 1989				
+		Placidochromis electra 	(Burgess, 1979)	sähkömalawinahven		MVL.1285, MVL.1287	
+		Placidochromis milomo	Oliver, 1989	pusumalawinahven		MVL.1285, MVL.1287	
+		Placidochromis phenochilus 	(Trewavas, 1935)	mariinimalawinahven		MVL.1285, MVL.1287	
+	suku	Protomelas	Eccles & Trewavas, 1989				
+		Protomelas annectens 	(Regan, 1922)	välimalawinahven		MVL.1285, MVL.1287	
+		Protomelas fenestratus 	(Trewavas, 1935)	ikkunamalawinahven		MVL.1285, MVL.1287	
+		Protomelas ornatus 	(Regan, 1922)	korumalawinahven		MVL.1285, MVL.1287	
+		Protomelas similis 	(Regan, 1922)	lasuurimalawinahven		MVL.1285, MVL.1287	
+		Protomelas spilonotus 	(Trewavas, 1935)	täpläselkämalawinahven		MVL.1285, MVL.1287	
+		Protomelas spilopterus 	(Trewavas, 1935)	turkoosimalawinahven		MVL.1285, MVL.1287	
+		Protomelas taeniolatus 	(Trewavas, 1935)	värttinämalawinahven		MVL.1285, MVL.1287	
+	suku	Pseudotropheus	Regan, 1922				
+		Pseudotropheus brevis 	(Trewavas, 1935)	keltaposkimalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus crabro	(Ribbink & Lewis, 1982)	ampiaismalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus (Melanoch.) cyaneorhabdos 	(Bowers & Stauffer, 1997)	siniviivamalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus elegans 	Trewavas, 1935	hienomalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus fuscus 	Trewavas, 1935	tummamalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus interruptus 	(Johnson, 1975)	katkomalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus johannii 	Eccles, 1973	sinijuovamalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus livingstonii 	(Boulenger, 1899)	keltakylkimalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus perileucos 	(Bowers & Stauffer, 1997)	valkosaumamalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus perspicax 	(Trewavas, 1935)	teräsmalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus purpuratus 	Johnson, 1976	purppuramalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus tursiops 	Burgess & Axelrod, 1975	suippomalawinahven		MVL.1285, MVL.1287	
+		Pseudotropheus williamsi 	(Günther, 1894)	ujomalawinahven		MVL.1285, MVL.1287	
+	suku	Rhamphochromis	Regan, 1922				
+		Rhamphochromis esox 	(Boulenger, 1908)	haukiahven		MVL.1285, MVL.1287	
+		Rhamphochromis macrophthalmus 	Regan, 1922	isosilmähaukiahven		MVL.1285, MVL.1287	
+	suku	Sciaenochromis	Eccles & Trewavas, 1989				
+		Sciaenochromis ahli 	(Trewavas, 1935)	sähköhämyahven		MVL.1285, MVL.1287	
+		Sciaenochromis fryeri 	Konings, 1993	sinihämyahven		MVL.1285, MVL.1287	
+		Sciaenochromis psammophilus 	Konings, 1993	raitahämyahven		MVL.1285, MVL.1287	
+	suku	Stigmatochromis	Eccles & Trewavas, 1989				
+		Stigmatochromis pholidophorus 	(Trewavas, 1935)	kuonopetohautoja		MVL.1285, MVL.1287	
+		Stigmatochromis woodi 	(Regan, 1922)	viherpetohautoja		MVL.1285, MVL.1287	
+	suku	Trematocranus	Trewavas, 1935				
+		Trematocranus placodon	(Regan, 1922)	hietakeisariahven		MVL.1285, MVL.1287	
+		Tropheops macrophthalmus 	(Ahl, 1926)	isosilmämalawinahven		MVL.1285, MVL.1287	
+		Tropheops microstoma	(Trewavas, 1935)	suppumalawinahven		MVL.1285, MVL.1287	
+		Tropheops novemfasciatus 	(Regan, 1922)	viirumalawinahven		MVL.1285, MVL.1287	
+		Tropheops tropheops 	(Regan, 1922)	raitamalawinahven		MVL.1285, MVL.1287	
+	suku	Tyrannochromis	Eccles & Trewavas, 1989				
+		Tyrannochromis macrostoma	(Regan, 1922)  	hirmuahven		MVL.1285, MVL.1287	
+		Tyrannochromis nigriventer 	Eccles, 1989	juovahirmuahven		MVL.1285, MVL.1287	
+							
+	tribe	Bathybatini					
+	suku	Bathybates	Boulenger, 1898				
+		Bathybates fasciatus 	Boulenger, 1901	raitapetoahven		MVL.1285, MVL.1286	
+		Bathybates ferox 	Boulenger, 1898	pilkkupetoahven		MVL.1285, MVL.1286	
+		Bathybates graueri 	Steindachner, 1911	keltapetoahven		MVL.1285, MVL.1286	
+		Bathybates hornii 	Steindachner, 1911	seeprapetoahven		MVL.1285, MVL.1286	
+		Bathybates leo 	Poll, 1956	tummapetoahven		MVL.1285, MVL.1286	
+		Bathybates minor 	Boulenger, 1906	pikkupetoahven		MVL.1285, MVL.1286	
+		Bathybates vittatus 	Boulenger, 1914	juovapetoahven		MVL.1285, MVL.1286	
+	suku	Hemibates	Regan, 1920				
+		Hemibates koningsi 	Schedel & Schliewen, 2017	kulmapetoahven		MVL.1285, MVL.1286	
+		Hemibates stenosoma	(Boulenger, 1901)	hohtopetoahven		MVL.1285, MVL.1286	
+							
+	tribe	Benthochromini					
+	suku	Benthochromis	Poll, 1986				
+		Benthochromis horii 	Takahashi, 2008	viirusulkahautoja		MVL.1285, MVL.1286	
+		Benthochromis melanoides 	(Poll, 1984)	syväsulkahautoja		MVL.1285, MVL.1286	
+		Benthochromis tricoti 	(Poll, 1948)	juovasulkahautoja		MVL.1285, MVL.1286	
+							
+	tribe	Boulengerochromini					
+	suku	Boulengerochromis	Pellegrin, 1904				
+		Boulengerochromis microlepis	(Boulenger, 1899)	jättikirjoahven		MVL.1285, MVL.1286	
+							
+	tribe	Cyphotilapiini					
+	suku	Trematochromis	Poll, 1987				
+		Trematochromis benthicola	(Matthes, 1962)	rubiinikampahautoja		MVL.1285, MVL.1286	
+	suku	Shuja	Genner, Ngatunga & Turner, 2022				
+		Shuja horei	(Günther, 1894)	pilkkukampahautoja		MVL.1285, MVL.1286	
+	suku	Cyphotilapia	Regan, 1920				
+		Cyphotilapia frontosa 	(Boulenger, 1906)	pahkakirjoahven		MVL.1285, MVL.1286	
+		Cyphotilapia gibberosa 	Takahashi & Nakaya, 2003	sinipahka-ahven		MVL.1285, MVL.1286	
+							
+	tribe	Cyprichromini					
+	suku	Cyprichromis	Scheuermann, 1977				
+		Cyprichromis coloratus 	Takahashi & Hori, 2006	palettikilliahven		MVL.1285, MVL.1286	
+		Cyprichromis leptosoma 	(Boulenger, 1898)	killiahven		MVL.1285, MVL.1286	
+		Cyprichromis microlepidotus 	(Poll, 1956)	okrakilliahven		MVL.1285, MVL.1286	
+		Cyprichromis pavo 	Büscher, 1994	safiirikilliahven		MVL.1285, MVL.1286	
+		Cyprichromis zonatus 	Takahashi, Hori & Nakaya, 2002	satulakilliahven		MVL.1285, MVL.1286	
+	suku	Paracyprichromis	Poll, 1986				
+		Paracyprichromis brieni 	(Poll, 1981)	viirikilliahven		MVL.1285, MVL.1286	
+		Paracyprichromis nigripinnis 	(Boulenger, 1901)	neonkilliahven		MVL.1285, MVL.1286	
+							
+	tribe	Ectodini					
+	suku	Asprotilapia	Boulenger, 1901				
+		Asprotilapia leptura	Boulenger, 1901	levähiekkahautoja		MVL.1285, MVL.1286	
+	suku	Aulonocranus	Regan, 1920				
+		Aulonocranus dewindti	(Boulenger, 1899)	sorasulkahautoja		MVL.1285, MVL.1286	
+	suku	Callochromis	Regan, 1920				
+		Callochromis macrops 	(Boulenger, 1898)	kuparihiekkahautoja		MVL.1285, MVL.1286	
+		Callochromis melanostigma 	(Boulenger, 1906)	täplähiekkahautoja		MVL.1285, MVL.1286	
+		Callochromis pleurospilus 	(Boulenger, 1906)	messinkihiekkahautoja		MVL.1285, MVL.1286	
+	suku	Cardiopharynx	Poll, 1942				
+		Cardiopharynx schoutedeni	Poll, 1942	sinievähiekkahautoja		MVL.1285, MVL.1286	
+	suku	Cunningtonia	Boulenger, 1906				
+		Cunningtonia longiventralis	Boulenger, 1906	huulisulkahautoja		MVL.1285, MVL.1286	
+	suku	Cyatopharynx	Regan, 1920				
+		Cyatopharynx foae	(Vaillant, 1899)	tummasulkahautoja		MVL.1285, MVL.1286	
+		Cyathopharynx furcifer	(Boulenger, 1898)	metallisulkahautoja		MVL.1285, MVL.1286	
+	suku	Ectodus	Boulenger, 1898				
+		Ectodus descampsii	Boulenger, 1898	rengashiekkahautoja		MVL.1285, MVL.1286	
+	suku	Enantiopus	Boulenger, 1906				
+		Enantiopus melanogenys	(Boulenger, 1898)	kirjohiekkahautoja		MVL.1285, MVL.1286	
+	suku	Grammatotria	Boulenger, 1899				
+		Grammatotria lemairii	Boulenger, 1899	pippurihiekka-ahven		MVL.1285, MVL.1286	
+	suku	Lestradea	Poll, 1943				
+		Lestradea perspicax 	Poll, 1943	parijuovahiekkahautoja		MVL.1285, MVL.1286	
+	suku	Microdontochromis	Poll, 1986				
+		Microdontochromis rotundiventralis	Takahashi  et al., 1997	neonplanktonhautoja		MVL.1285, MVL.1286	
+		Microdontochromis tenuidentata	(Poll, 1951)	raitaplanktonhautoja		MVL.1285, MVL.1286	
+	suku	Ophthalmotilapia	Pellegrin, 1904				
+		Ophthalmotilapia boops 	(Boulenger, 1901)	ruskosulkahautoja		MVL.1285, MVL.1286	
+		Ophthalmotilapia heterodonta 	(Poll & Matthes, 1962)	turkoosisulkahautoja		MVL.1285, MVL.1286	
+		Ophthalmotilapia nasuta 	(Poll & Matthes, 1962)	nenäsulkahautoja		MVL.1285, MVL.1286	
+		Ophthalmotilapia ventralis 	(Boulenger, 1898)	sinisulkahautoja		MVL.1285, MVL.1286	
+	suku	Xenotilapia	Boulenger, 1899				
+		Xenotilapia bathyphila 	Poll, 1956	teräshiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia boulengeri 	(Poll, 1942)	ruskohiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia burtoni 	Poll, 1951	täplähiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia caudafasciata 	Poll, 1951	raitaevähiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia flavipinnis 	Poll, 1985	kultahiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia longispinis 	Poll, 1951	piikkihiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia nasus 	De Vos, Risch & Thys van den Audenaerde, 1995	kuonohiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia nigrolabiata 	Poll, 1951	mustahuulihiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia ochrogenys 	(Boulenger, 1914)	hohtohiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia ornatipinnis 	Boulenger, 1901	hohtojuovahiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia papilio 	Büscher, 1990	perhoshiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia sima 	Boulenger, 1899	välkehiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia singularis	(Boulenger, 1914)	laikkuhiekkahautoja		MVL.1285, MVL.1286	
+		Xenotilapia spilopterus 	Poll & Stewart, 1975	pilkkuhiekkahautoja		MVL.1285, MVL.1286	
+							
+	tribe	Eretmodini					
+	suku	Eretmodus	Boulenger, 1898				
+		Eretmodus cyanostictus 	Boulenger, 1898	seepraturpa-ahven		MVL.1285, MVL.1286	
+		Eretmodus marksmithi 	Burgess, 2012	viiruturpa-ahven		MVL.1285, MVL.1286	
+	suku	Spathodus	Boulenger, 1900				
+		Spathodus erythrodon 	Boulenger, 1900	pilkkuturpa-ahven		MVL.1285, MVL.1286	
+		Spathodus marlieri 	Poll, 1950	kyhmyturpa-ahven		MVL.1285, MVL.1286	
+	suku	Tanganicodus	Poll, 1950				
+		Tanganicodus irsacae	Poll, 1950	raitaturpa-ahven		MVL.1285, MVL.1286	
+							
+							
+	tribe	Tropheini					
+	suku	Interochromis	Yamaoka, Hori & Kuwamura, 1998				
+		Interochromis loocki	(Poll, 1949)	ruosteotsahautoja		MVL.1285, MVL.1286	
+	suku	Limnotilapia	Regan, 1920				
+		Limnotilapia dardennii	(Boulenger, 1899)	keltavatsahautoja		MVL.1285, MVL.1286	
+	suku	Lobochilotes	Boulenger, 1915				
+		Lobochilotes labiatus	(Boulenger, 1898)	seeprahuuliahven		MVL.1285, MVL.1286	
+	suku	Petrochromis	Boulenger, 1898				
+		Petrochromis ephippium 	Brichard, 1989	satulakivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis famula 	Matthes & Trewavas, 1960	ruskokivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis fasciolatus 	Boulenger, 1914	raitakivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis horii 	Takahashi & Koblmüller, 2014	keltakivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis macrognathus 	Yamaoka, 1983	huulikivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis orthognathus 	Matthes, 1959	ruostekivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis polyodon 	Boulenger,, 1898	häijykivikkohautoja		MVL.1285, MVL.1286	
+		Petrochromis trewavasae 	Poll, 1948	tähtikivikkohautoja		MVL.1285, MVL.1286	
+	suku	Pseudosimochromis	Nelissen, 1977				
+		Pseudosimochromis babaulti 	(Pellegrin, 1927)	raitalevähautoja		MVL.1285, MVL.1286	
+		Pseudosimochromis curvifrons 	(Poll, 1942)	juhmurilevähautoja	juhmurisuomunsyöjä	MVL.1285, MVL.1286	
+		Pseudosimochromis margaretae 	(Axelrod & Harrison, 1978)	saumalevähautoja		MVL.1285, MVL.1286	
+		Pseudosimochromis marginatus	(Poll, 1956)	harmaalevähautoja		MVL.1285, MVL.1286	
+	suku	Simochromis	Boulenger, 1898				
+		Simochromis diagramma 	(Günther, 1894)	kalterilevähautoja		MVL.1285, MVL.1286	
+	suku	Tropheus	Boulenger, 1898				
+		Tropheus annectens 	Boulenger, 1900	viirikeisari		MVL.1285, MVL.1286	
+		Tropheus brichardi 	Nelissen & Thys van den Audenaerde, 1975	seeprakeisari		MVL.1285, MVL.1286	
+		Tropheus duboisi 	Marlier, 1959	vyökeisari		MVL.1285, MVL.1286	
+		Tropheus moorii	Boulenger, 1898	keisarikirjoahven		MVL.1285, MVL.1286	
+							
+	tribe	Lamprologini					
+	suku	Altolamprologus	Poll, 1986				
+		Altolamprologus calvus 	(Poll, 1978)	helmikuonoahven		MVL.1285, MVL.1286	
+		Altolamprologus compressiceps 	(Boulenger, 1898)	kuonoahven		MVL.1285, MVL.1286	
+		Altolamprologus fasciatus 	Boulenger, 1898	raitakuonoahven		MVL.1285, MVL.1286	
+	suku	Chalinochromis	Poll, 1974				
+		Chalinochromis brichardi 	Poll, 1974	ohjasahven		MVL.1285, MVL.1286	
+		Chalinochromis cyanophleps 	Kullander, Karlsson, Karlsson & Norén, 2014	siniohjasahven		MVL.1285, MVL.1286	
+		Chalinochromis popelini 	Brichard, 1989	juovaohjasahven		MVL.1285, MVL.1286	
+	suku	Julidochromis	Boulenger, 1898				
+		Julidochromis dickfeldi 	Staeck, 1975	sinikoruahven		MVL.1285, MVL.1286	
+		Julidochromis marksmithi 	Burgess, 2014	linjakoruahven		MVL.1285, MVL.1286	
+		Julidochromis marlieri 	Poll, 1956	ruutukoruahven		MVL.1285, MVL.1286	
+		Julidochromis ornatus 	Boulenger, 1898	kultakoruahven		MVL.1285, MVL.1286	
+		Julidochromis regani 	Poll, 1942	juovakoruahven		MVL.1285, MVL.1286	
+		Julidochromis transcriptus 	Matthes, 1959	täpläkoruahven		MVL.1285, MVL.1286	
+	suku	Lamprologus	Schilthuis, 1891				
+		Lamprologus callipterus 	Boulenger, 1906 	haaremikotiloahven		MVL.1285, MVL.1286	
+		Lamprologus kungweensis 	Poll, 1956	täpläkotiloahven		MVL.1285, MVL.1286	
+		Lamprologus lemairii 	Boulenger, 1899	petokotiloahven		MVL.1285, MVL.1286	
+		Lamprologus ocellatus 	(Steindachner, 1909)	keltakotiloahven		MVL.1285, MVL.1286	
+		Lamprologus ornatipinnis 	Poll, 1949	korukotiloahven		MVL.1285, MVL.1286	
+		Lamprologus signatus 	Poll, 1952	kultavatsakotiloahven		MVL.1285, MVL.1286	
+		Lamprologus speciosus 	Büscher, 1991	raitakotiloahven		MVL.1285, MVL.1286	
+		Lamprologus stappersi 	Pellegrin, 1927	helmiäiskotiloahven		MVL.1285, MVL.1286	
+		Lamprologus congoensis 	Schilthuis, 1891	keltakoskiahven		MVL.1285	
+		Lamprologus lethops 	Roberts & Stewart, 1976	sokkokoskiahven		MVL.1285	
+		Lamprologus markerti 	Tougas & Stiassny, 2014	kyhmykoskiahven		MVL.1285	
+		Lamprologus mocquardi 	Pellegrin, 1903	ruskokoskiahven		MVL.1285	
+		Lamprologus symoensi 	Poll, 1976	yläkoskiahven		MVL.1285	
+		Lamprologus teugelsi 	Schelly & Stiassny, 2004	tummakoskiahven		MVL.1285	
+		Lamprologus tigripictilis 	Schelly & Stiassny, 2004	tiikerikoskiahven		MVL.1285	
+		Lamprologus tumbanus	Boulenger, 1899	harmaakoskiahven		MVL.1285	
+		Lamprologus werneri 	Poll, 1959	sinikoskiahven		MVL.1285	
+	suku	Lepidiolamprologus	Pellegrin, 1904				
+		Lepidiolamprologus attenuatus 	(Steindachner, 1909)	laikkuluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus boulengeri	(Steindachner, 1909)	kiilakotiloahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus cunningtoni 	(Boulenger, 1906)	tähtiluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus elongatus	(Boulenger, 1898)	hoikkaluola-ahven		MVL.1285, MVL.1286	
+		Lepidolamprologus hecqui	(Boulenger, 1898)	laikkukotiloahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus kamambae 	Kullander, Karlsson & Karlsson, 2012	ruutuluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus kendalli 	(Poll & Stewart, 1977)	valkotäpläluola-ahven		MVL.1285, MVL.1286	
+		Lepidolamprologus meeli	(Poll, 1948)	ruutukotiloahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus mimicus 	Schelly, Takahashi, Bills & Hori, 2007	täpläluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus nkambae	(Staeck, 1978	sahaluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus pleuromaculatus	(Trewavas & Polli, 1952)	isokotiloahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus profundicola	(Poll, 1949)	ruskoluola-ahven		MVL.1285, MVL.1286	
+		Lepidiolamprologus variostigma 	(Büscher, 1995)	kirjoluola-ahven		MVL.1285, MVL.1286	
+	suku	Neolamprologus	Colombé & Allgayer, 1985				
+		Neolamprologus bifasciatus 	Büscher, 1993	kaksijuovaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus brevis 	Boulenger, 1899	lyhytkotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus brichardi 	Poll, 1974	viirikirjoahven		MVL.1285, MVL.1286	
+		Neolamprologus buescheri 	Staeck, 1983	laikkuviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus cancellatus 	Aibara, Takahashi & Nakaya, 2005	ritiläkotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus caudopunctatus 	Poll, 1978	keltaeväkotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus chitamwebwai 	Verburg & Bills, 2007	verkkoviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus laparogramma 	Bills & Ribbink, 1997	raitavatsakotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus christyi 	Trewavas & Poll, 1952	tummaviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus crassus 	Brichard, 1989	saumaviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus cylindricus 	Staeck & Seegers, 1986	seepraluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus falcicula 	Brichard, 1989	ruskoviiriahven		MVL.1285, MVL.1286	
+	                      	Neolamprologus furcifer 	Boulenger, 1898	lyyraluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus gracilis 	Brichard, 1989	siroviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus helianthus 	Büscher, 1997	aurinkoviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus leleupi 	Poll, 1956	aurinkokirjoahven		MVL.1285, MVL.1286	
+		Neolamprologus leloupi 	Poll, 1948	timanttiluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus longicaudatus 	Nakaya & Gashagaza, 1995	kyhmyluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus longior 	Staeck, 1980	helokirjoahven		MVL.1285, MVL.1286	
+		Neolamprologus marunguensis 	Büscher, 1989	sinisilmäviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus modestus 	Boulenger, 1898	seepialuola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus mondabu 	Boulenger, 1906	vihereväluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus multifasciatus 	Boulenger, 1906	seeprakotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus mustax 	Poll, 1978	mustaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus niger 	Poll, 1956	mahonkiluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus nigriventris 	Büscher, 1992	mustavatsaviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus obscurus 	Poll, 1978	raitaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus olivaceous 	Brichard, 1989	oliiviviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus pectoralis 	Büscher, 1991	melaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus petricola 	Poll, 1949	kivikkoluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus prochilus 	Bailey & Stewart, 1977	leukaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus pulcher 	Trewavas & Poll, 1952	kaunoviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus savoryi 	Poll, 1949	raitaviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus schreyeni 	Poll, 1974	sysiluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus sexfasciatus 	Trewavas & Poll, 1952	kalteriluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus similis 	Büscher, 1992	valekotiloahven		MVL.1285, MVL.1286	
+		Neolamprologus splendens 	Brichard, 1989	loistoviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus tetracanthus 	Boulenger, 1899	piikkiluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus timidus 	Kullander, Norén, Karlsson & Karlsson, 2014	ujoluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus toae 	(Poll, 1949)	pöllöluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus tretocephalus 	Boulenger, 1899	siniseepra-ahven		MVL.1285, MVL.1286	
+		Neolamprologus variostigma 	Büscher, 1995	hohtoluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus ventralis 	Büscher, 1995	rihmaluola-ahven		MVL.1285, MVL.1286	
+		Neolamprologus walteri 	Verburg & Bills, 2007	kuvioviiriahven		MVL.1285, MVL.1286	
+		Neolamprologus wauthioni 	Poll, 1949	helmiluola-ahven		MVL.1285, MVL.1286	
+	suku	Telmatochromis	Boulenger, 1898				
+		Telmatochromis bifrenatus 	Myers, 1936	parijuovavaljasahven		MVL.1285, MVL.1286	
+		Telmatochromis brachygnathus 	Hanssens & Snoeks, 2003	tylppävaljasahven		MVL.1285, MVL.1286	
+		Telmatochromis brichardi 	Louisy, 1989	sahavaljasahven		MVL.1285, MVL.1286	
+		Telmatochromis dhonti 	(Boulenger, 1919)	mokkavaljasahven		MVL.1285, MVL.1286	
+		Telmatochromis temporalis 	Boulenger, 1898	kanelivaljasahven		MVL.1285, MVL.1286	
+		Telmatochromis vittatus 	Boulenger, 1898	linjavaljasahven		MVL.1285, MVL.1286	
+	suku	Variabilichromis	Colombé & Allgayer, 1985				
+		Variabilichromis moorii	(Boulenger, 1898)	tummaluola-ahven		MVL.1285, MVL.1286	
+							
+	tribe	Limnochromini					
+	suku	Baileychromis	Poll, 1986				
+		Baileychromis centropomoides	Bailey & Stewart, 1977)	piikkikidusahven		MVL.1285, MVL.1286	
+	suku	Gnathochromis	Poll, 1981				
+		Gnathochromis permaxillaris	 (David, 1936)	lerppuhuulihautoja		MVL.1285, MVL.1286	
+		Gnathochromis pfefferi 	(Boulenger, 1898)	katkasuuhautoja		MVL.1285, MVL.1286	
+	suku	Greenwoodochromis	Poll, 1983				
+		Greenwoodochromis bellcrossi 	(Poll, 1976)	raitasyvännehautoja		MVL.1285, MVL.1286	
+		Greenwoodochromis christyi	(Trewavas, 1953)	välkesyvännehautoja		MVL.1285, MVL.1286	
+	suku	Limnochromis	Regan, 1920				
+		Limnochromis abeelei 	Poll, 1949	isomutahautoja		MVL.1285, MVL.1286	
+		Limnochromis auritus 	Boulenger, 1901	kultamutahautoja		MVL.1285, MVL.1286	
+		Limnochromis staneri 	Poll, 1949	turpamutahautoja		MVL.1285, MVL.1286	
+	suku	Reganochromis	Whitley, 1929				
+		Reganochromis calliurus	Boulenger, 1901	hohtomutahautoja		MVL.1285, MVL.1286	
+	suku	Tangachromis	Poll, 1981				
+		Tangachromis dhanisi	(Poll, 1949)	planktonhautoja		MVL.1285, MVL.1286	
+	suku	Triglachromis	Poll & Thys van den Audenaerde, 1974				
+		Triglachromis otostigma	(Regan, 1920)	ruskomutahautoja		MVL.1285, MVL.1286	
+							
+							
+	tribe	Perissodini					
+	suku	Haplotaxodon	Boulenger, 1906				
+		Haplotaxodon microlepis 	Boulenger, 1906	petosuuhautoja		MVL.1285, MVL.1286	
+		Haplotaxodon trifasciatus 	Takahashi & Nakaya, 1999	laikkupetohautoja		MVL.1285, MVL.1286	
+	suku	Perissodus	Boulenger, 1898				
+		Perissodus eccentricus 	Liem & Stewart, 1976	sinisuomunsyöjä		MVL.1285, MVL.1286	
+		Perissodus microlepis 	Boulenger, 1898	rusosuomunsyöjä		MVL.1285, MVL.1286	
+	suku	Plecodus	Boulenger, 1898				
+		Plecodus elaviae 	Poll, 1949	isosuomunsyöjä		MVL.1285, MVL.1286	
+		Plecodus multidentatus 	Poll, 1952	naskalisuomunsyöjä		MVL.1285, MVL.1286	
+		Plecodus paradoxus 	Boulenger, 1898	juovasuomunsyöjä		MVL.1285, MVL.1286	
+		Plecodus straeleni 	Poll, 1948	raitasuomunsyöjä		MVL.1285, MVL.1286	
+							
+	tribe	Trematocarini		karat			
+	suku	Trematocara	Boulenger, 1899				
+		Trematocara caparti 	Poll, 1948	planktonkara		MVL.1285, MVL.1286	
+		Trematocara kufferathi 	Poll, 1948	ulappakara		MVL.1285, MVL.1286	
+		Trematocara macrostoma 	Poll, 1952	kitakara		MVL.1285, MVL.1286	
+		Trematocara marginatum 	Boulenger, 1899	kiilakara		MVL.1285, MVL.1286	
+		Trematocara nigrifrons 	Boulenger, 1906	syvännekara		MVL.1285, MVL.1286	
+		Trematocara stigmaticum 	Poll, 1943	juovakara		MVL.1285, MVL.1286	
+		Trematocara unimaculatum 	Boulenger, 1901	täpläkara		MVL.1285, MVL.1286	
+		Trematocara variabile 	Poll 1952,	mustasaumakara		MVL.1285, MVL.1286	
+		Trematocara zebra 	De Vos, Nshombo & Thys van den Audenaerde, 1996	seeprakara		MVL.1285, MVL.1286	
+							
+							
+MX.5086708	alaheimo	Etroplinae	Kullander, 1998	intiankirjoahvenet		MVL.1284	
+	suku	Etroplus	Cuvier, 1830				
+		Etroplus canarensis 	Day, 1877	viirukirjoahven		MVL.1285	
+		Etroplus suratensis 	(Bloch, 1790)	intiankirjoahven		MVL.1285	
+	suku	Pseudetroplus	Bleeker in Günther, 1862				
+		Pseudetroplus maculatus 	(Bloch, 1795)	keltakirjoahven		MVL.1285	
+	suku	Paretroplus	Bleeker, 1868				
+		Paretroplus kieneri 	Arnoult, 1960	nokisaariahven		MVL.1285	
+		Paretroplus maculatus 	Kiener & Maugé, 1966	vihersaariahven		MVL.1285	
+		Paretroplus menarambo 	Allgayer, 1996	purppurasaariahven		MVL.1285	
+		Paretroplus nourissati 	(Allgayer, 1998)	kalterisaariahven		MVL.1285	
+		Paretroplus polyactis 	Bleeker, 1878	punasaariahven		MVL.1285	
+							
+MX.5086709	alaheimo	Ptychochrominae	Sparks, 2004	madagaskarinkirjoahvenet		MVL.1284	
+	suku	Katria	Stiassny & Sparks, 2006				
+		Katria katria	(Reinthal & Stiassny, 1997)	katria		MVL.1285	
+	suku	Paratilapia	Bleeker, 1868				
+		Paratilapia polleni 	Bleeker, 1868	tähtitilapia		MVL.1285	
+	suku	Ptychochromis	Steindachner, 1880				
+		Ptychochromis oligacanthus 	Bleeker, 1868	ruskosaariahven		MVL.1285	
