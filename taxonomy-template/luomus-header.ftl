@@ -99,8 +99,8 @@
 				</div>
 			</a>
 			
-			<#if inStagingMode>     <span class="devmode">TEST ENVIROMENT</span></#if>	
-    		<#if inDevelopmentMode> <span class="devmode">DEV ENVIROMENT</span></#if>	
+			<#if inStagingMode>     <span class="devmode">TEST ENVIRONMENT</span></#if>	
+    		<#if inDevelopmentMode> <span class="devmode">DEV ENVIRONMENT</span></#if>	
 			
 			<div id="navigation-wrap" role="navigation">
 				<nav id="mainmenu" role="navigation">
