@@ -26,6 +26,7 @@ import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
+import fi.luomus.commons.utils.LogUtils;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -214,7 +215,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = new Qname(getQname(req));
 		if (!qname.isSet()) {
-			return status500(res);
+			return status400(res, new IllegalArgumentException("Qname not given"));
 		}
 		Format format = getFormat(req);
 
@@ -230,17 +231,27 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 
 		if (!given(data) && !given(predicateQname)) {
-			throw new IllegalArgumentException("You must give 'data' or 'predicate_qname' parameter");
+			return status400(res, new IllegalArgumentException("You must give contents in body or provide 'data' or 'predicate_qname' parameter"));
 		}
 
 		TriplestoreDAO dao = getTriplestoreDAO();
-		if (given(data)) {
-			put(qname, data, format, dao);
-		} else {
-			put(qname, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+		try {
+			if (given(data)) {
+				put(qname, data, format, dao);
+			} else {
+				put(qname, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
+			}
+		} catch (IllegalArgumentException e) {
+			return status400(res, e);
 		}
 
 		return processGet(req, res);
+	}
+
+	private ResponseData status400(HttpServletResponse res, IllegalArgumentException e) throws IOException {
+		res.getWriter().write(LogUtils.buildStackTrace(e, 10));
+		res.setContentType("text-plain");
+		return status(400, res);
 	}
 
 	public static void put(Qname qname, String predicateQname, String objectResource, String objectLiteral, String langCode, String contextQname, TriplestoreDAO dao) throws Exception {
@@ -268,7 +279,7 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 		if (!model.getSubject().getQname().equals(qname.toString())) {
 			throw new IllegalArgumentException("Request qname and data subject do not match");
-		}		
+		}
 		if (!qname.toString().contains(":") || qname.getNamespace().equals("taxonid")) {
 			dao.addResource(qname);
 		}

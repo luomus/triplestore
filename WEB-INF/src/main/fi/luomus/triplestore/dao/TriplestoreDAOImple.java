@@ -253,14 +253,14 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		try {
 			int c = addStatement.executeUpdate();
 			if (c != 1) throw new IllegalStateException("Add statement inserted " + c + " rows instead of 1.");
-		} catch (SQLException sqle) {
-			if (sqle.getMessage() != null && sqle.getMessage().startsWith("ORA-01403")) {
-				throw reportMissingResource(statement, subject, sqle);
-			}
+		} catch (Exception e) {
+			RuntimeException missing = resolveMissingResourceException(statement, subject);
+			if (missing != null) throw missing;
+			throw e;
 		}
 	}
 
-	private RuntimeException reportMissingResource(Statement statement, Subject subject, SQLException sqle) throws SQLException {
+	private RuntimeException resolveMissingResourceException(Statement statement, Subject subject) throws SQLException {
 		if (!resourceExists(subject.getQname())) {
 			return new IllegalArgumentException("Subject '" + subject.getQname() + "' does not exist.");
 		}
@@ -273,7 +273,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		if (!statement.isForDefaultContext() && !resourceExists(statement.getContext().getQname())) {
 			return new IllegalArgumentException("Context '" + statement.getContext().getQname() + "' does not exist for predicate: " + statement.getPredicate().getQname());
 		}
-		return new IllegalArgumentException(sqle);
+		return null;
 	}
 
 	@Override
