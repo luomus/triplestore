@@ -167,10 +167,9 @@
 				<li><b>Misapplied:</b> This name has been wrongly used to refer this taxon (in Finland).</li>
 			</ul>
 			<p class="info">
-				Kaikkia synonyymeja käytetään lajinimihaussa, mutta suositeltu nimi näytetään (ja tämä synonyymi suluissa). Kaikkia muita paitsi misapplied voi käyttää havaintojen linkitykseen. Kaikkia muita paitsi misapplied käytetään havaintojen linkitykseen. 
-			</p>
-			<p class="info">
-				All synonyms are used in taxon name search, but primary scientific name is shown (and synonym name in brackets). All synonyms except misapplied can be used to report occurrences. All synonyms except misapplied are used in occurrence linking. 
+				<b>Laji.fi lajinimihaku:</b> Kaikkia synonyymeja käytetään lajinimihaussa, mutta suositeltu nimi näytetään (ja synonyymi suluissa).<br/>
+				<b>Laji.fi havaintojen haku:</b> Kaikkia synonyyminimiä käytetään havaintojen linkityksessä. Misapplied nimeä käytetään ainoastaan Suomessa tehdyille havainnoille.<br/> 
+				<b>Vihko havaintojen ilmoitus:</b> Kaikkia muita paitsi misapplied voi käyttää havaintojen kirjaamiseen.<br/>
 			</p>
 		</form>
 	</div>
