@@ -169,7 +169,7 @@
 			<p class="info">
 				<b>Laji.fi lajinimihaku:</b> Kaikkia synonyymeja käytetään lajinimihaussa, mutta suositeltu nimi näytetään (ja synonyymi suluissa).<br/>
 				<b>Laji.fi havaintojen haku:</b> Kaikkia synonyyminimiä käytetään havaintojen linkityksessä. Misapplied nimeä käytetään ainoastaan Suomessa tehdyille havainnoille.<br/> 
-				<b>Vihko havaintojen ilmoitus:</b> Kaikkia muita paitsi misapplied voi käyttää havaintojen kirjaamiseen.<br/>
+				<b>Vihko havaintojen ilmoitus:</b> Kaikkia muita paitsi misapplied voi käyttää havaintojen kirjaamiseen.
 			</p>
 		</form>
 	</div>
