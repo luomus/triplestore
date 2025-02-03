@@ -100,7 +100,7 @@ class TriplestoreDAOImpleCaches {
 			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
 			" 	 FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview v 							" +
 			"    WHERE v.subjectname IN ( 										" +
-			" 	   SELECT DISTINCT subjectname FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ?		" +
+			" 	   SELECT DISTINCT subjectname FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ? FETCH FIRST 5000 ROWS ONLY	" +
 			" 	 ) 																" +
 			" ) UNION (															" +
 			"   SELECT DISTINCT subjectname as propertyName						" +
