@@ -43,9 +43,9 @@ public class TaxaCreationFromFile {
 	private static final String API_PASSWORD = "...";
 
 	// Note: Example data file can be found from /data folder of this repo
-	private static final String FILENAME_IN = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\63 KIRJOAHVENET 2024_MUOKATTU.txt";
-	private static final String FILENAME_OUT = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\kirjoahvenet_taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
-	private static final boolean DRY_RUN = false; // XXX
+	private static final String FILENAME_IN = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\Maailman kalat tietokantaan_2025_TAXONID.txt";
+	private static final String FILENAME_OUT = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\maailman_kalat_taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
+	private static final boolean DRY_RUN = true; // XXX
 
 	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: All created new taxa have the same created timestamp making it easy to identify them - to fix/undo things gone wrong...
 
@@ -102,7 +102,7 @@ public class TaxaCreationFromFile {
 			replaceTempIdsWithReal(statements);
 		}
 		for (String s : statements) {
-			System.out.println(s);
+			//System.out.println(s);
 		}
 		FileUtils.writeToFile(new File(FILENAME_OUT), statements.stream().collect(Collectors.joining("\n")));
 	}
@@ -447,13 +447,17 @@ public class TaxaCreationFromFile {
 		RANK_MAP.put("alajakso", new Qname("MX.subphylum"));
 		RANK_MAP.put("yläluokka", new Qname("MX.superclass"));
 		RANK_MAP.put("luokka", new Qname("MX.class"));
+		RANK_MAP.put("alaluokka", new Qname("MX.subclass"));
 		RANK_MAP.put("lahko", new Qname("MX.order"));
 		RANK_MAP.put("order", new Qname("MX.order"));
 		RANK_MAP.put("alalahko", new Qname("MX.suborder"));
+		RANK_MAP.put("osalahko", new Qname("MX.infraorder"));
 		RANK_MAP.put("yläheimo", new Qname("MX.superfamily"));
 		RANK_MAP.put("heimo", new Qname("MX.family"));
 		RANK_MAP.put("alaheimo", new Qname("MX.subfamily"));
 		RANK_MAP.put("tribe", new Qname("MX.tribe"));
+		RANK_MAP.put("tribus", new Qname("MX.tribe"));
+		RANK_MAP.put("sukuryhmä", new Qname("MX.tribe"));
 		RANK_MAP.put("suku", new Qname("MX.genus"));
 	}
 
@@ -479,8 +483,10 @@ public class TaxaCreationFromFile {
 			if (Utils.removeWhitespace(line).isEmpty()) continue;
 			Iterator<String> header = headers.iterator();
 			Map<String, String> map = new LinkedHashMap<>();
-			for (String s : line.split(Pattern.quote("\t"))) {
-				map.put(header.next(), s.trim());
+			for (String s : line.split(Pattern.quote("\t"), -1)) {
+				if (header.hasNext()) {
+					map.put(header.next(), s.trim());
+				}
 			}
 			data.add(map);
 		}
