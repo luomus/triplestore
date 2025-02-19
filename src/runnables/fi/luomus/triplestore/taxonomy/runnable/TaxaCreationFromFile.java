@@ -102,7 +102,7 @@ public class TaxaCreationFromFile {
 			replaceTempIdsWithReal(statements);
 		}
 		for (String s : statements) {
-			//System.out.println(s);
+			System.out.println(s);
 		}
 		FileUtils.writeToFile(new File(FILENAME_OUT), statements.stream().collect(Collectors.joining("\n")));
 	}
