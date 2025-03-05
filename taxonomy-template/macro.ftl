@@ -65,6 +65,7 @@
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
 				</#if>
+				<a href="https://imagebank.laji.fi/admin/${taxon.qname}" target="imagebank" title="Images"><span class="ui-icon ui-icon-image"></a>
 				<#if !taxon.synonym && taxon.finnish>
 					<#if taxon.markedAsFinnishTaxon>
 						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" />
@@ -296,26 +297,6 @@
 </div>
 </#macro>
 
-<#macro taxonImageButton>
-	$("#imagesButton").on('click', function() {
-		var container = $('<div id="iframeContainer"><iframe src="${kotkaURL}/tools/taxon-images?taxonID=${taxon.qname}&amp;personToken=${user.personToken}"></iframe></div>');
-		$("body").append(container);
-		var windowHeight = $(window).height();
-        var dialogHeight = windowHeight * 0.9;
-		container.dialog({
-			title: 'Add/modify taxon images',
-			autoOpen: true,
-      		height: dialogHeight,
-      		width: "95%",
-      		modal: true,
-      		buttons: {
-        		"Close": function() {
-          			container.dialog("close");
-        		}
-			},
-      		close: function() {
-				container.remove();
-      		}
-    	});
-	});
+<#macro taxonImageButton taxon>
+	<a class="button" id="imagesButton" href="https://imagebank.laji.fi/admin/${taxon.qname}" target="imagebank">Images</a>
 </#macro> 

@@ -6,7 +6,7 @@
 	<@printEditorExpert taxon />
 	<#if fullView>
 		<a class="button" id="descriptionTextButton" href="${baseURL}/taxon-descriptions/${taxon.qname}">Description texts</a>
-		<button id="imagesButton">Images</button>
+		<@taxonImageButton taxon/>
 	</#if>
 </h5>
 
@@ -811,8 +811,6 @@ $(function() {
 	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
 	
 	$(".helpText").tooltip();
-	
-	<@taxonImageButton />
 	
 });
 </script>

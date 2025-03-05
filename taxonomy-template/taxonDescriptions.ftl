@@ -9,7 +9,7 @@
 				<div class="taxonomySearchResultContainer" style="display: none;">&nbsp;</div>
 			</form>
 		</div>
-		<button id="imagesButton">Images</button>
+		<@taxonImageButton taxon/>
 		<div>
 			Change languages:
 			<select id="descriptionLocalesSelector" multiple="multiple" class="chosen">
@@ -161,8 +161,6 @@ $(function() {
 		});
 		window.location.href = url;
 	});
-	
-	<@taxonImageButton />
 	
 });
 
