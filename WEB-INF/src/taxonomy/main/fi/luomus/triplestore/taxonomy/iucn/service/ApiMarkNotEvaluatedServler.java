@@ -49,7 +49,8 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 				.setData("target", target)
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 				.setData("persons", taxonomyDAO.getPersons())
-				.setData("selectedYear", year);
+				.setData("selectedYear", year)
+				.setData("permissions", true);
 	}
 
 	protected Evaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO, @SuppressWarnings("unused") HttpServletRequest req) throws Exception {
@@ -60,7 +61,7 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		model.addStatement(new Statement(new Predicate(Evaluation.LAST_MODIFIED), new ObjectLiteral(DateUtils.getCurrentDate())));
 		model.addStatement(new Statement(new Predicate(Evaluation.LAST_MODIFIED_BY), new ObjectResource(editorQname)));
 		model.addStatement(new Statement(new Predicate(Evaluation.RED_LIST_STATUS), new ObjectResource(Evaluation.NE)));
-		String notes = Evaluation.NE_MARK_NOTES + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+		String notes = Evaluation.NE_MARK_NOTES + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 		model.addStatement(new Statement(new Predicate(Evaluation.EDIT_NOTES), new ObjectLiteral(notes)));
 		model.addStatement(new Statement(new Predicate(Evaluation.STATE), new ObjectResource(Evaluation.STATE_READY)));
 		return evaluation;
