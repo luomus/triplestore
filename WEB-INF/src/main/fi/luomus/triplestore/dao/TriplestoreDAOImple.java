@@ -92,6 +92,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MR_CHECKLIST = "MR.checklist";
 	private static final String DC_URI = "dc:URI";
 	private static final String DC_BIBLIOGRAPHIC_CITATION = "dc:bibliographicCitation";
+	private static final String MR_NAME = "MR.name";
+	private static final String MP_NAME = "MP.name";
+	private static final String MP_URI = "MP.URI";
 	private static final String MP_PUBLICATION = "MP.publication";
 	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
 
@@ -302,6 +305,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.setType(MR_CHECKLIST);
 
 		for (Map.Entry<String, String> e : checklist.getFullname().getAllTexts().entrySet()) {
+			model.addStatementIfObjectGiven(MR_NAME, e.getValue(), e.getKey());
+		}
+		for (Map.Entry<String, String> e : checklist.getFullname().getAllTexts().entrySet()) {
 			model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, e.getValue(), e.getKey());
 		}
 		for (Map.Entry<String, String> e : checklist.getNotes().getAllTexts().entrySet()) {
@@ -368,7 +374,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		Model model = new Model(publication.getQname());
 		model.setType(MP_PUBLICATION);
+		model.addStatementIfObjectGiven(MP_NAME, publication.getCitation(), null);
 		model.addStatementIfObjectGiven(DC_BIBLIOGRAPHIC_CITATION, publication.getCitation(), null);
+		model.addStatementIfObjectGiven(MP_URI, publication.getURI(), null);
 		model.addStatementIfObjectGiven(DC_URI, publication.getURI(), null);
 		validate(model);
 		store(model);
@@ -382,7 +390,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Collection<Model> existing = this.getSearchDAO().search(
 				new SearchParams(1, 0)
 				.type(MP_PUBLICATION)
-				.predicate(DC_BIBLIOGRAPHIC_CITATION)
+				.predicate(MR_NAME)
 				.objectliteral(citation));
 		if (existing.isEmpty()) return null;
 		return new Qname(existing.iterator().next().getSubject().getQname());
