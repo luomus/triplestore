@@ -65,7 +65,7 @@
 				<#if allowsAlterationsByUserOnThis>
 					<a class="taxonToolButton taxonToolMenu ui-icon ui-icon-gear" title="Tools"></a>
 				</#if>
-				<a href="https://imagebank.laji.fi/admin/${taxon.qname}" target="imagebank" title="Images"><span class="ui-icon ui-icon-image"></a>
+				<#if !taxon.synonym><a href="https://imagebank.laji.fi/admin/${taxon.qname}" target="imagebank" title="Images"><span class="ui-icon ui-icon-image"></a></#if>
 				<#if !taxon.synonym && taxon.finnish>
 					<#if taxon.markedAsFinnishTaxon>
 						<img class="finnishTaxonFlag" src="${staticURL}/img/flag_fi_small.png" title="Marked as finnish" />
