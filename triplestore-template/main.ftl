@@ -10,6 +10,10 @@
 	<span class="successMessage">${success}</span>
 </#if>
 
+<#if non_existing_qname??>
+	<span><form style="display:inline-block;" method="POST" action="${baseURL}/editor/create-custom/${non_existing_qname?html}"><button>Create resource ${non_existing_qname?html}</button></form></span> 
+</#if>
+
 <@editorTools />
 
 <ul class="servicelist">

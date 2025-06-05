@@ -82,6 +82,8 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return url.toString();
 	}
 
+	protected static final Set<String> CREATABLE_NAMESPACES = Utils.set("", "finbifterm", "dwc", "dc", "dwciri");
+
 	protected static final List<CreatableResource> CREATABLE_RESOURCES = Utils.list(
 			new CreatableResource("MA", "Person", "MA.person"),
 			new CreatableResource("KE", "Information System", "KE.informationSystem"),
@@ -223,7 +225,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 	}
 
 	protected String getQname(HttpServletRequest req) {
-		return getId(req);
+		return getId(req).trim();
 	}
 
 	protected static boolean given(Qname qname) {

@@ -55,6 +55,9 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 		if (!dao.resourceExists(qname)) {
 			responseData.setData("error", "Resource " +qname + " does not exist.");
+			if (creatableNamespace(qname)) {
+				responseData.setData("non_existing_qname", qname);
+			}
 			return mainPage(responseData);
 		}
 
@@ -84,6 +87,16 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 		responseData.setData("modelRdfXml", model.getRDF());
 
 		return responseData.setViewName("edit").setData("model", model).setData("properties", properties);
+	}
+
+	private boolean creatableNamespace(String qnameS) {
+		try {
+			Qname qname = new Qname(qnameS);
+			if (!qname.isSet()) return false;
+			return CREATABLE_NAMESPACES.contains(qname.getNamespace());
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 
 	@Override
