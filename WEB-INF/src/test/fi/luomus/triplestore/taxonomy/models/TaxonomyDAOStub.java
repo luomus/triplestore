@@ -221,4 +221,22 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 		return null;
 	}
 
+	@Override
+	public Map<String, LocalizedText> getTaxonRankLabels() {
+		// Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, LocalizedText> getAlt(Qname range) throws Exception {
+		//  Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<String, LocalizedText> getLicenseFullnames() throws Exception {
+		// Auto-generated method stub
+		return null;
+	}
+
 }

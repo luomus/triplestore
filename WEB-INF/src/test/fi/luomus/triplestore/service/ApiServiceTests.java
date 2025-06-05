@@ -72,7 +72,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_existing_but_no_statements() throws Exception {
-		String response = ApiServlet.get(new Qname("rdfs:range"), ResultType.NORMAL, Format.RDFXML, dao);
+		String response = ApiServlet.get(new Qname("rdfs:seeAlso"), ResultType.NORMAL, Format.RDFXML, dao);
 		assertNull(response);
 	}
 

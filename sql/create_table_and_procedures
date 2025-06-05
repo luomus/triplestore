@@ -212,8 +212,8 @@ BEGIN
     v_text := 'http://rs.laji.fi/terms/' || REPLACE(p_text,'finbifterm:');
   ELSIF INSTR(p_text,'dwc:') > 0 THEN
     v_text := 'http://rs.tdwg.org/dwc/terms/' || REPLACE(p_text,'dwc:');
-  ELSIF INSTR(p_text,'dcterms:') > 0 THEN
-    v_text := 'http://purl.org/dc/terms/' || REPLACE(p_text,'dcterms:');
+  ELSIF INSTR(p_text,'dc:') > 0 THEN
+    v_text := 'http://purl.org/dc/terms/' || REPLACE(p_text,'dc:');
   ELSIF INSTR(p_text,'dwciri:') > 0 THEN
     v_text := 'http://rs.tdwg.org/dwc/iri/' || REPLACE(p_text,'dwciri:');
   ELSE
@@ -232,7 +232,7 @@ AS
   v_cleanname VARCHAR2(1000);
   v_prefixes  SYS.ODCIVARCHAR2LIST := SYS.ODCIVARCHAR2LIST(
     'utu:', 'zmuo:', 'herbo:', 'luomus:', 'taxonid:',
-    'finbifterm:', 'dwc:', 'dcterms:', 'dwciri:'
+    'finbifterm:', 'dwc:', 'dc:', 'dwciri:'
   );
 BEGIN
   -- Get the FK for the current user

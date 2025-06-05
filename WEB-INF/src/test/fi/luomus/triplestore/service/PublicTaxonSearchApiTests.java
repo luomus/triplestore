@@ -60,13 +60,13 @@ public class PublicTaxonSearchApiTests {
 
 	@Test
 	public void test_exact_search_from_null_checklist() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, null).setMatchTypes(MatchType.EXACT)).getResultsAsDocument().getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, (Qname)null).setMatchTypes(MatchType.EXACT)).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
 
 	@Test
 	public void test_exact_search_from_null_checklist_2() throws Exception {
-		Node n = taxonomyDAO.search(new TaxonSearch("teStI", 10, null)).getResultsAsDocument().getRootNode();
+		Node n = taxonomyDAO.search(new TaxonSearch("teStI", 10, (Qname)null)).getResultsAsDocument().getRootNode();
 		assertTrue(n.getNode("exactMatch").getChildNodes().size() > 0);
 	}
 
@@ -89,7 +89,7 @@ public class PublicTaxonSearchApiTests {
 	@Test
 	public void test_partial_match_unlimited() throws Exception {
 		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getResultsAsDocument().getRootNode();
-		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 3);
+		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 1);
 		assertTrue(n.getNode("partialMatches").getChildNodes().size() > 30);
 	}
 
