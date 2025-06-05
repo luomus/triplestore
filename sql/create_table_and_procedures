@@ -193,32 +193,81 @@ ALTER TRIGGER "LTKM_LUONTO"."TR_RDF_STATEMENT_DELETE" ENABLE;
 
 -- AddResource
 
-create or replace PROCEDURE AddResource
-  (
-  p_resourcename IN VARCHAR2
-  )
-AS 
-  v_count NUMBER;
-  v_userfk NUMBER;
+create or replace FUNCTION GetResourceURI(p_text VARCHAR2)
+RETURN VARCHAR2
+IS
+  v_text VARCHAR2(2000);
 BEGIN
+  IF INSTR(p_text,'luomus:') > 0 THEN
+    v_text := 'http://id.luomus.fi/' || REPLACE(p_text,'luomus:');
+  ELSIF INSTR(p_text,'herbo:') > 0 THEN
+    v_text := 'http://id.herb.oulu.fi/' || REPLACE(p_text,'herbo:');
+  ELSIF INSTR(p_text,'zmuo:') > 0 THEN
+    v_text := 'http://id.zmuo.oulu.fi/' || REPLACE(p_text,'zmuo:');
+  ELSIF INSTR(p_text,'utu:') > 0 THEN
+    v_text := 'http://mus.utu.fi/' || REPLACE(p_text,'utu:');
+  ELSIF INSTR(p_text,'taxonid:') > 0 THEN
+    v_text := 'http://taxonid.org/' || REPLACE(p_text,'taxonid:');
+  ELSIF INSTR(p_text,'finbifterm:') > 0 THEN
+    v_text := 'http://rs.laji.fi/terms/' || REPLACE(p_text,'finbifterm:');
+  ELSIF INSTR(p_text,'dwc:') > 0 THEN
+    v_text := 'http://rs.tdwg.org/dwc/terms/' || REPLACE(p_text,'dwc:');
+  ELSIF INSTR(p_text,'dcterms:') > 0 THEN
+    v_text := 'http://purl.org/dc/terms/' || REPLACE(p_text,'dcterms:');
+  ELSIF INSTR(p_text,'dwciri:') > 0 THEN
+    v_text := 'http://rs.tdwg.org/dwc/iri/' || REPLACE(p_text,'dwciri:');
+  ELSE
+    v_text := 'http://tun.fi/' || REPLACE(p_text,'tun:');
+  END IF;
+  RETURN v_text;
+END;
+
+CREATE OR REPLACE PROCEDURE AddResource
+(
+  p_resourcename IN VARCHAR2
+)
+AS 
+  v_count     NUMBER;
+  v_userfk    NUMBER;
+  v_cleanname VARCHAR2(1000);
+  v_prefixes  SYS.ODCIVARCHAR2LIST := SYS.ODCIVARCHAR2LIST(
+    'utu:', 'zmuo:', 'herbo:', 'luomus:', 'taxonid:',
+    'finbifterm:', 'dwc:', 'dcterms:', 'dwciri:'
+  );
+BEGIN
+  -- Get the FK for the current user
   SELECT ltkm_luonto.GetUserFK
   INTO v_userfk
   FROM dual;
 
-  IF INSTR(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(p_resourcename, 'utu:'), 'zmuo:'),'herbo:'),'luomus:'),'taxonid:'),':') = 0 THEN
+  -- Initialize cleaned name with original
+  v_cleanname := p_resourcename;
+
+  -- Remove known prefixes
+  FOR i IN 1 .. v_prefixes.COUNT LOOP
+    v_cleanname := REPLACE(v_cleanname, v_prefixes(i), '');
+  END LOOP;
+
+  -- Check if any unexpected colon remains
+  IF INSTR(v_cleanname, ':') = 0 THEN
     SELECT COUNT(*)
     INTO v_count
     FROM rdf_resource
     WHERE resourcename = p_resourcename;
     
     IF v_count = 0 THEN
-      INSERT INTO rdf_resource(resourceid,resourceuri,resourcename,userfk)
-      VALUES (rdf_resource_seq.NEXTVAL,GetResourceURI(p_resourcename),p_resourcename,v_userfk);
+      INSERT INTO rdf_resource(resourceid, resourceuri, resourcename, userfk)
+      VALUES (
+        rdf_resource_seq.NEXTVAL,
+        GetResourceURI(p_resourcename),
+        p_resourcename,
+        v_userfk
+      );
     END IF;
   ELSE
-    raise_application_error(-20001, 'Resource failed colon check ' || p_resourcename);
+    RAISE_APPLICATION_ERROR(-20001, 'Resource failed colon check: ' || p_resourcename);
   END IF;
-END ADDRESOURCE;
+END AddResource;
 
 
 -- AddStatement
