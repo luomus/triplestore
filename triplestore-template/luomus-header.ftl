@@ -62,6 +62,7 @@
 							<li role="menuitem"><a href="${baseURL}/namespaces-edit">Namespaces</a></li>
 							<li role="menuitem"><a href="${baseURL}/it">Information Systems</a></li>
 							<li><a target="_blank" href="${lajiETLBaseURL}">Laji-ETL</a></li>
+							<li><a target="_blank" href="https://imagebank.laji.fi">Image Bank</a></li>
 						<#else>
 							<li role="menuitem"><a href="${baseURL}/namespaces">Namespaces</a></li>
 						</#if>
