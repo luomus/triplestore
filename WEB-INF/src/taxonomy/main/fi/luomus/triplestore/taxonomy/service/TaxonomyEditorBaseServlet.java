@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Iterables;
+
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.services.ResponseData;
@@ -103,18 +105,22 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 			responseData.setData("nameCleaner", nameCleaner);
 			responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
-			responseData.setData("evaluationYears", years(taxonomyDAO));
+			responseData.setData("evaluationYears", years());
 			responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
 		}
 		return responseData;
 	}
 
-	private List<Integer> years(ExtendedTaxonomyDAO dao) throws Exception {
+	protected List<Integer> years() throws Exception {
 		List<Integer> years = new ArrayList<>();
-		for (EvaluationYear y : dao.getIucnDAO().getEvaluationYears()) {
+		for (EvaluationYear y : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
 			years.add(y.getYear());
 		}
 		return years;
+	}
+
+	protected int getDraftYear() throws Exception {
+		return Iterables.getLast(years());
 	}
 
 	public static long getLastAllowedTaxonDeleteTimestamp() {

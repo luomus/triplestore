@@ -11,8 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.Iterables;
-
 import fi.luomus.commons.containers.LocalizedText;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -23,7 +21,6 @@ import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
-import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.iucn.model.HabitatLabelIndendator;
 import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
@@ -44,7 +41,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		return responseData.setViewName("iucn-frontpage")
 				.setData("evaluationYears", evaluationYears)
-				.setData("draftYear", getDraftYear(evaluationYears))
+				.setData("draftYear", getDraftYear())
 				.setData("selectedYear", selectedYear)
 				.setData("taxonGroups", taxonomyDAO.getInformalTaxonGroups())
 				.setData("taxonGroupRoots", taxonomyDAO.getInformalTaxonGroupRoots())
@@ -57,14 +54,6 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 				.setData("downloads", getCompletedDownloads());
-	}
-
-	private List<Integer> years() throws Exception {
-		List<Integer> years = new ArrayList<>();
-		for (EvaluationYear y : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
-			years.add(y.getYear());
-		}
-		return years;
 	}
 
 	private List<String> getCompletedDownloads() {
@@ -85,17 +74,17 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	protected int selectedYear(HttpServletRequest req) throws Exception {
-		List<Integer> evaluationYears = years(); 
+		List<Integer> evaluationYears = years();
 		String selectedYearParam = getId(req);
 		if (!given(selectedYearParam)) {
-			return getDraftYear(evaluationYears);
+			return getDraftYear();
 		}
 		try {
 			int selectedYear = Integer.valueOf(selectedYearParam);
 			if (!evaluationYears.contains(selectedYear)) throw new IllegalArgumentException();
 			return selectedYear;
 		} catch (Exception e) {
-			return getDraftYear(years());
+			return getDraftYear();
 		}
 	}
 
@@ -112,10 +101,6 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Invalid evaluation year: " + selectedYearParam);
 		}
-	}
-
-	private int getDraftYear(List<Integer> allYears) {
-		return Iterables.getLast(allYears);
 	}
 
 	private static Collection<RdfProperty> occurrenceStatuses;
@@ -137,7 +122,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceUncertain", "Esiintyy mahdollisesti vyöhykkeellä (epävarma)", referenceStatuses));
 		statuses.add(buildOccurrenceStatus("MX.doesNotOccur", "Ei havaintoja vyöhykkeeltä", referenceStatuses));
 		return statuses;
-	} 
+	}
 
 	protected Collection<RdfProperty> getOccurrenceStatuses() throws Exception {
 		if (occurrenceStatuses == null) {

@@ -50,7 +50,8 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
 				.setData("persons", taxonomyDAO.getPersons())
 				.setData("selectedYear", year)
-				.setData("permissions", true);
+				.setData("permissions", true)
+				.setData("draftYear", getDraftYear());
 	}
 
 	protected Evaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO, @SuppressWarnings("unused") HttpServletRequest req) throws Exception {
