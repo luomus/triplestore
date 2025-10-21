@@ -93,7 +93,7 @@
 		<td>
 			<#if evaluation.ready>
 				<span class="state ready">Valmis</span>
-				<#if  permissions && draftYear != year && (evaluation.iucnStatus == "MX.iucnLC" || evaluation.iucnStatus == "MX.iucnNT")>
+				<#if permissions && draftYear != year && (evaluation.iucnStatus == "MX.iucnLC" || evaluation.iucnStatus == "MX.iucnNT")>
 				 	<a class=button regionalEvalButton" href="${baseURL}/iucn/regional/${target.qname}/${year}">Alueellinen uhanalaisuus</a>
 				</#if>
 			<#elseif evaluation.readyForComments>
