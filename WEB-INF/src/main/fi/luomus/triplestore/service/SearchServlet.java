@@ -49,7 +49,7 @@ public class SearchServlet extends ApiServlet {
 				.objectresources(objectresources).objectliterals(objectliterals)
 				.type(type);
 
-		Access access = getAccessLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		Access access = getAccessLimiter().acquire(req.getRemoteUser());
 		try {
 			return processGetWithAccess(req, format, searchParams);
 		} finally {

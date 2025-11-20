@@ -8,23 +8,23 @@ import org.junit.Test;
 
 import fi.luomus.triplestore.utils.AccessLimiter;
 import fi.luomus.triplestore.utils.AccessLimiter.Access;
-import fi.luomus.triplestore.utils.AccessLimiter.AccessNotGrantedTooManyPendingRequests;
+import fi.luomus.triplestore.utils.AccessLimiter.TooManyRequestsException;
 
 public class AcessLimiterTests {
 
 	@Test
-	public void test() throws AccessNotGrantedTooManyPendingRequests {
+	public void test() throws TooManyRequestsException {
 		AccessLimiter limiter = new AccessLimiter(2);
-		Access a1 = limiter.delayAccessIfNecessary("a");
-		limiter.delayAccessIfNecessary("a");
-		limiter.delayAccessIfNecessary("b");
+		Access a1 = limiter.acquire("a");
+		limiter.acquire("a");
+		limiter.acquire("b");
 		a1.release();
-		limiter.delayAccessIfNecessary("a");
+		limiter.acquire("a");
 		try {
-			limiter.delayAccessIfNecessary("a");
+			limiter.acquire("a");
 			fail("Should throw exception");
-		} catch (AccessNotGrantedTooManyPendingRequests e) {
-			assertEquals("There are too many pending requests from user 'a' 2/2", e.getMessage());
+		} catch (TooManyRequestsException e) {
+			assertEquals("Too many pending requests from user 'a'. Max allowed: 2", e.getMessage());
 		}
 	}
 
@@ -38,11 +38,11 @@ public class AcessLimiterTests {
 			public void run() {
 				while (true) {
 					try {
-						Access access = limiter.delayAccessIfNecessary("a");
+						Access access = limiter.acquire("a");
 						System.out.println("T1 got access " + i++);
 						try { Thread.sleep(3000); } catch (InterruptedException e) {}
 						access.release();
-					} catch (AccessNotGrantedTooManyPendingRequests e1) {
+					} catch (TooManyRequestsException e1) {
 						System.out.println("T1 " + e1);
 					}
 					try { Thread.sleep(200); } catch (InterruptedException e) {}
@@ -55,11 +55,11 @@ public class AcessLimiterTests {
 			public void run() {
 				while (true) {
 					try {
-						Access access = limiter.delayAccessIfNecessary("a");
+						Access access = limiter.acquire("a");
 						System.out.println("T2 got access " + i++);
 						try { Thread.sleep(8000); } catch (InterruptedException e) {}
 						access.release();
-					} catch (AccessNotGrantedTooManyPendingRequests e1) {
+					} catch (TooManyRequestsException e1) {
 						System.out.println("T2 " + e1);
 					}
 					try { Thread.sleep(200); } catch (InterruptedException e) {}
@@ -72,11 +72,11 @@ public class AcessLimiterTests {
 			public void run() {
 				while (true) {
 					try {
-						Access access = limiter.delayAccessIfNecessary("a");
+						Access access = limiter.acquire("a");
 						System.out.println("T3 got access " + i++);
 						try { Thread.sleep(50); } catch (InterruptedException e) {}
 						access.release();
-					} catch (AccessNotGrantedTooManyPendingRequests e1) {
+					} catch (TooManyRequestsException e1) {
 						System.out.println("T3 " + e1);
 					}
 					try { Thread.sleep(200); } catch (InterruptedException e) {}

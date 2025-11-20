@@ -57,7 +57,7 @@ public class ApiServlet extends EditorBaseServlet {
 			return status404(res);
 		}
 
-		Access access = getAccessLimiter().delayAccessIfNecessary(req.getRemoteUser());
+		Access access = getAccessLimiter().acquire(req.getRemoteUser());
 		try {
 			return processGetWithAccess(req, res, qnames);
 		} finally {
