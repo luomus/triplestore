@@ -177,10 +177,6 @@ $(function() {
 			alert('Qname not given...');
 			return;
 		}
-		var splitted = qname.split(".");
-		if (splitted.length == 2) {
-			qname = splitted[0].toUpperCase() + "." + splitted[1];
-		}
 		document.location.href = '${baseURL}/editor/'+qname;
 	});
 });
