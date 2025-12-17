@@ -94,19 +94,9 @@ class TriplestoreDAOImpleCaches {
 	final Cached<String, RdfProperties> properties = new Cached<>(new PropertiesCacheLoader(), 1, TimeUnit.HOURS, 500);
 
 	private final static String GET_PROPERTIES_BY_CLASSNAME_SQL = "" +
-			" SELECT DISTINCT propertyName 										" +
-			" FROM																" +
-			" ((																" +
-			" 	 SELECT DISTINCT v.predicatename AS propertyName				" +
-			" 	 FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview v 							" +
-			"    WHERE v.subjectname IN ( 										" +
-			" 	   SELECT DISTINCT subjectname FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview WHERE predicatename = 'rdf:type' AND objectname = ? FETCH FIRST 5000 ROWS ONLY	" +
-			" 	 ) 																" +
-			" ) UNION (															" +
-			"   SELECT DISTINCT subjectname as propertyName						" +
-			"   FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview 								" +
-			"   WHERE predicatename = 'rdfs:domain' AND objectname = ?			" +
-			" )) properties														";
+			"   SELECT DISTINCT subjectname as propertyName					" +
+			"   FROM "+TriplestoreDAOConst.SCHEMA+".rdf_statementview 		" +
+			"   WHERE predicatename = 'rdfs:domain' AND objectname = ?		";
 
 	private class PropertiesCacheLoader implements CacheLoader<String, RdfProperties> {
 
