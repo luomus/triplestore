@@ -69,13 +69,14 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 			searchword = Utils.urlDecode(getQname(req)); // the path needs to encoded and decoded.. but it fails for some cases. It is better to use the "q"-parameter.
 		}
 		int limit = getLimit(req);
-		Qname checklist = parseChecklist(req);
+		Set<Qname> checklist = parseChecklist(req);
 		Set<Qname> requiredInformalGroups = parseRequiredInformalGroups(req);
 		boolean onlyExact = TRUE.equals(req.getParameter(ONLY_EXACT));
 		Boolean onlySpecies = null;
-		boolean onlyFinnish = TRUE.equals(req.getParameter(ONLY_FINNISH));
+		Boolean onlyFinnish = null;
 		if (TRUE.equals(req.getParameter(ONLY_SPECIES))) onlySpecies = true;
-		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setOnlyFinnish(onlyFinnish).setSpecies(onlySpecies);
+		if (TRUE.equals(req.getParameter(ONLY_FINNISH))) onlyFinnish = true;
+		TaxonSearch taxonSearch = new TaxonSearch(searchword, limit, checklist).setFinnish(onlyFinnish).setSpecies(onlySpecies);
 		for (Qname q : requiredInformalGroups) {
 			taxonSearch.addInformalTaxonGroup(q);
 		}
@@ -189,15 +190,15 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		return set;
 	}
 
-	public static Qname parseChecklist(HttpServletRequest req) {
+	public static Set<Qname> parseChecklist(HttpServletRequest req) {
 		String checklistParameter = req.getParameter(CHECKLIST);
 		if (!given(checklistParameter)) {
-			return Taxon.MASTER_CHECKLIST;
+			return Utils.set(Taxon.MASTER_CHECKLIST);
 		}
-		if (checklistParameter.equals(NULL)) {
-			return null;
+		if (checklistParameter.equalsIgnoreCase(NULL)) {
+			return Utils.set((Qname)null);
 		}
-		return new Qname(checklistParameter);
+		return Utils.set(new Qname(checklistParameter));
 	}
 
 	private int getLimit(HttpServletRequest req) {

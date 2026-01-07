@@ -705,12 +705,26 @@
 	<@portletFooter />	
 	
 	<@portletHeader "Administrative statuses (Admin only)" "initiallyClosed" "multirowSection" />
+		<#assign headerPrinted = false>
+		<#list taxon.administrativeStatuses as statusQname>
+			<#if !taxon.explicitAdministrativeStatusesNoOrder?seq_contains(statusQname)>
+				<#if !headerPrinted>
+					<label>Inherited statuses</label>
+					<ul class="taxonEditList">
+					<#assign headerPrinted = true>
+				</#if>
+				<li>${properties.getProperty("MX.hasAdminStatus").range.getValueFor(statusQname).label.forLocale("fi")}</li>
+			</#if>
+		</#list>
+		<#if headerPrinted>
+			</ul>
+		</#if>
 		<table>
 		<tbody>
-			<#list taxon.administrativeStatuses as status>
+			<#list taxon.explicitAdministrativeStatusesNoOrder as status>
 				<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
 			</#list>
-			<tr><td><@select "MX.hasAdminStatus" status "requireAdminPermissions" /></td></tr>
+			<tr><td><@select "MX.hasAdminStatus" "" "requireAdminPermissions" /></td></tr>
 		</tbody>
 		</table>
 	<@portletFooter />	 

@@ -123,13 +123,26 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private final HikariDataSource datasource;
 	private final ErrorReporter errorReporter;
 	private static TriplestoreDAOImpleCaches cached;
+	private static final Object LOCK = new Object();
 
 	public TriplestoreDAOImple(HikariDataSource datasource, Qname userQname, ErrorReporter errorReporter) {
+		this(datasource, userQname, errorReporter, false);
+	}
+
+	public TriplestoreDAOImple(HikariDataSource datasource, Qname userQname, ErrorReporter errorReporter, boolean tests) {
 		this.datasource = datasource;
 		this.userQname = userQname;
 		this.errorReporter = errorReporter;
-		if (cached == null) {
+		if (tests) {
 			cached = new TriplestoreDAOImpleCaches(this);
+		} else {
+			if (cached == null) {
+				synchronized (LOCK) {
+					if (cached == null) {
+						cached = new TriplestoreDAOImpleCaches(this);
+					}
+				}
+			}
 		}
 	}
 

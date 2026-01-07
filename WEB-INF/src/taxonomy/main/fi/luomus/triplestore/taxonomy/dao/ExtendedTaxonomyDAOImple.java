@@ -509,7 +509,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	@Override
-	public TaxonSearchResponse search(TaxonSearch taxonSearch) throws Exception {
+	public TaxonSearchResponse search(TaxonSearch taxonSearch) {
 		return cachedTaxonSearches.get(taxonSearch);
 	}
 

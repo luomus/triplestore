@@ -65,7 +65,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			if (s1 == null) s1 = "\uffff'";
 			if (s2 == null) s2 = "\uffff'";
 			return s1.compareTo(s2);
-		}}; 
+		}};
 
 		@Override
 		protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -281,7 +281,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				} else {
 					data.add("");
 				}
-			}			
+			}
 			data.add(v(evaluation, "MKV.occurrenceRegionsNotes"));
 			data.add(v(evaluation, "MKV.occurrenceRegionsPrivateNotes"));
 			data.add(v(evaluation, "MKV.regionallyThreatenedNotes"));
@@ -360,7 +360,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 		private RedListEvaluationGroup getSubGroup(RedListEvaluationGroup of, List<RedListEvaluationGroup> in) {
 			for (Qname subGroupId : of.getSubGroups()) {
-				RedListEvaluationGroup g = getGroup(subGroupId, in); 
+				RedListEvaluationGroup g = getGroup(subGroupId, in);
 				if (g != null) return g;
 			}
 			return null;
@@ -425,13 +425,13 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					if (yearEval.hasCorrectedStatusForRedListIndex()) {
 						data.add(status(yearEval.getCorrectedStatusForRedListIndex()));
 						Integer rliByStatus = yearEval.getCalculatedRedListIndex();
-						Integer rliCorrected = yearEval.getCalculatedCorrectedRedListIndex(); 
+						Integer rliCorrected = yearEval.getCalculatedCorrectedRedListIndex();
 						if (rliByStatus == null || rliCorrected == null) {
 							data.add("Ei voi laskea");
 						} else {
 							data.add(s(rliByStatus - rliCorrected));
 						}
-						data.add(s(rliCorrected));	
+						data.add(s(rliCorrected));
 					} else {
 						data.add(status(yearEval.getIucnStatus()));
 						data.add("0");
@@ -553,7 +553,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				if (value.equals("MKV.endangermentReasonT")) {
 					value = "?";
 				} else {
-					value = value.replace("MKV.endangermentReason", ""); 
+					value = value.replace("MKV.endangermentReason", "");
 				}
 				b.append(value);
 				if (i.hasNext()) b.append(", ");
@@ -652,21 +652,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			return "Kesken";
 		}
 
-		private String adminStatuses(EvaluationTarget target) throws Exception {
-			RdfProperty property = getTriplestoreDAO().getProperties("MX.taxon").getProperty("MX.hasAdminStatus"); 
-			Iterator<Qname> i = target.getTaxon().getAdministrativeStatuses().iterator();
-			StringBuilder b = new StringBuilder();
-			while (i.hasNext()) {
-				Qname status = i.next();
-				String label = property.getRange().getValueFor(status.toString()).getLabel().forLocale("fi");
-				b.append(label);
-				if (i.hasNext()) b.append(", ");
-			}
-			return b.toString();
+		private String adminStatuses(EvaluationTarget target) {
+			return target.getTaxon().getAdministrativeStatusNames().forLocale("fi");
 		}
 
 		private String taxonRank(EvaluationTarget target) {
-			Qname rank = target.getTaxon().getTaxonRank(); 
+			Qname rank = target.getTaxon().getTaxonRank();
 			if (!given(rank)) {
 				return "";
 			}

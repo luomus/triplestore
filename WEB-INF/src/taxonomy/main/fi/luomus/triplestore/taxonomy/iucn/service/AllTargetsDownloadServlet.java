@@ -51,7 +51,7 @@ public class AllTargetsDownloadServlet extends GroupSpeciesListServlet {
 			System.out.println(" ... writing IUCN all data download ...");
 			FileUtils.writeToFile(tempFile, data);
 			c = new FileCompresser(getZipFile());
-			c.addToZip(tempFile);
+			c.add(tempFile);
 			System.out.println("IUCN all data download completed!");
 		} finally {
 			if (c != null) c.close();

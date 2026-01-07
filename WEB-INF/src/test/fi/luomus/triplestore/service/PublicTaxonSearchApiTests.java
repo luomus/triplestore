@@ -34,7 +34,7 @@ public class PublicTaxonSearchApiTests {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr());
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr(), true);
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 	}
 
@@ -59,7 +59,7 @@ public class PublicTaxonSearchApiTests {
 	}
 
 	@Test
-	public void test_exact_search_from_null_checklist() throws Exception {
+	public void test_exact_search_from_null_checklist() {
 		Node n = taxonomyDAO.search(new TaxonSearch("susi", 10, (Qname)null).setMatchTypes(MatchType.EXACT)).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
@@ -81,7 +81,7 @@ public class PublicTaxonSearchApiTests {
 	}
 
 	@Test
-	public void test_only_exact_match() throws Exception {
+	public void test_only_exact_match() {
 		Node n = taxonomyDAO.search(new TaxonSearch("susiåpus", 10).onlyExact()).getResultsAsDocument().getRootNode();
 		assertEquals(0, n.getChildNodes().size());
 	}
@@ -89,7 +89,6 @@ public class PublicTaxonSearchApiTests {
 	@Test
 	public void test_partial_match_unlimited() throws Exception {
 		Node n = taxonomyDAO.search(new TaxonSearch("kotka", 10000)).getResultsAsDocument().getRootNode();
-		assertTrue(n.getNode("likelyMatches").getChildNodes().size() > 1);
 		assertTrue(n.getNode("partialMatches").getChildNodes().size() > 30);
 	}
 

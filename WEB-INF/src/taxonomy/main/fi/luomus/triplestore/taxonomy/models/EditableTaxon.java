@@ -178,7 +178,7 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean hasIUCNEvaluation() {
-		Collection<RedListStatus> statuses = this.getRedListStatusesInFinland();
+		Collection<RedListStatus> statuses = this.getExplicitRedListStatusesInFinland();
 		if (hasCriticalIUCNEvaluationStatus(statuses)) {
 			return true;
 		}
@@ -210,7 +210,7 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean hasAdministrativeStatuses() {
-		return !this.getAdministrativeStatuses().isEmpty();
+		return !this.getExplicitAdministrativeStatusesNoOrder().isEmpty();
 	}
 
 	@Override

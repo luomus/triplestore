@@ -84,6 +84,7 @@ public class ServletTests {
 	public void test_taxon_search_from_orphan_taxa() throws Exception {
 		HttpClientService noAutenticationClient = new HttpClientService();
 		try {
+			System.out.println(TRIPLESTORE_URL + "/taxon-search/testi?checklist=null");
 			String response = noAutenticationClient.contentAsString(new HttpGet(TRIPLESTORE_URL + "/taxon-search/testi?checklist=null"));
 			assertTrue(response.contains("MX.210957"));
 		} finally {

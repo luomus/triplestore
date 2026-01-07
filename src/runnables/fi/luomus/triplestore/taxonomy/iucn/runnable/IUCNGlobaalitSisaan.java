@@ -116,7 +116,7 @@ public class IUCNGlobaalitSisaan {
 		}
 	}
 
-	private static TaxonSearchResponse searchByScientificName(String scientificName, TaxonSearchResponse response) throws Exception {
+	private static TaxonSearchResponse searchByScientificName(String scientificName, TaxonSearchResponse response) {
 		if (!given(scientificName)) return response;
 		response = taxonomyDAO.search(new TaxonSearch(scientificName).onlyExact());
 		if (response.getExactMatches().size() > 1) {
