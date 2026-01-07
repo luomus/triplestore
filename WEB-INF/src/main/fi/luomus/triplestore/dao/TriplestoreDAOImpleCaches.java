@@ -110,7 +110,6 @@ class TriplestoreDAOImpleCaches {
 				con = dao.openConnection();
 				p = con.prepareStatement(GET_PROPERTIES_BY_CLASSNAME_SQL);
 				p.setString(1, className);
-				p.setString(2, className);
 				rs = p.executeQuery();
 				RdfProperties properties = new RdfProperties();
 				Set<Qname> propertyQnames = new HashSet<>();
