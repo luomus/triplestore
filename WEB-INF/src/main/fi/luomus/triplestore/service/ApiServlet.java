@@ -175,7 +175,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		Qname qname = new Qname(getQname(req));
+		Qname qname = Qname.of(getQname(req));
 		if (!qname.isSet()) {
 			return status500(res);
 		}
@@ -190,7 +190,7 @@ public class ApiServlet extends EditorBaseServlet {
 	}
 
 	public static String delete(Qname qname, Format format, TriplestoreDAO dao) throws Exception {
-		dao.delete(new Subject(qname));
+		dao.delete(Subject.of(qname));
 
 		String rdf = generateRdf(new Model(qname), format);
 
@@ -213,7 +213,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	@Override
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
-		Qname qname = new Qname(getQname(req));
+		Qname qname = Qname.of(getQname(req));
 		if (!qname.isSet()) {
 			return status400(res, new IllegalArgumentException("Qname not given"));
 		}
@@ -256,18 +256,18 @@ public class ApiServlet extends EditorBaseServlet {
 
 	public static void put(Qname qname, String predicateQname, String objectResource, String objectLiteral, String langCode, String contextQname, TriplestoreDAO dao) throws Exception {
 		Statement statement = null;
-		Predicate predicate = new Predicate(predicateQname);
+		Predicate predicate = Predicate.of(predicateQname);
 		Context context = contextQname == null ? null : new Context(contextQname);
 
 		if (objectResource != null) {
-			statement = new Statement(predicate, new ObjectResource(objectResource), context);
+			statement = new Statement(predicate, ObjectResource.of(objectResource), context);
 		} else if (objectLiteral != null) {
 			statement = new Statement(predicate, new ObjectLiteral(objectLiteral, langCode), context);
 		} else {
 			throw new IllegalArgumentException("You must give objectliteral or objectresource parameter.");
 		}
 
-		dao.store(new Subject(qname), statement);
+		dao.store(Subject.of(qname), statement);
 	}
 
 	public static void put(Qname qname, String data, Format format, TriplestoreDAO dao) throws Exception {

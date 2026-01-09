@@ -65,7 +65,7 @@ public class IUCNValidointi {
 		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-		triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
+		triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"), new ErrorReportingToSystemErr());
 
 		// all data mode XXX
 		taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr());
@@ -246,7 +246,7 @@ public class IUCNValidointi {
 	}
 
 	private static void report(File file, Evaluation evaluation, List<String> values) {
-		Taxon taxon = taxonomyDAO.getTaxon(new Qname(evaluation.getSpeciesQname()));
+		Taxon taxon = taxonomyDAO.getTaxon(Qname.of(evaluation.getSpeciesQname()));
 		List<String> theseValues = Utils.list(
 				evaluation.getId(),
 				evaluation.getEvaluationYear().toString(),

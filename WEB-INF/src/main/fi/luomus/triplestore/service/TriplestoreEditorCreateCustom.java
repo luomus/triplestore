@@ -22,7 +22,7 @@ public class TriplestoreEditorCreateCustom extends TriplestoreEditorServlet {
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
-		Qname qname = new Qname(getQname(req));
+		Qname qname = Qname.of(getQname(req));
 
 		if (!qname.isSet()) {
 			getSession(req).setFlashError("Invalid resource name");

@@ -14,8 +14,8 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/detachTaxon/*"})
 public class ApiDetachTaxon extends ApiBaseServlet {
 
-	private static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
-	private static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
+	private static final Predicate NAME_ACCORDING_TO_PREDICATE = Predicate.of("MX.nameAccordingTo");
+	private static final Predicate IS_PART_OF_PREDICATE = Predicate.of("MX.isPartOf");
 	private static final long serialVersionUID = 2796206998214459426L;
 
 	@Override
@@ -27,7 +27,7 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		} 
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 		
-		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(Qname.of(taxonQname));
 		checkPermissionsToAlterTaxon(taxon, req);
 		
 		if (!taxon.isDetachable()) {
@@ -37,7 +37,7 @@ public class ApiDetachTaxon extends ApiBaseServlet {
 		taxon.invalidateSelfAndLinking();
 		
 		TriplestoreDAO dao = getTriplestoreDAO(req);
-		Subject subject = new Subject(taxonQname);
+		Subject subject = Subject.of(taxonQname);
 		
 		dao.delete(subject, IS_PART_OF_PREDICATE);
 		dao.delete(subject, NAME_ACCORDING_TO_PREDICATE);

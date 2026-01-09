@@ -430,61 +430,61 @@ public class IUCNLineDataTests {
 	public void occurrences() {
 		IUCNLineData data = new IUCNLineData(new String[] {});
 		assertEquals("{}", data.getOccurrences().toString());
-		data.occurences.put(new Qname("ML.690"), "");
+		data.occurences.put(Qname.of("ML.690"), "");
 		assertEquals("{}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "X");
+		data.occurences.put(Qname.of("ML.690"), "X");
 		assertEquals("{ML.690=MX.typeOfOccurrenceOccurs}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "x");
+		data.occurences.put(Qname.of("ML.690"), "x");
 		assertEquals("{ML.690=MX.typeOfOccurrenceOccurs}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "-");
+		data.occurences.put(Qname.of("ML.690"), "-");
 		assertEquals("{ML.690=MX.doesNotOccur}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "  -");
+		data.occurences.put(Qname.of("ML.690"), "  -");
 		assertEquals("{}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "+");
+		data.occurences.put(Qname.of("ML.690"), "+");
 		assertEquals("{ML.690=MX.typeOfOccurrenceOccurs}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "?");
+		data.occurences.put(Qname.of("ML.690"), "?");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "_");
+		data.occurences.put(Qname.of("ML.690"), "_");
 		assertEquals("{ML.690=MX.doesNotOccur}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "­");
+		data.occurences.put(Qname.of("ML.690"), "­");
 		assertEquals("{ML.690=MX.doesNotOccur}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "RE");
+		data.occurences.put(Qname.of("ML.690"), "RE");
 		assertEquals("{ML.690=MX.typeOfOccurrenceExtirpated}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "RT");
+		data.occurences.put(Qname.of("ML.690"), "RT");
 		assertEquals("{ML.690=MX.typeOfOccurrenceOccurs}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "NE");
+		data.occurences.put(Qname.of("ML.690"), "NE");
 		assertEquals("{}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "0");
+		data.occurences.put(Qname.of("ML.690"), "0");
 		assertEquals("{}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "*-");
+		data.occurences.put(Qname.of("ML.690"), "*-");
 		assertEquals("{}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "X?");
+		data.occurences.put(Qname.of("ML.690"), "X?");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "RE?");
+		data.occurences.put(Qname.of("ML.690"), "RE?");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "NE?");
+		data.occurences.put(Qname.of("ML.690"), "NE?");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "RT?");
+		data.occurences.put(Qname.of("ML.690"), "RT?");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
-		data.occurences.put(new Qname("ML.690"), "(x)");
+		data.occurences.put(Qname.of("ML.690"), "(x)");
 		assertEquals("{ML.690=MX.typeOfOccurrenceUncertain}", data.getOccurrences().toString());
 
 		assertEquals("1a: (x), 1b: , 2a: , 2b: , 3a: , 3b: , 3c: , 4a: , 4b: , 4c: , 4d: ", data.getOccurrenceRegionsNotes());

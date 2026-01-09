@@ -96,7 +96,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MP_NAME = "MP.name";
 	private static final String MP_URI = "MP.URI";
 	private static final String MP_PUBLICATION = "MP.publication";
-	private static final Predicate SORT_ORDER_PREDICATE = new Predicate(SORT_ORDER);
+	private static final Predicate SORT_ORDER_PREDICATE = Predicate.of(SORT_ORDER);
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
 
@@ -304,7 +304,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			rs = p.executeQuery();
 			rs.next();
 			int nextval = rs.getInt(1);
-			Qname qname = new Qname(qnamePrefix.toUpperCase() + "." + nextval);
+			Qname qname = Qname.of(qnamePrefix.toUpperCase() + "." + nextval);
 			addResource(qname, con);
 			return qname;
 		} finally {
@@ -328,7 +328,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		model.addStatementIfObjectGiven(MR_ROOT_TAXON, checklist.getRootTaxon());
 		model.addStatementIfObjectGiven(MR_OWNER, checklist.getOwner());
-		model.addStatement(new Statement(new Predicate(MR_IS_PUBLIC), checklist.isPublic()));
+		model.addStatement(new Statement(Predicate.of(MR_IS_PUBLIC), checklist.isPublic()));
 
 		validate(model);
 		store(model);
@@ -347,7 +347,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 		model.addStatement(new Statement(SORT_ORDER_PREDICATE, group.getOrder()));
 		if (group.isExplicitlyDefinedRoot()) {
-			model.addStatement(new Statement(new Predicate("MVL.explicitlyDefinedRoot"), true));
+			model.addStatement(new Statement(Predicate.of("MVL.explicitlyDefinedRoot"), true));
 		}
 		validate(model);
 		store(model);
@@ -406,7 +406,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 				.predicate(MR_NAME)
 				.objectliteral(citation));
 		if (existing.isEmpty()) return null;
-		return new Qname(existing.iterator().next().getSubject().getQname());
+		return Qname.of(existing.iterator().next().getSubject().getQname());
 	}
 
 	@Override
@@ -430,7 +430,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		model.addStatementIfObjectGiven(MX_NOTES, taxon.getNotes());
 
 		String createdAt = Long.toString(DateUtils.getCurrentEpoch());
-		model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
+		model.addStatement(new Statement(Predicate.of(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(createdAt)));
 
 		validate(model);
 		store(model);
@@ -486,7 +486,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	private Model toModel(ResultSet rs, String qname) throws SQLException {
-		Model model = new Model(new Subject(qname));
+		Model model = new Model(Subject.of(qname));
 		while (rs.next()) {
 			toModel(rs, model);
 		}
@@ -503,9 +503,9 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Statement statement = null;
 		if (objectliteral != null) {
 			String langcode = rs.getString(4);
-			statement = new Statement(new Predicate(predicatename), ObjectLiteral.unsanitazedObjectLiteral(objectliteral, langcode), context);
+			statement = new Statement(Predicate.of(predicatename), ObjectLiteral.unsanitazedObjectLiteral(objectliteral, langcode), context);
 		} else {
-			statement = new Statement(new Predicate(predicatename), new ObjectResource(objectname), context);
+			statement = new Statement(Predicate.of(predicatename), ObjectResource.of(objectname), context);
 		}
 		statement.setId(statementId);
 		model.addStatement(statement);
@@ -518,8 +518,8 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		String maxOccurs = getValue(XSD_MAX_OCCURS, model);
 		String unitOfMeasurement = getValue(MZ_UNIT_OF_MEASUREMENT, model);
 		String altParent = getValue("altParent", model);
-		Qname rangeQname = range == null ? null : new Qname(range);
-		RdfProperty property = new RdfProperty(new Qname(model.getSubject().getQname()), rangeQname);
+		Qname rangeQname = range == null ? null : Qname.of(range);
+		RdfProperty property = new RdfProperty(Qname.of(model.getSubject().getQname()), rangeQname);
 
 		if (sortOrder != null) {
 			try {
@@ -563,7 +563,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		property.setComments(comments);
 
 		if (altParent != null) {
-			property.setAltParent(new Qname(altParent));
+			property.setAltParent(Qname.of(altParent));
 		}
 		return property;
 	}
@@ -721,7 +721,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public void store(Occurrences existingOccurrences, Occurrences alteredOccurrences, Set<Qname> supportedAreas) throws Exception {
 		for (Occurrence existing : existingOccurrences) {
 			if (supportedAreas.contains(existing.getArea())) {
-				delete(new Subject(existing.getId()));
+				delete(Subject.of(existing.getId()));
 			}
 		}
 		for (Occurrence o : alteredOccurrences.getOccurrences()) {
@@ -832,11 +832,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		Model model = givenData.getModel();
 		for (EndangermentObject endangermentObject : givenData.getEndangermentReasons()) {
 			this.store(endangermentObject);
-			model.addStatement(new Statement(IucnDAO.HAS_ENDANGERMENT_REASON_PREDICATE, new ObjectResource(endangermentObject.getId())));
+			model.addStatement(new Statement(IucnDAO.HAS_ENDANGERMENT_REASON_PREDICATE, ObjectResource.of(endangermentObject.getId())));
 		}
 		for (EndangermentObject endangermentObject : givenData.getThreats()) {
 			this.store(endangermentObject);
-			model.addStatement(new Statement(IucnDAO.HAS_THREATH_PREDICATE, new ObjectResource(endangermentObject.getId())));
+			model.addStatement(new Statement(IucnDAO.HAS_THREATH_PREDICATE, ObjectResource.of(endangermentObject.getId())));
 		}
 	}
 
@@ -845,43 +845,43 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		HabitatObject primaryHabitat = givenData.getPrimaryHabitat();
 		if (primaryHabitat != null) {
 			this.store(primaryHabitat);
-			model.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
+			model.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, ObjectResource.of(primaryHabitat.getId())));
 		}
 		for (HabitatObject secondaryHabitat : givenData.getSecondaryHabitats()) {
 			this.store(secondaryHabitat);
-			model.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(secondaryHabitat.getId())));
+			model.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, ObjectResource.of(secondaryHabitat.getId())));
 		}
 	}
 
 	private void storeOccurrencesAndSetIdToModel(Evaluation givenData) throws Exception {
 		givenData.getModel().removeAll(IucnDAO.HAS_OCCURRENCE_PREDICATE);
 		for (Occurrence occurrence : givenData.getOccurrences()) {
-			this.store(new Qname(givenData.getSpeciesQname()), occurrence);
-			givenData.getModel().addStatement(new Statement(IucnDAO.HAS_OCCURRENCE_PREDICATE, new ObjectResource(occurrence.getId())));
+			this.store(Qname.of(givenData.getSpeciesQname()), occurrence);
+			givenData.getModel().addStatement(new Statement(IucnDAO.HAS_OCCURRENCE_PREDICATE, ObjectResource.of(occurrence.getId())));
 		}
 	}
 
 	private void deleteHabitatObjects(Evaluation existingEvaluation) throws Exception {
 		if (existingEvaluation.getPrimaryHabitat() != null) {
-			this.delete(new Subject(existingEvaluation.getPrimaryHabitat().getId()));
+			this.delete(Subject.of(existingEvaluation.getPrimaryHabitat().getId()));
 		}
 		for (HabitatObject habitat : existingEvaluation.getSecondaryHabitats()) {
-			this.delete(new Subject(habitat.getId()));
+			this.delete(Subject.of(habitat.getId()));
 		}
 	}
 
 	private void deleteOccurrences(Evaluation existingEvaluation) throws Exception {
 		for (Occurrence occurrence : existingEvaluation.getOccurrences()) {
-			this.delete(new Subject(occurrence.getId()));
+			this.delete(Subject.of(occurrence.getId()));
 		}
 	}
 
 	private void deleteEndangermentObjects(Evaluation existingEvaluation) throws Exception {
 		for (EndangermentObject endangermentObject : existingEvaluation.getEndangermentReasons()) {
-			this.delete(new Subject(endangermentObject.getId()));
+			this.delete(Subject.of(endangermentObject.getId()));
 		}
 		for (EndangermentObject endangermentObject : existingEvaluation.getThreats()) {
-			this.delete(new Subject(endangermentObject.getId()));
+			this.delete(Subject.of(endangermentObject.getId()));
 		}
 	}
 
@@ -889,11 +889,11 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	public void store(HabitatObject habitat) throws Exception {
 		Qname id = given(habitat.getId()) ? habitat.getId() : this.getSeqNextValAndAddResource(Evaluation.IUCN_EVALUATION_NAMESPACE);
 		habitat.setId(id);
-		Model model = new Model(new Subject(id));
+		Model model = new Model(Subject.of(id));
 		model.setType(Evaluation.HABITAT_OBJECT_CLASS);
-		model.addStatement(new Statement(IucnDAO.HABITAT_PREDICATE, new ObjectResource(habitat.getHabitat())));
+		model.addStatement(new Statement(IucnDAO.HABITAT_PREDICATE, ObjectResource.of(habitat.getHabitat())));
 		for (Qname type : habitat.getHabitatSpecificTypes()) {
-			model.addStatement(new Statement(IucnDAO.HABITAT_SPESIFIC_TYPE_PREDICATE, new ObjectResource(type)));
+			model.addStatement(new Statement(IucnDAO.HABITAT_SPESIFIC_TYPE_PREDICATE, ObjectResource.of(type)));
 		}
 		model.addStatement(new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(String.valueOf(habitat.getOrder()))));
 		this.store(model);

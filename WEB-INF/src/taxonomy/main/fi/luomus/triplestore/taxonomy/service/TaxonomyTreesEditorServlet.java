@@ -15,7 +15,7 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 
 	private static final String FAVICON_ICO = "favicon.ico";
 	private static final long serialVersionUID = 2891309144359367681L;
-	public static final Qname DEFAULT_ROOT_QNAME = new Qname("MX.53761");
+	public static final Qname DEFAULT_ROOT_QNAME = Qname.of("MX.53761");
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -46,7 +46,7 @@ public class TaxonomyTreesEditorServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private Qname getRootOrDefaultRootOrIfNonExistingQnameGivenReturnNull(HttpServletRequest req) throws Exception {
-		Qname qname = new Qname(getQname(req));
+		Qname qname = Qname.of(getQname(req));
 		if (!given(qname)) {
 			return DEFAULT_ROOT_QNAME;
 		}

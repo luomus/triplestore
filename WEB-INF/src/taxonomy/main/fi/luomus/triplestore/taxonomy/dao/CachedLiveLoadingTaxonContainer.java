@@ -184,7 +184,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 				rs = p.executeQuery();
 				rs.setFetchSize(4001);
 				while (rs.next()) {
-					taxonIds.add(new Qname(rs.getString(1)));
+					taxonIds.add(Qname.of(rs.getString(1)));
 				}
 				System.out.println("Taxa with media loaded.");
 				return taxonIds;
@@ -253,7 +253,7 @@ public class CachedLiveLoadingTaxonContainer implements TaxonContainer {
 	}
 
 	private Qname q(RdfResource resource) {
-		return new Qname(resource.getQname());
+		return Qname.of(resource.getQname());
 	}
 
 	private void addPropertyToTaxon(EditableTaxon taxon, Statement statement) {

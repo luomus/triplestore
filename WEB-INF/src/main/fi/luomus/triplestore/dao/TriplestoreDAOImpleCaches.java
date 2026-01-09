@@ -30,7 +30,7 @@ class TriplestoreDAOImpleCaches {
 	private static final Set<String> PERSON_ROLE_PREDICATES = Utils.set("MA.role", "MA.roleKotka", "MA.organisation");
 	private static final String MA_FULL_NAME = "MA.fullName";
 	private static final String MA_PERSON = "MA.person";
-	private static final Qname SPECIES_DESC_VARIABLES = new Qname("MX.speciesDescriptionVariables");
+	private static final Qname SPECIES_DESC_VARIABLES = Qname.of("MX.speciesDescriptionVariables");
 
 	private final TriplestoreDAOImple dao;
 
@@ -48,7 +48,7 @@ class TriplestoreDAOImpleCaches {
 						.type(MA_PERSON)
 						.predicates(PERSON_ROLE_PREDICATES));
 				for (Model m : persons) {
-					RdfProperty rangeValue = new RdfProperty(new Qname(m.getSubject().getQname()), null);
+					RdfProperty rangeValue = new RdfProperty(Qname.of(m.getSubject().getQname()), null);
 					String personName = m.getSubject().getQname();
 					for (Statement s : m.getStatements(MA_FULL_NAME)) {
 						personName = s.getObjectLiteral().getContent();
@@ -114,7 +114,7 @@ class TriplestoreDAOImpleCaches {
 				RdfProperties properties = new RdfProperties();
 				Set<Qname> propertyQnames = new HashSet<>();
 				while (rs.next()) {
-					propertyQnames.add(new Qname(rs.getString(1)));
+					propertyQnames.add(Qname.of(rs.getString(1)));
 				}
 				for (Model model : dao.getSearchDAO().get(propertyQnames)) {
 					currentPropery = model.getSubject().toString();

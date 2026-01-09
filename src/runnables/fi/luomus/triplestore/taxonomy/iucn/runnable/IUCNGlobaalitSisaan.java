@@ -28,7 +28,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCNGlobaalitSisaan {
 
-	private static final Qname MISAPPLIED = new Qname("MX.hasMisappliedName");
+	private static final Qname MISAPPLIED = Qname.of("MX.hasMisappliedName");
 	private static final String FILE_PATH = "C:/git/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/globaalit";
 	private static TriplestoreDAO triplestoreDAO;
 	private static ExtendedTaxonomyDAOImple taxonomyDAO;
@@ -39,7 +39,7 @@ public class IUCNGlobaalitSisaan {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"), new ErrorReportingToSystemErr());
 
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
 			//taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr());

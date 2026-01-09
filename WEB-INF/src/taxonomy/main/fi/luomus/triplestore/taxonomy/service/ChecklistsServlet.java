@@ -47,7 +47,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 		log(req);
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
-		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MR") : new Qname(getQname(req));
+		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MR") : Qname.of(getQname(req));
 		
 		if (!addNew) {
 			checkPermissions(qname, req);
@@ -72,7 +72,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 			rootTaxonQname = rootTaxon.getQname().toString();
 		}
 
-		Checklist checklist = new Checklist(qname, names, rootTaxonQname == null ? null : new Qname(rootTaxonQname));
+		Checklist checklist = new Checklist(qname, names, rootTaxonQname == null ? null : Qname.of(rootTaxonQname));
 
 		LocalizedText notes = new LocalizedText();
 		notes.set("en", notesEN);
@@ -85,7 +85,7 @@ public class ChecklistsServlet extends TaxonomyEditorBaseServlet {
 			checklist.setPublic(false);
 		}
 		if (given(owner)) {
-			checklist.setOwner(new Qname(owner));
+			checklist.setOwner(Qname.of(owner));
 		}
 
 		triplestoreDAO.store(checklist);

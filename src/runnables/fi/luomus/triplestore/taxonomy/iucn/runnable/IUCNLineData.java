@@ -21,16 +21,16 @@ public class IUCNLineData {
 		V2010, SAMMALLEET2019, V2000, GLOBAL, LUOKKA_MUUTOSSYY
 
 	}
-	private static final Qname OCC_EX = new Qname("MX.typeOfOccurrenceExtirpated");
-	private static final Qname DOES_NOT_OCCUR = new Qname("MX.doesNotOccur");
-	private static final Qname OCCURS = new Qname("MX.typeOfOccurrenceOccurs");
-	private static final Qname OCC_ANTROPOGENIC = new Qname("MX.typeOfOccurrenceAnthropogenic");
-	private static final Qname OCC_UNCERTAIN = new Qname("MX.typeOfOccurrenceUncertain");
-	private static final Qname RARE = new Qname("MX.typeOfOccurrenceRareVagrant");
-	private static final Qname NOT_ESTAMBLISHED = new Qname("MX.typeOfOccurrenceNotEstablished");
+	private static final Qname OCC_EX = Qname.of("MX.typeOfOccurrenceExtirpated");
+	private static final Qname DOES_NOT_OCCUR = Qname.of("MX.doesNotOccur");
+	private static final Qname OCCURS = Qname.of("MX.typeOfOccurrenceOccurs");
+	private static final Qname OCC_ANTROPOGENIC = Qname.of("MX.typeOfOccurrenceAnthropogenic");
+	private static final Qname OCC_UNCERTAIN = Qname.of("MX.typeOfOccurrenceUncertain");
+	private static final Qname RARE = Qname.of("MX.typeOfOccurrenceRareVagrant");
+	private static final Qname NOT_ESTAMBLISHED = Qname.of("MX.typeOfOccurrenceNotEstablished");
 	private static final Qname ANTHROPOGENIC = OCC_ANTROPOGENIC;
 	private static final Qname EXTIRPATED = OCC_EX;
-	private static final Qname STABLE = new Qname("MX.typeOfOccurrenceStablePopulation");
+	private static final Qname STABLE = Qname.of("MX.typeOfOccurrenceStablePopulation");
 	public String taxonQname;
 	public String scientificName;
 	public List<String> synonyms = new ArrayList<>();
@@ -168,17 +168,17 @@ public class IUCNLineData {
 		typeOfOccurrenceInFinland = s(17);
 		distributionArea = s(18);
 		occurrenceArea = s(19);
-		occurences.put(new Qname("ML.690"), s(20));
-		occurences.put(new Qname("ML.691"), s(21));
-		occurences.put(new Qname("ML.692"), s(22));
-		occurences.put(new Qname("ML.693"), s(23));
-		occurences.put(new Qname("ML.694"), s(24));
-		occurences.put(new Qname("ML.695"), s(25));
-		occurences.put(new Qname("ML.696"), s(26));
-		occurences.put(new Qname("ML.697"), s(27));
-		occurences.put(new Qname("ML.698"), s(28));
-		occurences.put(new Qname("ML.699"), s(29));
-		occurences.put(new Qname("ML.700"), s(30));
+		occurences.put(Qname.of("ML.690"), s(20));
+		occurences.put(Qname.of("ML.691"), s(21));
+		occurences.put(Qname.of("ML.692"), s(22));
+		occurences.put(Qname.of("ML.693"), s(23));
+		occurences.put(Qname.of("ML.694"), s(24));
+		occurences.put(Qname.of("ML.695"), s(25));
+		occurences.put(Qname.of("ML.696"), s(26));
+		occurences.put(Qname.of("ML.697"), s(27));
+		occurences.put(Qname.of("ML.698"), s(28));
+		occurences.put(Qname.of("ML.699"), s(29));
+		occurences.put(Qname.of("ML.700"), s(30));
 		primaryHabitat = s(31);
 		secondaryHabitats = s(32);
 		habitatNotes = s(33);
@@ -232,17 +232,17 @@ public class IUCNLineData {
 		typeOfOccurrenceInFinland = s(2);
 		distributionArea = s(3);
 		occurrenceArea = s(4);
-		occurences.put(new Qname("ML.690"), s(5));
-		occurences.put(new Qname("ML.691"), s(6));
-		occurences.put(new Qname("ML.692"), s(7));
-		occurences.put(new Qname("ML.693"), s(8));
-		occurences.put(new Qname("ML.694"), s(9));
-		occurences.put(new Qname("ML.695"), s(10));
-		occurences.put(new Qname("ML.696"), s(11));
-		occurences.put(new Qname("ML.697"), s(12));
-		occurences.put(new Qname("ML.698"), s(13));
-		occurences.put(new Qname("ML.699"), s(14));
-		occurences.put(new Qname("ML.700"), s(15));
+		occurences.put(Qname.of("ML.690"), s(5));
+		occurences.put(Qname.of("ML.691"), s(6));
+		occurences.put(Qname.of("ML.692"), s(7));
+		occurences.put(Qname.of("ML.693"), s(8));
+		occurences.put(Qname.of("ML.694"), s(9));
+		occurences.put(Qname.of("ML.695"), s(10));
+		occurences.put(Qname.of("ML.696"), s(11));
+		occurences.put(Qname.of("ML.697"), s(12));
+		occurences.put(Qname.of("ML.698"), s(13));
+		occurences.put(Qname.of("ML.699"), s(14));
+		occurences.put(Qname.of("ML.700"), s(15));
 		primaryHabitat = s(16);
 		secondaryHabitats = s(17);
 		habitatNotes = s(18);
@@ -427,17 +427,17 @@ public class IUCNLineData {
 	private static final Map<Qname, String> AREAS;
 	static {
 		AREAS = new HashMap<>();
-		AREAS.put(new Qname("ML.690"), "1a");
-		AREAS.put(new Qname("ML.691"), "1b");
-		AREAS.put(new Qname("ML.692"), "2a");
-		AREAS.put(new Qname("ML.693"), "2b");
-		AREAS.put(new Qname("ML.694"), "3a");
-		AREAS.put(new Qname("ML.695"), "3b");
-		AREAS.put(new Qname("ML.696"), "3c");
-		AREAS.put(new Qname("ML.697"), "4a");
-		AREAS.put(new Qname("ML.698"), "4b");
-		AREAS.put(new Qname("ML.699"), "4c");
-		AREAS.put(new Qname("ML.700"), "4d");
+		AREAS.put(Qname.of("ML.690"), "1a");
+		AREAS.put(Qname.of("ML.691"), "1b");
+		AREAS.put(Qname.of("ML.692"), "2a");
+		AREAS.put(Qname.of("ML.693"), "2b");
+		AREAS.put(Qname.of("ML.694"), "3a");
+		AREAS.put(Qname.of("ML.695"), "3b");
+		AREAS.put(Qname.of("ML.696"), "3c");
+		AREAS.put(Qname.of("ML.697"), "4a");
+		AREAS.put(Qname.of("ML.698"), "4b");
+		AREAS.put(Qname.of("ML.699"), "4c");
+		AREAS.put(Qname.of("ML.700"), "4d");
 	}
 
 	private String getAreaAbbrv(Qname id) {
@@ -774,8 +774,8 @@ public class IUCNLineData {
 	public Qname getPossiblyRE() {
 		if (possiblyRE == null) return null;
 		String s = possiblyRE.toLowerCase();
-		if (s.equals("re") || s.equals("kyllä") || s.equals("x")) return new Qname("MX.iucnRE");
-		if (validInteger(s)) return new Qname("MX.iucnRE");
+		if (s.equals("re") || s.equals("kyllä") || s.equals("x")) return Qname.of("MX.iucnRE");
+		if (validInteger(s)) return Qname.of("MX.iucnRE");
 		return null;
 	}
 
@@ -840,73 +840,73 @@ public class IUCNLineData {
 	static {
 		HABITAS = new HashMap<>();
 		for (String s : "M,Mk,Mkk,Mkt,Ml,Mlt,Mlk,S,Sl,Sla,Slr,Slk,Sn,Snk,Snr,Sr,Srk,Srr,Sk,Skk,Skr,V,Vi,Vs,Vsk,Vsr,Va,Vj,Vp,Vk,Vl,R,Ri,Rih,Ris,Rit,Rj,Rjh,Rjs,Rjt,K,Kl,T,Tk,Tl,Tn,I,In,Ih,Io,Iv,Ip,Ir".split(",")) {
-			HABITAS.put(s, new Qname("MKV.habitat"+s));
+			HABITAS.put(s, Qname.of("MKV.habitat"+s));
 		}
 	}
 
 	private static final Map<String, Qname> HABITAT_SPECIFIC_TYPES;
 	static {
 		HABITAT_SPECIFIC_TYPES = new HashMap<>();
-		HABITAT_SPECIFIC_TYPES.put("v", new Qname("MKV.habitatSpecificTypeV"));
-		HABITAT_SPECIFIC_TYPES.put("h", new Qname("MKV.habitatSpecificTypeH"));
-		HABITAT_SPECIFIC_TYPES.put("p", new Qname("MKV.habitatSpecificTypeP"));
-		HABITAT_SPECIFIC_TYPES.put("pa", new Qname("MKV.habitatSpecificTypePAK"));
-		HABITAT_SPECIFIC_TYPES.put("va", new Qname("MKV.habitatSpecificTypeVAK"));
+		HABITAT_SPECIFIC_TYPES.put("v", Qname.of("MKV.habitatSpecificTypeV"));
+		HABITAT_SPECIFIC_TYPES.put("h", Qname.of("MKV.habitatSpecificTypeH"));
+		HABITAT_SPECIFIC_TYPES.put("p", Qname.of("MKV.habitatSpecificTypeP"));
+		HABITAT_SPECIFIC_TYPES.put("pa", Qname.of("MKV.habitatSpecificTypePAK"));
+		HABITAT_SPECIFIC_TYPES.put("va", Qname.of("MKV.habitatSpecificTypeVAK"));
 	}
 
 	private static final Map<String, Qname> ENDANGERMENT_REASONS;
 	static {
 		ENDANGERMENT_REASONS = new HashMap<>();
-		ENDANGERMENT_REASONS.put("P", new Qname("MKV.endangermentReasonP"));
-		ENDANGERMENT_REASONS.put("Ke", new Qname("MKV.endangermentReasonKe"));
-		ENDANGERMENT_REASONS.put("H", new Qname("MKV.endangermentReasonH"));
-		ENDANGERMENT_REASONS.put("Ku", new Qname("MKV.endangermentReasonKu"));
-		ENDANGERMENT_REASONS.put("R", new Qname("MKV.endangermentReasonR"));
-		ENDANGERMENT_REASONS.put("Ks", new Qname("MKV.endangermentReasonKs"));
-		ENDANGERMENT_REASONS.put("Pm", new Qname("MKV.endangermentReasonPm"));
-		ENDANGERMENT_REASONS.put("Pr", new Qname("MKV.endangermentReasonPr"));
-		ENDANGERMENT_REASONS.put("N", new Qname("MKV.endangermentReasonN"));
-		ENDANGERMENT_REASONS.put("M", new Qname("MKV.endangermentReasonM"));
-		ENDANGERMENT_REASONS.put("Mp", new Qname("MKV.endangermentReasonMp"));
-		ENDANGERMENT_REASONS.put("Mv", new Qname("MKV.endangermentReasonMv"));
-		ENDANGERMENT_REASONS.put("Mk", new Qname("MKV.endangermentReasonMk"));
-		ENDANGERMENT_REASONS.put("Ml", new Qname("MKV.endangermentReasonMl"));
-		ENDANGERMENT_REASONS.put("O", new Qname("MKV.endangermentReasonO"));
-		ENDANGERMENT_REASONS.put("Vr", new Qname("MKV.endangermentReasonVr"));
-		ENDANGERMENT_REASONS.put("Kh", new Qname("MKV.endangermentReasonKh"));
-		ENDANGERMENT_REASONS.put("I", new Qname("MKV.endangermentReasonI"));
-		ENDANGERMENT_REASONS.put("S", new Qname("MKV.endangermentReasonS"));
-		ENDANGERMENT_REASONS.put("Kil", new Qname("MKV.endangermentReasonKil"));
-		ENDANGERMENT_REASONS.put("Ris", new Qname("MKV.endangermentReasonRis"));
-		ENDANGERMENT_REASONS.put("Kv", new Qname("MKV.endangermentReasonKv"));
-		ENDANGERMENT_REASONS.put("U", new Qname("MKV.endangermentReasonU"));
-		ENDANGERMENT_REASONS.put("Vie", new Qname("MKV.endangermentReasonVie"));
-		ENDANGERMENT_REASONS.put("Muu", new Qname("MKV.endangermentReasonMuu"));
-		ENDANGERMENT_REASONS.put("?", new Qname("MKV.endangermentReasonT"));
+		ENDANGERMENT_REASONS.put("P", Qname.of("MKV.endangermentReasonP"));
+		ENDANGERMENT_REASONS.put("Ke", Qname.of("MKV.endangermentReasonKe"));
+		ENDANGERMENT_REASONS.put("H", Qname.of("MKV.endangermentReasonH"));
+		ENDANGERMENT_REASONS.put("Ku", Qname.of("MKV.endangermentReasonKu"));
+		ENDANGERMENT_REASONS.put("R", Qname.of("MKV.endangermentReasonR"));
+		ENDANGERMENT_REASONS.put("Ks", Qname.of("MKV.endangermentReasonKs"));
+		ENDANGERMENT_REASONS.put("Pm", Qname.of("MKV.endangermentReasonPm"));
+		ENDANGERMENT_REASONS.put("Pr", Qname.of("MKV.endangermentReasonPr"));
+		ENDANGERMENT_REASONS.put("N", Qname.of("MKV.endangermentReasonN"));
+		ENDANGERMENT_REASONS.put("M", Qname.of("MKV.endangermentReasonM"));
+		ENDANGERMENT_REASONS.put("Mp", Qname.of("MKV.endangermentReasonMp"));
+		ENDANGERMENT_REASONS.put("Mv", Qname.of("MKV.endangermentReasonMv"));
+		ENDANGERMENT_REASONS.put("Mk", Qname.of("MKV.endangermentReasonMk"));
+		ENDANGERMENT_REASONS.put("Ml", Qname.of("MKV.endangermentReasonMl"));
+		ENDANGERMENT_REASONS.put("O", Qname.of("MKV.endangermentReasonO"));
+		ENDANGERMENT_REASONS.put("Vr", Qname.of("MKV.endangermentReasonVr"));
+		ENDANGERMENT_REASONS.put("Kh", Qname.of("MKV.endangermentReasonKh"));
+		ENDANGERMENT_REASONS.put("I", Qname.of("MKV.endangermentReasonI"));
+		ENDANGERMENT_REASONS.put("S", Qname.of("MKV.endangermentReasonS"));
+		ENDANGERMENT_REASONS.put("Kil", Qname.of("MKV.endangermentReasonKil"));
+		ENDANGERMENT_REASONS.put("Ris", Qname.of("MKV.endangermentReasonRis"));
+		ENDANGERMENT_REASONS.put("Kv", Qname.of("MKV.endangermentReasonKv"));
+		ENDANGERMENT_REASONS.put("U", Qname.of("MKV.endangermentReasonU"));
+		ENDANGERMENT_REASONS.put("Vie", Qname.of("MKV.endangermentReasonVie"));
+		ENDANGERMENT_REASONS.put("Muu", Qname.of("MKV.endangermentReasonMuu"));
+		ENDANGERMENT_REASONS.put("?", Qname.of("MKV.endangermentReasonT"));
 	}
 
 	private static final Map<String, Qname> STATUS_CHANGE_REASONS;
 	static {
 		STATUS_CHANGE_REASONS = new HashMap<>();
-		STATUS_CHANGE_REASONS.put("1", new Qname("MKV.reasonForStatusChangeGenuine"));
-		STATUS_CHANGE_REASONS.put("2", new Qname("MKV.reasonForStatusChangeMoreInformation"));
-		STATUS_CHANGE_REASONS.put("3", new Qname("MKV.reasonForStatusChangeChangesInCriteria"));
-		STATUS_CHANGE_REASONS.put("4", new Qname("MKV.reasonForStatusChangeMoreInformation"));
-		STATUS_CHANGE_REASONS.put("5", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
-		STATUS_CHANGE_REASONS.put("6", new Qname("MKV.reasonForStatusChangeError"));
-		STATUS_CHANGE_REASONS.put("7", new Qname("MKV.reasonForStatusChangeErroneousInformation"));
-		STATUS_CHANGE_REASONS.put("8", new Qname("MKV.reasonForStatusChangeOther"));
-		STATUS_CHANGE_REASONS.put("aito muutos", new Qname("MKV.reasonForStatusChangeGenuine"));
-		STATUS_CHANGE_REASONS.put("tiedon lisääntyminen", new Qname("MKV.reasonForStatusChangeMoreInformation"));
-		STATUS_CHANGE_REASONS.put("tiedon kasvu", new Qname("MKV.reasonForStatusChangeMoreInformation"));
-		STATUS_CHANGE_REASONS.put("taksonominen muutos", new Qname("MKV.reasonForStatusChangeChangesInTaxonomy"));
+		STATUS_CHANGE_REASONS.put("1", Qname.of("MKV.reasonForStatusChangeGenuine"));
+		STATUS_CHANGE_REASONS.put("2", Qname.of("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("3", Qname.of("MKV.reasonForStatusChangeChangesInCriteria"));
+		STATUS_CHANGE_REASONS.put("4", Qname.of("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("5", Qname.of("MKV.reasonForStatusChangeChangesInTaxonomy"));
+		STATUS_CHANGE_REASONS.put("6", Qname.of("MKV.reasonForStatusChangeError"));
+		STATUS_CHANGE_REASONS.put("7", Qname.of("MKV.reasonForStatusChangeErroneousInformation"));
+		STATUS_CHANGE_REASONS.put("8", Qname.of("MKV.reasonForStatusChangeOther"));
+		STATUS_CHANGE_REASONS.put("aito muutos", Qname.of("MKV.reasonForStatusChangeGenuine"));
+		STATUS_CHANGE_REASONS.put("tiedon lisääntyminen", Qname.of("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("tiedon kasvu", Qname.of("MKV.reasonForStatusChangeMoreInformation"));
+		STATUS_CHANGE_REASONS.put("taksonominen muutos", Qname.of("MKV.reasonForStatusChangeChangesInTaxonomy"));
 	}
 
 	private static final Map<String, Qname> RED_LIST_STATUSES;
 	static {
 		RED_LIST_STATUSES = new HashMap<>();
 		for (String s : "EX,EW,RE,CR,EN,VU,NT,LC,DD,NA,NE".split(",")) {
-			RED_LIST_STATUSES.put(s, new Qname("MX.iucn"+s));
+			RED_LIST_STATUSES.put(s, Qname.of("MX.iucn"+s));
 		}
 	}
 
@@ -919,10 +919,10 @@ public class IUCNLineData {
 		if (!given(externalPopulationImpactOnRedListStatus)) {
 			return null;
 		}
-		if (externalPopulationImpactOnRedListStatus.equals("-1")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus1");
-		if (externalPopulationImpactOnRedListStatus.equals("-2")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus2");
-		if (externalPopulationImpactOnRedListStatus.equals("1")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumPlus1");
-		if (externalPopulationImpactOnRedListStatus.equals("2")) return new Qname("MKV.externalPopulationImpactOnRedListStatusEnumPlus2");
+		if (externalPopulationImpactOnRedListStatus.equals("-1")) return Qname.of("MKV.externalPopulationImpactOnRedListStatusEnumMinus1");
+		if (externalPopulationImpactOnRedListStatus.equals("-2")) return Qname.of("MKV.externalPopulationImpactOnRedListStatusEnumMinus2");
+		if (externalPopulationImpactOnRedListStatus.equals("1")) return Qname.of("MKV.externalPopulationImpactOnRedListStatusEnumPlus1");
+		if (externalPopulationImpactOnRedListStatus.equals("2")) return Qname.of("MKV.externalPopulationImpactOnRedListStatusEnumPlus2");
 		return null;
 	}
 

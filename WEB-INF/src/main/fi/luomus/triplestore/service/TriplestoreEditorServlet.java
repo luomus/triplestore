@@ -91,7 +91,7 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	private boolean creatableNamespace(String qnameS) {
 		try {
-			Qname qname = new Qname(qnameS);
+			Qname qname = Qname.of(qnameS);
 			if (!qname.isSet()) return false;
 			return CREATABLE_NAMESPACES.contains(qname.getNamespace());
 		} catch (IllegalArgumentException e) {
@@ -265,13 +265,13 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	protected Model toModel(String qname, JSONObject data) {
 		Model model;
-		model = new Model(new Subject(qname));
+		model = new Model(Subject.of(qname));
 		for (JSONObject predicateData : data.getArray("predicates").iterateAsObject()) {
 			String predicateQname = predicateData.getString("predicate");
 			if (!given(predicateQname)) throw new IllegalArgumentException("Empty predicate given.");
-			Predicate predicate = new Predicate(predicateQname);
+			Predicate predicate = Predicate.of(predicateQname);
 			if (predicateData.hasKey("objectResource")) {
-				model.addStatementIfObjectGiven(predicate, new Qname(predicateData.getString("objectResource")));
+				model.addStatementIfObjectGiven(predicate, Qname.of(predicateData.getString("objectResource")));
 			} else if (predicateData.hasKey("objectLiteral")) {
 				model.addStatementIfObjectGiven(predicate, predicateData.getString("objectLiteral"), predicateData.getString("langcode"));
 			}
@@ -300,8 +300,8 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 
 	private void addDefaultProperty(String predicate, String range, RdfProperties properties) {
 		if (properties.hasProperty(predicate)) return;
-		Qname rangeQname = range == null ? null : new Qname(range);
-		properties.addProperty(new RdfProperty(new Qname(predicate), rangeQname));
+		Qname rangeQname = range == null ? null : Qname.of(range);
+		properties.addProperty(new RdfProperty(Qname.of(predicate), rangeQname));
 	}
 
 	private RdfProperties getProperties(TriplestoreDAO dao, Model model) throws Exception {

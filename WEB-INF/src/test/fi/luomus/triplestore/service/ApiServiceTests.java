@@ -40,8 +40,8 @@ public class ApiServiceTests {
 	private static final String MX_ORIGIN_AND_DISTRIBUTION_TEXT = "MX.originAndDistributionText";
 	private static TriplestoreDAO dao;
 	private static HikariDataSource dataSource;
-	private static final Qname TEST_RESOURCE_QNAME = new Qname("JA.123");
-	private static final Subject TEST_RESOURCE = new Subject(TEST_RESOURCE_QNAME);
+	private static final Qname TEST_RESOURCE_QNAME = Qname.of("JA.123");
+	private static final Subject TEST_RESOURCE = Subject.of(TEST_RESOURCE_QNAME);
 
 
 	@BeforeClass
@@ -60,19 +60,19 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_notgiven() throws Exception {
-		String response = ApiServlet.get(new Qname(null), ResultType.NORMAL, Format.RDFXML, dao);
+		String response = ApiServlet.get(Qname.of(null), ResultType.NORMAL, Format.RDFXML, dao);
 		assertNull(response);
 	}
 
 	@Test
 	public void test_get_by_qname_nonexisting() throws Exception {
-		String response = ApiServlet.get(new Qname("nonexistig"), ResultType.NORMAL, Format.RDFXML, dao);
+		String response = ApiServlet.get(Qname.of("nonexistig"), ResultType.NORMAL, Format.RDFXML, dao);
 		assertNull(response);
 	}
 
 	@Test
 	public void test_get_by_qname_existing_but_no_statements() throws Exception {
-		String response = ApiServlet.get(new Qname("rdfs:seeAlso"), ResultType.NORMAL, Format.RDFXML, dao);
+		String response = ApiServlet.get(Qname.of("rdfs:seeAlso"), ResultType.NORMAL, Format.RDFXML, dao);
 		assertNull(response);
 	}
 
@@ -82,22 +82,22 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_rdfxml() throws Exception {
-		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXML, dao);
+		String response = ApiServlet.get(Qname.of("MA.1"), ResultType.NORMAL, Format.RDFXML, dao);
 		assertTrue(response.contains("<rdf:Description rdf:about=\"http://tun.fi/MA.1\">"));
 
 	}
 
 	@Test
 	public void test_get_by_qname_rdfxml_abbrev() throws Exception {
-		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.RDFXMLABBREV, dao);
+		String response = ApiServlet.get(Qname.of("MA.1"), ResultType.NORMAL, Format.RDFXMLABBREV, dao);
 		assertTrue(response.contains("<MA.person rdf:about=\"http://tun.fi/MA.1\">"));
 
 	}
 
 	@Test
 	public void test_get_by_qname_json() throws Exception {
-		String response1 = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON, dao);
-		String response2 = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXMLABBREV, dao);
+		String response1 = ApiServlet.get(Qname.of("MA.1"), ResultType.NORMAL, Format.JSON, dao);
+		String response2 = ApiServlet.get(Qname.of("MA.1"), ResultType.NORMAL, Format.JSON_RDFXMLABBREV, dao);
 		assertEquals(response1, response2);
 		assertTrue(trim(response1).contains(trim("\"MA.person\": { ")));
 		assertTrue(trim(response1).contains(trim("\"rdf:about\": \"http://tun.fi/MA.1\",")));
@@ -106,7 +106,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_json_non_abbrev() throws Exception {
-		String response = ApiServlet.get(new Qname("MA.1"), ResultType.NORMAL, Format.JSON_RDFXML, dao);
+		String response = ApiServlet.get(Qname.of("MA.1"), ResultType.NORMAL, Format.JSON_RDFXML, dao);
 		assertTrue(trim(response).contains(trim("\"rdf:Description\": { ")));
 		assertTrue(trim(response).contains(trim("\"rdf:about\": \"http://tun.fi/MA.1\",")));
 		assertTrue(trim(response).contains(trim("\"rdf:type\": { \"rdf:resource\": \"http://tun.fi/MA.person\" },")));
@@ -114,7 +114,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_resulttype_chain() throws Exception {
-		String response = ApiServlet.get(new Qname("MX.37602"), ResultType.CHAIN, Format.RDFXMLABBREV, dao);
+		String response = ApiServlet.get(Qname.of("MX.37602"), ResultType.CHAIN, Format.RDFXMLABBREV, dao);
 		Node n = new XMLReader().parse(response).getRootNode();
 
 		assertEquals(1, n.getChildNodes("MX.taxon").size());
@@ -134,7 +134,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_get_by_qname_resulttype_children() throws Exception {
-		String response = ApiServlet.get(new Qname("MX.7"), ResultType.CHILDREN, Format.RDFXML, dao);
+		String response = ApiServlet.get(Qname.of("MX.7"), ResultType.CHILDREN, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		Set<String> taxonRanks = new HashSet<>();
@@ -149,7 +149,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test_resulttype_tree() throws Exception {
-		String response = ApiServlet.get(new Qname("luomus:EA4.0WB"), ResultType.TREE, Format.RDFXMLABBREV, dao);
+		String response = ApiServlet.get(Qname.of("luomus:EA4.0WB"), ResultType.TREE, Format.RDFXMLABBREV, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();
 		assertEquals(1, n.getChildNodes().size());
@@ -423,7 +423,7 @@ public class ApiServiceTests {
 
 	@Test
 	public void test__get_several_qnames() throws Exception {
-		Set<Qname> qnames = Utils.set(new Qname("MX.1"), new Qname("MX.2"), new Qname("MX.3"));
+		Set<Qname> qnames = Utils.set(Qname.of("MX.1"), Qname.of("MX.2"), Qname.of("MX.3"));
 		String response = ApiServlet.get(qnames, ResultType.NORMAL, Format.RDFXML, dao);
 
 		Node n = new XMLReader().parse(response).getRootNode();

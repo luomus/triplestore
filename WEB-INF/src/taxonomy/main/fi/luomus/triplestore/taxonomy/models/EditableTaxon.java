@@ -23,7 +23,7 @@ import fi.luomus.triplestore.taxonomy.service.TaxonomyEditorBaseServlet;
 
 public class EditableTaxon extends Taxon {
 
-	private static final Qname SANDBOX_CHECKLIST = new Qname("MR.176");
+	private static final Qname SANDBOX_CHECKLIST = Qname.of("MR.176");
 
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
 	private final ExtendedTaxonomyDAO taxonomyDAO;
@@ -142,11 +142,11 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean hasExplicitlySetOriginalPublication(String qname) {
-		return getExplicitlySetOriginalPublications().contains(new Qname(qname));
+		return getExplicitlySetOriginalPublications().contains(Qname.of(qname));
 	}
 
 	public boolean hasExplicitlySetOccurrenceInFinlandPublication(String qname) {
-		return getExplicitlySetOccurrenceInFinlandPublications().contains(new Qname(qname));
+		return getExplicitlySetOccurrenceInFinlandPublications().contains(Qname.of(qname));
 	}
 
 	public boolean hasOriginalDescription(String qname) {
@@ -155,15 +155,15 @@ public class EditableTaxon extends Taxon {
 	}
 
 	public boolean hasExplicitlySetEditor(String qname) {
-		return getExplicitlySetEditors().contains(new Qname(qname));
+		return getExplicitlySetEditors().contains(Qname.of(qname));
 	}
 
 	public boolean hasExplicitlySetExpert(String qname) {
-		return getExplicitlySetExperts().contains(new Qname(qname));
+		return getExplicitlySetExperts().contains(Qname.of(qname));
 	}
 
 	public boolean hasExplicitlySetInformalTaxonGroup(String qname) {
-		return getExplicitlySetInformalTaxonGroups().contains(new Qname(qname));
+		return getExplicitlySetInformalTaxonGroups().contains(Qname.of(qname));
 	}
 
 	public boolean isDeletable() {

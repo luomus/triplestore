@@ -149,7 +149,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 
 	protected User getUser(SessionHandler session) {
 		User.Role role = getRole(session);
-		return new User(new Qname(session.get("user_qname")), session.get("person_token"), session.userName(), role);
+		return new User(Qname.of(session.get("user_qname")), session.get("person_token"), session.userName(), role);
 	}
 
 	private User.Role getRole(SessionHandler session) {

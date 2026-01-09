@@ -44,7 +44,7 @@ import fi.luomus.triplestore.taxonomy.iucn.runnable.IUCNLineData.Mode;
 
 public class IUCN2010Sisaan {
 
-	private static final Qname MISAPPLIED = new Qname("MX.hasMisappliedName");
+	private static final Qname MISAPPLIED = Qname.of("MX.hasMisappliedName");
 	private static final String FILE_PATH = "C:/esko-local/workspace/eskon-dokkarit/Taksonomia/punainen-kirja-2010-2015/";
 	private static final String NOTES = "Notes";
 	private static final int EVALUATION_YEAR = 2010; // XXX change year here
@@ -52,53 +52,53 @@ public class IUCN2010Sisaan {
 	private static final Map<String, Set<Qname>> FILE_TO_INFORMAL_GROUP;
 	static {
 		FILE_TO_INFORMAL_GROUP = new HashMap<>();
-		FILE_TO_INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		FILE_TO_INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(new Qname("MVL.38")));
-		FILE_TO_INFORMAL_GROUP.put("Hamahakit_loput.csv", Utils.set(new Qname("MVL.38")));
-		FILE_TO_INFORMAL_GROUP.put("Jäkälät_siirto.csv", Utils.set(new Qname("MVL.25")));
-		FILE_TO_INFORMAL_GROUP.put("Jäkälät_korjattavat.csv", Utils.set(new Qname("MVL.25")));
-		FILE_TO_INFORMAL_GROUP.put("Jäytiäiset_siirto.csv", Utils.set(new Qname("MVL.227")));
-		FILE_TO_INFORMAL_GROUP.put("Kalat_siirto.csv", Utils.set(new Qname("MVL.27")));
-		FILE_TO_INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(new Qname("MVL.229")));
-		FILE_TO_INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(new Qname("MVL.301")));
-		FILE_TO_INFORMAL_GROUP.put("Korennot_siirto.csv", Utils.set(new Qname("MVL.36"), new Qname("MVL.222")));
-		FILE_TO_INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		FILE_TO_INFORMAL_GROUP.put("Kovakuoriaiset_siirto.csv", Utils.set(new Qname("MVL.33")));
-		FILE_TO_INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		FILE_TO_INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(new Qname("MVL.224")));
-		FILE_TO_INFORMAL_GROUP.put("Kääväkkäät_siirto.csv", Utils.set(new Qname("MVL.233")));
-		FILE_TO_INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(new Qname("MVL.22")));
-		FILE_TO_INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(new Qname("MVL.321")));
-		FILE_TO_INFORMAL_GROUP.put("Linnut_siirto.csv", Utils.set(new Qname("MVL.1")));
-		FILE_TO_INFORMAL_GROUP.put("Maasiirat_lukit_valeskorpionit_siirto.csv", Utils.set(new Qname("MVL.215"), new Qname("MVL.235"), new Qname("MVL.236")));
-		FILE_TO_INFORMAL_GROUP.put("Matelijat_sammakot_siirto.csv", Utils.set(new Qname("MVL.26")));
-		FILE_TO_INFORMAL_GROUP.put("Nilviäiset_siirto.csv", Utils.set(new Qname("MVL.239"), new Qname("MVL.240")));
-		FILE_TO_INFORMAL_GROUP.put("Nisäkkäät_siirto.csv", Utils.set(new Qname("MVL.2")));
-		FILE_TO_INFORMAL_GROUP.put("Nivelkärsäiset_siirto.csv", Utils.set(new Qname("MVL.34")));
-		FILE_TO_INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(new Qname("MVL.241")));
-		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto.csv", Utils.set(new Qname("MVL.31")));
-		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto2.csv", Utils.set(new Qname("MVL.31")));
-		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
-		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto_lisalataus.csv", Utils.set(new Qname("MVL.30")));
-		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
-		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(new Qname("MVL.343")));
-		FILE_TO_INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(new Qname("MVL.228")));
-		FILE_TO_INFORMAL_GROUP.put("Sammalet_siirto.csv", Utils.set(new Qname("MVL.23")));
-		FILE_TO_INFORMAL_GROUP.put("Suorasiipiset_siirto.csv", Utils.set(new Qname("MVL.223"), new Qname("MVL.230"), new Qname("MVL.225")));
-		FILE_TO_INFORMAL_GROUP.put("Sääsket_siirto.csv", Utils.set(new Qname("MVL.224")));
-		FILE_TO_INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(new Qname("MVL.37")));
-		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
-		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
+		FILE_TO_INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(Qname.of("MVL.38")));
+		FILE_TO_INFORMAL_GROUP.put("Hamahakit_loput.csv", Utils.set(Qname.of("MVL.38")));
+		FILE_TO_INFORMAL_GROUP.put("Jäkälät_siirto.csv", Utils.set(Qname.of("MVL.25")));
+		FILE_TO_INFORMAL_GROUP.put("Jäkälät_korjattavat.csv", Utils.set(Qname.of("MVL.25")));
+		FILE_TO_INFORMAL_GROUP.put("Jäytiäiset_siirto.csv", Utils.set(Qname.of("MVL.227")));
+		FILE_TO_INFORMAL_GROUP.put("Kalat_siirto.csv", Utils.set(Qname.of("MVL.27")));
+		FILE_TO_INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(Qname.of("MVL.229")));
+		FILE_TO_INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(Qname.of("MVL.301")));
+		FILE_TO_INFORMAL_GROUP.put("Korennot_siirto.csv", Utils.set(Qname.of("MVL.36"), Qname.of("MVL.222")));
+		FILE_TO_INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Kovakuoriaiset_siirto.csv", Utils.set(Qname.of("MVL.33")));
+		FILE_TO_INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(Qname.of("MVL.224")));
+		FILE_TO_INFORMAL_GROUP.put("Kääväkkäät_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(Qname.of("MVL.22")));
+		FILE_TO_INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(Qname.of("MVL.321")));
+		FILE_TO_INFORMAL_GROUP.put("Linnut_siirto.csv", Utils.set(Qname.of("MVL.1")));
+		FILE_TO_INFORMAL_GROUP.put("Maasiirat_lukit_valeskorpionit_siirto.csv", Utils.set(Qname.of("MVL.215"), Qname.of("MVL.235"), Qname.of("MVL.236")));
+		FILE_TO_INFORMAL_GROUP.put("Matelijat_sammakot_siirto.csv", Utils.set(Qname.of("MVL.26")));
+		FILE_TO_INFORMAL_GROUP.put("Nilviäiset_siirto.csv", Utils.set(Qname.of("MVL.239"), Qname.of("MVL.240")));
+		FILE_TO_INFORMAL_GROUP.put("Nisäkkäät_siirto.csv", Utils.set(Qname.of("MVL.2")));
+		FILE_TO_INFORMAL_GROUP.put("Nivelkärsäiset_siirto.csv", Utils.set(Qname.of("MVL.34")));
+		FILE_TO_INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(Qname.of("MVL.241")));
+		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto.csv", Utils.set(Qname.of("MVL.31")));
+		FILE_TO_INFORMAL_GROUP.put("Perhoset_siirto2.csv", Utils.set(Qname.of("MVL.31")));
+		FILE_TO_INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(Qname.of("MVL.30")));
+		FILE_TO_INFORMAL_GROUP.put("Pistiäiset_siirto_lisalataus.csv", Utils.set(Qname.of("MVL.30")));
+		FILE_TO_INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(Qname.of("MVL.234")));
+		FILE_TO_INFORMAL_GROUP.put("Putkilokasvit_siirto.csv", Utils.set(Qname.of("MVL.343")));
+		FILE_TO_INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(Qname.of("MVL.228")));
+		FILE_TO_INFORMAL_GROUP.put("Sammalet_siirto.csv", Utils.set(Qname.of("MVL.23")));
+		FILE_TO_INFORMAL_GROUP.put("Suorasiipiset_siirto.csv", Utils.set(Qname.of("MVL.223"), Qname.of("MVL.230"), Qname.of("MVL.225")));
+		FILE_TO_INFORMAL_GROUP.put("Sääsket_siirto.csv", Utils.set(Qname.of("MVL.224")));
+		FILE_TO_INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(Qname.of("MVL.37")));
+		FILE_TO_INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(Qname.of("MVL.226")));
+		FILE_TO_INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(Qname.of("MVL.222")));
 
 		Set<Qname> all = new HashSet<>();
 		for (Set<Qname> s : FILE_TO_INFORMAL_GROUP.values()) {
 			all.addAll(s);
 		}
-		all.add(new Qname("MVL.40"));
-		all.add(new Qname("MVL.30"));
-		all.add(new Qname("MVL.213"));
-		all.add(new Qname("MVL.462"));
+		all.add(Qname.of("MVL.40"));
+		all.add(Qname.of("MVL.30"));
+		all.add(Qname.of("MVL.213"));
+		all.add(Qname.of("MVL.462"));
 		FILE_TO_INFORMAL_GROUP.put("yhdistetty.csv", all);
 		FILE_TO_INFORMAL_GROUP.put("2010_korjattavat_28092018.csv", all);
 	}
@@ -112,7 +112,7 @@ public class IUCN2010Sisaan {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"), new ErrorReportingToSystemErr());
 
 			// prod mode XXX MUST USE PROD MODE WHEN LOADING DATA (dev is for test dry runs)
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, false, triplestoreDAO, new ErrorReportingToSystemErr());
@@ -196,7 +196,7 @@ public class IUCN2010Sisaan {
 					if (line.isEmpty()) continue;
 					String[] parts = line.split(Pattern.quote("\t"));
 					String name = parts[1];
-					Qname qname = new Qname(parts[3].trim());
+					Qname qname = Qname.of(parts[3].trim());
 					fixedNames.put(name, qname);
 				} catch (Exception e) {
 					System.err.println(line);
@@ -355,7 +355,7 @@ public class IUCN2010Sisaan {
 		Evaluation evaluation = taxonomyDAO.getIucnDAO().createNewEvaluation();
 		Model model = evaluation.getModel();
 		model.addStatementIfObjectGiven(Evaluation.IS_LOCKED, true);
-		model.addStatementIfObjectGiven(Evaluation.STATE, new Qname(Evaluation.STATE_READY));
+		model.addStatementIfObjectGiven(Evaluation.STATE, Qname.of(Evaluation.STATE_READY));
 		model.addStatementIfObjectGiven(Evaluation.EVALUATED_TAXON, taxonId);
 		model.addStatementIfObjectGiven(Evaluation.EVALUATION_YEAR, String.valueOf(evaluationYear));
 		model.addStatementIfObjectGiven(Evaluation.BORDER_GAIN, data.getBorderGain());

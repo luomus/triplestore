@@ -20,7 +20,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 public class RemarksServlet extends EvaluationEditServlet {
 
 	private static final long serialVersionUID = -7749268274655196771L;
-	private static final Predicate REMARKS_PREDICATE = new Predicate(Evaluation.REMARKS);
+	private static final Predicate REMARKS_PREDICATE = Predicate.of(Evaluation.REMARKS);
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -43,7 +43,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			String date = DateUtils.getCurrentDateTime("dd.MM.yyyy");
 			remarks = userFullname + " " + date + ":\n" + remarks;
 			
-			Subject subject = new Subject(evaluationId);
+			Subject subject = Subject.of(evaluationId);
 			Statement statement = new Statement(REMARKS_PREDICATE, new ObjectLiteral(remarks)); 
 			dao.insert(subject, statement);
 

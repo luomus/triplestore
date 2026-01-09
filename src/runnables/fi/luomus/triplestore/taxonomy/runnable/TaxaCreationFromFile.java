@@ -161,7 +161,7 @@ public class TaxaCreationFromFile {
 					model.addStatementIfObjectGiven(MX_IS_PART_OF_INFORMAL_GROUP, groupId);
 				}
 				vernacularNameStatements(taxon, model);
-				model.addStatement(new Statement(new Predicate(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(CREATED_TIMESTAMP)));
+				model.addStatement(new Statement(Predicate.of(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(CREATED_TIMESTAMP)));
 				statements.addAll(generateStatements(model));
 			}
 		}
@@ -320,7 +320,7 @@ public class TaxaCreationFromFile {
 			} else if (field.equals("speciesscientificname")) {
 				Qname speciesId = resolveTaxonId(data.get("speciesid"));
 				species = createNewTaxon(speciesId);
-				species.setTaxonRank(new Qname("MX.species"));
+				species.setTaxonRank(Qname.of("MX.species"));
 				species.setScientificName(value);
 				continue;
 			} else if (field.equals("speciesauthor")) {
@@ -330,17 +330,17 @@ public class TaxaCreationFromFile {
 			} else if (field.equals("informalgroup")) {
 				if (value.contains(",")) {
 					for (String id : value.split(Pattern.quote(","))) {
-						taxon(taxon, species).addInformalTaxonGroup(new Qname(id.trim()));
+						taxon(taxon, species).addInformalTaxonGroup(Qname.of(id.trim()));
 					}
 				} else {
-					taxon(taxon, species).addInformalTaxonGroup(new Qname(value.trim()));
+					taxon(taxon, species).addInformalTaxonGroup(Qname.of(value.trim()));
 				}
 				continue;
 			}
 			throw new IllegalStateException("Unknown field " + field);
 		}
 		if (species == null && taxon.getTaxonRank() == null) {
-			taxon.setTaxonRank(new Qname("MX.species"));
+			taxon.setTaxonRank(Qname.of("MX.species"));
 		}
 		validate(taxon, data);
 		if (prevTaxon != null && prevTaxon.getScientificName().equals(taxon.getScientificName())) {
@@ -368,17 +368,17 @@ public class TaxaCreationFromFile {
 
 	private static Taxon createNewTaxon(Qname taxonId) {
 		Taxon taxon = new Taxon(taxonId, null);
-		taxon.setChecklist(new Qname("MR.1"));
+		taxon.setChecklist(Qname.of("MR.1"));
 		return taxon;
 	}
 
 	private static Qname resolveTaxonId(String id) {
 		if (given(id)) {
-			Qname taxonId = new Qname(id.trim());
+			Qname taxonId = Qname.of(id.trim());
 			validateTaxonId(taxonId);
 			return taxonId;
 		}
-		return new Qname(nextId());
+		return Qname.of(nextId());
 	}
 
 	private static void validateTaxonId(Qname taxonId) {
@@ -443,22 +443,22 @@ public class TaxaCreationFromFile {
 	private static final Map<String, Qname> RANK_MAP;
 	static {
 		RANK_MAP = new HashMap<>();
-		RANK_MAP.put("pääjakso", new Qname("MX.phylum"));
-		RANK_MAP.put("alajakso", new Qname("MX.subphylum"));
-		RANK_MAP.put("yläluokka", new Qname("MX.superclass"));
-		RANK_MAP.put("luokka", new Qname("MX.class"));
-		RANK_MAP.put("alaluokka", new Qname("MX.subclass"));
-		RANK_MAP.put("lahko", new Qname("MX.order"));
-		RANK_MAP.put("order", new Qname("MX.order"));
-		RANK_MAP.put("alalahko", new Qname("MX.suborder"));
-		RANK_MAP.put("osalahko", new Qname("MX.infraorder"));
-		RANK_MAP.put("yläheimo", new Qname("MX.superfamily"));
-		RANK_MAP.put("heimo", new Qname("MX.family"));
-		RANK_MAP.put("alaheimo", new Qname("MX.subfamily"));
-		RANK_MAP.put("tribe", new Qname("MX.tribe"));
-		RANK_MAP.put("tribus", new Qname("MX.tribe"));
-		RANK_MAP.put("sukuryhmä", new Qname("MX.tribe"));
-		RANK_MAP.put("suku", new Qname("MX.genus"));
+		RANK_MAP.put("pääjakso", Qname.of("MX.phylum"));
+		RANK_MAP.put("alajakso", Qname.of("MX.subphylum"));
+		RANK_MAP.put("yläluokka", Qname.of("MX.superclass"));
+		RANK_MAP.put("luokka", Qname.of("MX.class"));
+		RANK_MAP.put("alaluokka", Qname.of("MX.subclass"));
+		RANK_MAP.put("lahko", Qname.of("MX.order"));
+		RANK_MAP.put("order", Qname.of("MX.order"));
+		RANK_MAP.put("alalahko", Qname.of("MX.suborder"));
+		RANK_MAP.put("osalahko", Qname.of("MX.infraorder"));
+		RANK_MAP.put("yläheimo", Qname.of("MX.superfamily"));
+		RANK_MAP.put("heimo", Qname.of("MX.family"));
+		RANK_MAP.put("alaheimo", Qname.of("MX.subfamily"));
+		RANK_MAP.put("tribe", Qname.of("MX.tribe"));
+		RANK_MAP.put("tribus", Qname.of("MX.tribe"));
+		RANK_MAP.put("sukuryhmä", Qname.of("MX.tribe"));
+		RANK_MAP.put("suku", Qname.of("MX.genus"));
 	}
 
 	private static Qname parseTaxonRank(String value) {
@@ -547,7 +547,7 @@ public class TaxaCreationFromFile {
 
 		private TaxonRank(int order, String qname) {
 			this.order = order;
-			this.qname = new Qname(qname);
+			this.qname = Qname.of(qname);
 		}
 
 		public String indent() {

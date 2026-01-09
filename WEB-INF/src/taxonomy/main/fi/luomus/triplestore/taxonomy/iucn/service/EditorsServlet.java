@@ -20,8 +20,8 @@ import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/editors/*"})
 public class EditorsServlet extends FrontpageServlet {
 
-	private static final Predicate TAXON_GROUP_PREDICATE = new Predicate("MKV.taxonGroup");
-	private static final Predicate IUCN_EDITOR_PREDICATE = new Predicate("MKV.iucnEditor");
+	private static final Predicate TAXON_GROUP_PREDICATE = Predicate.of("MKV.taxonGroup");
+	private static final Predicate IUCN_EDITOR_PREDICATE = Predicate.of("MKV.iucnEditor");
 	private static final long serialVersionUID = 2954366290743144344L;
 
 	@Override
@@ -78,7 +78,7 @@ public class EditorsServlet extends FrontpageServlet {
 	}
 
 	private void delete(TriplestoreDAO dao, String groupEditorsQname) throws Exception {
-		dao.delete(new Subject(groupEditorsQname));
+		dao.delete(Subject.of(groupEditorsQname));
 		getTaxonomyDAO().getIucnDAO().clearEditorCache();
 	}
 
@@ -86,7 +86,7 @@ public class EditorsServlet extends FrontpageServlet {
 		model.removeAll(IUCN_EDITOR_PREDICATE);
 		for (String editor : editors) {
 			if (given(editor)) {
-				model.addStatement(new Statement(IUCN_EDITOR_PREDICATE, new ObjectResource(editor)));
+				model.addStatement(new Statement(IUCN_EDITOR_PREDICATE, ObjectResource.of(editor)));
 			}
 		}
 	}
@@ -98,7 +98,7 @@ public class EditorsServlet extends FrontpageServlet {
 		} else {
 			model = new Model(getTaxonomyDAO().getIucnDAO().getSeqNextValAndAddResource());
 			model.setType("MKV.taxonGroupIucnEditors");
-			model.addStatement(new Statement(TAXON_GROUP_PREDICATE, new ObjectResource(groupQname)));
+			model.addStatement(new Statement(TAXON_GROUP_PREDICATE, ObjectResource.of(groupQname)));
 		}
 		return model;
 	}

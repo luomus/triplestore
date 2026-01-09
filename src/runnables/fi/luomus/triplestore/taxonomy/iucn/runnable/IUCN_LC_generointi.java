@@ -29,8 +29,8 @@ public class IUCN_LC_generointi {
 				Qname habitatId = getEvaluationId(client);
 				Model model = new Model(evaluationid);
 				model.setType("MKV.iucnRedListEvaluation");
-				model.addStatementIfObjectGiven("MKV.state", new Qname("MKV.stateReady"));
-				model.addStatementIfObjectGiven("MKV.redListStatus", new Qname("MX.iucnLC"));
+				model.addStatementIfObjectGiven("MKV.state", Qname.of("MKV.stateReady"));
+				model.addStatementIfObjectGiven("MKV.redListStatus", Qname.of("MX.iucnLC"));
 				model.addStatementIfObjectGiven("MKV.evaluatedTaxon", taxonId);
 				model.addStatementIfObjectGiven("MKV.lastModified", DateUtils.getCurrentDate());
 				model.addStatementIfObjectGiven("MKV.evaluationYear", "2019");
@@ -38,7 +38,7 @@ public class IUCN_LC_generointi {
 				model.addStatementIfObjectGiven("MKV.editNotes", "Merkitty LC-luokkaan massa-ajolla.; 18.4.2018");
 				Model habitat = new Model(habitatId);
 				habitat.setType("MKV.habitatObject");
-				habitat.addStatementIfObjectGiven("MKV.habitat", new Qname("MKV.habitatM"));
+				habitat.addStatementIfObjectGiven("MKV.habitat", Qname.of("MKV.habitatM"));
 				habitat.addStatementIfObjectGiven("sortOrder", "0");
 				System.out.println(model.getRDF());
 				System.out.println(habitat.getRDF());
@@ -66,7 +66,7 @@ public class IUCN_LC_generointi {
 	}
 
 	private static Qname getEvaluationId(HttpClientService client) throws ClientProtocolException, IOException {
-		return new Qname(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
+		return Qname.of(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
 	}
 
 	private static Set<Qname> taxonIds() throws FileNotFoundException, IOException {
@@ -74,7 +74,7 @@ public class IUCN_LC_generointi {
 		File file = new File("c:/temp/lc-ksi.txt");
 		for (String line : FileUtils.readLines(file)) {
 			if (line.trim().isEmpty()) continue;
-			taxonIds.add(new Qname(line));
+			taxonIds.add(Qname.of(line));
 		}
 		return taxonIds;
 	}

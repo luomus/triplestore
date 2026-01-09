@@ -22,11 +22,11 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 	public static final String LAST_IN_ORDER = String.valueOf(Integer.MAX_VALUE);
 
-	public static final Predicate IS_PART_OF_PREDICATE = new Predicate("MX.isPartOf");
-	public static final Predicate SORT_ORDER_PREDICATE = new Predicate("sortOrder");
-	public static final Predicate NAME_ACCORDING_TO_PREDICATE = new Predicate("MX.nameAccordingTo");
-	private static final Predicate SCIENTITIF_NAME_PREDICATE = new Predicate("MX.scientificName");
-	private static final Qname GENUS = new Qname("MX.genus");
+	public static final Predicate IS_PART_OF_PREDICATE = Predicate.of("MX.isPartOf");
+	public static final Predicate SORT_ORDER_PREDICATE = Predicate.of("sortOrder");
+	public static final Predicate NAME_ACCORDING_TO_PREDICATE = Predicate.of("MX.nameAccordingTo");
+	private static final Predicate SCIENTITIF_NAME_PREDICATE = Predicate.of("MX.scientificName");
+	private static final Qname GENUS = Qname.of("MX.genus");
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -36,9 +36,9 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxonQname));
 		EditableTaxon oldParent = taxon.hasParent() ? (EditableTaxon) taxonomyDAO.getTaxon(taxon.getParentQname()) : null;
-		EditableTaxon newParent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(newParentQname));
+		EditableTaxon newParent = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(newParentQname));
 
 		try {
 			checkPermissionsToAlterTaxon(taxon, req);
@@ -63,18 +63,18 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 			changeScientificNameAndCreateSynonymOfOldName(taxon, newParent, taxonomyDAO, dao);
 		}
 		
-		taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
+		taxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxonQname));
 		taxon.invalidateSelfAndLinking();
 		
 		return apiSuccessResponse(res);
 	}
 
 	public static void move(EditableTaxon taxon, EditableTaxon newParent, TriplestoreDAO dao) throws Exception {
-		Subject subject = new Subject(taxon.getQname());
-		dao.store(subject, new Statement(IS_PART_OF_PREDICATE, new ObjectResource(newParent.getQname())));
+		Subject subject = Subject.of(taxon.getQname());
+		dao.store(subject, new Statement(IS_PART_OF_PREDICATE, ObjectResource.of(newParent.getQname())));
 		dao.store(subject, new Statement(SORT_ORDER_PREDICATE, new ObjectLiteral(LAST_IN_ORDER)));
 		if (!given(taxon.getChecklist())) {
-			dao.store(subject, new Statement(NAME_ACCORDING_TO_PREDICATE, new ObjectResource(newParent.getChecklist())));
+			dao.store(subject, new Statement(NAME_ACCORDING_TO_PREDICATE, ObjectResource.of(newParent.getChecklist())));
 		}
 	}
 	
@@ -85,7 +85,7 @@ public class ApiChangeParentServlet extends ApiBaseServlet {
 		if (!given(newScientificName)) return;
 		if (newScientificName.equals(taxon.getScientificName())) return;
 
-		dao.store(new Subject(taxon.getQname()), new Statement(SCIENTITIF_NAME_PREDICATE, new ObjectLiteral(newScientificName)));
+		dao.store(Subject.of(taxon.getQname()), new Statement(SCIENTITIF_NAME_PREDICATE, new ObjectLiteral(newScientificName)));
 		ApiTaxonEditSectionSubmitServlet.createAndStoreSynonym(dao, taxonomyDAO, taxon);
 	}
 

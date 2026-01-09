@@ -41,7 +41,7 @@ public class TaxonDescriptionsServlet extends TaxonomyEditorBaseServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		ResponseData responseData = initResponseData(req);
-		Qname taxonQname = new Qname(getQname(req));
+		Qname taxonQname = Qname.of(getQname(req));
 		if (!taxonQname.isSet()) {
 			taxonQname = TaxonomyTreesEditorServlet.DEFAULT_ROOT_QNAME;
 		}

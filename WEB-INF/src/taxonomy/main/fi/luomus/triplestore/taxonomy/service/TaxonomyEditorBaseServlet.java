@@ -106,7 +106,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("nameCleaner", nameCleaner);
 			responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
 			responseData.setData("evaluationYears", years());
-			responseData.setData("redListStatusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)));
+			responseData.setData("redListStatusProperty", dao.getProperty(Predicate.of(Evaluation.RED_LIST_STATUS)));
 		}
 		return responseData;
 	}
@@ -170,7 +170,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 	}
 
 	protected void checkPermissionsToAlterTaxon(String taxonQname, HttpServletRequest req) throws Exception {
-		checkPermissionsToAlterTaxon(new Qname(taxonQname), req);
+		checkPermissionsToAlterTaxon(Qname.of(taxonQname), req);
 	}
 
 	protected void checkPermissionsToAlterTaxon(Qname taxonQname, HttpServletRequest req) throws Exception {

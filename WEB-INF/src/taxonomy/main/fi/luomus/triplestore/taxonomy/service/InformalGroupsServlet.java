@@ -22,7 +22,7 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 @WebServlet(urlPatterns = {"/taxonomy-editor/informalGroups/*", "/taxonomy-editor/informalGroups/add/*", "/taxonomy-editor/informalGroups/delete/*"})
 public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
-	private static final Qname FINBIF_MASTER_CHECKLIST = new Qname("MR.1");
+	private static final Qname FINBIF_MASTER_CHECKLIST = Qname.of("MR.1");
 	private static final long serialVersionUID = -7740342063755041600L;
 
 	@Override
@@ -52,7 +52,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 			return status404(res);
 		}
 
-		Set<Qname> definingTaxaIds = dao.getTaxonContainer().getInformalGroupFilter().getFilteredTaxa(new Qname(groupId));
+		Set<Qname> definingTaxaIds = dao.getTaxonContainer().getInformalGroupFilter().getFilteredTaxa(Qname.of(groupId));
 		List<Taxon> definingTaxa = new ArrayList<>();
 		int i = 0;
 		for (Qname id : definingTaxaIds) {
@@ -89,10 +89,10 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 		boolean delete = delete(req);
 
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
-		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
+		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : Qname.of(getQname(req));
 
 		if (delete) {
-			triplestoreDAO.delete(new Subject(qname));
+			triplestoreDAO.delete(Subject.of(qname));
 			getTaxonomyDAO().getInformalTaxonGroupsForceReload();
 			getSession(req).setFlashSuccess("Informal group deleted");
 			return redirectTo(getConfig().baseURL()+"/informalGroups");
@@ -115,7 +115,7 @@ public class InformalGroupsServlet extends TaxonomyEditorBaseServlet {
 
 		if (req.getParameter("MVL.hasSubGroup") != null) {
 			for (String subGroupQname : req.getParameterValues("MVL.hasSubGroup")) {
-				group.addSubGroup(new Qname(subGroupQname));
+				group.addSubGroup(Qname.of(subGroupQname));
 			}
 		}
 

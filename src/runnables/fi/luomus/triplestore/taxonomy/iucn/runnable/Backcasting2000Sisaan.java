@@ -39,39 +39,39 @@ public class Backcasting2000Sisaan {
 	private static final Map<String, Set<Qname>> INFORMAL_GROUP;
 	static {
 		INFORMAL_GROUP = new HashMap<>();
-		INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(new Qname("MVL.38")));
-		INFORMAL_GROUP.put("Lichens", Utils.set(new Qname("MVL.25")));
-		INFORMAL_GROUP.put("Jäytiäiset_siirto.csv", Utils.set(new Qname("MVL.227")));
-		INFORMAL_GROUP.put("Kalat_siirto.csv", Utils.set(new Qname("MVL.27")));
-		INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(new Qname("MVL.229")));
-		INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(new Qname("MVL.301")));
-		INFORMAL_GROUP.put("Dragonflies", Utils.set(new Qname("MVL.36"), new Qname("MVL.222")));
-		INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		INFORMAL_GROUP.put("Beetles", Utils.set(new Qname("MVL.33")));
-		INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(new Qname("MVL.224")));
-		INFORMAL_GROUP.put("Polypores", Utils.set(new Qname("MVL.233")));
-		INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(new Qname("MVL.22")));
-		INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(new Qname("MVL.321")));
-		INFORMAL_GROUP.put("Birds", Utils.set(new Qname("MVL.1")));
-		INFORMAL_GROUP.put("Maasiirat_lukit_valeskorpionit_siirto.csv", Utils.set(new Qname("MVL.215"), new Qname("MVL.235"), new Qname("MVL.236")));
-		INFORMAL_GROUP.put("Herptiles", Utils.set(new Qname("MVL.26")));
-		INFORMAL_GROUP.put("Nilviäiset_siirto.csv", Utils.set(new Qname("MVL.239"), new Qname("MVL.240")));
-		INFORMAL_GROUP.put("True bugs", Utils.set(new Qname("MVL.34")));
-		INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(new Qname("MVL.241")));
-		INFORMAL_GROUP.put("Butterflies", Utils.set(new Qname("MVL.31")));
-		INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(new Qname("MVL.233")));
-		INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(new Qname("MVL.30")));
-		INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(new Qname("MVL.234")));
-		INFORMAL_GROUP.put("Vascular Plants", Utils.set(new Qname("MVL.343")));
-		INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(new Qname("MVL.228")));
-		INFORMAL_GROUP.put("Bryophytes", Utils.set(new Qname("MVL.23")));
-		INFORMAL_GROUP.put("Suorasiipiset_siirto.csv", Utils.set(new Qname("MVL.223"), new Qname("MVL.230"), new Qname("MVL.225")));
-		INFORMAL_GROUP.put("Sääsket_siirto.csv", Utils.set(new Qname("MVL.224")));
-		INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(new Qname("MVL.37")));
-		INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(new Qname("MVL.226")));
-		INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(new Qname("MVL.222")));
+		INFORMAL_GROUP.put("Helttasienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		INFORMAL_GROUP.put("Hämähäkit_siirto.csv", Utils.set(Qname.of("MVL.38")));
+		INFORMAL_GROUP.put("Lichens", Utils.set(Qname.of("MVL.25")));
+		INFORMAL_GROUP.put("Jäytiäiset_siirto.csv", Utils.set(Qname.of("MVL.227")));
+		INFORMAL_GROUP.put("Kalat_siirto.csv", Utils.set(Qname.of("MVL.27")));
+		INFORMAL_GROUP.put("Kierresiipiset_siirto.csv", Utils.set(Qname.of("MVL.229")));
+		INFORMAL_GROUP.put("Kolmisukahäntäiset_siirto.csv", Utils.set(Qname.of("MVL.301")));
+		INFORMAL_GROUP.put("Dragonflies", Utils.set(Qname.of("MVL.36"), Qname.of("MVL.222")));
+		INFORMAL_GROUP.put("Kotelosienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		INFORMAL_GROUP.put("Beetles", Utils.set(Qname.of("MVL.33")));
+		INFORMAL_GROUP.put("Kupusienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		INFORMAL_GROUP.put("Kärpäset_siirto.csv", Utils.set(Qname.of("MVL.224")));
+		INFORMAL_GROUP.put("Polypores", Utils.set(Qname.of("MVL.233")));
+		INFORMAL_GROUP.put("Levät_siirto.csv", Utils.set(Qname.of("MVL.22")));
+		INFORMAL_GROUP.put("Limasienet_siirto.csv", Utils.set(Qname.of("MVL.321")));
+		INFORMAL_GROUP.put("Birds", Utils.set(Qname.of("MVL.1")));
+		INFORMAL_GROUP.put("Maasiirat_lukit_valeskorpionit_siirto.csv", Utils.set(Qname.of("MVL.215"), Qname.of("MVL.235"), Qname.of("MVL.236")));
+		INFORMAL_GROUP.put("Herptiles", Utils.set(Qname.of("MVL.26")));
+		INFORMAL_GROUP.put("Nilviäiset_siirto.csv", Utils.set(Qname.of("MVL.239"), Qname.of("MVL.240")));
+		INFORMAL_GROUP.put("True bugs", Utils.set(Qname.of("MVL.34")));
+		INFORMAL_GROUP.put("Nivelmadot_siirto.csv", Utils.set(Qname.of("MVL.241")));
+		INFORMAL_GROUP.put("Butterflies", Utils.set(Qname.of("MVL.31")));
+		INFORMAL_GROUP.put("Piensienet_siirto.csv", Utils.set(Qname.of("MVL.233")));
+		INFORMAL_GROUP.put("Pistiäiset_siirto.csv", Utils.set(Qname.of("MVL.30")));
+		INFORMAL_GROUP.put("Punkit_siirto.csv", Utils.set(Qname.of("MVL.234")));
+		INFORMAL_GROUP.put("Vascular Plants", Utils.set(Qname.of("MVL.343")));
+		INFORMAL_GROUP.put("Ripsiäiset_siirto.csv", Utils.set(Qname.of("MVL.228")));
+		INFORMAL_GROUP.put("Bryophytes", Utils.set(Qname.of("MVL.23")));
+		INFORMAL_GROUP.put("Suorasiipiset_siirto.csv", Utils.set(Qname.of("MVL.223"), Qname.of("MVL.230"), Qname.of("MVL.225")));
+		INFORMAL_GROUP.put("Sääsket_siirto.csv", Utils.set(Qname.of("MVL.224")));
+		INFORMAL_GROUP.put("Tuhatjalkaiset_siirto.csv", Utils.set(Qname.of("MVL.37")));
+		INFORMAL_GROUP.put("Verkkosiipiset_siirto.csv", Utils.set(Qname.of("MVL.226")));
+		INFORMAL_GROUP.put("Vesiperhoset_siirto.csv", Utils.set(Qname.of("MVL.222")));
 	}
 
 	public static void main(String[] args) {
@@ -79,7 +79,7 @@ public class Backcasting2000Sisaan {
 			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"), new ErrorReportingToSystemErr());
+			triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"), new ErrorReportingToSystemErr());
 			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 			doit();
 		} catch (Exception e) {
@@ -104,8 +104,8 @@ public class Backcasting2000Sisaan {
 			if (sciname.contains("(")) {
 				sciname = sciname.substring(0, sciname.indexOf('('));
 			}
-			Qname backCasted2000 = new Qname("MX.iucn"+parts[2]);
-			Qname status2010 = new Qname("MX.iucn"+parts[3]);
+			Qname backCasted2000 = Qname.of("MX.iucn"+parts[2]);
+			Qname status2010 = Qname.of("MX.iucn"+parts[3]);
 
 			Qname taxonId = getTaxonId(group, sciname);
 			if (taxonId == null) {
@@ -170,10 +170,10 @@ public class Backcasting2000Sisaan {
 	}
 
 	private static Qname toStatus(String status) {
-		if (status.equals("-")) return new Qname("MX.doesNotOccur");
-		if (status.equals("X")) return new Qname("MX.typeOfOccurrenceOccurs");
-		if (status.equals("RT")) return new Qname("MX.typeOfOccurrenceOccurs");
-		if (status.equals("RE")) return new Qname("MX.typeOfOccurrenceExtirpated");
+		if (status.equals("-")) return Qname.of("MX.doesNotOccur");
+		if (status.equals("X")) return Qname.of("MX.typeOfOccurrenceOccurs");
+		if (status.equals("RT")) return Qname.of("MX.typeOfOccurrenceOccurs");
+		if (status.equals("RE")) return Qname.of("MX.typeOfOccurrenceExtirpated");
 		throw new UnsupportedOperationException(status);
 	}
 
@@ -181,10 +181,10 @@ public class Backcasting2000Sisaan {
 		Model model = triplestoreDAO.get(evaluationId);
 		Map<Qname, Occurrence> occurrences = new HashMap<>();
 		for (Statement s : model.getStatements("MKV.hasOccurrence")) {
-			Qname occurenceId = new Qname(s.getObjectResource().getQname());
+			Qname occurenceId = Qname.of(s.getObjectResource().getQname());
 			Model occNode = triplestoreDAO.get(occurenceId);
-			Qname areaId = new Qname(occNode.getStatements("MO.area").get(0).getObjectResource().getQname());
-			Qname areaStatus = new Qname(occNode.getStatements("MO.status").get(0).getObjectResource().getQname());
+			Qname areaId = Qname.of(occNode.getStatements("MO.area").get(0).getObjectResource().getQname());
+			Qname areaStatus = Qname.of(occNode.getStatements("MO.status").get(0).getObjectResource().getQname());
 			Occurrence occurrence = new Occurrence(occurenceId, areaId, areaStatus);
 			if (occNode.hasStatements("MO.threatened")) {
 				if (occNode.getStatements("MO.threatened").get(0).getObjectLiteral().getContent().equals("true")) {
@@ -202,10 +202,10 @@ public class Backcasting2000Sisaan {
 		Collection<Model> models  = triplestoreDAO.getSearchDAO().search(new SearchParams(1000, 0).objectresource(taxonId.toString()).predicate("MKV.evaluatedTaxon"));
 		for (Model m : models) {
 			if (m.getStatements("MKV.evaluationYear").get(0).getObjectLiteral().getContent().equals("2015")) {
-				return new Qname(m.getSubject().getQname());
+				return Qname.of(m.getSubject().getQname());
 			}
 		}
-		return new Qname(null);
+		return Qname.of(null);
 	}
 
 	private static Collection<Taxon> getTaxons(String sciname) throws Exception {

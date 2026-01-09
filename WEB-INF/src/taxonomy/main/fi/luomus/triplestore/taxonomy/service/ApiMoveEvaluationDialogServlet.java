@@ -22,7 +22,7 @@ public class ApiMoveEvaluationDialogServlet extends ApiBaseServlet {
 		String taxonQname = getId(req);
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxonQname));
 		EvaluationTarget target = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxon.getQname().toString());
 		
 		return responseData.setData("taxon", taxon).setData("target", target);

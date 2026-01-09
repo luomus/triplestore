@@ -9,7 +9,7 @@ public class User {
 
 	public enum Role {ADMIN, NORMAL_USER, DESCRIPTION_WRITER}
 
-	private static final Set<Qname> IUCN_ADMINS = Utils.set(new Qname("MA.842"), new Qname("MA.1397"), new Qname("MA.15"), new Qname("MA.1363"), new Qname("MA.1283"));
+	private static final Set<Qname> IUCN_ADMINS = Utils.set(Qname.of("MA.842"), Qname.of("MA.1397"), Qname.of("MA.15"), Qname.of("MA.1363"), Qname.of("MA.1283"));
 
 	private final String personToken;
 	private final Qname qname;

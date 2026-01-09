@@ -79,7 +79,7 @@ public class SchemaAltsServlet extends SchemaClassesServlet {
 		List<Statement> orderedStatements = getAltStatementsInOrder(model);
 		for (Statement s : orderedStatements) {
 			String altId = s.getObjectResource().getQname();
-			Model altModel = models.getOrDefault(altId, new Model(new Qname(altId)));
+			Model altModel = models.getOrDefault(altId, new Model(Qname.of(altId)));
 			json.appendObject(parseAlt(altModel));
 		}
 		return json;

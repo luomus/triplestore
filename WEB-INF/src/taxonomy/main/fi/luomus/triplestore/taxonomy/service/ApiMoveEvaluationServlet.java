@@ -48,8 +48,8 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonId));
-		EditableTaxon targetTaxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(newTargetId));
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxonId));
+		EditableTaxon targetTaxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(newTargetId));
 
 		try {
 			checkPermissionsToAlterTaxon(taxon, req);
@@ -79,7 +79,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 
 		for (Statement s : iucnStatementsToMove) {
 			dao.deleteStatement(s.getId());
-			dao.insert(new Subject(targetTaxon.getQname()), s);
+			dao.insert(Subject.of(targetTaxon.getQname()), s);
 		}
 		for (int year : years) {
 			if (iucnSource.hasEvaluation(year)) {
@@ -97,7 +97,7 @@ public class ApiMoveEvaluationServlet extends ApiBaseServlet {
 		if (!getUser(req).isAdmin()) return error("Must be admin");
 		
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
-		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxonId));
+		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxonId));
 		EvaluationTarget target = taxonomyDAO.getIucnDAO().getIUCNContainer().getTarget(taxonId);
 		TriplestoreDAO dao = getTriplestoreDAO();
 		Model sourceModel = dao.get(taxonId);

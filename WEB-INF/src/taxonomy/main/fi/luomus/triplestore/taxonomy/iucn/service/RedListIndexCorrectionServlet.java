@@ -22,10 +22,10 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/redListIndexCorrection/*"})
 public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 
-	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED_BY);
-	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED);
-	private static final Predicate NOTES_PREDICATE = new Predicate(Evaluation.RED_LIST_INDEX_CORRECTION+"Notes");
-	private static final Predicate INDEX_PREDICATE = new Predicate(Evaluation.RED_LIST_INDEX_CORRECTION);
+	private static final Predicate LAST_MODIFIED_BY_PREDICATE = Predicate.of(Evaluation.LAST_MODIFIED_BY);
+	private static final Predicate LAST_MODIFIED_PREDICATE = Predicate.of(Evaluation.LAST_MODIFIED);
+	private static final Predicate NOTES_PREDICATE = Predicate.of(Evaluation.RED_LIST_INDEX_CORRECTION+"Notes");
+	private static final Predicate INDEX_PREDICATE = Predicate.of(Evaluation.RED_LIST_INDEX_CORRECTION);
 	private static final long serialVersionUID = 2285910485664606619L;
 
 	@Override
@@ -54,12 +54,12 @@ public class RedListIndexCorrectionServlet extends EvaluationEditServlet {
 		Qname editor = getUser(req).getQname();
 
 		
-		Subject subject = new Subject(evaluationId);
-		Statement indexStatement = indexAdded ? new Statement(INDEX_PREDICATE, new ObjectResource(redListIndexCorrection)) : null;
+		Subject subject = Subject.of(evaluationId);
+		Statement indexStatement = indexAdded ? new Statement(INDEX_PREDICATE, ObjectResource.of(redListIndexCorrection)) : null;
 		Statement notesStatement = new Statement(NOTES_PREDICATE, new ObjectLiteral(redListIndexCorrectionNotes)); 
 		Statement editNotesStatement = new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(editNotes));
 		Statement lastModifiedStatement = new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate()));
-		Statement lastModifiedByStatement = new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(editor));
+		Statement lastModifiedByStatement = new Statement(LAST_MODIFIED_BY_PREDICATE, ObjectResource.of(editor));
 		
 		if (indexAdded) {
 			dao.store(subject, indexStatement);

@@ -27,7 +27,7 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 		} 
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 		
-		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(Qname.of(taxonQname));
 		checkPermissionsToAlterTaxon(taxon, req);
 
 		if (!taxon.isDeletable()) {
@@ -48,7 +48,7 @@ public class ApiDeleteTaxon extends ApiBaseServlet {
 			unlinkSynonym(taxon, dao);
 		}
 
-		dao.delete(new Subject(taxon.getQname()));
+		dao.delete(Subject.of(taxon.getQname()));
 	}
 
 	private void unlinkSynonym(EditableTaxon removedTaxon, TriplestoreDAO dao) throws Exception {

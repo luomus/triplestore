@@ -33,8 +33,8 @@ public class ApiSaveOrderServlet extends ApiBaseServlet {
 		int i = 0;
 		for (String taxon : order.split(",")) {
 			taxon = taxon.trim().replace("MX", "MX.");
-			dao.store(new Subject(taxon), new Statement(new Predicate("sortOrder"), i++));
-			((EditableTaxon) taxonomyDAO.getTaxon(new Qname(taxon))).invalidateSelf();
+			dao.store(Subject.of(taxon), new Statement(Predicate.of("sortOrder"), i++));
+			((EditableTaxon) taxonomyDAO.getTaxon(Qname.of(taxon))).invalidateSelf();
 		}
 		
 		return apiSuccessResponse(res);

@@ -27,17 +27,17 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = 7393608674235660598L;
 
-	public static final Predicate HAS_BASIONYM = new Predicate("MX.hasBasionym");
-	public static final Predicate HAS_MISAPPLIED = new Predicate("MX.hasMisappliedName");
-	public static final Predicate HAS_UNCERTAIN = new Predicate("MX.hasUncertainSynonym");
-	public static final Predicate HAS_MISSPELLED = new Predicate("MX.hasMisspelledName");
-	public static final Predicate HAS_ALTERNATIVE = new Predicate("MX.hasAlternativeName");
-	public static final Predicate HAS_SYNONYM = new Predicate("MX.hasSynonym");
-	public static final Predicate HAS_OBJECTIVE = new Predicate("MX.hasObjectiveSynonym");
-	public static final Predicate HAS_SUBJECTIVE = new Predicate("MX.hasSubjectiveSynonym");
-	public static final Predicate HAS_HOMOTYPIC  = new Predicate("MX.hasHomotypicSynonym");
-	public static final Predicate HAS_HETEROTYPIC  = new Predicate("MX.hasHeterotypicSynonym");
-	public static final Predicate HAS_ORTHOGRAPHIC  = new Predicate("MX.hasOrthographicVariant");
+	public static final Predicate HAS_BASIONYM = Predicate.of("MX.hasBasionym");
+	public static final Predicate HAS_MISAPPLIED = Predicate.of("MX.hasMisappliedName");
+	public static final Predicate HAS_UNCERTAIN = Predicate.of("MX.hasUncertainSynonym");
+	public static final Predicate HAS_MISSPELLED = Predicate.of("MX.hasMisspelledName");
+	public static final Predicate HAS_ALTERNATIVE = Predicate.of("MX.hasAlternativeName");
+	public static final Predicate HAS_SYNONYM = Predicate.of("MX.hasSynonym");
+	public static final Predicate HAS_OBJECTIVE = Predicate.of("MX.hasObjectiveSynonym");
+	public static final Predicate HAS_SUBJECTIVE = Predicate.of("MX.hasSubjectiveSynonym");
+	public static final Predicate HAS_HOMOTYPIC  = Predicate.of("MX.hasHomotypicSynonym");
+	public static final Predicate HAS_HETEROTYPIC  = Predicate.of("MX.hasHeterotypicSynonym");
+	public static final Predicate HAS_ORTHOGRAPHIC  = Predicate.of("MX.hasOrthographicVariant");
 	public static final Map<SynonymType, Predicate> SYNONYM_PREDICATES;
 	static {
 		SYNONYM_PREDICATES = new HashMap<>();
@@ -79,7 +79,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 		}
 
 		for (EditableTaxon synonym : synonyms) {
-			dao.insert(new Subject(synonymParent.getQname()), new Statement(getPredicate(synonymType), new ObjectResource(synonym.getQname())));
+			dao.insert(Subject.of(synonymParent.getQname()), new Statement(getPredicate(synonymType), ObjectResource.of(synonym.getQname())));
 		}
 
 		synonymParent.invalidateSelf();
@@ -88,7 +88,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 	}
 
 	public static EditableTaxon getSynonymParent(HttpServletRequest req, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
-		Qname synonymParentQname = new Qname(req.getParameter(SYNONYM_OF_PARAMETER).replace("MX", "MX."));
+		Qname synonymParentQname = Qname.of(req.getParameter(SYNONYM_OF_PARAMETER).replace("MX", "MX."));
 		EditableTaxon synonymParent = (EditableTaxon) taxonomyDAO.getTaxon(synonymParentQname);
 		return synonymParent;
 	}
@@ -102,7 +102,7 @@ public class ApiAddSynonymServlet extends ApiBaseServlet {
 			EditableTaxon taxon = createTaxon(sciName, taxonomyDAO);
 			taxon.setScientificNameAuthorship(taxonData.get("authors"));
 			if (taxonData.containsKey("rank")) {
-				taxon.setTaxonRank(new Qname(taxonData.get("rank")));
+				taxon.setTaxonRank(Qname.of(taxonData.get("rank")));
 			}
 			taxon.setNotes(taxonData.get("notes"));
 			dao.addTaxon(taxon);

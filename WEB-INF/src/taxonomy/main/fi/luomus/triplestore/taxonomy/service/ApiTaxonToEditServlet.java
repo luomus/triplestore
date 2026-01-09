@@ -21,7 +21,7 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 		ResponseData responseData = initResponseData(req).setViewName("api-taxonedit");
 
 		ExtendedTaxonomyDAO dao = getTaxonomyDAO();
-		EditableTaxon taxon = (EditableTaxon) dao.getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) dao.getTaxon(Qname.of(taxonQname));
 
 		try {
 			checkPermissionsToAlterTaxon(taxon, req);

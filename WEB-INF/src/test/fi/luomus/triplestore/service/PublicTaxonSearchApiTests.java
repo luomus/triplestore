@@ -96,7 +96,7 @@ public class PublicTaxonSearchApiTests {
 	public void test_filter_by_informal_groups() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
-				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
+				.addInformalTaxonGroup(Qname.of("MVL.1")) // Linnut
 				).getResultsAsDocument().getRootNode();
 
 		assertTrue(contains("maakotka", n.getNode("partialMatches")));
@@ -117,8 +117,8 @@ public class PublicTaxonSearchApiTests {
 	public void test_filter_by_informal_groups_3() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
-				.addInformalTaxonGroup(new Qname("MVL.1")) // Linnut
-				.addInformalTaxonGroup(new Qname("MVL.343")) // Putkilokasvit
+				.addInformalTaxonGroup(Qname.of("MVL.1")) // Linnut
+				.addInformalTaxonGroup(Qname.of("MVL.343")) // Putkilokasvit
 				).getResultsAsDocument().getRootNode();
 		assertTrue(contains("arokotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));
@@ -128,7 +128,7 @@ public class PublicTaxonSearchApiTests {
 	public void test_filter_by_informal_groups_4() throws Exception {
 		Node n = taxonomyDAO.search(
 				new TaxonSearch("kotka", 10000)
-				.addInformalTaxonGroup(new Qname("MVL.343")) // Putkilokasvit
+				.addInformalTaxonGroup(Qname.of("MVL.343")) // Putkilokasvit
 				).getResultsAsDocument().getRootNode();
 		assertFalse(contains("maakotka", n.getNode("partialMatches")));
 		assertTrue(contains("kotkansiipi", n.getNode("partialMatches")));

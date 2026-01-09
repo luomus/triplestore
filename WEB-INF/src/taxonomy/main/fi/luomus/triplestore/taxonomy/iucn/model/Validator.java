@@ -448,7 +448,7 @@ public class Validator {
 	}
 
 	private static final Set<Qname> ALLOWED_FOR_RT = 
-			Utils.set(new Qname("MX.typeOfOccurrenceOccurs"), new Qname("MX.typeOfOccurrenceAnthropogenic"), new Qname("MX.typeOfOccurrenceUncertain"));
+			Utils.set(Qname.of("MX.typeOfOccurrenceOccurs"), Qname.of("MX.typeOfOccurrenceAnthropogenic"), Qname.of("MX.typeOfOccurrenceUncertain"));
 
 	private void validateInvasive(Evaluation givenData, ValidationResult validationResult) {
 		String status = givenData.getValue(Evaluation.RED_LIST_STATUS);
@@ -657,7 +657,7 @@ public class Validator {
 	}
 
 	private String getLabel(String property) throws Exception {
-		String valueLabel = dao.getProperty(new Predicate(property)).getLabel().forLocale("fi");
+		String valueLabel = dao.getProperty(Predicate.of(property)).getLabel().forLocale("fi");
 		if (valueLabel == null) return property;
 		return "\"" + valueLabel + "\"";
 	}

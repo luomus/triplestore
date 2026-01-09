@@ -16,17 +16,17 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 
 public interface IucnDAO {
 
-	public static final Predicate SECONDARY_HABITAT_PREDICATE = new Predicate(Evaluation.SECONDARY_HABITAT);
-	public static final Predicate PRIMARY_HABITAT_PREDICATE = new Predicate(Evaluation.PRIMARY_HABITAT);
-	public static final Predicate HABITAT_PREDICATE = new Predicate(Evaluation.HABITAT);
-	public static final Predicate HABITAT_SPESIFIC_TYPE_PREDICATE = new Predicate(Evaluation.HABITAT_SPECIFIC_TYPE);
-	public static final Predicate HAS_OCCURRENCE_PREDICATE = new Predicate(Evaluation.HAS_OCCURRENCE);
-	public static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = new Predicate(Evaluation.HAS_ENDANGERMENT_REASON);
-	public static final Predicate HAS_THREATH_PREDICATE = new Predicate(Evaluation.HAS_THREAT);
-	public static final Predicate PUBLICATION_PREDICATE = new Predicate(Evaluation.PUBLICATION);
-	public static final Predicate EVALUATION_YEAR_PREDICATE = new Predicate(Evaluation.EVALUATION_YEAR);
-	public static final Predicate EDIT_NOTES_PREDICATE = new Predicate(Evaluation.EDIT_NOTES);
-	public static final Predicate EVALUATED_TAXON_PREDICATE = new Predicate(Evaluation.EVALUATED_TAXON);
+	public static final Predicate SECONDARY_HABITAT_PREDICATE = Predicate.of(Evaluation.SECONDARY_HABITAT);
+	public static final Predicate PRIMARY_HABITAT_PREDICATE = Predicate.of(Evaluation.PRIMARY_HABITAT);
+	public static final Predicate HABITAT_PREDICATE = Predicate.of(Evaluation.HABITAT);
+	public static final Predicate HABITAT_SPESIFIC_TYPE_PREDICATE = Predicate.of(Evaluation.HABITAT_SPECIFIC_TYPE);
+	public static final Predicate HAS_OCCURRENCE_PREDICATE = Predicate.of(Evaluation.HAS_OCCURRENCE);
+	public static final Predicate HAS_ENDANGERMENT_REASON_PREDICATE = Predicate.of(Evaluation.HAS_ENDANGERMENT_REASON);
+	public static final Predicate HAS_THREATH_PREDICATE = Predicate.of(Evaluation.HAS_THREAT);
+	public static final Predicate PUBLICATION_PREDICATE = Predicate.of(Evaluation.PUBLICATION);
+	public static final Predicate EVALUATION_YEAR_PREDICATE = Predicate.of(Evaluation.EVALUATION_YEAR);
+	public static final Predicate EDIT_NOTES_PREDICATE = Predicate.of(Evaluation.EDIT_NOTES);
+	public static final Predicate EVALUATED_TAXON_PREDICATE = Predicate.of(Evaluation.EVALUATED_TAXON);
 	
 	public List<EvaluationYear> getEvaluationYears() throws Exception;
 

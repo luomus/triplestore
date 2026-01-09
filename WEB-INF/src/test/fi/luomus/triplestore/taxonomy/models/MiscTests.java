@@ -27,13 +27,13 @@ public class MiscTests {
 	public void catchingChainedNoSuchTaxonLoadException() {
 		RuntimeException e = new RuntimeException("first",
 				new RuntimeException("second",
-						new NoSuchTaxonException(new Qname("MX.1"))));
+						new NoSuchTaxonException(Qname.of("MX.1"))));
 		assertTrue(CachedLiveLoadingTaxonContainer.chainContains(NoSuchTaxonException.class, e));
 
 		e = new RuntimeException("first",
 				new RuntimeException("second",
 						new RuntimeException("third",
-								new NoSuchTaxonException(new Qname("MX.1")))));
+								new NoSuchTaxonException(Qname.of("MX.1")))));
 		assertTrue(CachedLiveLoadingTaxonContainer.chainContains(NoSuchTaxonException.class, e));
 
 		e = new RuntimeException("first", new RuntimeException("second", new IllegalArgumentException("third")));

@@ -27,7 +27,7 @@ public class TyhjänArvioinninGenerointi {
 				Qname evaluationid = getEvaluationId(client);
 				Model model = new Model(evaluationid);
 				model.setType("MKV.iucnRedListEvaluation");
-				model.addStatementIfObjectGiven("MKV.state", new Qname("MKV.stateStarted"));
+				model.addStatementIfObjectGiven("MKV.state", Qname.of("MKV.stateStarted"));
 				model.addStatementIfObjectGiven("MKV.evaluatedTaxon", taxonId);
 				model.addStatementIfObjectGiven("MKV.lastModified", DateUtils.getCurrentDate());
 				model.addStatementIfObjectGiven("MKV.evaluationYear", "2010"); // XXX
@@ -56,12 +56,12 @@ public class TyhjänArvioinninGenerointi {
 	}
 
 	private static Qname getEvaluationId(HttpClientService client) throws ClientProtocolException, IOException {
-		return new Qname(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
+		return Qname.of(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
 	}
 
 	private static Set<Qname> taxonIds() {
 		Set<Qname> taxonIds = new HashSet<>();
-		taxonIds.add(new Qname("MX.66198"));
+		taxonIds.add(Qname.of("MX.66198"));
 		return taxonIds;
 	}
 

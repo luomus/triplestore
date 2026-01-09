@@ -234,7 +234,7 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	@Override
 	public Map<String, List<RdfProperty>> getDescriptionGroupVariables() {
 		List<RdfProperty> l = new ArrayList<>();
-		RdfProperty p = new RdfProperty(new Qname("MX.descriptionText"), new Qname("xsd:string"));
+		RdfProperty p = new RdfProperty(Qname.of("MX.descriptionText"), Qname.of("xsd:string"));
 		p.setLabels(new LocalizedText().set("fi", "Yleiskuvaus").set("en", "General description"));
 		l.add(p);
 

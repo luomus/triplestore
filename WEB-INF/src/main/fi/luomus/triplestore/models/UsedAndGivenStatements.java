@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import fi.luomus.commons.containers.SingleValueObject;
 import fi.luomus.commons.containers.rdf.Context;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Statement;
@@ -18,11 +18,12 @@ public class UsedAndGivenStatements {
 	private final List<Statement> givenStatements = new ArrayList<>();
 	private final Set<Used> used = new HashSet<>();
 
-	public static class Used extends SingleValueObject {
+	public static class Used {
 		private final String stringRepresentation;
 		private final Predicate predicate;
 		private final Context context;
 		private final String langcode;
+		private final int hash;
 		public Used(Statement statement) {
 			this(statement.getPredicate(), statement.getContext(), statement.isLiteralStatement() ? statement.getObjectLiteral().getLangcode() : null);
 		}
@@ -32,8 +33,8 @@ public class UsedAndGivenStatements {
 			this.context = context;
 			this.langcode = langcode;
 			this.stringRepresentation = Utils.debugS(predicate, context, langcode);
+			this.hash = stringRepresentation.hashCode();
 		}
-		@Override
 		protected String getValue() {
 			return stringRepresentation;
 		}
@@ -48,6 +49,20 @@ public class UsedAndGivenStatements {
 		}
 		private boolean given(String s) {
 			return s != null && s.trim().length() > 0;
+		}
+		@Override
+		public final int hashCode() {
+			return hash;
+		}
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null) return false;
+			if (this.getClass() != o.getClass()) {
+				throw new IllegalArgumentException("Can only compare with another " + this.getClass().getName() + " trying to compare to " + o.getClass().getName());
+			}
+			Used other = (Used) o;
+			return Objects.equals(this.stringRepresentation, other.stringRepresentation);
 		}
 	}
 

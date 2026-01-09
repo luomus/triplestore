@@ -77,7 +77,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				results.add(new Qname(rs.getString(1)));
+				results.add(Qname.of(rs.getString(1)));
 			}
 		} finally {
 			Utils.close(p, rs, con);
@@ -239,12 +239,12 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		if (notAltOrProperty(model)) {
 			return Collections.emptyList();
 		}
-		alreadyIncludedSubjects.add(new Qname(model.getSubject().getQname()));
+		alreadyIncludedSubjects.add(Qname.of(model.getSubject().getQname()));
 		List<Model> models = new ArrayList<>();
 		Set<Qname> objects = new HashSet<>();
 		for (Statement s : model) {
 			if (s.isResourceStatement()) {
-				Qname object = new Qname(s.getObjectResource().getQname());
+				Qname object = Qname.of(s.getObjectResource().getQname());
 				if (!alreadyIncludedSubjects.contains(object)) {
 					objects.add(object);
 					alreadyIncludedSubjects.add(object);
@@ -261,7 +261,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 
 	private Collection<Model> fetchTree(Model parent) throws TooManyResultsException, SQLException {
 		List<Model> models = new ArrayList<>();
-		Predicate hasPart = new Predicate("MZ.hasPart");
+		Predicate hasPart = Predicate.of("MZ.hasPart");
 		Qname parentQname = qnameOf(parent);
 
 		Set<Qname> immediateChildren = fetchImmediateChildren(parent.getSubject());
@@ -271,7 +271,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		models.addAll(immediateChildModels);
 
 		for (Model child : immediateChildModels) {
-			parent.addStatement(new Statement(hasPart, new ObjectResource(child.getSubject().getQname())));
+			parent.addStatement(new Statement(hasPart, ObjectResource.of(child.getSubject().getQname())));
 			removeReverseLink(parentQname, child);
 			models.addAll(fetchTree(child));
 		}
@@ -291,7 +291,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 	}
 
 	private Qname qnameOf(Model parent) {
-		return new Qname(parent.getSubject().getQname());
+		return Qname.of(parent.getSubject().getQname());
 	}
 
 	@Override
@@ -343,7 +343,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 					if (currentModel != null) {
 						models.add(currentModel);
 					}
-					currentModel = new Model(new Qname(subject));
+					currentModel = new Model(Qname.of(subject));
 					prevSubject = subject;
 				}
 				dao.toModel(rs, currentModel);
@@ -383,7 +383,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		Set<Qname> resultSet = new HashSet<>();
 		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(new Qname(subject.getQname()));
+		searchForThese.add(Qname.of(subject.getQname()));
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -408,7 +408,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				Qname result = new Qname(rs.getString(1));
+				Qname result = Qname.of(rs.getString(1));
 				if (resultSet.contains(result)) {
 					throw new IllegalStateException("Taxon loop! " + result + " " + searchForQname);
 				}
@@ -433,7 +433,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 		Set<Qname> resultSet = new HashSet<>();
 		Set<Qname> searchForThese = new HashSet<>();
 
-		searchForThese.add(new Qname(subject.getQname()));
+		searchForThese.add(Qname.of(subject.getQname()));
 
 		TransactionConnection con = null;
 		PreparedStatement p = null;
@@ -461,7 +461,7 @@ public class TriplestoreSearchDAOImple implements TriplestoreSearchDAO {
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				Qname result = new Qname(rs.getString(1));
+				Qname result = Qname.of(rs.getString(1));
 				if (resultSet.contains(result)) {
 					throw new IllegalStateException("Child loop! " + result + " " + searchForQname);
 				}

@@ -32,7 +32,7 @@ public interface TriplestoreDAO {
 	public static enum ResultType { NORMAL, CHAIN, CHILDREN, TREE, DEEP }
 
 	Qname SYSTEM_USER = null;
-	Qname TEST_USER = new Qname("MA.5"); // Esko Piirainen
+	Qname TEST_USER = Qname.of("MA.5"); // Esko Piirainen
 
 	/**
 	 * Increases sequence of qnamePrefix (for example "MA") by one, adds the resource, for example "MA.234" and returns the qname ("MA.234")

@@ -168,7 +168,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private Qname getTaxonRank(Node match) {
-		if (match.hasAttribute(TAXON_RANK)) return new Qname(match.getAttribute(TAXON_RANK));
+		if (match.hasAttribute(TAXON_RANK)) return Qname.of(match.getAttribute(TAXON_RANK));
 		return null;
 	}
 
@@ -184,7 +184,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		Set<Qname> set = new HashSet<>();
 		for (String group : groups) {
 			for (String groupPart : group.split(Pattern.quote(","))) {
-				if (given(groupPart)) set.add(new Qname(groupPart));
+				if (given(groupPart)) set.add(Qname.of(groupPart));
 			}
 		}
 		return set;
@@ -198,7 +198,7 @@ public class PublicTaxonSearchApiServlet extends TaxonomyEditorBaseServlet {
 		if (checklistParameter.equalsIgnoreCase(NULL)) {
 			return Utils.set((Qname)null);
 		}
-		return Utils.set(new Qname(checklistParameter));
+		return Utils.set(Qname.of(checklistParameter));
 	}
 
 	private int getLimit(HttpServletRequest req) {

@@ -45,14 +45,14 @@ import fi.luomus.triplestore.taxonomy.service.ApiAddSynonymServlet.SynonymType;
 public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 
 	private static final long serialVersionUID = -5176480667635744000L;
-	private static final Predicate OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE = new Predicate("MX.occurrenceInFinlandPublication");
-	private static final Predicate ORIGINAL_PUBLICATION_PREDICATE = new Predicate("MX.originalPublication");
+	private static final Predicate OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE = Predicate.of("MX.occurrenceInFinlandPublication");
+	private static final Predicate ORIGINAL_PUBLICATION_PREDICATE = Predicate.of("MX.originalPublication");
 	private static final String MX_TAXON = "MX.taxon";
 	private static final String VALIDATION_RESULTS = "validationResults";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
-	private static final Predicate AUTHOR_PREDICATE = new Predicate(MX_SCIENTIFIC_NAME_AUTHORSHIP);
+	private static final Predicate AUTHOR_PREDICATE = Predicate.of(MX_SCIENTIFIC_NAME_AUTHORSHIP);
 	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
-	private static final Predicate SCIENTIFICNAME_PREDICATE = new Predicate(MX_SCIENTIFIC_NAME);
+	private static final Predicate SCIENTIFICNAME_PREDICATE = Predicate.of(MX_SCIENTIFIC_NAME);
 	private static final String MO_OCCURRENCE = "MO.occurrence";
 	private static final String CONTEXT = "_CONTEXT_";
 	private static final String EN = "en";
@@ -71,7 +71,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		ResponseData responseData = new ResponseData().setViewName("api-taxoneditsubmit");
-		Qname taxonQname = new Qname(req.getParameter("taxonQname"));
+		Qname taxonQname = Qname.of(req.getParameter("taxonQname"));
 		String newPublicationCitation = req.getParameter("newPublicationCitation");
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
 		String alteredScientificName = req.getParameter("alteredScientificName");
@@ -94,12 +94,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (!editingDescriptionFields) {
 			if (given(newPublicationCitation)) {
 				Publication publication = storePublication(newPublicationCitation, dao);
-				usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+				usedAndGivenStatements.addStatement(new Statement(ORIGINAL_PUBLICATION_PREDICATE, ObjectResource.of(publication.getQname())));
 				responseData.setData("addedPublication", publication);
 			}
 			if (given(newOccurrenceInFinlandPublicationCitation)) {
 				Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
-				usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+				usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, ObjectResource.of(publication.getQname())));
 				responseData.setData("addedOccurrenceInFinlandPublication", publication);
 			}	
 		}
@@ -118,7 +118,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		} else if (storeHabitats) {
 			storeHabitats(req, dao, taxon);
 		} else {
-			dao.store(new Subject(taxonQname), usedAndGivenStatements);
+			dao.store(Subject.of(taxonQname), usedAndGivenStatements);
 		}
 
 		taxon.invalidateSelf();
@@ -161,7 +161,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		if (supportedAreas == null) {
 			Set<Qname> areas = new HashSet<>();
 			for (String area : taxonomyDAO.getBiogeographicalProvinces().keySet()) {
-				areas.add(new Qname(area));
+				areas.add(Qname.of(area));
 			}
 			supportedAreas = areas;
 		}
@@ -176,7 +176,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			synonym.setTaxonRank(taxon.getTaxonRank());
 		}
 		dao.addTaxon(synonym);
-		dao.insert(new Subject(taxon.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(SynonymType.SYNONYM), new ObjectResource(synonym.getQname())));
+		dao.insert(Subject.of(taxon.getQname()), new Statement(ApiAddSynonymServlet.getPredicate(SynonymType.SYNONYM), ObjectResource.of(synonym.getQname())));
 	}
 
 	private void setNewScientificNameAndAuthor(String alteredScientificName, String alteredAuthor, UsedAndGivenStatements usedAndGivenStatements) {
@@ -222,14 +222,14 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
 		if (habitats.primaryHabitat != null && given(habitats.primaryHabitat.getHabitat())) {
 			dao.store(habitats.primaryHabitat);
-			statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(habitats.primaryHabitat.getId())));
+			statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, ObjectResource.of(habitats.primaryHabitat.getId())));
 			for (HabitatObject h : habitats.secondaryHabitats) {
 				if (!given(h.getHabitat())) continue;
 				dao.store(h);
-				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, ObjectResource.of(h.getId())));
 			}
 		}
-		dao.store(new Subject(taxon.getQname()), statements);
+		dao.store(Subject.of(taxon.getQname()), statements);
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -259,7 +259,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			occurrence = new Occurrence(null, areaQname, null);
 		}
 		if (field.equals("status")) {
-			occurrence.setStatus(new Qname(value));
+			occurrence.setStatus(Qname.of(value));
 		} else if (field.equals("notes")) {
 			occurrence.setNotes(value);
 		} else if (field.equals("year")) {
@@ -295,7 +295,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	}
 
 	private Qname splitAreaQname(String parameterName) {
-		return new Qname(parameterName.split(Pattern.quote("___"))[1]);
+		return Qname.of(parameterName.split(Pattern.quote("___"))[1]);
 	}
 
 	private String splitField(String parameterName) {
@@ -331,7 +331,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 				context = new Context(parts[1]);
 			}
 
-			Predicate predicate = new Predicate(parameterName);
+			Predicate predicate = Predicate.of(parameterName);
 			if (!properties.hasProperty(predicate.getQname())) continue;
 			RdfProperty predicateProperty = properties.getProperty(predicate);
 
@@ -350,7 +350,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 				if (predicateProperty.isLiteralProperty()) {
 					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectLiteral(value, langcode), context));
 				} else {
-					usedAndGivenStatements.addStatement(new Statement(predicate, new ObjectResource(value), context));
+					usedAndGivenStatements.addStatement(new Statement(predicate, ObjectResource.of(value), context));
 				}
 			}
 		}

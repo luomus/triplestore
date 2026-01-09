@@ -38,22 +38,22 @@ public class ApiAddChildServlet extends ApiBaseServlet {
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 
-		EditableTaxon parent = (EditableTaxon) taxonomyDAO.getTaxon(new Qname(parentQname));
+		EditableTaxon parent = (EditableTaxon) taxonomyDAO.getTaxon(Qname.of(parentQname));
 		checkPermissionsToAlterTaxon(parent, req);
 
 		EditableTaxon taxon = createTaxon(scientificName, taxonomyDAO);
-		taxon.setChecklist(new Qname(checklistQname)); 
+		taxon.setChecklist(Qname.of(checklistQname)); 
 		taxon.setParentQname(parent.getQname()); 
 		taxon.setScientificNameAuthorship(author);
 		if (given(rank)) {
-			taxon.setTaxonRank(new Qname(rank));
+			taxon.setTaxonRank(Qname.of(rank));
 		}
 		if (given(nameFi)) taxon.addVernacularName("fi", nameFi);
 		if (given(nameSv)) taxon.addVernacularName("sv", nameSv);
 		if (given(nameEn)) taxon.addVernacularName("en", nameEn);
 		if ("true".equals(finnish)) taxon.setFinnish(true);
-		if (given(occurrenceInFinland)) taxon.setOccurrenceInFinland(new Qname(occurrenceInFinland));
-		if (given(typeOfoccurrenceInFinland)) taxon.addTypeOfOccurrenceInFinland(new Qname(typeOfoccurrenceInFinland));
+		if (given(occurrenceInFinland)) taxon.setOccurrenceInFinland(Qname.of(occurrenceInFinland));
+		if (given(typeOfoccurrenceInFinland)) taxon.addTypeOfOccurrenceInFinland(Qname.of(typeOfoccurrenceInFinland));
 		
 		dao.addTaxon(taxon);
 		

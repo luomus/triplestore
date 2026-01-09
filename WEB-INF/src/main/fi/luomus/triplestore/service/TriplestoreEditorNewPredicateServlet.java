@@ -23,7 +23,7 @@ public class TriplestoreEditorNewPredicateServlet extends TriplestoreEditorServl
 			if (!dao.resourceExists(qname)) {
 				return responseData.setData("error", "Predicate does not exist.");
 			}
-			RdfProperty property = dao.getProperty(new Predicate(qname));
+			RdfProperty property = dao.getProperty(Predicate.of(qname));
 			return responseData.setData("property", property);
 		} catch (Exception e) {
 			return responseData.setData("error", e.getMessage());

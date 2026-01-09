@@ -32,7 +32,7 @@
 //			Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
 //			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 //			dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
-//			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
+//			triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"));
 //			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 //			doit();
 //		} catch (Exception e) {
@@ -57,7 +57,7 @@
 //			Map<Qname, Occurrence> occurrences = getOccurrences(evaluationId);
 //			int areaSeq = 690;
 //			for (int i = 3; i < parts.length-1; i++) {
-//				Qname areaId = new Qname("ML." + (areaSeq++));
+//				Qname areaId = Qname.of("ML." + (areaSeq++));
 //				String status = parts[i];
 //				if (!occurrences.containsKey(areaId)) {
 //					Occurrence occurrence = new Occurrence(null, areaId, null);
@@ -88,10 +88,10 @@
 //	}
 //
 //	private static Qname toStatus(String status) {
-//		if (status.equals("-")) return new Qname("MX.doesNotOccur");
-//		if (status.equals("X")) return new Qname("MX.typeOfOccurrenceOccurs");
-//		if (status.equals("RT")) return new Qname("MX.typeOfOccurrenceOccurs");
-//		if (status.equals("RE")) return new Qname("MX.typeOfOccurrenceExtirpated");
+//		if (status.equals("-")) return Qname.of("MX.doesNotOccur");
+//		if (status.equals("X")) return Qname.of("MX.typeOfOccurrenceOccurs");
+//		if (status.equals("RT")) return Qname.of("MX.typeOfOccurrenceOccurs");
+//		if (status.equals("RE")) return Qname.of("MX.typeOfOccurrenceExtirpated");
 //		throw new UnsupportedOperationException(status);
 //	}
 //
@@ -99,10 +99,10 @@
 //		Model model = triplestoreDAO.get(evaluationId);
 //		Map<Qname, Occurrence> occurrences = new HashMap<>();
 //		for (Statement s : model.getStatements("MKV.hasOccurrence")) {
-//			Qname occurenceId = new Qname(s.getObjectResource().getQname());
+//			Qname occurenceId = Qname.of(s.getObjectResource().getQname());
 //			Model occNode = triplestoreDAO.get(occurenceId);
-//			Qname areaId = new Qname(occNode.getStatements("MO.area").get(0).getObjectResource().getQname());
-//			Qname areaStatus = new Qname(occNode.getStatements("MO.status").get(0).getObjectResource().getQname());
+//			Qname areaId = Qname.of(occNode.getStatements("MO.area").get(0).getObjectResource().getQname());
+//			Qname areaStatus = Qname.of(occNode.getStatements("MO.status").get(0).getObjectResource().getQname());
 //			Occurrence occurrence = new Occurrence(occurenceId, areaId, areaStatus);
 //			if (occNode.hasStatements("MO.threatened")) {
 //				if (occNode.getStatements("MO.threatened").get(0).getObjectLiteral().getContent().equals("true")) {
@@ -120,15 +120,15 @@
 //		Collection<Model> models  = triplestoreDAO.getSearchDAO().search(new SearchParams(1000, 0).objectresource(taxonId.toString()).predicate("MKV.evaluatedTaxon"));
 //		for (Model m : models) {
 //			if (m.getStatements("MKV.evaluationYear").get(0).getObjectLiteral().getContent().equals("2015")) {
-//				return new Qname(m.getSubject().getQname());
+//				return Qname.of(m.getSubject().getQname());
 //			}
 //		}
-//		return new Qname(null);
+//		return Qname.of(null);
 //	}
 //
 //	private static Qname getId(String sciname) throws Exception {
 //		TaxonSearchResponse res = taxonomyDAO.searchInternal(new TaxonSearch(sciname).onlyExact());
-//		if (res.getExactMatches().size() != 1) return new Qname(null);
+//		if (res.getExactMatches().size() != 1) return Qname.of(null);
 //		return res.getExactMatches().get(0).getTaxon().getQname();
 //	}
 //

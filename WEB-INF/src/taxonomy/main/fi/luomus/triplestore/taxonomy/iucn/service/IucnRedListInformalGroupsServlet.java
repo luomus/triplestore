@@ -66,10 +66,10 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
 
-		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : new Qname(getQname(req));
+		Qname qname = addNew ? triplestoreDAO.getSeqNextValAndAddResource("MVL") : Qname.of(getQname(req));
 
 		if (delete) {
-			triplestoreDAO.delete(new Subject(qname));
+			triplestoreDAO.delete(Subject.of(qname));
 			getTaxonomyDAO().getRedListEvaluationGroupsForceReload();
 			getSession(req).setFlashSuccess("IUCN group deleted");
 			return redirectTo(getConfig().baseURL()+"/iucn-groups");
@@ -96,20 +96,20 @@ public class IucnRedListInformalGroupsServlet extends TaxonomyEditorBaseServlet 
 
 		if (req.getParameter("MVL.hasIucnSubGroup") != null) {
 			for (String subGroupQname : req.getParameterValues("MVL.hasIucnSubGroup")) {
-				group.addSubGroup(new Qname(subGroupQname));
+				group.addSubGroup(Qname.of(subGroupQname));
 			}
 		}
 
 		if (req.getParameter("MVL.includesInformalTaxonGroup") != null) {
 			for (String groupId : req.getParameterValues("MVL.includesInformalTaxonGroup")) {
-				group.addInformalGroup(new Qname(groupId));
+				group.addInformalGroup(Qname.of(groupId));
 			}
 		}
 
 		if (req.getParameter("MVL.includesTaxon") != null) {
 			for (String taxonIds : req.getParameterValues("MVL.includesTaxon")) {
 				for (String taxonId : taxonIds.split(Pattern.quote(","))) {
-					Qname id = new Qname(taxonId.trim());
+					Qname id = Qname.of(taxonId.trim());
 					if (id.isSet()) {
 						group.addTaxon(id);
 					}

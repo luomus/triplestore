@@ -60,7 +60,7 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements ExtendedTaxonomyDAO {
 
 	private static final String SCHEMA = TriplestoreDAOConst.SCHEMA;
-	private static final Predicate TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE = new Predicate("MX.typeOfOccurrenceInFinland");
+	private static final Predicate TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE = Predicate.of("MX.typeOfOccurrenceInFinland");
 
 	private final TriplestoreDAO triplestoreDAO;
 	private final CachedLiveLoadingTaxonContainer taxonContainer;
@@ -216,7 +216,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 						errorReporter.report("Syncing taxon data with IUCN data: Null target taxon qname: " + debug(target));
 						continue;
 					}
-					Qname speciesQname = new Qname(target.getQname());
+					Qname speciesQname = Qname.of(target.getQname());
 					if (!getTaxonContainer().hasTaxon(speciesQname)) {
 						errorReporter.report("Syncing taxon data with IUCN data: Taxon not found: " + speciesQname + " for target " + target);
 						continue;
@@ -245,7 +245,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			Evaluation evaluation = getLatestReadyEvaluation(target);
 			if (evaluation == null) return false;
 
-			Qname typeOfOccurrenceInFinland = new Qname(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
+			Qname typeOfOccurrenceInFinland = Qname.of(evaluation.getValue(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND));
 			if (!given(typeOfOccurrenceInFinland)) return false;
 
 			updateTypesOfOccurrenceInFinland(taxon, typeOfOccurrenceInFinland);
@@ -311,14 +311,14 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			statements.addUsed(IucnDAO.PRIMARY_HABITAT_PREDICATE, null, null);
 			statements.addUsed(IucnDAO.SECONDARY_HABITAT_PREDICATE, null, null);
 			if (primaryHabitat != null) {
-				statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, new ObjectResource(primaryHabitat.getId())));
+				statements.addStatement(new Statement(IucnDAO.PRIMARY_HABITAT_PREDICATE, ObjectResource.of(primaryHabitat.getId())));
 			}
 			System.out.println("   " + taxon.getQname() + " " + IucnDAO.PRIMARY_HABITAT_PREDICATE + " -> " + primaryHabitat);
 			for (HabitatObject h : secondaryHabitats) {
-				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, new ObjectResource(h.getId())));
+				statements.addStatement(new Statement(IucnDAO.SECONDARY_HABITAT_PREDICATE, ObjectResource.of(h.getId())));
 				System.out.println("   " + taxon.getQname() + " " + IucnDAO.SECONDARY_HABITAT_PREDICATE + " -> " + h);
 			}
-			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+			triplestoreDAO.store(Subject.of(taxon.getQname()), statements);
 		}
 
 		private Evaluation getLatestReadyEvaluation(EvaluationTarget target) {
@@ -340,7 +340,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				if (year == null) continue;
 				if (year.intValue() > latestLockedEvaluationYear().intValue()) continue;
 
-				Qname status = new Qname(evaluation.getIucnStatus());
+				Qname status = Qname.of(evaluation.getIucnStatus());
 				Qname taxonRedListStatus = taxon.getRedListStatusForYear(year);
 
 				if (!status.equals(taxonRedListStatus)) {
@@ -364,14 +364,14 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		private void updateTypesOfOccurrenceInFinland(EditableTaxon taxon, Qname typeOfOccurrenceInFinland) throws Exception {
 			UsedAndGivenStatements statements = new UsedAndGivenStatements();
 			statements.addUsed(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, null, null);
-			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, new ObjectResource(typeOfOccurrenceInFinland)));
-			triplestoreDAO.store(new Subject(taxon.getQname()), statements);
+			statements.addStatement(new Statement(TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE, ObjectResource.of(typeOfOccurrenceInFinland)));
+			triplestoreDAO.store(Subject.of(taxon.getQname()), statements);
 			System.out.println("   " + taxon.getQname() + " " + TYPE_OF_OCCURRENCE_IN_FINLAND_PREDICATE + " -> " + typeOfOccurrenceInFinland);
 		}
 
 		private void updateRedListStatus(EditableTaxon taxon, Integer year, Qname status) throws Exception {
-			Predicate statusPredicate = new Predicate("MX.redListStatus"+year+"Finland");
-			triplestoreDAO.store(new Subject(taxon.getQname()), new Statement(statusPredicate, new ObjectResource(status)));
+			Predicate statusPredicate = Predicate.of("MX.redListStatus"+year+"Finland");
+			triplestoreDAO.store(Subject.of(taxon.getQname()), new Statement(statusPredicate, ObjectResource.of(status)));
 			System.out.println("   " + taxon.getQname() + " " + statusPredicate + " -> " + status);
 		}
 
@@ -501,7 +501,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	}
 
 	private Qname q(RdfResource resource) {
-		return new Qname(resource.getQname());
+		return Qname.of(resource.getQname());
 	}
 
 	private TaxonSearchResponse uncachedTaxonSearch(TaxonSearch taxonSearch) throws Exception {
@@ -543,7 +543,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 			rs = p.executeQuery();
 			rs.setFetchSize(4001);
 			while (rs.next()) {
-				Qname matchQname = new Qname(rs.getString(1));
+				Qname matchQname = Qname.of(rs.getString(1));
 				String matchScientificName = rs.getString(2);
 				String matchAuthor = rs.getString(3);
 				String matchRank = rs.getString(4);
@@ -551,7 +551,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				match.setScientificName(matchScientificName);
 				match.setScientificNameAuthorship(matchAuthor);
 				if (given(matchRank)) {
-					match.setTaxonRank(new Qname(matchRank));
+					match.setTaxonRank(Qname.of(matchRank));
 				}
 				matches.add(match);
 			}
@@ -569,7 +569,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 		if (synonymParent != null && given(synonymParent.getChecklist())) {
 			return synonymParent.getChecklist();
 		}
-		return new Qname("MR.1");
+		return Qname.of("MR.1");
 	}
 
 	private boolean given(Object o) {
@@ -602,7 +602,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces =
 			new SingleObjectCache<>(
 					new CacheLoader<Map<String, Area>>() {
-						private final Qname BIOGEOGRAPHICAL_PROVINCE = new Qname("ML.biogeographicalProvince");
+						private final Qname BIOGEOGRAPHICAL_PROVINCE = Qname.of("ML.biogeographicalProvince");
 						@Override
 						public Map<String, Area> load() {
 							try {

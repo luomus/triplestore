@@ -16,7 +16,7 @@ import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 public class ApiHideUnhideTaxon extends ApiBaseServlet {
 
 	private static final long serialVersionUID = 8057985427638993882L;
-	private static final Predicate HIDDEN_TAXON = new Predicate("MX.hiddenTaxon");
+	private static final Predicate HIDDEN_TAXON = Predicate.of("MX.hiddenTaxon");
 
 	@Override
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -27,11 +27,11 @@ public class ApiHideUnhideTaxon extends ApiBaseServlet {
 		} 
 		if (!taxonQname.contains(".")) taxonQname = taxonQname.replace("MX", "MX.");
 
-		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(new Qname(taxonQname));
+		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(Qname.of(taxonQname));
 		checkPermissionsToAlterTaxon(taxon, req);
 
 		TriplestoreDAO dao = getTriplestoreDAO();
-		Subject subject = new Subject(taxonQname);
+		Subject subject = Subject.of(taxonQname);
 		if (req.getRequestURI().contains("/hideTaxon/")) {
 			dao.store(subject, new Statement(HIDDEN_TAXON, true));
 		} else {

@@ -42,8 +42,8 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private static final String EVALUATION_ID = "evaluationId";
 	private static final String NEW_IUCN_PUBLICATION_CITATION = "newIucnPublicationCitation";
-	private static final Predicate LAST_MODIFIED_BY_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED_BY);
-	private static final Predicate LAST_MODIFIED_PREDICATE = new Predicate(Evaluation.LAST_MODIFIED);
+	private static final Predicate LAST_MODIFIED_BY_PREDICATE = Predicate.of(Evaluation.LAST_MODIFIED_BY);
+	private static final Predicate LAST_MODIFIED_PREDICATE = Predicate.of(Evaluation.LAST_MODIFIED);
 
 	@Override
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
@@ -73,7 +73,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			setYear(year, model);
 			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
 			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
-			model.addStatement(new Statement(new Predicate(Evaluation.STATE), new ObjectResource(Evaluation.STATE_STARTED)));
+			model.addStatement(new Statement(Predicate.of(Evaluation.STATE), ObjectResource.of(Evaluation.STATE_STARTED)));
 
 			return storeAndRedirectToGet(req, dao, taxonomyDAO, iucnDAO, target.getEvaluation(year), thisPeriodData);
 		}
@@ -102,7 +102,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
-				.setData("taxon", taxonomyDAO.getTaxon(new Qname(target.getQname())))
+				.setData("taxon", taxonomyDAO.getTaxon(Qname.of(target.getQname())))
 				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("redListIndexPermissions", permissions(req, target, null))
 				.setData("evaluation", thisPeriodData)
@@ -180,7 +180,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void cleanAndReplaceCriteria(String criteria, String predicateQname, Evaluation givenData) {
 		if (!given(criteria)) return;
 		String clanedCriteria = cleanCriteria(criteria);
-		Predicate p = new Predicate(predicateQname);
+		Predicate p = Predicate.of(predicateQname);
 		givenData.getModel().removeAll(p);
 		givenData.getModel().addStatementIfObjectGiven(p, clanedCriteria);
 	}
@@ -272,7 +272,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		model.removeAll(LAST_MODIFIED_PREDICATE);
 		model.removeAll(LAST_MODIFIED_BY_PREDICATE);
 		model.addStatement(new Statement(LAST_MODIFIED_PREDICATE, new ObjectLiteral(DateUtils.getCurrentDate())));
-		model.addStatement(new Statement(LAST_MODIFIED_BY_PREDICATE, new ObjectResource(getUser(req).getQname())));
+		model.addStatement(new Statement(LAST_MODIFIED_BY_PREDICATE, ObjectResource.of(getUser(req).getQname())));
 	}
 
 	public static class Habitats {
@@ -292,14 +292,14 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			int order = Integer.valueOf(predicateAndIndexParts[1]);
 			Qname habitat = null;
 			if (e.getValue().containsKey(Evaluation.HABITAT)) {
-				habitat = new Qname(e.getValue().get(Evaluation.HABITAT)[0]);
+				habitat = Qname.of(e.getValue().get(Evaluation.HABITAT)[0]);
 			}
 			String[] habitatSpecificTypes = e.getValue().get(Evaluation.HABITAT_SPECIFIC_TYPE);
 			HabitatObject habitatObject = new HabitatObject(null, habitat, order);
 			if (habitatSpecificTypes != null) {
 				for (String type : habitatSpecificTypes) {
 					if (given(type)) {
-						habitatObject.addHabitatSpecificType(new Qname(type));
+						habitatObject.addHabitatSpecificType(Qname.of(type));
 					}
 				}
 			}
@@ -353,7 +353,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 	private void setTaxon(String speciesQname, Model model) {
 		model.removeAll(IucnDAO.EVALUATED_TAXON_PREDICATE);
-		model.addStatement(new Statement(IucnDAO.EVALUATED_TAXON_PREDICATE, new ObjectResource(speciesQname)));
+		model.addStatement(new Statement(IucnDAO.EVALUATED_TAXON_PREDICATE, ObjectResource.of(speciesQname)));
 	}
 
 	private Evaluation createEvaluationWithExistingIdOrNewId(HttpServletRequest req) throws Exception {
@@ -396,13 +396,13 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private void setThreatValue(Evaluation evaluation, String parameterName, String value) {
 		// MKV.hasThreat___1   <2,3...>
 		int order = splitOrder(parameterName);
-		evaluation.addThreat(new EndangermentObject(null, new Qname(value), order));
+		evaluation.addThreat(new EndangermentObject(null, Qname.of(value), order));
 	}
 
 	private void setEndangermentReasonValue(Evaluation evaluation, String parameterName, String value) {
 		// MKV.hasEndangermentReason___1   <2,3...>
 		int order = splitOrder(parameterName);
-		evaluation.addEndangermentReason(new EndangermentObject(null, new Qname(value), order));
+		evaluation.addEndangermentReason(new EndangermentObject(null, Qname.of(value), order));
 	}
 
 	private void setOccurrenceValue(Evaluation evaluation, String parameterName, String value) {
@@ -412,15 +412,15 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String field = splitField(parameterName);
 		if (evaluation.hasOccurrence(areaQname)) {
 			if (field.equals("status")) {
-				evaluation.getOccurrence(areaQname).setStatus(new Qname(value));
+				evaluation.getOccurrence(areaQname).setStatus(Qname.of(value));
 			} else if ("RT".equals(value)) {
 				evaluation.getOccurrence(areaQname).setThreatened(true);
 			}
 		} else {
 			if (field.equals("status")) {
-				evaluation.addOccurrence(new Occurrence(null, new Qname(areaQname), new Qname(value)));
+				evaluation.addOccurrence(new Occurrence(null, Qname.of(areaQname), Qname.of(value)));
 			} else if ("RT".equals(value)){
-				Occurrence o = new Occurrence(null, new Qname(areaQname), null);
+				Occurrence o = new Occurrence(null, Qname.of(areaQname), null);
 				o.setThreatened(true);
 				evaluation.addOccurrence(o);
 			}
@@ -447,9 +447,9 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				value = value.replace(",", ".");
 				if (value.startsWith(".")) value = "0" + value;
 			}
-			model.addStatement(new Statement(new Predicate(parameterName), new ObjectLiteral(value)));
+			model.addStatement(new Statement(Predicate.of(parameterName), new ObjectLiteral(value)));
 		} else {
-			model.addStatement(new Statement(new Predicate(parameterName), new ObjectResource(value)));
+			model.addStatement(new Statement(Predicate.of(parameterName), ObjectResource.of(value)));
 		}
 	}
 
@@ -457,7 +457,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		Publication publication = new Publication(null);
 		publication.setCitation(citation);
 		dao.storePublication(publication);
-		givenData.getModel().addStatement(new Statement(IucnDAO.PUBLICATION_PREDICATE, new ObjectResource(publication.getQname())));
+		givenData.getModel().addStatement(new Statement(IucnDAO.PUBLICATION_PREDICATE, ObjectResource.of(publication.getQname())));
 	}
 
 }

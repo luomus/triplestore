@@ -29,8 +29,8 @@ public class IUCN_NE_generointi {
 				Qname evaluationid = getEvaluationId(client);
 				Model model = new Model(evaluationid);
 				model.setType("MKV.iucnRedListEvaluation");
-				model.addStatementIfObjectGiven("MKV.state", new Qname("MKV.stateReady"));
-				model.addStatementIfObjectGiven("MKV.redListStatus", new Qname("MX.iucnNE"));
+				model.addStatementIfObjectGiven("MKV.state", Qname.of("MKV.stateReady"));
+				model.addStatementIfObjectGiven("MKV.redListStatus", Qname.of("MX.iucnNE"));
 				model.addStatementIfObjectGiven("MKV.evaluatedTaxon", taxonId);
 				model.addStatementIfObjectGiven("MKV.lastModified", DateUtils.getCurrentDate());
 				model.addStatementIfObjectGiven("MKV.evaluationYear", "2019");
@@ -59,13 +59,13 @@ public class IUCN_NE_generointi {
 	}
 
 	private static Qname getEvaluationId(HttpClientService client) throws ClientProtocolException, IOException {
-		return new Qname(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
+		return Qname.of(client.contentAsJson(new HttpGet("https://triplestore.luomus.fi/uri/MKV")).getObject("response").getString("qname"));
 	}
 
 	private static Set<Qname> taxonIds() throws FileNotFoundException, IOException {
 		Set<Qname> taxonIds = new HashSet<>();
 		for (String line : FileUtils.readLines(new File("c:/temp/ne-lajit.txt"))) {
-			Qname q = new Qname(line.trim());
+			Qname q = Qname.of(line.trim());
 			if (q.isSet()) {
 				taxonIds.add(q);
 			}

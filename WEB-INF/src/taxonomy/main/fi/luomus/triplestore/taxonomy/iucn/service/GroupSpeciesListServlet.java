@@ -140,7 +140,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			List<EvaluationTarget> pageTargets = isFileDownload(req) ? filteredTargets : pageTargets(currentPage, pageSize, filteredTargets);
 			return responseData.setViewName("iucn-group-species-list")
 					.setData("group", group)
-					.setData("statusProperty", dao.getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
+					.setData("statusProperty", dao.getProperty(Predicate.of(Evaluation.RED_LIST_STATUS)))
 					.setData("persons", getTaxonomyDAO().getPersons())
 					.setData("targets", pageTargets)
 					.setData("remarks", container.getRemarksForGroup(groupQname))
@@ -204,7 +204,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 					rows.add(tsv(fileDownloadDataRow(evaluation, target, years)));
 				} else {
-					rows.add(tsv(fileDownloadDataRow(new Evaluation(new Model(new Qname("foo")), getIUCNProperties()), target, years)));
+					rows.add(tsv(fileDownloadDataRow(new Evaluation(new Model(Qname.of("foo")), getIUCNProperties()), target, years)));
 				}
 			}
 		}
@@ -778,11 +778,11 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		private static final Map<Qname, String> AREA_STATUSES_FOR_DOWNLOAD;
 		static {
 			AREA_STATUSES_FOR_DOWNLOAD = new HashMap<>();
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceOccurs"), "x");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceExtirpated"), "RE");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceAnthropogenic"), "NA");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.typeOfOccurrenceUncertain"), "p");
-			AREA_STATUSES_FOR_DOWNLOAD.put(new Qname("MX.doesNotOccur"), MISSING_VALUE);
+			AREA_STATUSES_FOR_DOWNLOAD.put(Qname.of("MX.typeOfOccurrenceOccurs"), "x");
+			AREA_STATUSES_FOR_DOWNLOAD.put(Qname.of("MX.typeOfOccurrenceExtirpated"), "RE");
+			AREA_STATUSES_FOR_DOWNLOAD.put(Qname.of("MX.typeOfOccurrenceAnthropogenic"), "NA");
+			AREA_STATUSES_FOR_DOWNLOAD.put(Qname.of("MX.typeOfOccurrenceUncertain"), "p");
+			AREA_STATUSES_FOR_DOWNLOAD.put(Qname.of("MX.doesNotOccur"), MISSING_VALUE);
 		}
 
 		private boolean isFileDownload(HttpServletRequest req) {

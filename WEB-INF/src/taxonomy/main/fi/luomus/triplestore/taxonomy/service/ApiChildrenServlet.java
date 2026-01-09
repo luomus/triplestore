@@ -26,7 +26,7 @@ public class ApiChildrenServlet extends ApiBaseServlet {
 		} 
 		parentQname = parentQname.replace("MX", "MX.");
 		
-		Taxon parent = dao.getTaxon(new Qname(parentQname));
+		Taxon parent = dao.getTaxon(Qname.of(parentQname));
 		responseData.setData("parent", parent);
 		responseData.setData("children", parent.getChildren());
 		return responseData;

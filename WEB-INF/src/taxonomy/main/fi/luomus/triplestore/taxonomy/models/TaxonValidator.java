@@ -25,11 +25,11 @@ import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 
 public class TaxonValidator {
 
-	private static final Qname GENUS = new Qname("MX.genus");
+	private static final Qname GENUS = Qname.of("MX.genus");
 
-	private static final Qname SUBGENUS = new Qname("MX.subgenus");
-	private static final Qname SPECIES_AGGREGATE = new Qname("MX.speciesAggregate");
-	private static final Qname SPECIES = new Qname("MX.species");
+	private static final Qname SUBGENUS = Qname.of("MX.subgenus");
+	private static final Qname SPECIES_AGGREGATE = Qname.of("MX.speciesAggregate");
+	private static final Qname SPECIES = Qname.of("MX.species");
 
 	private final TriplestoreDAO triplestoreDAO;
 	private final ExtendedTaxonomyDAO taxonomyDAO;

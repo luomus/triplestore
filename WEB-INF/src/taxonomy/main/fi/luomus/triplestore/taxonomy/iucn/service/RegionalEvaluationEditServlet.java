@@ -73,7 +73,7 @@ public class RegionalEvaluationEditServlet extends EvaluationEditServlet {
 		Model existingModelCopy = dao.get(existingEvaluation.getId());
 		Evaluation modifiedEvaluation = iucnDAO.createEvaluation(existingModelCopy);
 		existingModelCopy.removeAll(IucnDAO.HAS_OCCURRENCE_PREDICATE);
-		existingModelCopy.removeAll(new Predicate("MKV.regionallyThreatenedNotes"));
+		existingModelCopy.removeAll(Predicate.of("MKV.regionallyThreatenedNotes"));
 		iucnDAO.completeLoading(modifiedEvaluation);
 
 		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {

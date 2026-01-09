@@ -52,7 +52,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 				.setData("areas", iucnDAO.getEvaluationAreas())
 				.setData("regionalOccurrenceStatuses", getRegionalOccurrenceStatuses())
 				.setData("occurrenceStatuses", getOccurrenceStatuses())
-				.setData("statusProperty", getTriplestoreDAO().getProperty(new Predicate(Evaluation.RED_LIST_STATUS)))
+				.setData("statusProperty", getTriplestoreDAO().getProperty(Predicate.of(Evaluation.RED_LIST_STATUS)))
 				.setData("downloads", getCompletedDownloads());
 	}
 
@@ -115,7 +115,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	private List<RdfProperty> initRegionalOccurrenceStatuses() throws Exception {
 		List<RdfProperty> statuses = new ArrayList<>();
-		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
+		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(Predicate.of("MO.status")).getRange().getValues();
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceOccurs", "Esiintyy vyöhykkeellä", referenceStatuses));
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt vyöhykkeeltä (RE)", referenceStatuses));
 		statuses.add(buildOccurrenceStatus("MX.typeOfOccurrenceAnthropogenic", "Satunnainen tai ihmisen avustamana vyöhykkeelle siirtynyt (NA)", referenceStatuses));
@@ -133,7 +133,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 
 	private Collection<RdfProperty> initOccurrenceStatuses() throws Exception {
 		List<RdfProperty> occurrences = new ArrayList<>();
-		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(new Predicate("MO.status")).getRange().getValues();
+		Collection<RdfProperty> referenceStatuses = getTriplestoreDAO().getProperty(Predicate.of("MO.status")).getRange().getValues();
 		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceStablePopulation", "Vakiintunut", referenceStatuses));
 		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceNotEstablished", "Uusi laji", referenceStatuses));
 		occurrences.add(buildOccurrenceStatus("MX.typeOfOccurrenceExtirpated", "Hävinnyt", referenceStatuses));
@@ -144,7 +144,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	}
 
 	private RdfProperty buildOccurrenceStatus(String id, String label, Collection<RdfProperty> referenceStatuses) {
-		Qname qname = new Qname(id);
+		Qname qname = Qname.of(id);
 		if (!contains(referenceStatuses, qname)) throw new IllegalStateException("Unknown reference status: " + id);
 		RdfProperty p = new RdfProperty(qname);
 		p.setLabels(new LocalizedText().set("fi", label));

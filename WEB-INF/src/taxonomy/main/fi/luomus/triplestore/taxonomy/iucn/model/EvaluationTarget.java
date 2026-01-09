@@ -16,8 +16,8 @@ import fi.luomus.commons.taxonomy.iucn.Evaluation;
 
 public class EvaluationTarget {
 
-	private static final Qname FAMILY = new Qname("MX.family");
-	private static final Qname ORDER = new Qname("MX.order");
+	private static final Qname FAMILY = Qname.of("MX.family");
+	private static final Qname ORDER = Qname.of("MX.order");
 	private final Qname taxonId;
 	private final Map<Integer, Evaluation> evaluations = new TreeMap<>(new Comparator<Integer>() {
 		@Override

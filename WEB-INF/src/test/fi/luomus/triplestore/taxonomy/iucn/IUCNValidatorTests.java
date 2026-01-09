@@ -51,7 +51,7 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void notInitialized() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = new Evaluation(givenModel, dao.getProperties(Evaluation.EVALUATION_CLASS));
 
 		ValidationResult result = validator.validate(givenData, null);
@@ -63,7 +63,7 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void correctlyInitialized() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
 
 		ValidationResult result = validator.validate(givenData, null);
@@ -73,27 +73,27 @@ public class IUCNValidatorTests {
 	private Evaluation createEvaluation(Model givenModel) throws Exception {
 		Evaluation givenData = new Evaluation(givenModel, dao.getProperties(Evaluation.EVALUATION_CLASS));
 		givenModel.setType(Evaluation.EVALUATION_CLASS);
-		givenModel.addStatementIfObjectGiven(Evaluation.EVALUATED_TAXON, new Qname("MX.1"));
+		givenModel.addStatementIfObjectGiven(Evaluation.EVALUATED_TAXON, Qname.of("MX.1"));
 		givenModel.addStatementIfObjectGiven(Evaluation.EVALUATION_YEAR, "2000");
-		givenModel.addStatementIfObjectGiven(Evaluation.STATE, new Qname(Evaluation.STATE_STARTED));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATE, Qname.of(Evaluation.STATE_STARTED));
 		return givenData;
 	}
 
 	private Evaluation createReadyEvaluation(Model givenModel) throws Exception {
 		Evaluation givenData = createEvaluation(givenModel);
-		givenModel.removeAll(new Predicate(Evaluation.STATE));
-		givenModel.addStatementIfObjectGiven(Evaluation.STATE, new Qname(Evaluation.STATE_READY));
-		givenData.setPrimaryHabitat(new HabitatObject(null, new Qname("Something required"), 1));
+		givenModel.removeAll(Predicate.of(Evaluation.STATE));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATE, Qname.of(Evaluation.STATE_READY));
+		givenData.setPrimaryHabitat(new HabitatObject(null, Qname.of("Something required"), 1));
 		return givenData;
 	}
 
 	@Test
 	public void invalidDataTypes() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
 		givenModel.addStatementIfObjectGiven(Evaluation.STATE, "literal");
 		givenModel.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MAX, "alpha");
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.invalidEnum"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.invalidEnum"));
 		givenModel.addStatementIfObjectGiven(Evaluation.GENERATION_AGE, "6,5");
 		ValidationResult result = validator.validate(givenData, null);
 		assertEquals(""+
@@ -106,7 +106,7 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void requiredForReady() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
 
 		ValidationResult result = validator.validate(givenData, null);
@@ -118,7 +118,7 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_min_max_integer() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
 
 		givenModel.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_MIN, "4", null);
@@ -129,12 +129,12 @@ public class IUCNValidatorTests {
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 
-		givenModel.removeAll(new Predicate(Evaluation.OCCURRENCE_AREA_MAX));
+		givenModel.removeAll(Predicate.of(Evaluation.OCCURRENCE_AREA_MAX));
 		givenModel.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_MAX, "5", null);
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 
-		givenModel.removeAll(new Predicate(Evaluation.OCCURRENCE_AREA_MAX));
+		givenModel.removeAll(Predicate.of(Evaluation.OCCURRENCE_AREA_MAX));
 		givenModel.addStatementIfObjectGiven(Evaluation.OCCURRENCE_AREA_MAX, "3", null);
 		result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
@@ -143,10 +143,10 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_min_max_iucn_range() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnLC"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, Qname.of("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, Qname.of("MX.iucnNE"));
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvoa \"NE – Arvioimatta jätetyt\" ei voi käyttää arvovälinä", result.listErrors().get(0));
@@ -154,20 +154,20 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_min_max_iucn_range_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnLC"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, Qname.of("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, Qname.of("MX.iucnVU"));
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 	}
 
 	@Test
 	public void test_min_max_iucn_range_3() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnVU"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, Qname.of("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, Qname.of("MX.iucnLC"));
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
 		assertEquals("Arvovälin ala-arvo \"VU – Vaarantuneet\" ei saa olla suurempi kuin yläarvo \"LC – Elinvoimaiset\"", result.listErrors().get(0));
@@ -175,11 +175,11 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_invasive() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
 
-		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceAnthropogenic"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, Qname.of("MX.typeOfOccurrenceAnthropogenic"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
@@ -188,11 +188,11 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_invasive_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
 
-		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceAnthropogenic"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnNA"));
+		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, Qname.of("MX.typeOfOccurrenceAnthropogenic"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnNA"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -200,11 +200,11 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_non_invasive() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
 
-		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, new Qname("MX.typeOfOccurrenceOccurs"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND, Qname.of("MX.typeOfOccurrenceOccurs"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -212,12 +212,12 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_and_status_1() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_B, "B2b(ii,iii,v)c(iv)");
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, new Qname("MX.iucnNT"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, Qname.of("MX.iucnNT"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -225,9 +225,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_and_status_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_B, "B2b(ii,iii,v)c(iv)");
 
@@ -237,11 +237,11 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_and_status_3() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_C, new Qname("MX.iucnNT"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_C, Qname.of("MX.iucnNT"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertEquals("[Kriteeri C ja siitä seuraava luokka on annettava jos toinen tiedoista annetaan]", result.listErrors().toString());
@@ -250,9 +250,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_B1() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MIN, "4");
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "B1a");
@@ -263,13 +263,13 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_B1_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MIN, "4");
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_B, "B1a");
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, Qname.of("MX.iucnVU"));
 
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -277,9 +277,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_B1_3() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.DISTRIBUTION_AREA_MIN, "4");
 
@@ -288,9 +288,9 @@ public class IUCNValidatorTests {
 	}
 
 	public void test_criteria_B1_4() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_B, "B1a");
 
@@ -299,9 +299,9 @@ public class IUCNValidatorTests {
 	}
 
 	public void test_criteria_B1_5() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "B1a");
 
@@ -311,9 +311,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_criteria_various() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "A1a; B1a+2a");
 
@@ -327,9 +327,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_occurrences_primHabitat_threats_endangerment_1() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnVU"));
 		givenData.setPrimaryHabitat(null);
 
 		ValidationResult result = validator.validate(givenData, null);
@@ -343,9 +343,9 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_endangerment_not_required_for_criteria() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnVU"));
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "A3b");
 
 		ValidationResult result = validator.validate(givenData, null);
@@ -358,12 +358,12 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_occurrences_primHabitat_threats_endangerment_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
-		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("occ")));
-		givenData.addEndangermentReason(new EndangermentObject(null, new Qname("some"), 0));
-		givenData.addThreat(new EndangermentObject(null, new Qname("some"), 0));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, Qname.of("some"), Qname.of("occ")));
+		givenData.addEndangermentReason(new EndangermentObject(null, Qname.of("some"), 0));
+		givenData.addThreat(new EndangermentObject(null, Qname.of("some"), 0));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "D1");
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -371,12 +371,12 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_regional_endangerment() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnNT"));
-		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccursButThreatened")));
-		givenData.addEndangermentReason(new EndangermentObject(null, new Qname("some"), 0));
-		givenData.addThreat(new EndangermentObject(null, new Qname("some"), 0));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnNT"));
+		givenData.addOccurrence(new Occurrence(null, Qname.of("some"), Qname.of("MX.typeOfOccurrenceOccursButThreatened")));
+		givenData.addEndangermentReason(new EndangermentObject(null, Qname.of("some"), 0));
+		givenData.addThreat(new EndangermentObject(null, Qname.of("some"), 0));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "D1");
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -384,12 +384,12 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_regional_endangerment_2() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
-		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccursButThreatened")));
-		givenData.addEndangermentReason(new EndangermentObject(null, new Qname("some"), 0));
-		givenData.addThreat(new EndangermentObject(null, new Qname("some"), 0));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, Qname.of("some"), Qname.of("MX.typeOfOccurrenceOccursButThreatened")));
+		givenData.addEndangermentReason(new EndangermentObject(null, Qname.of("some"), 0));
+		givenData.addThreat(new EndangermentObject(null, Qname.of("some"), 0));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "D1");
 		ValidationResult result = validator.validate(givenData, null);
 		assertTrue(result.hasErrors());
@@ -398,12 +398,12 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_regional_endangerment_3() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnVU"));
-		givenData.addOccurrence(new Occurrence(null, new Qname("some"), new Qname("MX.typeOfOccurrenceOccurs")));
-		givenData.addEndangermentReason(new EndangermentObject(null, new Qname("some"), 0));
-		givenData.addThreat(new EndangermentObject(null, new Qname("some"), 0));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnVU"));
+		givenData.addOccurrence(new Occurrence(null, Qname.of("some"), Qname.of("MX.typeOfOccurrenceOccurs")));
+		givenData.addEndangermentReason(new EndangermentObject(null, Qname.of("some"), 0));
+		givenData.addThreat(new EndangermentObject(null, Qname.of("some"), 0));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.CRITERIA_FOR_STATUS, "D1");
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
@@ -411,29 +411,29 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void test_evaluationPeriodLength() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, "10");
 		ValidationResult result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 
-		givenData.getModel().removeAll(new Predicate(Evaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().removeAll(Predicate.of(Evaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, "100");
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 
-		givenData.getModel().removeAll(new Predicate(Evaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().removeAll(Predicate.of(Evaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, "50");
 		result = validator.validate(givenData, null);
 		assertFalse(result.hasErrors());
 
-		givenData.getModel().removeAll(new Predicate(Evaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().removeAll(Predicate.of(Evaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, "9");
 		result = validator.validate(givenData, null);
 		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
 
-		givenData.getModel().removeAll(new Predicate(Evaluation.EVALUATION_PERIOD_LENGTH));
+		givenData.getModel().removeAll(Predicate.of(Evaluation.EVALUATION_PERIOD_LENGTH));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.EVALUATION_PERIOD_LENGTH, "101");
 		result = validator.validate(givenData, null);
 		assertEquals("[Tarkastelujakson pituus on oltava väliltä 10-100]", result.listErrors().toString());
@@ -441,15 +441,15 @@ public class IUCNValidatorTests {
 
 	@Test
 	public void dd_na_ne() throws Exception {
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, new Qname("MX.iucnNE"));
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_A, new Qname("MX.iucnDD"));
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, new Qname("MX.iucnNA"));
-		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_C, new Qname("MX.iucnNE"));
-		givenModel.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, new Qname("MKV.externalPopulationImpactOnRedListStatusEnumMinus1"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MIN, Qname.of("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS_MAX, Qname.of("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_A, Qname.of("MX.iucnDD"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_B, Qname.of("MX.iucnNA"));
+		givenModel.addStatementIfObjectGiven(Evaluation.STATUS_C, Qname.of("MX.iucnNE"));
+		givenModel.addStatementIfObjectGiven(Evaluation.EXTERNAL_IMPACT, Qname.of("MKV.externalPopulationImpactOnRedListStatusEnumMinus1"));
 
 		// Silence some other validations
 		givenModel.addStatementIfObjectGiven(Evaluation.CRITERIA_A, "A1a");
@@ -474,9 +474,9 @@ public class IUCNValidatorTests {
 			longtext += longtext;
 		}
 
-		Model givenModel = new Model(new Qname("Foo"));
+		Model givenModel = new Model(Qname.of("Foo"));
 		Evaluation givenData = createReadyEvaluation(givenModel);
-		givenData.getModel().addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, new Qname("MX.iucnLC"));
+		givenData.getModel().addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
 		givenData.getModel().addStatementIfObjectGiven(Evaluation.DISTRIBUATION_AREA_NOTES, longtext);
 		ValidationResult result = validator.validate(givenData, null);
 		assertEquals("[Liian pitkä teksti kentässä Yksityiset muistiinpanot levinneisyysalueen koosta]",

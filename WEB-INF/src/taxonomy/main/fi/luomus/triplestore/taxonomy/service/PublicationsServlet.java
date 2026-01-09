@@ -42,7 +42,7 @@ public class PublicationsServlet extends TaxonomyEditorBaseServlet {
 		log(req);
 		boolean addNew = addNew(req);
 		TriplestoreDAO triplestoreDAO = getTriplestoreDAO(req);
-		Qname qname = addNew ? null : new Qname(getQname(req));
+		Qname qname = addNew ? null : Qname.of(getQname(req));
 		String citation = req.getParameter("citation");
 		String uri = req.getParameter("URI");
 

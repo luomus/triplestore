@@ -35,7 +35,7 @@
 //			TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 //			//dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 //			dataSource = null;
-//			triplestoreDAO = new TriplestoreDAOImple(dataSource, new Qname("MA.5"));
+//			triplestoreDAO = new TriplestoreDAOImple(dataSource, Qname.of("MA.5"));
 //			taxonomyDAO = new ExtendedTaxonomyDAOImple(config, triplestoreDAO, new ErrorReportingToSystemErr());
 //			process();
 //		} catch (Exception e) {
