@@ -82,7 +82,7 @@ public abstract class EditorBaseServlet extends BaseServlet {
 		return url.toString();
 	}
 
-	protected static final Set<String> CREATABLE_NAMESPACES = Utils.set("", "finbifterm", "dwc", "dc", "dwciri");
+	protected static final Set<String> CREATABLE_NAMESPACES = Utils.set("", "finbifterm", "dwc", "dc", "dwciri", "gbifterm");
 
 	protected static final List<CreatableResource> CREATABLE_RESOURCES = Utils.list(
 			new CreatableResource("MA", "Person", "MA.person"),

@@ -242,9 +242,11 @@ public class TriplestoreEditorServlet extends EditorBaseServlet {
 			}
 		} else if (p.hasRange()) {
 			Qname range = p.getRange().getQname();
-			if (range.toString().equals("rdfs:Resource")) return;
+			if (range.toString().equals("rdfs:Resource") || range.toString().equals("rdf:Property")) return;
 			Model value = dao.get(resourceQname);
-			if (!value.getType().equals(range.toString())) {
+			if (value.getType() == null) {
+				validationError(p.getQname() + " range validation error" , validationResponse);
+			} else if (!value.getType().equals(range.toString())) {
 				validationError("Value " + resourceQname + " should be of type " + range + " but it is " + value.getType(), validationResponse);
 			}
 		}
