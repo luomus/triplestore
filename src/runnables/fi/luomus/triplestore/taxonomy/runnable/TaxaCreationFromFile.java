@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -27,6 +29,7 @@ import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Taxon;
+import fi.luomus.commons.taxonomy.TaxonContainer;
 import fi.luomus.commons.utils.DateUtils;
 import fi.luomus.commons.utils.FileUtils;
 import fi.luomus.commons.utils.LogUtils;
@@ -38,14 +41,38 @@ import fi.luomus.triplestore.taxonomy.models.TaxonomyDAOStub;
 
 public class TaxaCreationFromFile {
 
-	private static final String API_URL = "https://triplestore.luomus.fi/uri/MX";
-	private static final String API_USERNAME = "...";
-	private static final String API_PASSWORD = "...";
+	private static class ExtendedTaxon extends Taxon {
+		private Qname originalParentId;
+		private String originalParentScientificName;
+		public ExtendedTaxon(Qname qname, TaxonContainer taxonContainer) {
+			super(qname, taxonContainer);
+		}
+		public Qname getOriginalParentId() {
+			return originalParentId;
+		}
 
-	// Note: Example data file can be found from /data folder of this repo
-	private static final String FILENAME_IN = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\Maailman kalat tietokantaan_2025_TAXONID.txt";
-	private static final String FILENAME_OUT = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\maailman_kalat_taxon_statements_"+DateUtils.getFilenameDatetime()+".txt";
-	private static final boolean DRY_RUN = true; // XXX
+		public void setOriginalParentId(Qname originalParentId) {
+			this.originalParentId = originalParentId;
+		}
+		public void setOriginalParentScientificName(String v) {
+			this.originalParentScientificName = v;
+		}
+		public String getOriginalParentScientificName() {
+			return originalParentScientificName;
+		}
+	}
+
+	private static final String API_URL = "https://triplestore.luomus.fi/uri/MX";
+	private static final String API_USERNAME = "xxx";
+	private static final String API_PASSWORD = "xxx";
+
+	// Note: Example data files can be found from /data folder of this repo
+	private static final String FILENAME_IN = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\Lisäyksiä putkilokasvien nimistöön_2026.txt";
+	private static final String FILENAME_OUT = "E:\\esko-local\\git\\eskon-dokkarit\\data\\taxonomy\\Lisäyksiä putkilokasvien nimistöön_statements_"+DateUtils.getFilenameDatetime()+".txt";
+
+	private static final String PRIVATE_NOTES = "Created based on file Lisäyksiä putkilokasvien nimistöön_2026.txt; Otso Ovaskainen, Henry Väre";
+
+	private static final boolean DRY_RUN = true; // XXX true=: create test ids TEMP.123    false=:  call for real MX.xxx ids
 
 	private static final String CREATED_TIMESTAMP = Long.toString(DateUtils.getCurrentEpoch()); // Note: All created new taxa have the same created timestamp making it easy to identify them - to fix/undo things gone wrong...
 
@@ -57,6 +84,7 @@ public class TaxaCreationFromFile {
 	private static final String MX_VERCACULAR_NAME = "MX.vernacularName";
 	private static final String MX_ALTERNATIVE_VERNACULAR_NAME = "MX.alternativeVernacularName";
 	private static final String MX_OBSOLETE_VERNACULAR_NAME = "MX.obsoleteVernacularName";
+	private static final String MX_COLLOQUIAL_VERNACULAR_NAME = "MX.colloquialVernacularName";
 	private static final String MX_NAME_ACCORDING_TO = "MX.nameAccordingTo";
 	private static final String MX_TAXON_RANK = "MX.taxonRank";
 	private static final String MX_SCIENTIFIC_NAME_AUTHORSHIP = "MX.scientificNameAuthorship";
@@ -93,9 +121,13 @@ public class TaxaCreationFromFile {
 
 	private static void create() throws Exception {
 		List<Map<String, String>> data = readData();
-		List<Taxon> taxa = createTaxa(data);
-		for (Taxon t : taxa) {
-			debug(t);
+		boolean hasExplicitParents = data.stream().anyMatch(d -> given(d.get("parenttaxonid")) || given(d.get("parentscientificname")));
+		boolean indent = !hasExplicitParents;
+
+		List<ExtendedTaxon> taxa = createTaxa(data, hasExplicitParents);
+		validateNoDuplicates(taxa);
+		for (ExtendedTaxon t : taxa) {
+			System.out.println(debug(t, indent));
 		}
 		List<String> statements = createStatements(taxa);
 		if (!DRY_RUN) {
@@ -105,6 +137,18 @@ public class TaxaCreationFromFile {
 			System.out.println(s);
 		}
 		FileUtils.writeToFile(new File(FILENAME_OUT), statements.stream().collect(Collectors.joining("\n")));
+	}
+
+	private static void validateNoDuplicates(List<ExtendedTaxon> taxa) {
+		Set<String> sciNames = new HashSet<>();
+		Set<Qname> givenTaxonIds = new HashSet<>();
+		for (ExtendedTaxon t : taxa) {
+			if (!given(t.getScientificName())) throw new IllegalStateException("No sci name: " + debug(t));
+			if (sciNames.contains(t.getScientificName())) throw new IllegalStateException("Sci name twice: " + t.getScientificName());
+			if (givenTaxonIds.contains(t.getId())) throw new IllegalStateException("Id twice: " + t.getId());
+			if (given(t.getId())) givenTaxonIds.add(t.getId());
+			sciNames.add(t.getScientificName());
+		}
 	}
 
 	private static void replaceTempIdsWithReal(List<String> statements) {
@@ -133,7 +177,7 @@ public class TaxaCreationFromFile {
 		}
 	}
 
-	private static List<String> createStatements(List<Taxon> taxa) {
+	private static List<String> createStatements(List<ExtendedTaxon> taxa) {
 		List<String> statements = new ArrayList<>();
 		statements.add("set define off;"); // This fixes & character causing a replacement dialog
 		for (Taxon taxon : taxa) {
@@ -162,6 +206,9 @@ public class TaxaCreationFromFile {
 				}
 				vernacularNameStatements(taxon, model);
 				model.addStatement(new Statement(Predicate.of(MZ_CREATED_AT_TIMESTAMP), new ObjectLiteral(CREATED_TIMESTAMP)));
+				if (given(PRIVATE_NOTES)) {
+					model.addStatement(new Statement(Predicate.of("MX.privateNotes"), new ObjectLiteral(PRIVATE_NOTES)));
+				}
 				statements.addAll(generateStatements(model));
 			}
 		}
@@ -199,6 +246,11 @@ public class TaxaCreationFromFile {
 				model.addStatementIfObjectGiven(MX_OBSOLETE_VERNACULAR_NAME, s, e.getKey());
 			}
 		}
+		for (Map.Entry<String, List<String>> e : taxon.getColloquialVernacularNames().getAllTexts().entrySet()) {
+			for (String s : e.getValue()) {
+				model.addStatementIfObjectGiven(MX_COLLOQUIAL_VERNACULAR_NAME, s, e.getKey());
+			}
+		}
 	}
 
 	private static boolean isExisting(Taxon t) {
@@ -209,10 +261,19 @@ public class TaxaCreationFromFile {
 		return id.toString().startsWith("MX.");
 	}
 
-	private static List<Taxon> createTaxa(List<Map<String, String>> data) {
-		List<Taxon> taxa = taxa(data);
-		resolveParents(taxa);
+	private static List<ExtendedTaxon> createTaxa(List<Map<String, String>> data, boolean hasExplicitParents) {
+		List<ExtendedTaxon> taxa = taxa(data);
+		// This script supports to ways resolving parents:
+		// (1) taxon rank + order in the file
+		// (2) explisit ParentTaxonID | ParentScientificName columns
+		// Here we define which way to use
+		if (!hasExplicitParents) {
+			resolveParents(taxa);
+		} else {
+			resolveExplicitParents(taxa);
+		}
 		return taxa;
+
 	}
 
 	private static List<Map<String, String>> readData() throws FileNotFoundException, IOException {
@@ -228,13 +289,21 @@ public class TaxaCreationFromFile {
 		return data;
 	}
 
-	private static void debug(Taxon t) {
-		List<Object> s = Utils.list(TaxonRank.fromTaxon(t).indent(), t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts(), t.getExplicitlySetInformalTaxonGroups());
-		String debug = s.stream().map(o->o==null?"":o.toString()).collect(Collectors.joining("\t"));
-		System.out.println(debug);
+	private static String debug(ExtendedTaxon t) {
+		return debug(t, false);
 	}
 
-	private static void resolveParents(List<Taxon> taxa) {
+	private static String debug(ExtendedTaxon t, boolean shouldIndent) {
+		String indent = "";
+		if (shouldIndent) {
+			indent = TaxonRank.fromTaxon(t).indent();
+		}
+		List<Object> s = Utils.list(indent, t.getId(), t.getParentQname(), t.getTaxonRank(), t.getScientificName(), t.getScientificNameAuthorship(), t.getVernacularName().getAllTexts(), t.getAlternativeVernacularNames().getAllTexts(), t.getExplicitlySetInformalTaxonGroups());
+		String debug = s.stream().map(o->o==null?"":o.toString()).collect(Collectors.joining("\t"));
+		return debug;
+	}
+
+	private static void resolveParents(List<ExtendedTaxon> taxa) {
 		Map<Integer, Qname> parentChain = new TreeMap<>();
 		for (Taxon t : taxa) {
 			Qname parent = resolveParent(parentChain, t);
@@ -264,8 +333,31 @@ public class TaxaCreationFromFile {
 		return order;
 	}
 
-	private static List<Taxon> taxa(List<Map<String, String>> data) {
-		List<Taxon> taxa = new ArrayList<>();
+
+	private static void resolveExplicitParents(List<ExtendedTaxon> taxa) {
+		Map<String, ExtendedTaxon> byName = new HashMap<>();
+		for (ExtendedTaxon t : taxa) {
+			byName.put(t.getScientificName(), t);
+		}
+		for (ExtendedTaxon t : taxa) {
+			if (given(t.getOriginalParentId())) {
+				t.setParentQname(t.getOriginalParentId());
+				continue;
+			}
+			if (given(t.getOriginalParentScientificName())) {
+				Taxon parent = byName.get(t.getOriginalParentScientificName());
+				if (parent == null) {
+					throw new IllegalStateException("No parent for " + debug(t));
+				}
+
+				t.setParentQname(parent.getId());
+			}
+		}
+	}
+
+
+	private static List<ExtendedTaxon> taxa(List<Map<String, String>> data) {
+		List<ExtendedTaxon> taxa = new ArrayList<>();
 		for (Map<String, String> d : data) {
 			createTaxon(d).stream().filter(t->t!=null).forEach(taxa::add);
 		}
@@ -274,9 +366,9 @@ public class TaxaCreationFromFile {
 
 	private static Taxon prevTaxon = null;
 
-	private static Collection<Taxon> createTaxon(Map<String, String> data) {
-		Taxon taxon = createNewTaxon(resolveTaxonId(data.get("taxonid")));
-		Taxon species = null;
+	private static Collection<ExtendedTaxon> createTaxon(Map<String, String> data) {
+		ExtendedTaxon taxon = createNewTaxon(resolveTaxonId(data.get("taxonid")));
+		ExtendedTaxon species = null;
 
 		for (String field : data.keySet()) {
 			field = field.toLowerCase().trim();
@@ -317,6 +409,11 @@ public class TaxaCreationFromFile {
 					taxon(taxon, species).addObsoleteVernacularName("fi", s);
 				}
 				continue;
+			} else if (field.equals("colloquialvernacularnamefi")) {
+				for (String s : multi(value)) {
+					taxon(taxon, species).addColloquialVernacularName("fi", s);
+				}
+				continue;
 			} else if (field.equals("speciesscientificname")) {
 				Qname speciesId = resolveTaxonId(data.get("speciesid"));
 				species = createNewTaxon(speciesId);
@@ -335,6 +432,12 @@ public class TaxaCreationFromFile {
 				} else {
 					taxon(taxon, species).addInformalTaxonGroup(Qname.of(value.trim()));
 				}
+				continue;
+			} else if (field.equals("parenttaxonid")) {
+				taxon.setOriginalParentId(Qname.of(value));
+				continue;
+			} else if (field.equals("parentscientificname")) {
+				taxon.setOriginalParentScientificName(value);
 				continue;
 			}
 			throw new IllegalStateException("Unknown field " + field);
@@ -366,8 +469,8 @@ public class TaxaCreationFromFile {
 		return species == null ? taxon : species;
 	}
 
-	private static Taxon createNewTaxon(Qname taxonId) {
-		Taxon taxon = new Taxon(taxonId, null);
+	private static ExtendedTaxon createNewTaxon(Qname taxonId) {
+		ExtendedTaxon taxon = new ExtendedTaxon(taxonId, null);
 		taxon.setChecklist(Qname.of("MR.1"));
 		return taxon;
 	}
@@ -459,6 +562,9 @@ public class TaxaCreationFromFile {
 		RANK_MAP.put("tribus", Qname.of("MX.tribe"));
 		RANK_MAP.put("sukuryhmä", Qname.of("MX.tribe"));
 		RANK_MAP.put("suku", Qname.of("MX.genus"));
+		RANK_MAP.put("alalaji", Qname.of("MX.subspecies"));
+		RANK_MAP.put("nothospecies", Qname.of("MX.nothospecies"));
+		RANK_MAP.put("variety", Qname.of("MX.variety"));
 	}
 
 	private static Qname parseTaxonRank(String value) {
@@ -540,7 +646,11 @@ public class TaxaCreationFromFile {
 		SERIES(30, "MX.series"),
 		SUBSERIES(31, "MX.subseries"),
 
-		SPECIES(32, "MX.species");
+		SPECIES(32, "MX.species"),
+
+		SUBSPECIES(40, "MX.subspecies"),
+		NOTHOSPECIES(41, "MX.nothospecies"),
+		VARIETY(42, "MX.variety");
 
 		private final int order;
 		private final Qname qname;

@@ -1,0 +1,853 @@
+TaxonID	TaxonRank	ScientificName	Author	ParentTaxonID	ParentScientificName	VernacularFI	AlternativeFI	ColloquialVernacularNameFI		#NOTES
+	suku	Benincasa	Savi	MX.38342	Cucurbitaceae	vahakurpitsat				
+		Benincasa hispida	(Thunb.) Cogn.		Benincasa	valkovahakurpitsa				
+		Carya illinoinensis	(Wangenh.) K. Koch	MX.5023391	Carya	pekaanipähkinä	pekaanihikkori			
+		Citrus hystrix	DC.	MX.41819	Citrus	ryppylimetti		ryppylimetti		
+		Citrus reticulata	Blanco	MX.41819	Citrus	mandariini				
+	nothospecies	Citrus ×aurantium	L.	MX.41819	Citrus	isositrus				
+	nothospecies	Citrus ×junos	Siebold ex Yu.Tanaka	MX.41819	Citrus	juzu		juzu		
+		Dahlia coccinea	Cav.	MX.4972088	Dahlia	hehkudaalia				
+		Desmodium uncinatum	(Jacq.) DC.	MX.5023334	Desmodium	liilakatkopapu	katkopalko			
+		Dioscorea alata	L.	MX.5009055	Dioscorea 	isojamssi				
+		Diospyros kaki	Thunb.	MX.5009056	Diospyros	kaki				
+		Diospyros lotus	L.	MX.5009056	Diospyros	taateliluumu				
+		Diospyros mespiliformis	Hochst. ex A.DC.	MX.5009056	Diospyros	sansibarineebenpuu				
+	suku	Erythroxylum	P.Browne	MX.4986453	Erythroxylaceae	kokapensaat				
+		Erythroxylum coca	Lam.		Erythroxylum	aitokokapensas	kokapensas			
+		Garcinia mangostana	L.	MX.5008980	Garcinia	punamangostani				
+		Jasminum grandiflorum	L.	MX.5023465	Jasminum	aitojasmiini				
+		Jasminum officinale	L.	MX.5023465	Jasminum	rohtojasmiini				
+	suku	Melothria	L.	MX.38342	Cucurbitaceae	viidakkokurkut				
+		Melothria pendula	L.		Melothria	riippaviidakkokurkku				
+	suku	Nephelium	L.	MX.289481	Sapindaceae	rambutaanit				
+		Nephelium lappaceum	L.		Nephelium	turrirambutaani	rambutaani			
+		Oxalis tuberosa	Molina	MX.39129	Oxalis	mukulakäenkaali				
+		Persicaria odorata	(Lour.) Soják	MX.38221	Persicaria	vihannestatar				
+		Sicyos edulis	Jacq.	MX.41991	Sicyos	kajottikarvakurkku				Syn. Sechium edule
+		Trichosanthes cucumerina	L.	MX.38342	Cucurbitaceae	käärmekurkku				
+		Vigna radiata	(L.) R.Wilczek	MX.42964	Vigna	mungopapu				
+		Actiniopteris dimorpha	Pic.Serm.	MX.5009087	Actiniopteris	sirosädesaniainen				
+		Actiniopteris radiata	(Sw.) Link	MX.5009087	Actiniopteris	viuhkasädesaniainen				
+		Alsophila dealbata	(G.Forst.) Corda	MX.5127951	Alsophila	hopeasulkasiipi				
+		Alsophila dregei	(Kunze) R.M.Tryon	MX.5127951	Alsophila	vantterasulkasiipi				
+		Azolla filiculoides subsp. cristata	(Kaulf.) Fraser-Jenk.	MX.5009387	Azolla filiculoides	meksikonnyppylimaskasaniainen	nyppylimaskasaniainen			
+	suku	Dicksonia	L'Hér.	MX.4986307	Dicksoniaceae	rankasaniaiset				
+		Dicksonia fibrosa	Colenso		Dicksonia	maorinrankasaniainen				
+		Dicksonia squarrosa	(G.Forst.) Sw.		Dicksonia	pörrörankasaniainen				
+		Dryopteris kilemensis	(Kuhn) Kuntze	MX.37749	Dryopteris	kilimanjaronalvejuuri				
+		Dryopteris manniana	(Hook.) C.Chr.	MX.37749	Dryopteris	silmualvejuuri				
+		Dryopteris pentheri	(Krasser) C.Chr.	MX.37749	Dryopteris	resualvejuuri				
+		Equisetum braunii	Milde	MX.37713	Equisetum	korskeakorte	jättikorte			
+		Grammitis strangeana	(Pic.Serm.) Christenh.	MX.5008984	Grammitis	taitannauhasaniainen	nauhasaniainen			
+		Phlegmariurus verticillatus	(L.f.) A.R.Field & Testo 	MX.5023418	Phlegmariurus	neulashäntälieko	ketunlieko			Syn. Huperzia verticillata
+		Hymenophyllum kuhnii	C.Chr.	MX.42689	Hymenophyllum	afrikansammalsaniainen				
+		Hymenophyllum nephrophyllum 	Ebihara & K.Iwats.	MX.42689	Hymenophyllum	munuaissammalsaniainen				
+		Hymenophyllum splendidum	Bosch	MX.42689	Hymenophyllum	tähtisammalsaniainen				
+	suku	Pseudodiphasium	Holub	MX.37683	Lycopodiaceae	kahtaislieot				
+		Pseudodiphasium volubile 	(G.Forst.) Holub		Pseudodiphasium	kahtaislieko				Syn. Lycopodium volubile
+		Marsilea strigosa	Willd.	MX.5009218	Marsilea	harjasapilasaniainen	apilasanianen			
+		Nephrolepis cordifolia	(L.) C.Presl	MX.5023459	Nephrolepis	pystysulkasaniainen				
+		Polypodium scouleri	Hook. & Grev.	MX.37795	Polypodium	sormikallioimarre				
+		Polystichum munitum	(Kaulf.) C.Presl	MX.37757	Polystichum	miekkahärkylä	härkylä			
+		Selaginella afrorum	(Milde ) Hieron.	MX.37705	Selaginella	kalliomähkä				
+		Selaginella oregana	D.C.Eaton	MX.37705	Selaginella	oregoninmähkä				
+	suku	Sphaeropteris	Bernh.	MX.4986308	Cyatheaceae	helmisiivet				
+		Sphaeropteris medullaris 	(G.Forst.) Bernh.		Sphaeropteris	maorinhelmisiipi				
+		Thelypteris confluens	(Thunb.) C.V.Morton	MX.37744	Thelypteris	heteimarre	sysi-imarre			
+	suku	Tmesipteris	Bernh.	MX.4986292	Psilotaceae	pilkesanikkaiset				
+		Tmesipteris elongata	P.A.Dang.		Tmesipteris	kahtaispilkesanikkainen				
+		Woodwardia fimbriata	Sm.	MX.5023197	Woodwardia	kalifornianvitjasaniainen	vitjasaniainen			
+		Abies bracteata	(D.Don) Poit.	MX.37804	Abies	vihnepihta				
+		Abies pinsapo	Boiss.	MX.37804	Abies	espanjanpihta				
+		Abies firma	Siebold & Zucc.	MX.37804	Abies	momipihta				
+	suku	Acmopyle	Pilg.	MX.4985902	Podocarpaceae	tippakävyt				
+		Acmopyle pancheri	(Brongn. & Gris) Pilg.		Acmopyle	uudenkaledoniantippakäpy				
+		Afrocarpus gracilior	(Pilg.) C.N.Page	MX.5009092	Afrocarpus	etiopianafrokarpus				
+	suku	Agathis	Salisb.	MX.4986696	Araucariaceae	kaurit				
+		Agathis australis	(D.Don) Lindl.		Agathis	uudenseelanninkauri				
+		Agathis lanceolata	Warb.		Agathis	serpentiinikauri				
+		Agathis macrophylla	(Lindl.) Mast.		Agathis	fidzinkauri				
+		Agathis montana	de Laub.		Agathis	panienkauri				
+		Agathis moorei	(Lindl.) Mast.		Agathis	moorenkauri				
+		Agathis ovata	(C.Moore ex Vieill.) Warb.		Agathis	puikokauri				
+	suku	Amentotaxus	Pilg.	MX.37829	Taxaceae	norkkokuuset				
+		Amentotaxus argotaenia	(Hance) Pilg.		Amentotaxus	kiinannorkkokuusi				
+		Araucaria angustifolia	(Bertol.) Steud.	MX.5008996	Araucaria	parananaraukaria	brasilianaraukaria			
+		Araucaria bernieri	J.Buchholz	MX.5008996	Araucaria	pylväsaraukaria				
+		Araucaria humboldtensis	J.Buchholz	MX.5008996	Araucaria	humboldtinaraukaria				
+		Araucaria hunsteinii	K.Schum.	MX.5008996	Araucaria	papuanaraukaria				
+		Araucaria laubenfelsii	Corbasson	MX.5008996	Araucaria	torniaraukaria				
+		Araucaria luxurians	(Brongn. & Gris) de Laub.	MX.5008996	Araucaria	aimoaraukaria				
+		Araucaria montana	Brongn. & Gris	MX.5008996	Araucaria	kynttelikköaraukaria				
+		Araucaria muelleri	(Carrière) Brongn. & Gris	MX.5008996	Araucaria	venhoaraukaria				
+		Araucaria nemorosa	de Laub.	MX.5008996	Araucaria	sulka-araukaria				
+		Araucaria rulei	F.Muell.	MX.5008996	Araucaria	kimppuaraukaria				
+		Araucaria scopulorum	de Laub.	MX.5008996	Araucaria	kallioaraukaria				
+		Araucaria subulata	Vieill.	MX.5008996	Araucaria	neulasaraukaria				
+	suku	Athrotaxis	D.Don.	MX.37824	Cupressaceae	tasmaniansypressit				
+		Athrotaxis cupressoides	D.Don		Athrotaxis	suomusypressi				
+		Athrotaxis selaginoides	D.Don		Athrotaxis	liekosypressi				
+	suku	Austrocedrus	Florin & Boutelje	MX.37824	Cupressaceae	chilentuoksuseetrit				
+		Austrocedrus chilensis	(D.Don) Pic.Serm. & Bizzarri	MX.37824	Cupressaceae	chilentuoksuseetri				
+	suku	Austrotaxus	Compton	MX.37829	Taxaceae	uurnakuuset	etelänmarjakuuset			
+		Austrotaxus spicata	Compton		Austrotaxus	uurnakuusi	etelänmarjakuusi			
+		Callitris neocaledonica	Dümmer	MX.5023280	Callitris	kruunusädesypressi				
+		Callitris pancheri	(Carrière) Byng	MX.5023280	Callitris	kynttelikkösädesypressi				
+		Callitris rhomboidea	R.Br. ex Rich.	MX.5023280	Callitris	rannikkosädesypressi				
+		Calocedrus formosana	(Florin) Florin	MX.5023281	Calocedrus	taiwanintuoksuseetri	tuoksusetri			
+	suku	Cathaya	Chun & Kuang	MX.37803	Pinaceae	tupsukuuset				
+		Cathaya argyrophylla	Chun & Kuang		Cathaya	tupsukuusi				
+		Cedrus atlantica	(Endl.) Manetti ex Carrière	MX.5023506	Cedrus	atlasseetri				
+		Cephalotaxus fortunei	Hook.	MX.5078488	Cephalotaxus	kiinanrypälekuusi				
+		Cupressus cashmeriana	Royle ex Carrière	MX.5009282	Cupressus	kashmirinsypressi				
+		Cupressus funebris	Endl.	MX.5009282	Cupressus	kiinansypressi				
+	suku	Dacrycarpus	(Endl.) de Laub.	MX.4985902	Podocarpaceae	kyynelkävyt				
+		Dacrycarpus dacrydioides	(A.Rich.) de Laub.		Dacrycarpus	maorinkyynelkäpy				
+		Dacrycarpus vieillardii	(Parl.) de Laub.		Dacrycarpus	uudenkaledoniankyynelkäpy				
+		Dacrydium araucarioides	Brongn. & Gris	MX.5023544	Dacrydium	patukkapihkatippio				
+		Dacrydium guillauminii	J. Buchholz	MX.5023544	Dacrydium	pensselipihkatippio				
+	suku	Diselma	Hook.f.	MX.37824	Cupressaceae	särmäsypressit				
+		Diselma archeri	Hook.f.		Diselma	särmäsypressi				
+		Ephedra nevadensis	S.Watson	MX.41850	Ephedra	nevadanefedra				
+	suku	Falcatifolium	de Laub.	MX.4985902	Podocarpaceae	podokit				
+		Falcatifolium taxoides	(Brongn. & Gris) de Laub.		Falcatifolium	siipipodokki				
+	suku	Fitzroya	Lindl.	MX.37824	Cupressaceae	patagoniansypressit				
+		Fitzroya cupressoides	(Molina) I.M.Johnst.		Fitzroya	patagoniansypressi				
+	suku	Fokienia	A.Henry & H.H.Thomas	MX.37824	Cupressaceae	viuhkasypressit				
+		Fokienia hodginsii	(Dunn) A.Henry & H.H.Thomas		Fokienia	viuhkasypressi				
+	suku	Glyptostrobus	Endl.	MX.37824	Cupressaceae	deltasypressit				
+		Glyptostrobus pensilis	(D.Don) K.Koch		Glyptostrobus	deltasypressi				
+	suku	Halocarpus	C.J.Quinn	MX.4985902	Podocarpaceae	kauluskävyt				
+		Halocarpus bidwillii	(Hook.f. ex Kirk) C.J.Quinn		Halocarpus	valkokauluskäpy				
+		Halocarpus kirkii	(F.Muell. ex Parl.) C.J.Quinn		Halocarpus	isokauluskäpy				
+	suku	Hesperocyparis	Bartel & R. A. Price	MX.37824	Cupressaceae	amerikansypressit				
+		Hesperocyparis arizonica	(Greene) Bartel		Hesperocyparis 	arizonansypressi				
+		Hesperocyparis macnabiana	(A.Murray bis) Bartel		Hesperocyparis	shastansypressi				
+		Hesperocyparis pygmaea	(Lemmon) Bartel		Hesperocyparis	mendocinonsypressi				
+		Hesperocyparis sargentii	(Jeps.) Bartel		Hesperocyparis	kaliforniansypressi				
+		Juniperus bermudiana	L.	MX.37825	Juniperus	bermudankataja				
+		Juniperus cedrus	Webb & Berthel.	MX.37825	Juniperus	madeirankataja				
+		Juniperus monosperma	(Engelm.) Sarg.	MX.37825	Juniperus	uudenmeksikonkataja				
+		Juniperus occidentalis	Hook.	MX.37825	Juniperus	lännenkataja				
+		Juniperus turbinata	Guss.	MX.37825	Juniperus	pyörrekataja				
+	suku	Keteleeria	Carrière	MX.37803	Pinaceae	kynttiläkävyt				
+		Keteleeria davidiana	(C.E.Bertrand) Beissn.		Keteleeria	papinkynttiläkäpy				
+	suku	Lagarostrobos	Quinn	MX.4985902	Podocarpaceae	suomuhunnut				
+		Lagarostrobos franklinii	(Hook.f.) Quinn		Lagarostrobos	suomuhuntu				
+	suku	Lepidothamnus	Phil.	MX.4985902	Podocarpaceae	suomuoksat				
+		Lepidothamnus fonkii	Phil.		Lepidothamnus	patagoniansuomuoksa				
+		Lepidothamnus laxifolius	(Hook.f.) Quinn		Lepidothamnus	vuorisuomuoksa				
+	suku	Libocedrus	Endl.	MX.37824	Cupressaceae	sarvisypressit				
+		Libocedrus austrocaledonica	Brongn. & Gris		Libocedrus	kolmiosarvisypressi				
+		Libocedrus chevalieri	J.Buchholz		Libocedrus	punossarvisypressi				
+		Libocedrus plumosa	(D.Don) Druce		Libocedrus	sulkasarvisypressi				
+		Libocedrus yateensis	Guillaumin		Libocedrus	nauhasarvisypressi				
+	suku	Manoao	Molloy	MX.4985902	Podocarpaceae	nekkakävyt				
+		Manoao colensoi	(Hook.) Molloy		Manoao	nekkakäpy				
+	suku	Nageia	Gaertn.	MX.4985902	Podocarpaceae	nagipuut				
+		Nageia nagi	(Thunb.) Kuntze		Nageia	idännagipuu				
+	suku	Papuacedrus	H.L.Li	MX.37824	Cupressaceae	vitjasypressit				
+		Papuacedrus papuana	(F.Muell.) H.L.Li		Papuacedrus	vitjasypressi				
+	suku	Parasitaxus	de Laub.	MX.4985902	Podocarpaceae	podorit				
+		Parasitaxus usta	(Vieill.) de Laub.		Parasitaxus	podori				
+	suku	Pectinopitys	C. N. Page	MX.4985902	Podocarpaceae	kampaoksat				
+		Pectinopitys ferruginea	(G.Benn. ex D.Don) C.N.Page		Pectinopitys	maorinkampaoksa				
+	suku	Pherosphaera	W.Archer bis	MX.4985902	Podocarpaceae	hippukävyt				
+		Pherosphaera hookeriana	W.Archer bis 		Pherosphaera	tasmanianhippukäpy				
+	suku	Phyllocladus	Rich. ex Mirb.	MX.4985902	Podocarpaceae	lapakkapuut				
+		Phyllocladus aspleniifolius	(Labill.) Hook.f.		Phyllocladus	tasmanianlapakkapuu				
+		Phyllocladus toatoa	Molloy		Phyllocladus	sinelapakkapuu				
+		Phyllocladus trichomanoides	D.Don		Phyllocladus	notkealapakkapuu				
+	variety	Phyllocladus trichomanoides var. alpinus	(Hook.f.) Parl.		Phyllocladus trichomanoides	vuorinotkealapakkapuu				
+		Picea breweriana	S.Watson	MX.37811	Picea	brewerinkuusi				
+		Picea polita	(Siebold & Zucc.) Carrière	MX.37811	Picea	tiikerinhäntäkuusi				
+		Picea smithiana	(Wall.) Boiss.	MX.37811	Picea	himalajankuusi				
+	suku	Pilgerodendron	Florin	MX.37824	Cupressaceae	ristisypressit				
+		Pilgerodendron uviferum	(D.Don) Florin		Pilgerodendron	ristisypressi				
+		Pinus ×rhaetica	Brügger	MX.37818	Pinus	rinnemänty				
+		Pinus arizonica	Engelm.	MX.37818	Pinus	arizonanmänty				
+		Pinus attenuata	Lemmon	MX.37818	Pinus	kyhmykäpymänty				
+		Pinus brutia	Ten.	MX.37818	Pinus	turkinmänty				
+		Pinus bungeana	Zucc. ex Endl.	MX.37818	Pinus	kiinanpähkinämänty				
+		Pinus canariensis	C.Sm. ex DC.	MX.37818	Pinus	kanarianmänty				
+	variety	Pinus contorta var. murrayana	(Balf.) S.Watson	MX.37821	Pinus contorta	kaliforniankontortamänty	murraynmänty			
+		Pinus coulteri	D.Don.	MX.37818	Pinus	jättikäpymänty	isokäpymänty			
+		Pinus halepensis	Mill.	MX.37818	Pinus	alepponmänty				
+		Pinus longaeva	D.K.Bailey	MX.37818	Pinus	okakäpymänty				
+		Pinus massoniana	Lamb.	MX.37818	Pinus	kiinanpunamänty 				
+		Pinus monophylla	Torr. & Frém.	MX.37818	Pinus	bajanmänty				
+		Pinus muricata	D.Don	MX.37818	Pinus	piispanmänty				
+		Pinus sabiniana	Douglas	MX.37818	Pinus	sabinenmänty				
+		Pinus tabuliformis	Carrière	MX.37818	Pinus	kiinanmustamänty				
+		Pinus taeda	L.	MX.37818	Pinus	loblollymänty				
+		Pinus thunbergii	Parl.	MX.37818	Pinus	japaninmustamänty				
+		Pinus torreyana	Parry ex Carrière	MX.37818	Pinus	kalifornianmänty	torreinmänty			
+		Podocarpus acutifolius	Kirk	MX.4985903	Podocarpus	neulapodokarpus				
+		Podocarpus gnidioides	Carrière	MX.4985903	Podocarpus	pensaspodokarpus				
+		Podocarpus lawrencii	Hook.f.	MX.4985903	Podocarpus	tasmanianpodokarpus				
+		Podocarpus macrophyllus	(Thunb.) Sweet	MX.4985903	Podocarpus	japaninpodokarpus				
+		Podocarpus neriifolius	D.Don	MX.4985903	Podocarpus	malesianpodokarpus				
+		Podocarpus nubigenus	Lindl.	MX.4985903	Podocarpus	pilvipodokarpus				
+		Podocarpus salignus	D.Don	MX.4985903	Podocarpus	pajupodokarpus				
+		Podocarpus totara	G.Benn. ex D.Don	MX.4985903	Podocarpus	maorinpodokarpus				
+	suku	Prumnopitys	Phil.	MX.4985902	Podocarpaceae	podomit				
+		Prumnopitys andina	(Poepp. ex Endl.) de Laub.		Prumnopitys	chilenpodomi				
+		Prumnopitys taxifolia	(Sol. ex D.Don) de Laub.		Prumnopitys	maorinpodomi				
+	suku	Pseudolarix	Gordon & Glend.	MX.37803	Pinaceae	kultalehtikuuset				
+		Pseudolarix amabilis	(J. Nelson) Rehder		Pseudolarix	kultalehtikuusi				
+	suku	Retrophyllum	C.N.Page	MX.4985902	Podocarpaceae	kieruhavut				
+		Retrophyllum minus	(Carrière) C.N.Page		Retrophyllum	tulvakieruhavu				
+	suku	Saxegothaea	Lindl.	MX.4985902	Podocarpaceae	prinssinkuuset				
+		Saxegothaea conspicua	Lindl.		Saxegothaea	prinssinkuusi				
+	suku	Sequoia	Endl.	MX.37824	Cupressaceae	lännenpunapuut	punapuut			
+		Sequoia sempervirens	(D.Don) Endl.		Sequoia	lännenpunapuu	punapuu			
+	suku	Taiwania	Hayata	MX.37824	Cupressaceae	sirppisypressit				
+		Taiwania cryptomerioides	Hayata		Taiwania	sirppisypressi				
+	variety	Taxodium distichum var. imbricarium	(Nutt.) Croom	MX.5024843	Taxodium distichum	nuorasuosypressi	suosypressi			
+	suku	Torreya	Arn.	MX.37829	Taxaceae	torreiat				
+		Torreya californica	Torr.		Torreya	kaliforniantorreia				
+		Torreya grandis	Fortune ex Lindl.		Torreya	pähkinätorreia	kiinantorreia			
+		Torreya nucifera	(L.) Siebold & Zucc.		Torreya	japanintorreia				
+	suku	Xanthocyparis	Farjon & T.H.Nguyên	MX.37824	Cupressaceae	keltasypressit				
+		Xanthocyparis vietnamensis	Farjon & T.H.Nguyên		Xanthocyparis	vietnaminkeltasypressi				
+		Cycas clivicola	K.D.Hill	MX.5023289	Cycas	klinttikruunukävykki				
+		Cycas seemannii	A.Braun	MX.5023289	Cycas	vanuatunkruunukävykki				
+		Encephalartos villosus	Lem.	MX.5008976	Encephalartos	villakarrookävykki				
+		Encephalartos horridus	(Jacq.) Lehm.	MX.5008976	Encephalartos	sinikarrookävykki				
+		Encephalartos kisambo	Faden & Beentje	MX.5008976	Encephalartos	taitankarrookävykki				
+	suku	Macrozamia	Miq.	MX.4986631	Zamiaceae	australiankävykit				
+		Macrozamia macdonnellii	(F.Muell. ex Miq.) A.DC.		Macrozamia	siniaustraliankävykki				
+		Zamia pseudoparasitica	J.Yates	MX.5023654	Zamia	panamansamiakävykki				
+		Acalypha wilkesiana	Müll.Arg.	MX.38702	Euphorbiaceae	kirjokissanhäntä				
+	suku	Aechmea	Ruiz & Pav.	MX.4985863	Bromeliaceae	huiskuananakset				
+		Aechmea castelnavii	Baker		Aechmea	bolivianhuisku				
+		Aechmea fasciata	(Lindl.) Baker		Aechmea	kirjohuisku				
+	suku	Aegonychon	Gray	MX.39397	Boraginaceae	asuurirusojuuret				
+		Aegonychon purpurocaeruleum	(L.) Holub		Aegonychon	mattorusojuuri				
+	suku	Aeschynanthus	Jack	MX.4986600	Gesneriaceae	soihtuköynnökset				
+		Aeschynanthus pulcher	(Blume) G.Don		Aeschynanthus 	somasoihtuköynnös	pikkusoihtuköynnös			
+		Agapanthus praecox	Willd.	MX.4971534	Agapanthus	tarhasinisarja				
+	suku	Aizoon	L.	MX.38020	Aizoaceae	nappipäivikit				
+		Aizoon canariense	L.		Aizoon	tassupäivikki				
+		Albuca donaldsonii	Rendle	MX.5009095	Albuca	kenianlyhdykki				
+		Allamanda cathartica	L.	MX.5023061	Allamanda	köynnöskustaankukka				
+		Alpinia purpurata	(Vieill.) K.Schum.	MX.5023655	Alpinia	punagalangajuuri				
+	suku	Alstroemeria	L.	MX.4986376	Alstroemeriaceae	inkaliljat				
+		Alstroemeria angustifolia	Herb.		Alstroemeria	roosainkalilja				
+		Alstroemeria psittacina	Lehm.		Alstroemeria	araninkalilja				
+	suku	Amborella	Baill.	MX.4986324	Amborellaceae	amborellat				
+		Amborella trichopoda	Baill.		Amborella	amborella				
+		Anigozanthos flavidus	Redouté	MX.5023369	Anigozanthos	keltakenguruntassu	kengurantassu			
+		Asclepias curassavica	L.	MX.4971296	Asclepias	punasilkkiyrtti				
+		Avicennia alba	Blume	MX.5009067	Avicennia	indonesianmustamangrove	mustamangrove			
+		Avicennia germinans	(L.) L.	MX.5009067	Avicennia	amerikanmustamangrove				
+	suku	Baloskion	Raf.	MX.4986406	Restionaceae	vihviöt				
+		Baloskion tetraphyllum	(Labill.) B.G.Briggs & L.A.S.Johnson		Baloskion	tupsuvihviö				
+	suku	Beaucarnea 	Lem.	MX.39977	Asparagaceae	pullojukat				
+		Beaucarnea recurvata 	(K.Koch & Fintelm.) Lem.		Beaucarnea	huiskupullojukka				
+		Begonia bowerae	Ziesenh.	MX.42822	Begonia	silmäripsibegonia				
+	suku	Bismarckia	Hildebrandt & H.Wendl.	MX.41726	Arecaceae	kanslerinpalmut				
+		Bismarckia nobilis 	Hildebrandt & H.Wendl.		Bismarckia	kanslerinpalmu				
+		Callianthe megapotamica	(A.Spreng.) Dorr	MX.38687	Malvaceae	lyhtyaulio				syn. Abutilon megapotamicum (A.Spreng.) A.St.-Hil. & Naudin
+		Callistemon viminalis	(Sol. ex Gaertn.) G.Don	MX.4985865	Callistemon	norjalamppuharja				syn. Melaleuca viminalis (Sol. ex Gaertn.) Byrnes
+		Carnegiea gigantea	(Engelm.) Britton & Rose	MX.4985864	Cactaceae	jättikaktus	jättiläiskaktus			
+	suku	Cassytha	Osbeck	MX.41737	Lauraceae	loislaakerit				
+		Cassytha filiformis 	L.		Cassytha	etelänloislaakeri				
+		Cenchrus ciliaris	L.	MX.41802	Cenchrus	hahtuharjasheinä	harjasheinä			
+	suku	Cephalotus	Labill.	MX.4986448	Cephalotaceae	maarulehdet				
+		Cephalotus follicularis	Labill.		Cephalotus	maarulehti				
+		Chlorophytum comosum	(Thunb.) Jacques	MX.5023120	Chlorophytum	kirjorönsylilja				
+		Chlorophytum tuberosum	(Roxb.) Baker	MX.5023120	Chlorophytum	rohtorönsylilja				
+	suku	Cistanche	Hoffmanns. & Link	MX.41740	Orobanchaceae	maahikit				
+		Cistanche phelypaea	(L.) Cout.		Cistanche	hietamaahikki				
+		Cistanche tubulosa	(Schenk) Wight ex Hook.f.		Cistanche	kultamaahikki				
+	nothospecies	Clerodendrum ×speciosum 	W.Bull	MX.5009036	Clerodendrum	palokohtalonköynnös				
+	suku	Coccoloba	P.Browne	MX.38210	Polygonaceae	norsunkorvat				
+		Coccoloba uvifera 	(L.) L.		Coccoloba	terttunorsunkorva	norsunkorva			
+	suku	Cochemiea	(K.Brandegee) Walton	MX.4985864	Cactaceae	patukkakaktukset				
+		Cochemiea grahamii	(Engelm.) Doweld		Cochemiea	arizonanpatukkakatus				
+	suku	Colletia	Comm. ex Juss.	MX.39267	Rhamnaceae	kolletiat				
+		Colletia paradoxa	(Spreng.) Escal.		Colletia	siipikolletia	kolletia			
+		Commiphora merkeri	Engl.	MX.5009277	Commiphora	masainmirhapuu				
+		Commiphora mildbraedii 	Engl.	MX.5009277	Commiphora	puikomirhapuu				
+		Cordyline australis	(G.Forst.) Endl.	MX.5023121	Cordyline	viherliljapuu				
+		Cordyline fruticosa	(L.) A.Chev.	MX.5023121	Cordyline	verililjapuu				
+	suku	Couroupita	Aubl.	MX.4986570	Lecythidaceae	kuulapuut	kanuunankuulapuut			
+		Couroupita guianensis 	Aubl.		Couroupita	kanuunankuulapuu				
+		Curio repens	(L.) P.V.Heath	MX.4986720	Curio	sinipulskavillakko	sinimehivillakko			
+		Cylindropuntia acanthocarpa	(Engelm. & J.M.Bigelow) F.M.Knuth	MX.5023214	Cylindropuntia	sarvilieriöopuntia				
+		Cylindropuntia bigelovii	(Engelm.) F.M.Knuth	MX.5023214	Cylindropuntia	mojavenlieriöopuntia				
+		Cylindropuntia fulgida	(Engelm.) F.M.Knuth	MX.5023214	Cylindropuntia	nuijalieriöopuntia				
+		Cylindropuntia leptocaulis	(DC.) F.M.Knuth	MX.5023214	Cylindropuntia	kynälieriöopuntia				
+		Cymbopogon pospischilii	(K.Schum.) C.E.Hubb.	MX.5023528	Cymbopogon	tansaniansitrusheinä				
+	suku	Cymodocea	K.D.Koenig	MX.4986363	Cymodoceaceae	suolanauhat				
+		Cymodocea rotundata	Asch. & Schweinf.		Cymodocea	aasiansuolanauha				
+		Cyperus niveus	Retz.	MX.41836	Cyperus	helmisädekaisla				
+	suku	Dendrosenecio	(Hauman ex Hedberg) B.Nord.	MX.39723	Asteraceae	jättivillakot				
+		Dendrosenecio elgonensis	(T.C.E.Fr.) E.B.Knox		Dendrosenecio	elgoninjättivillakko	jättivillakko			
+	alalaji	Dendrosenecio elgonensis subsp. barbatipes	(Hedberg) E.B.Knox		Dendrosenecio elgonensis	partaelgoninjättivillakko	partajättivillakko			
+	suku	Dieffenbachia	Schott	MX.40090	Araceae	kirjovehkat				
+		Dieffenbachia seguine	(Jacq.) Schott		Dieffenbachia	täpläkirjovehka				
+	suku	Dipterocarpus	C.F.Gaertn.	MX.4986514	Dipterocarpaceae	siipipuut				
+		Dipterocarpus alatus	Roxb. ex G.Don		Dipterocarpus	indokiinansiipipuu	siipipuu			
+	suku	Dracophyllum 	Labill.	MX.38594	Ericaceae	traakkiot				
+		Dracophyllum verticillatum	Labill.		Dracophyllum	kiehkuratraakkio				
+	suku	Echinocereus	Engelm.	MX.4985864	Cactaceae	piirikaktukset				
+		Echinocereus fendleri	(Engelm.) Sencke ex Haage		Echinocereus	roosapiirikaktus	piirikaktus			
+		Eragrostis superba	Peyr.	MX.40646	Eragrostis	pulskaröllinurmikka	röllinurmikka			
+	suku	Eriocaulon	L.	MX.4986403	Eriocaulaceae	nuppipuikot				
+		Eriocaulon neocaledonicum	Schltr.		Eriocaulon	uudenkaledoniannuppipuikko				
+	suku	Etlingera	Giseke	MX.4986400	Zingiberaceae	inkivääriöt				
+		Etlingera elatior	(Jack) R.M.Sm.		Etlingera	soihtuinkivääriö				
+		Euphorbia balsamifera	Aiton	MX.38706	Euphorbia	palsamityräkki				
+		Ferocactus acanthodes	(Lem.) Britton & Rose	MX.5023220	Ferocactus	pylväsrautakaktus				syn. Ferrocactus cylindraceus (Engelm.) Orcutt
+		Ferocactus histrix	(DC.) G.E.Linds.	MX.5023220	Ferocactus	pronssirautakaktus				
+		Ferocactus robustus	(Otto ex Pfeiff.) Britton & Rose	MX.5023220	Ferocactus	parvirautakaktus				
+		Ferocactus wislizeni	(Engelm.) Britton & Rose	MX.5023220	Ferocactus	arizonanrautakaktus				
+	suku	Fimbristylis	Vahl	MX.40242	Cyperaceae	rassikaislat				
+		Fimbristylis dichotoma	(L.) Vahl		Fimbristylis	röyhyrassikaisla				
+		Fouquieria columnaris	(Kellogg) Kellogg ex Curran	MX.5023354	Fouquieria	pylväsokotillo				
+	suku	Genlisea	A.St.-Hil.	MX.39683	Lentibulariaceae	lumejuuret				
+		Genlisea hispidula	Stapf		Genlisea	sänkilumejuuri				
+		Goeppertia zebrina	(Sims) Nees	MX.5023436	Goeppertia	kirjomaijakki	seepramaija			
+		Haemanthus albiflos	Jacq.	MX.5023029	Haemanthus	valkotupsukki				
+	suku	Halodule	Endl.	MX.4986363	Cymodoceaceae	purtonauhat				
+		Halodule pinifolia	(Miki) Hartog		Halodule	thaimaanpurtonauha				
+	suku	Heliamphora	Benth.	MX.4986578	Sarraceniaceae	lippasuppilot				
+		Heliamphora nutans	Benth.		Heliamphora	mesanlippasuppilo				
+		Heliconia bihai	(L.) L.	MX.5103361	Heliconia	laikkuhelikonia				
+		Heliconia psittacorum	L. f.	MX.5103361	Heliconia	kirjohelikonia				
+		Heliotropium longiflorum	(A.DC.) Jaub. & Spach	MX.41875	Heliotropium 	helmiheliotrooppi				
+		Heliotropium steudneri	Vatke	MX.41875	Heliotropium 	tiaraheliotrooppi				
+		Heliotropium zeylanicum	(Burm.f.) Lam.	MX.41875	Heliotropium 	hyrräheliotrooppi				
+		Hypoxis baurii	Baker	MX.5009203	Hypoxis	roosahelotähti				
+	suku	Ixora	L.	MX.39276	Rubiaceae	tähtikukat				
+		Ixora coccinea	L.		Ixora	korallitähtikukka				
+		Juncus acutus	L.	MX.40195	Juncus	pistinvihvilä				
+		Lobelia bambuseti	R.E.Fr. & T.C.E.Fr.	MX.39721	Lobelia	aberdarenlobelia				
+		Lobelia flaccida	(C.Presl) A.DC.	MX.39721	Lobelia	sirolobelia				
+		Lobelia holstii	Engl.	MX.39721	Lobelia	kenianlobelia				
+		Lobelia lindblomii	Mildbr.	MX.39721	Lobelia	lamolobelia				
+		Lobelia telekii	Schweinf.	MX.39721	Lobelia	turkkilobelia				
+		Lobelia tupa	L.	MX.39721	Lobelia	liekkilobelia				
+		Magnolia champaca	(L.) Baill. ex Pierre	MX.5023422	Magnolia	tuoksumagnolia	tuoksusampaka			
+	suku	Mandevilla	Lindl.	MX.41748	Apocynaceae	maljaköynnökset				
+		Mandevilla sanderi	(Hemsl.) Woodson		Mandevilla	ruusumaljaköynnös				
+		Maranta leuconeura	É.Morren	MX.5023437	Maranta	paavonnukkumatti				
+	suku	Melinis	P.Beauv.	MX.40431	Poaceae	neidonheinät				
+		Melinis minutiflora	P.Beauv.		Melinis	rusoneidonheinä				
+		Melinis repens	(Willd.) Zizka		Melinis	juolaneidonheinä				
+	suku	Monanthes	Haw.	MX.38735	Crassulaceae	mesipaunikot				
+		Monanthes laxiflora	(DC.) Bolle		Monanthes	kanarianmesipaunikko				
+		Monanthes minima	(Bolle) Christ		Monanthes	pikkumesipaunikko				
+		Monanthes pallens	(Webb ex Christ) Christ		Monanthes	kalvasmesipaunikko				
+		Monanthes polyphylla	Haw.		Monanthes	palleromesipaunikko				
+		Nepenthes vieillardii	Hook.f.	MX.5021004	Nepenthes	uudenkaledoniankannukasvi				
+		Ophrys sphegodes	Mill.	MX.40078	Ophrys	hämähäkkiorho				
+		Opuntia cochenillifera	(L.) Mill.	MX.5009231	Opuntia	väriopuntia				
+		Opuntia humifusa	(Raf.) Raf.	MX.5009231	Opuntia	pikkuopuntia				
+		Opuntia microdasys	(Lehm.) Pfeiff.	MX.5009231	Opuntia	jänönopuntia				
+		Opuntia stricta	(Haw.) Haw.	MX.5009231	Opuntia	okaopuntia				
+		Orchis pallens	L.	MX.40075	Orchis	kermakämmekkä				
+		Opuntia tomentosa	Salm-Dyck	MX.5009231	Opuntia	samettiopuntia				
+		Oreocereus celsianus	(Jacques & Hérincq) A.Berger ex Riccob.	MX.5023228	Oreocereus	ukinseittikaktus				
+		Passiflora foetida	L.	MX.5009236	Passiflora	kampapassio				
+		Philodendron quinquenervium	Miq.	MX.5023086	Philodendron	brasilianköynnösvehka				
+		Pinguicula cyclosecta	Casper	MX.39684	Pinguicula	meksikonyökönlehti				
+		Pinguicula macroceras	Pall. ex Link	MX.39684	Pinguicula	beringinyökönlehti				
+	suku	Plumbago	Tourn. ex L.	MX.38290	Plumbaginaceae	lyijykukat				
+		Plumbago auriculata	Lam.		Plumbago	sinilyijykukka	kapinlyijykukka			
+		Plumbago zeylanica	L.		Plumbago 	vitilyijykukka				
+		Pontederia cordata	L.	MX.5023558	Pontederia	herttavesihyasintti				
+		Pseuderanthemum maculatum	(G.Lodd.) I.M.Turner	MX.5023003	Pseuderanthemum	punamarmoriini				
+		Puya alpestris	(Poepp.) Gay	MX.5023208	Puya	safiiripuija				
+	suku	Pyrostegia	C.Presl	MX.4986604	Bignoniaceae	pillitrumpetit	tulitrumpetit			
+		Pyrostegia venusta	(Ker Gawl.) Miers		Pyrostegia	tulipillitrumpetti	tulitrumpetti			
+	suku	Restio	Rottb.	MX.4986406	Restionaceae	restiot				
+		Restio subverticillatus	(Steud.) Mast.		Restio	ruosterestio				
+	suku	Roridula	Burm. ex L.	MX.4986579	Roridulaceae	kihopensaat				
+		Roridula gorgonias	Planch.		Roridula	nauhakihopensas				
+		Scaevola aemula	R.Br.	MX.5023367	Scaevola	siniviuhkakukka				
+		Scaevola cylindrica	Schltr. & K.Krause	MX.5023367	Scaevola	uudenkaledonianviuhkakukka				
+		Scaevola taccada	(Gaertn.) Roxb.	MX.5023367	Scaevola	meriviuhkakukka				
+		Senegalia thomasii	(Harms) Kyal. & Boatwr.	MX.5009169	Senegalia	taitanakaasia				
+		Setaria sphacelata	(Schumach.) Stapf & C. E. Hubb. ex Moss	MX.40659	Setaria	afrikanpantaheinä				
+	suku	Solandra	Sw.	MX.39539	Solanaceae	maljaliaanit				
+		Solandra maxima	(Moc. & Sessé ex Dunal) P. S. Green		Solandra	isomaljaliaani				
+	suku	Strasburgeria	Baill.	MX.4986492	Strasburgeriaceae	nokkakuulat				
+		Strasburgeria robusta 	(Vieill. ex Pancher & Sebert) Guillaumin		Strasburgeria	nokkakuula				
+	suku	Syngonium	Schott	MX.40090	Araceae	kultakorvat				
+		Syngonium podophyllum	Schott		Syngonium	muulinkultakorva				
+		Syzygium cumini	(L.) Skeels	MX.4979740	Syzygium	jaavanjambolaani				
+	suku	Talbotia	Balf.	MX.4986369	Velloziaceae	kainotoivukit				
+		Talbotia elegans	Balf.		Talbotia	kainotoivukki				
+		Tamarix canariensis	Willd.	MX.5023628	Tamarix	kanariantamariski				
+		Tetrapogon tenellus	(J.Koenig ex Roxb.) Chiov.	MX.5009180	Tetrapogon	hoikkakolkkatähkä	kolkkaheinä			
+	suku	Thamnochortus	P.J.Bergius	MX.4986406	Restionaceae	kaisliot				
+		Thamnochortus lucens	(Poir.) H.P.Linder		Thamnochortus	pronssikaislio				
+		Thunbergia grandiflora	Roxb.	MX.5009310	Thunbergia	kellosusanna				
+	suku	Torenia	L.	MX.289483	Linderniaceae	toreniat				
+		Torenia fournieri	Linden ex E.Fourn. 		Torenia	kirjotorenia				
+		Tradescantia pallida	(Rose) D.R.Hunt 	MX.42794	Tradescantia	purppuravenhojuoru	purppurajuoru			
+		Tradescantia spathacea	Sw.	MX.42794	Tradescantia	taskuvenhojuoru	taskujuoru			
+	suku	Tristicha	Thouars	MX.4986458	Podostemaceae	vuollenuppiaiset				
+		Tristicha trifaria	(Bory ex Willd.) Spreng.		Tristicha	vuollenuppiainen				
+	suku	Turnera	Plum. ex L.	MX.4986472	Passifloraceae	haaremiyrtit				
+		Turnera ulmifolia	L.		Turnera	karibianhaaremiyrtti				
+		Utricularia subulata	L.	MX.39688	Utricularia	sorjavesiherne				
+		Xerophyta spekei 	Baker	MX.5009300	Xerophyta	tansaniantoivukki				
+	suku	Xyris	Gronov. ex L.	MX.4986402	Xyridaceae	suomunupit				
+		Xyris pancheri	Rendle		Xyris	uudenkaledoniansuomunuppi				
+		Yucca brevifolia	Engelm.	MX.5020936	Yucca	joosuanjukka				
+	suku	Tetraena	Maxim.	MX.4986430	Zygophyllaceae	mehikorvat				
+		Tetraena fontanesii	(Webb & Berthel.) Beier & Thulin		Tetraena	kanarianmehikorva				Syn. Zygophyllum fontanesii
+		Abutilon mauritianum	(Jacq.) Medik.	MX.38698	Abutilon	kuituaulio				
+		Abutilon rehmannii	Baker f.	MX.38698	Abutilon	samettiaulio				
+		Acalypha crenata	Hochst. ex A.Rich.	MX.41760	Acalypha	nirkkokissanhäntä				
+		Acalypha paniculata	Miq.	MX.41760	Acalypha	röyhykissanhäntä				
+	suku	Acanthospermum	Schrank	MX.39723	Asteraceae	tarritähdet				
+		Acanthospermum hispidum	DC.		Acanthospermum	partatarritähti				
+	suku	Achyranthes	L.	MX.5081107	Amaranthaceae	tähkähännät				
+		Achyranthes aspera	L.		Achyranthes	otatähkähäntä				
+		Acmella caulirhiza	Delile	MX.5023148	Acmella	juurtoparakrassi				
+		Acmella uliginosa	(Sw.) Cass.	MX.5023148	Acmella	pikkuparakrassi				
+	suku	Adenostemma	J.R.Forst. & G.Forst.	MX.39723	Asteraceae	nuijalatvat				
+		Adenostemma mauritianum	DC.		Adenostemma	huiskilonuijalatva				
+		Aeollanthus densiflorus	Ryding	MX.5008988	Aeollanthus	tähkätuulenminttu				
+		Aeollanthus repens	Oliv.	MX.5008988	Aeollanthus	mehituulenminttu				
+	suku	Aerva	Forssk.	MX.42334	Acanthaceae	karvahännät				
+		Aerva javanica	(Burm. f.) Juss. ex Schult.		Aerva	villakarvahäntä				
+	suku	Agathisanthemum	Klotzsch	MX.39276	Rubiaceae	pörhökit				
+		Agathisanthemum bojeri	Klotzsch		Agathisanthemum	valkopörhökki				
+	suku	Alectra	Thunb.	MX.41740	Orobanchaceae	kellakot				
+		Alectra sessiliflora	(Vahl) Kuntze		Alectra	afrikankellakko				
+		Aloë lateritia	Engl.	MX.5008994	Aloë	tiiliaaloe				
+		Aloë secundiflora	Engl.	MX.5008994	Aloë	katkeroaaloe				
+		Aloë somaliensis	C.H.Wright ex W.Watson	MX.5008994	Aloë	somalianaaloe				
+		Aloë volkensii	Engl.	MX.5008994	Aloë	sansibarinaaloe				
+		Alternanthera pungens	Kunth	MX.4971302	Alternanthera	rikkakaijalehti	rikkapapukaijalehti			
+	suku	Aristida	L.	MX.40431	Poaceae	vihniöt				
+		Aristida kenyensis	Henrard		Aristida	kenianvihniö				
+	suku	Aspilia	Thouars	MX.39723	Asteraceae	paistekukat				
+		Aspilia mossambicensis	(Oliv.) Wild		Aspilia	rohtopaistekukka				
+	suku	Astripomoea	A. Meeuse	MX.39369	Convolvulaceae	tähtisuppilot				
+		Astripomoea grantii	(Rendle) Verdc.		Astripomoea	ugandantähtisuppilo				
+		Astripomoea hyoscyamoides	(Vatke) Verdc.		Astripomoea	tansaniantähtisuppilo				
+		Astripomoea lachnosperma	(Choisy) A.Meeuse		Astripomoea	savannitähtisuppilo				
+	suku	Athroisma	DC.	MX.39723	Asteraceae	kainonupit				
+		Athroisma gracile	(Oliv.) Mattf.		Athroisma	hoikkakainonuppi				
+		Baccharoides lasiopus	(O.Hoffm.) H.Rob.	MX.5023152	Baccharoides	tansaniantilkkukehto				
+		Balanites pedicellaris	Mildbr. & Schltr.	MX.5009069	Balanites	pikkuneulapuu				
+	suku	Barleria	L.	MX.42334	Acanthaceae	särmiöt				
+		Barleria acanthoides	Vahl		Barleria	piikkisärmiö				
+		Barleria eranthemoides	R.Br. ex C.B.Clarke		Barleria	mesisärmiö				
+		Barleria prionitis 	L.		Barleria	sitruunasärmiö				
+		Barleria submollis	Lindau		Barleria	liilasärmiö				
+	suku	Basananthe	Peyr.	MX.4986472	Passifloraceae	ripsumaljat				
+		Basananthe hanningtoniana	(Mast.) J.J.de Wilde		Basananthe	tansanianripsumalja				
+	suku	Blepharis	Juss.	MX.42334	Acanthaceae	pistiöt				
+		Blepharis linariifolia	Pers.		Blepharis	nauhapistiö				
+	suku	Boerhavia	Vaill. ex L.	MX.42932	Nyctaginaceae	pamppiot				
+		Boerhavia coccinea	Mill.		Boerhavia	punapamppio				
+		Boerhavia diffusa	L.		Boerhavia	rohtopamppio				
+		Boerhavia erecta	L.		Boerhavia	kruunupamppio				
+		Bothriochloa insculpta	(Hochst. ex A.Rich.) A.Camus	MX.5023522	Bothriochloa	rönsytikkiheinä				
+	suku	Bothriocline	Oliv. ex Benth.	MX.39723	Asteraceae	retliinilatvat				
+		Bothriocline longipes	(Oliv. & Hiern) N.E.Br.		Bothriocline	tansanianretliinilatva				
+	suku	Brachylaena	R.Br.	MX.39723	Asteraceae	tammikit				
+		Brachylaena huillensis	O.Hoffm.		Brachylaena	mahtitammikki				
+		Cardiospermum corindum	L.	MX.5014757	Cardiospermum	pikkupalloköynnös				
+		Carex peregrina	Link	MX.40288	Carex	nuolisara				
+	suku	Caylusea	A.St.-Hil.	MX.38518	Resedaceae	resediot				
+		Caylusea abyssinica	(Fresen.) Fisch. & C.A.Mey.		Caylusea	vihannesresedio				
+		Cenchrus clandestinus	(Hochst. ex Chiov.) Morrone	MX.41802	Cenchrus	mattosulkahirssi				
+	suku	Centella	L.	MX.39171	Apiaceae	konnanputket				
+		Centella asiatica	(L.) Urb.		Centella	rohtokonnanputki	rohtosammakonputki 			
+	suku	Centemopsis	Schinz	MX.5081107	Amaranthaceae	tippatähkät				
+		Centemopsis kirkii	(Hook.f.) Schinz		Centemopsis	hurmetippatähkä				
+		Cerastium lanceolatum	(Poir.) Volponi	MX.38063	Cerastium	suikohärkki				
+		Ceropegia ballyana	Bullock	MX.5009268	Ceropegia	kenianlyhty				
+		Ceropegia verticillata	Masinde	MX.5009268	Ceropegia	mbololonlyhty				Löytynyt vain Mbololon metsästä Taitalta.
+	suku	Chamaepentas	Bremek.	MX.39276	Rubiaceae	kiitäjänpillit				
+		Chamaepentas hindsioides	(K.Schum.) Kårehed & B.Bremer		Chamaepentas	keniankiitäjänpilli				
+		Cissus adeyana	Masinde & L.E.Newton	MX.5009273	Cissus	keniankissus				
+		Cissus petiolata	Hook.f.	MX.5009273	Cissus	korkkikissus				
+		Cissus phymatocarpa	Masinde & L.E.Newton	MX.5009273	Cissus	pulskakissus				
+		Clematis brachiata	Thunb.	MX.37891	Clematis	kapinkärhö				
+		Clematis simensis	Fresen.	MX.37891	Clematis	etiopiankärhö				
+		Sieruela hirta	(Klotzsch) Roalson & J.C.Hall	MX.5023260	Sieruela	kaitatäpläviuhka				Syn. Cleome hirta (Klotzsch) Oliv.
+		Sieruela monophylla	(L.) Roalson & J.C.Hall	MX.5023260	Sieruela	horsmatäpläviuhka				Syn. Cleome monophylla L.
+		Coleus meyeri	(Gürke) A.J.Paton	MX.4971535	Coleus	tansanianliisukka				syn. Pycnostachys meyeri Gürke
+		Coleus triangularis	(A.J.Paton) A.J.Paton	MX.4971535	Coleus	taitanliisukka				
+	suku	Commicarpus	Standl.	MX.42932	Nyctaginaceae	nupikit				
+		Commicarpus helenae	(Schult.) Meikle		Commicarpus	helenannupikki				
+		Commicarpus plumbagineus	(Cav.) Standl.		Commicarpus	valkonupikki				
+		Erigeron newii	Oliv. & Hiern	MX.39739	Erigeron	kultakoiransilmä				
+		Corchorus tridens	L.	MX.41827	Corchorus	kaitajuutti				
+		Corchorus urticifolius	Wight & Arn.	MX.41827	Corchorus	nokkosjuutti				
+	suku	Cordylostigma	Groeninckx & Dessein	MX.39276	Rubiaceae	ristimöt				
+		Cordylostigma microcala	(Bremek.) Groeninckx & Dessein		Cordylostigma	siroristimö				
+	suku	Crassocephalum	Moench	MX.39723	Asteraceae	sudikot				
+		Crassocephalum crepidioides	(Benth.) S.Moore		Crassocephalum	oranssisudikko				
+		Crassocephalum montuosum	(S.Moore) Milne-Redh.		Crassocephalum	kultasudikko				
+		Crassocephalum vitellinum	(Benth.) S.Moore		Crassocephalum	hehkusudikko				
+		Crassula volkensii	Engl.	MX.38736	Crassula	kirjopaunikko				
+	suku	Craterostigma	Hochst.	MX.289483	Linderniaceae	pampulasuut				
+		Craterostigma plantagineum	Hochst.		Craterostigma	orvokkipampulasuu				
+		Crinum macowanii	Baker	MX.5023027	Crinum	pasuunakriinumi				
+		Cuscuta planiflora	Ten.	MX.39381	Cuscuta	lihakukkavieras				
+	suku	Cyathula	Blume	MX.5081107	Amaranthaceae	tarriot				
+		Cyathula cylindrica	Moq.		Cyathula	telatarrio				
+		Cyathula hildebrandtii	(Schinz) Di Vincenzo, Berends., Wondafr. & Borsch		Cyathula	taitantarrio				
+		Cyathula polycephala	Baker		Cyathula	runsotarrio				
+		Cyathula uncinulata	(Schrad.) Schinz		Cyathula	kerätarrio				
+	suku	Cycnium	E.Mey. ex Benth.	MX.41740	Orobanchaceae	kaulakit				
+		Cycnium herzfeldianum	(Vatke) Engl.		Cycnium	keniankaulakki				
+		Cynanchum gerrardi	(Harv.) Liede	MX.5023063	Cynanchum	koruhukankierto				
+		Cynodon nlemfuensis	Vanderyst	MX.41835	Cynodon	afrikanvarvasheinä				
+		Cynoglossum amplifolium	Hochst. ex A.DC.	MX.39446	Cynoglossum	laikkakoirankieli				
+		Cynoglossum coeruleum	Hochst. ex A.DC.	MX.39446	Cynoglossum	keilakoirankieli				
+		Cynoglossum lanceolatum	Forssk.	MX.39446	Cynoglossum	suikokoirankieli				
+		Cyperus difformis	L.	MX.41836	Cyperus	kirjosädekaisla				
+		Cyperus hemisphaericus	Boeckeler	MX.41836	Cyperus	ternisädekaisla				
+		Cyperus hortensis	(Salzm. ex Steud.) Dorr	MX.41836	Cyperus	tapulisädekaisla				
+		Cyperus rubicundus	Vahl	MX.41836	Cyperus	lastasädekaisla				
+		Cyphostemma adenocaule	(Steud. ex A.Rich.) Desc. ex Wild & R.B.Drumm.	MX.5009051	Cyphostemma	vihannespulskio				
+		Dactyloctenium geminatum	Hack.	MX.42747	Dactyloctenium	hiekkaraspiheinä				
+		Dalechampia scandens	L.	MX.5025259	Dalechampia	liuskaliihoköynnös				
+		Daucus incognitus	(C.Norman) Spalik, Reduron & Banasiak	MX.39263	Daucus 	kenianporkkana				
+		Delphinium macrocentrum	Oliv.	MX.37871	Delphinium	elgoninritarinkannus				
+	suku	Dichrocephala	L'Hér. ex DC.	MX.39723	Asteraceae	kupunupit				
+		Dichrocephala integrifolia	(L.f.) Kuntze		Dichrocephala	rohtokupunuppi				
+	suku	Diclis	Benth.	MX.39567	Scrophulariaceae	täpläkidat				
+		Diclis ovata	Benth.		Diclis	valkotäpläkita				
+	suku	Digera	Forssk.	MX.42334	Acanthaceae	hoikkahännät				
+		Digera muricata	(L.) Mart.		Digera	hoikkahäntä				
+	suku	Diplocyclos	(Endl.) Post & Kuntze	MX.38342	Cucurbitaceae	namuköynnökset				
+		Diplocyclos palmatus	(L.) C. Jeffrey		Diplocyclos	sorminamuköynnös				
+	suku	Droguetia	Gaudich.	MX.37982	Urticaceae	kehtosykeröt				
+		Droguetia debilis	Rendle		Droguetia	hoikkakehtosykerö				
+	suku	Ecbolium	Kurz	MX.42334	Acanthaceae	käpytähkät				
+		Ecbolium subcordatum	C.B.Clarke		Ecbolium	keniankäpytähkä				
+	suku	Edithcolea	N.E.Br.	MX.41748	Apocynaceae	haaskakukat				
+		Edithcolea grandis	N.E.Br.		Edithcolea	haaskakukka				
+	alalaji	Eleusine coracana subsp. africana	(Kenn.-O'Byrne) Hilu & de Wet	MX.5009497	Eleusine coracana	afrikanviljasormihirssi				
+		Emilia coccinea	(Sims) G.Don	MX.5008974	Emilia	tuliemilia				
+		Emilia discifolia	(Oliv.) C.Jeffrey	MX.5008974	Emilia	kultaemilia				
+		Englerina drummondii	Balle ex Polhill & Wiens	MX.5008977	Englerina	oranssitulipilli				
+	suku	Entada	Adans.	MX.38942	Fabaceae	kuplapalot				
+		Entada leptostachya	Harms		Entada	keniankuplapalko				
+	suku	Equilabium	Mwany., A.J.Paton & Culham	MX.39448	Lamiaceae	koukkuliisukat				
+		Equilabium laxiflorum	(Benth.) Mwany., A.J.Paton & Culham		Equilabium	kainoliisukka				
+		Eragrostis ciliaris	(L.) R.Br.	MX.40646	Eragrostis	afrikanröllinurmikka				
+		Eragrostis racemosa	(Thunb.) Steud.	MX.40646	Eragrostis 	tertturöllinurmikka				
+		Erigeron karvinskianus	DC.	MX.39739	Erigeron	rentokallioinen				
+		Erucastrum arabicum	Fisch. & C.A.Mey.	MX.38504	Erucastrum	arabiankaalisinappi				
+	suku	Eschenbachia	Moench	MX.39723	Asteraceae	turrinsilmät				
+		Eschenbachia subscaposa	(O.Hoffm.) G.L.Nesom		Eschenbachia	tansanianturrinsilmä				
+		Eulophia speciosa	(R.Br.) Bolus	MX.5008978	Eulophia	keltakorvakämmekkä				
+		Eulophia taitensis	Pfennig & P.J.Cribb	MX.5008978	Eulophia	taitankorvakämmekkä				
+		Euphorbia arabica	Hochst. & Steud. ex T.Anderson	MX.38706	Euphorbia	arabiantyräkki				
+		Euphorbia granulata	Forssk.	MX.38706	Euphorbia	kuuratyräkki				
+		Euphorbia hirta	L.	MX.38706	Euphorbia	kerätyräkki				
+		Euphorbia indica	Lam.	MX.38706	Euphorbia	melatyräkki				
+	suku	Euploca	Nutt.	MX.4971902	Heliotropiaceae	helioopit				
+		Euploca strigosa	(Willd.) Diane & Hilger		Euploca	hiekkaheliooppi				
+	suku	Euryops	(Cass.) Cass.	MX.39723	Asteraceae	marjukat	kehrämöt			
+		Euryops chrysanthemoides	(DC.) B.Nord.		Euryops	kesämarjukka				
+	suku	Evelynastra	Di Vincenzo, Berends., Wondafr. & Borsch	MX.5081107	Amaranthaceae	tähtilehdet				
+		Evelynastra pallida	(S.Moore) Di Vincenzo, Berends., Wondafr. & Borsch		Evelynastra	tähtilehti				
+	suku	Evolvulus	L.	MX.39369	Convolvulaceae	kreppikukat				
+		Evolvulus alsinoides	(L.) L.		Evolvulus	safiirikreppikukka				
+	suku	Farsetia	Turra	MX.38351	Brassicaceae	kuitulidut				
+		Farsetia stenoptera	Hochst.		Farsetia	suikokuitulitu				
+	suku	Flaveria	Juss.	MX.39723	Asteraceae	keltalatvat				
+		Flaveria trinervia	(Spreng.) C.Mohr		Flaveria	meksikonkeltalatva				
+	suku	Gerbera	L.	MX.39723	Asteraceae	gerberat				
+		Gerbera piloselloides	(L.) Cass.		Gerbera	pamppugerbera				
+	suku	Gutenbergia	Sch.Bip.	MX.39723	Asteraceae	purppuralatvat				
+		Gutenbergia cordifolia	Benth. ex Oliv.		Gutenbergia	isopurppuralatva				
+		Gymnanthemum auriculiferum	(Hiern) Isawumi	MX.5009084	Gymnanthemum	korvakainolatva	kainolatva			
+	suku	Harpachne	Hochst. ex A.Rich.	MX.40431	Poaceae	rassiheinät				
+		Harpachne schimperi	Hochst. ex A.Rich.		Harpachne	afrikanrassiheinä				
+		Hedychium coronarium	J.Koenig	MX.5023657	Hedychium	valkotuoksuinkivääri				
+		Helichrysum foetidum	(L.) Moench	MX.41874	Helichrysum	tuoksuolkikukka				
+		Helichrysum forskahlii	(J.F.Gmel.) Hilliard & B.L.Burtt	MX.41874	Helichrysum	varpuolkikukka				
+		Helichrysum glumaceum	DC.	MX.41874	Helichrysum	valko-olkikukka				
+	suku	Pseudognaphalium	Kirp.	MX.39723	Asteraceae	keltajäkkärät				
+		Pseudognaphalium luteoalbum	(L.) Hilliard & B.L.Burtt		Pseudognaphalium	valkojäkkärä				Syn. Helichrysum luteoalbum (L.) Rchb.
+		Helichrysum odoratissimum	 (L.) Sweet 	MX.41874	Helichrysum	tansanianolkikukka				
+		Helichrysum setosum	Harv.	MX.41874	Helichrysum	aurinko-olkikukka				
+		Helichrysum stenopterum	DC.	MX.41874	Helichrysum	siipiolkikukka				
+	suku	Helinus	E.Mey. ex Endl.	MX.39267	Rhamnaceae	tuppiheteet				
+		Helinus integrifolius	(Lam.) Kuntze		Helinus	silotuppihede											
+	suku	Hermannia	L.	MX.38687	Malvaceae	kelloset				
+		Hermannia exappendiculata	(Mast.) K.Schum. ex Engl.		Hermannia	keniankellonen				
+	suku	Heterocentron	Hook. & Arn.	MX.4986481	Melastomataceae	puntarkukat				
+		Heterocentron elegans	(Schltdl.) Kuntze		Heterocentron	purppurapuntarkukka				
+	suku	Heteropogon	Pers.	MX.40431	Poaceae	vihnelatvat				
+		Heteropogon contortus	(L.) P.Beauv. ex Roem. & Schult.		Heteropogon	kierrevihnelatva				
+		Hibiscus flavifolius	Ulbr.	MX.38700	Hibiscus	kenianhibiskus				
+		Hibiscus surattensis	L.	MX.38700	Hibiscus	hyrrähibiskus				
+		Hypericum peplidifolium	A.Rich.	MX.38298	Hypericum	lamokuisma				
+	suku	Hyperthelia	Clayton	MX.40431	Poaceae	harjasröyhyt				
+		Hyperthelia dissoluta	(Nees ex Steud.) Clayton		Hyperthelia	afrikanharjasröyhy				
+	suku	Hypoestes	Sol. ex R. Br.	MX.42334	Acanthaceae	tuppitorvet	pilkkulehdet			
+		Hypoestes aristata	(Vahl) Sol. ex Roem. & Schult.		Hypoestes	vihnetuppitorvi				
+		Hypoestes phyllostachya	Baker		Hypoestes	pilkkutuppitorvi				
+		Hypoestes triflora	(Forssk.) Roem. & Schult.		Hypoestes	rusotuppitorvi				
+		Ipomoea eriocarpa	R.Br.	MX.39376	Ipomoea	tiukuelämänlanka				
+		Ipomoea indica	(Burm.) Merr.	MX.39376	Ipomoea	taivaanelämänlanka				
+		Ipomoea involucrata	P.Beauv.	MX.39376	Ipomoea	kauluselämänlanka				
+		Ipomoea jaegeri	Pilg.	MX.39376	Ipomoea	kuurnaelämänlanka				
+		Ipomoea ochracea	(Lindl.) Sweet	MX.39376	Ipomoea	keltaelämänlanka	keltapäivänsini			
+		Jasminum dichotomum	Vahl	MX.5023465	Jasminum	ruusunnuppujasmiini				
+		Jasminum fluminense	Vell.	MX.5023465	Jasminum	raippajasmiini				
+		Justicia adhatoda 	L.	MX.5009318	Justicia	valkojaakonkukka	valkopantterinkita			
+		Justicia heterocarpa	T.Anderson	MX.5009318	Justicia	suvijaakonkukka				
+		Justicia pseudorungia	Lindau	MX.5009318	Justicia	tansanianjaakonkukka				
+	suku	Kosteletzkya	C.Presl	MX.38687	Malvaceae	linkkikukat				
+		Kosteletzkya adoensis	(Hochst. ex A.Rich.) Mast.		Kosteletzkya	etiopianlinkkikukka				
+		Launaea cornuta	(Hochst. ex Oliv. & Hiern) C.Jeffrey	MX.5023167	Launaea	sudaninrisuvalvatti	risuvalvatti			
+	suku	Leucas	R.Br.	MX.39448	Lamiaceae	valkohuulet				
+		Leucas grandis	Vatke		Leucas	isovalkohuuli				
+		Leucas neuflizeana	Courbon		Leucas	suonivalkohuuli				
+		Leucas urticifolia	(Vahl) Sm.		Leucas	kerävalkohuuli				
+	suku	Linderniella	Eb.Fisch., Schäferh. & Kai Müll.	MX.289483	Linderniaceae	huulimot				
+		Linderniella brevidens	(Skan) Eb.Fisch., Schäferh. & Kai Müll.		Linderniella	usambaranhuulimo				
+		Linderniella gracilis	(Skan) Eb.Fisch., Schäferh. & Kai Müll.		Linderniella	keijuhuulimo				
+	suku	Lipotriche	R.Br.	MX.39723	Asteraceae	päikkiöt				
+		Lipotriche scandens	(Schumach. & Thonn.) Orchard		Lipotriche	kiipijäpäikkiö				
+	suku	Lippia	L.	MX.41746	Verbenaceae	tuoksimot				
+		Lippia javanica	(Burm.f.) Spreng.		Lippia	sitruunatuoksimo				
+		Lippia kituiensis	Vatke		Lippia	keniantuoksimo				
+	suku	Megalochlamys	Lindau	MX.42334	Acanthaceae	taivokit				
+		Megalochlamys revoluta	(Lindau) Vollesen		Megalochlamys	taivokki				
+	suku	Megathyrsus	(Pilg.) B.K.Simon & S.W.L.Jacobs	MX.40431	Poaceae	isohirssit				
+		Megathyrsus infestus	(Andersson) B.K.Simon & S.W.L.Jacobs		Megathyrsus	mosambikinisohirssi				
+		Megathyrsus maximus	(Jacq.) B.K.Simon & S.W.L.Jacobs		Megathyrsus	guineanisohirssi	guineanhirssi 			
+	suku	Meiosperma	Raf.	MX.42334	Acanthaceae	suomutähkät				
+		Meiosperma bracteatum	(Hochst.) I.Darbysh. & E.A.Tripp		Meiosperma	suvisuomutähkä				
+		Meiosperma debile	(Forssk.) I.Darbysh. & E.A.Tripp		Meiosperma	arabiansuomutähkä				
+	suku	Micrococca	Benth.	MX.38702	Euphorbiaceae	naapukit				
+		Micrococca mercurialis	(L.) Benth.		Micrococca	ruohonaapukki				
+		Microglossa densiflora	Hook.f.	MX.5009131	Microglossa	pursuripsusäde				
+		Microglossa pyrrhopappa	(Sch.Bip. ex A.Rich.) Agnew	MX.5009131	Microglossa	keltaripsusäde				
+		Micromeria imbricata	(Forssk.) C.Chr.	MX.5023396	Micromeria	arabiansirokki				
+	suku	Mitracarpus	Zucc.	MX.39276	Rubiaceae	mitrakodat				
+		Mitracarpus hirtus	(L.) DC.		Mitracarpus	rikkamitrakota				
+		Momordica boivinii	Baill.	MX.5009136	Momordica	oranssikarvaskurkku				
+		Momordica foetida	Schumach.	MX.5009136	Momordica	haisukarvaskurkku				
+		Momordica friesiorum	(Harms) C.Jeffrey	MX.5009136	Momordica	keniankarvaskurkku				
+	suku	Nidorella	Cass.	MX.39723	Asteraceae	hellesilmät				
+		Nidorella elliotii	(S.Moore) Brenan		Nidorella	kenianhellesilmä				
+		Nymphaea nouchali	Burm.f.	MX.37838	Nymphaea	tähtilumme				
+		Ocimum kilimandscharicum	Gürke	MX.5009228	Ocimum	vuoribasilika				
+	suku	Oldenlandia	L.	MX.39276	Rubiaceae	sakarakodat				
+		Oldenlandia capensis	L.f.		Oldenlandia	afrikansakarakota				
+		Oldenlandia corymbosa	L.		Oldenlandia	huiskilosakarakota				
+		Oldenlandia herbacea	(L.) Roxb.		Oldenlandia	hentosakarakota				
+		Oldenlandia rupicola	(Sond.) Kuntze		Oldenlandia	kalliosakarakota				
+	suku	Oliverella	Tiegh.	MX.4971906	Loranthaceae	kutripiiput				
+		Oliverella hildebrandtii	(Engl.) Tiegh.		Oliverella	keniankutripiippu				
+		Orbea taitica	Bruyns	MX.5023067	Orbea	taitanritarintähti				
+	suku	Orbivestus	H.Rob.	MX.39723	Asteraceae	viuhkolatvat				
+		Orbivestus cinerascens	(Sch.Bip.) H.Rob.		Orbivestus	lusikkaviuhkolatva				
+	suku	Oreosyce	Hook.f.	MX.38342	Cucurbitaceae	harjaskurkut				
+		Oreosyce africana	Hook.f.		Oreosyce	harjaskurkku				
+		Ornithogalum gracillimum	R.E.Fr.	MX.39981	Ornithogalum	keijutähdikki				
+		Orobanche minor	Sm.	MX.41932	Orobanche	apilannäive				
+	suku	Osteospermum	L.	MX.39723	Asteraceae					
+		Osteospermum vaillantii	(Decne.) Norl.		Osteospermum	kultatähtisilmä				
+	suku	Ouret	Adans.	MX.5081107	Amaranthaceae	villatähkät				
+		Ouret lanata	(L.) Kuntze		Ouret	vihannesvillatähkä				
+	suku	Oxygonum	Burch. ex Campd.	MX.38210	Polygonaceae	särmätattaret				
+		Oxygonum sinuatum	(Hochst. & Steud. ex Meisn.) Dammer		Oxygonum	piikkisärmätatar				
+		Oxygonum stuhlmannii	Dammer		Oxygonum	tansaniansärmätatar				
+		Pavonia burchellii	(DC.) R.A.Dyer	MX.5009239	Pavonia	afrikanpavonia				
+		Pelargonium quinquelobatum	Hochst. ex A.Rich.	MX.5023361	Pelargonium	etiopianpelargoni				
+		Peperomia bangroana	C.DC.	MX.5009149	Peperomia	ropomuori				
+		Peperomia blanda	(Jacq.) Kunth	MX.5009149	Peperomia	villamuori				
+		Peperomia leptostachya	Hook. & Arn.	MX.5009149	Peperomia	sorjamuori				
+	suku	Pergularia	L.	MX.41748	Apocynaceae	sarviköynnökset				
+		Pergularia daemia	(Forssk.) Chiov.		Pergularia	rohtosarviköynnös				
+	suku	Perotis	Aiton	MX.40431	Poaceae	sukasrassit				
+		Perotis hildebrandtii	Mez		Perotis	sukasrassi				
+		Persicaria capitata	(Buch.-Ham. ex D.Don) H.Gross	MX.38221	Persicaria	nuppitatar				
+		Persicaria decipiens	(R.Br.) K.L.Wilson	MX.38221	Persicaria	salavatatar				
+		Persicaria senegalensis	(Meisn.) Soják	MX.38221	Persicaria	puhvelintatar				
+	suku	Phaulopsis	Willd.	MX.42334	Acanthaceae	paanutähkät				
+		Phaulopsis imbricata	(Forssk.) Sweet		Phaulopsis	limipaanutähkä				
+	suku	Phragmanthera	Tiegh.	MX.4971906	Loranthaceae	nuppipillit				
+		Phragmanthera usuiensis	(Oliv.) M.G.Gilbert		Phragmanthera	liekkinuppipilli				
+	suku	Phyllanthus	L.	MX.289477	Phyllanthaceae	laipikat				
+		Phyllanthus leucanthus	Pax		Phyllanthus	valkolaipikka				
+		Phyllanthus maderaspatensis	L.		Phyllanthus	jadelaipikka				
+		Pilea usambarensis	Oliv.	MX.41947	Pilea	usambaranpiilea				
+	suku	Platostoma	P.Beauv.	MX.39448	Lamiaceae	nappohuulet				
+		Platostoma hildebrandtii	(Vatke) A.J.Paton & Hedge		Platostoma	keniannappohuuli				
+	suku	Plicosepalus	Tiegh.	MX.4971906	Loranthaceae	holkkipillit				
+		Plicosepalus sagittifolius	(Engl.) Danser		Plicosepalus	keltaholkkipilli				
+		Polygala erioptera	DC.	MX.39160	Polygala	karvalinnunruoho				
+		Polygala senensis	Klotzsch	MX.39160	Polygala	keltalinnunruoho				
+		Polygala sphenoptera	Fresen.	MX.39160	Polygala	purppuralinnunruoho				
+		Portulaca pilosa	L.	MX.38024	Portulaca	partaportulakka				
+		Portulaca quadrifida	L.	MX.38024	Portulaca	nivelportulakka				
+	suku	Pupalia	Juss.	MX.5081107	Amaranthaceae	koukkutähkät				
+		Pupalia lappacea	(L.) Juss.		Pupalia	tarrikoukkutähkä				
+	suku	Rawsonia	Harv. & Sond.	MX.4986470	Achariaceae	viiltopuut				
+		Rawsonia lucida	Harv. & Sond.		Rawsonia	kiiltoviiltopuu				
+	suku	Rhinacanthus	Nees	MX.42334	Acanthaceae	kyyhkyskukat				
+		Rhinacanthus angulicaulis	I.Darbysh.		Rhinacanthus	keniankyyhkyskukka				
+		Rhipidoglossum leedalii	(P.J.Cribb) Farminhão & Stévart	MX.5023486	Rhipidoglossum	ulugurunkuultokämmekkä				
+	suku	Rhodopentas	Kårehed & B.Bremer	MX.39276	Rubiaceae	tulisakarat				
+		Rhodopentas parvifolia	(Hiern) Kårehed & B.Bremer		Rhodopentas	suikotulisakara				
+	suku	Richardia	L.	MX.39276	Rubiaceae	kehtokerät				
+		Richardia brasiliensis	Gomes		Richardia	brasiliankehtokerä				
+		Rumex abyssinicus	Jacq.	MX.38250	Rumex	afrikansuolaheinä				
+	suku	Ruttya	Harv.	MX.42334	Acanthaceae	tohvelipensaat				
+		Ruttya fruticosa	Lindau		Ruttya	leimutohvelipensas				
+		Salvia leucantha	Cav.	MX.39530	Salvia	nuokkusalvia				
+		Dracaena arborescens	(Cornu ex Gérôme & Labroy) Byng & Christenh.	MX.5009294	Dracaena	tikarianopinkieli				
+		Dracaena ballyi	(L.E.Newton) Byng & Christenh.	MX.5009294	Dracaena	taitananopinkieli				
+		Dracaena frequens	(Chahin.) Byng & Christenh.	MX.5009294	Dracaena	vuota-anopinkieli				
+		Dracaena perrotii	(O.Warburg) Byng & Christenh.	MX.5009294	Dracaena	olduvainanopinkieli				
+		Dracaena singularis	(N.E.Br.) Byng & Christenh.	MX.5009294	Dracaena	tornianopinkieli				
+		Dracaena volkensii	(Gürke) Byng & Christenh.	MX.5009294	Dracaena	säiläanopinkieli				
+	suku	Scleria	P.J.Bergius	MX.40242	Cyperaceae	koviot				
+		Scleria racemosa	Poir.		Scleria	roimakovio				
+		Senecio angulatus	L.f.	MX.39855	Senecio	kolkkavillakko				
+		Senecio deltoideus	Less.	MX.39855	Senecio	nuoravillakko				
+		Senecio tamoides	DC.	MX.39855	Senecio	kapinvillakko				
+		Sida acuta	Burm.f.	MX.38688	Sida	sahasiida				
+		Sida tenuicarpa	Vollesen	MX.38688	Sida	lanttosiida				
+		Sigesbeckia orientalis	L.	MX.5082425	Sigesbeckia	aasiannnystytähti				
+		Solanum anguivi	Lam.	MX.39547	Solanum	äikäkoiso				
+		Solanum mauense	Bitter	MX.39547	Solanum	keniankoiso				
+		Solanum tettense	Klotzsch	MX.39547	Solanum	korallikoiso				
+		Sorghum bicolor subsp. verticilliflorum	(Steud.) de Wet ex Wiersema & J.Dahlb.	MX.41318	Sorghum bicolor	kiehkurakirjodurra				
+		Sparrmannia ricinocarpa	(Eckl. & Zeyh.) Kuntze	MX.5023432	Sparrmannia	bantunkipinäsilmä				
+		Spermacoce ocymoides	Burm.f.	MX.5009306	Spermacoce	intiankruunukota				
+		Spermacoce princeae	(K.Schum.) Verdc.	MX.5009306	Spermacoce	sambiankruunukota				
+		Sphaeranthus kirkii	Oliv. & Hiern	MX.5009173	Sphaeranthus	tansanianpallomykerö				
+		Sphaeranthus suaveolens	(Forssk.) DC.	MX.5009173	Sphaeranthus	siipipallomykerö				
+	suku	Stachytarpheta	Vahl	MX.41746	Verbenaceae	piiskayrtit				
+		Stachytarpheta urticifolia	Sims		Stachytarpheta	nokkospiiskayrtti				
+	suku	Steganotaenia	Hochst.	MX.39171	Apiaceae	oksaputket				
+		Steganotaenia araliacea	Hochst.		Steganotaenia	puuoksaputki				
+		Stellaria mannii	Hook.f.	MX.38046	Stellaria	pihtitähtimö				
+		Sterculia rhynchocarpa	K.Schum.	MX.5023433	Sterculia	kynsisterkulia				
+	suku	Stictocardia	Hallier f.	MX.39369	Convolvulaceae	herttaköynnökset				
+		Stictocardia beraviensis	(Vatke) Hallier f.		Stictocardia	karmiiniherttaköynnös				
+	suku	Talinum	Adans.	MX.4986560	Talinaceae	nuppikodat				
+		Talinum afrum	(Thunb.) Eckl. & Zeyh.		Talinum	keltanuppikota				
+		Talinum portulacifolium	(Forssk.) Asch. ex Schweinf.		Talinum	arabiannuppikota				
+		Thunbergia holstii	Lindau	MX.5009310	Thunbergia	usambaransusanna				
+	suku	Tinnea	Kotschy ex Hook.f.	MX.39448	Lamiaceae	huppuhuulet				
+		Tinnea aethiopica	Kotschy ex Hook.f.		Tinnea	tummahuppuhuuli				
+	suku	Tragia	Plum. ex L.	MX.38702	Euphorbiaceae	polttiot				
+		Tragia brevipes	Pax		Tragia	kiertopolttio				
+		Tragus berteronianus	Schult.	MX.42005	Tragus	tähkäkoukkuheinä				
+	suku	Tribulus	L.	MX.4986430	Zygophyllaceae	okarennokit				
+		Tribulus cistoides	L.		Tribulus	etelänokarennokki				
+		Tribulus terrestris	L.		Tribulus	rikkaokarennokki				
+		Tribulus zeyheri	Sond.		Tribulus	hapsiokarennokki				
+	suku	Tridax	L.	MX.39723	Asteraceae	sauriot				
+		Tridax procumbens	L.		Tridax	rikkasaurio				
+	suku	Triumfetta	Plum. ex L.	MX.38687	Malvaceae	tarritertut				
+		Triumfetta annua	L.		Triumfetta	vihannestarriterttu				
+		Triumfetta rhomboidea	Jacq.		Triumfetta	kuitutarriterttu				
+		Typha domingensis	Pers.	MX.40187	Typha	etelänosmankäämi				
+	suku	Urochloa	P.Beauv.	MX.40431	Poaceae	häntähirssit				
+		Urochloa arrecta	(Hack. ex T.Durand & Schinz) Morrone & Zuloaga		Urochloa	kapinhäntähirssi				
+		Urochloa brizantha	(A.Rich.) R.D.Webster		Urochloa	tuhtihäntähirssi				
+		Urochloa leersioides	(Hochst.) A.M.Torres & C.M.Morton		Urochloa	sinehäntähirssi				
+		Vangueria madagascariensis	J.F.Gmel.	MX.5009191	Vangueria	tamarindinnapapallokki				
+		Vernonia galamensis	(Cass.) Less.	MX.5009193	Vernonia	öljyvernonia				
+		Vigna vexillata	(L.) A.Rich.	MX.42964	Vigna	juurespapu				
+	suku	Waltheria	L.	MX.38687	Malvaceae	samettiot				
+		Waltheria indica	L.		Waltheria	intiansamettio				
+	suku	Zehneria	Endl.	MX.38342	Cucurbitaceae	hiirenkurkut				
+		Zehneria scabra	(L.f.) Sond.		Zehneria	karhohiirenkurkku				
+		Zehneria tuberifera	G.W.Hu & Q.F.Wang		Zehneria	taitanhiirenkurkku				
+		Zephyranthes robusta	(Herb.) Baker	MX.5023037	Zephyranthes	rusoheinälilja				
+	suku	Abronia	Juss.	MX.42932	Nyctaginaceae	verbeniot	hiekkaverbenat			
+		Abronia latifolia	Eschsch.		Abronia	keltaverbenio	hiekkaverbena			
+		Aconitum columbianum	Nutt.	MX.37866	Aconitum	musteukonhattu				
+		Allium falcifolium	Hook. & Arn.	MX.39988	Allium	sirppilaukka				
+		Angelica arguta	Nutt.	MX.39234	Angelica	silokarhunputki				
+		Aralia californica	S.Watson	MX.41780	Aralia	kalifornianaralia				
+		Arceuthobium campylopodum	Engelm.	MX.5094675	Arceuthobium	valkomännynmistelinen				
+		Arceuthobium douglasii	Engelm.	MX.5094675	Arceuthobium	douglaskuusenmistelinen				
+		Artemisia tridentata	Nutt.	MX.39834	Artemisia	salviamaruna				
+		Asarum marmoratum	Piper	MX.37835	Asarum	marmoritaponlehti				
+		Cakile edentula	(Bigelow) Hook.	MX.38508	Cakile	amerikanmerisinappi				
+	suku	Calochortus	Pursh	MX.40007	Liliaceae	mariposaliljat				
+		Calochortus elegans	Pursh		Calochortus	soreamariposalilja				
+		Calochortus kennedyi	Porter		Calochortus	aavikkomariposalilja				
+		Calochortus monophyllus	(Lindl.) Lem.		Calochortus	keltamariposalilja				
+		Calochortus uniflorus	Hook. & Arn.		Calochortus	pastellimariposalilja				
+		Calochortus venustus	Douglas ex Benth.		Calochortus	lumomariposalilja				
+	variety	Calypso bulbosa var. occidentalis	(Holz.) Cockerell	MX.40083	Calypso bulbosa	lännenneidonkenkä				
+	suku	Calyptridium	Nutt.	MX.289482	Montiaceae	tassukit				
+		Calyptridium umbellatum	(Torr.) Greene		Calyptridium	sarjatassukki				
+	suku	Chrysolepis	Hjelmq.	MX.37988	Fagaceae	kultakastanjat				
+		Chrysolepis chrysophylla	(Douglas ex Hook.) Hjelmq.		Chrysolepis	puukultakastanja				
+		Cornus nuttallii	Audubon ex Torr. & A.Gray	MX.39165	Cornus	oregoninkanukka				
+		Cuscuta salina	Engelm.	MX.39381	Cuscuta	suolavieras				
+	suku	Darlingtonia	Torr.	MX.4986578	Sarraceniaceae 	kalifoniantötteröt				
+		Darlingtonia californica	Torr.		Darlingtonia	kaliforniantötterö				
+		Erythranthe primuloides	(Benth.) G.L.Nesom & N.S.Fraga	MX.4972068	Erythranthe	esikkoapinankukka				
+		Erythronium citrinum	S.Watson	MX.41856	Erythronium	sitruunakoiranhammas				
+		Frangula purshiana	(DC.) A.Gray ex J.G.Cooper	MX.4972116	Frangula	rohtopaatsama				
+		Fraxinus latifolia	Benth.	MX.39330	Fraxinus	oregoninsaarni				
+	suku	Garrya	Douglas ex Lindl.	MX.4986587	Garryaceae	silkkinorkot				
+		Garrya elliptica	Douglas ex Lindl.		Garrya	hopeasilkkinorkko				
+		Gaultheria shallon	Pursh	MX.5023309	Gaultheria	isosalali				
+		Grindelia stricta	DC.	MX.41870	Grindelia	rannikkorilpiö				
+		Heracleum maximum	W.Bartram	MX.39247	Heracleum	amerikanukonputki				
+	suku	Hosackia	Douglas ex Benth.	MX.38942	Fabaceae	maitiot				
+		Hosackia gracilis	Benth.		Hosackia	kirjomaitio				
+		Hypericum anagalloides	Cham. & Schltdl.	MX.38298	Hypericum	punkakuisma				
+	suku	Jaumea	Pers.	MX.39723	Asteraceae	marskisilmät				
+		Jaumea carnosa	(Less.) A.Gray		Jaumea	lännenmarskisilmä				
+		Juncus bolanderi	Engelm.	MX.40195	Juncus	kuulavihvilä				
+	suku	Marah	Kellogg	MX.38342	Cucurbitaceae	neulakurkut				
+		Marah oregana	(Torr. & A.Gray) Howell		Marah	oregoninneulakurkku				
+	suku	Mentzelia	Plum. ex L.	MX.4986564	Loasaceae	kultatupsut				
+		Mentzelia laevicaulis	(Douglas ex Hook.) Torr. & A.Gray		Mentzelia	komeakultatupsu				
+		Mertensia paniculata	(Aiton) G.Don	MX.41917	Mertensia	kellohalikka				
+		Montia parvifolia	(Moc. ex DC.) Greene	MX.38028	Montia	ruusukehetekaali				
+		Morella californica	(Cham.) Wilbur	MX.5009224	Morella	kaliforniannorkkomyrtti				Syn. Myrica californica
+		Nuphar polysepala	Engelm.	MX.37844	Nuphar	lännenulpukka				
+		Oenanthe sarmentosa	C.Presl ex DC.	MX.39206	Oenanthe	nutkanpahaputki				
+		Parkinsonia florida	(Benth. ex A.Gray) S.Watson	MX.5023348	Parkinsonia	sinihuiskapapu				
+		Parnassia fimbriata	K.D.Koenig	MX.38776	Parnassia	lännenvilukko				
+	suku	Paxistima	Raf.	MX.41728	Celastraceae	kelasvarvut				
+		Paxistima myrsinites	(Pursh) Raf.		Paxistima	pystykelasvarpu				
+		Pedicularis racemosa	Douglas ex Benth.	MX.39655	Pedicularis	sirppikuusio				
+	suku	Phoradendron	Nutt.	MX.4986531	Santalaceae 	misteliöt				
+		Phoradendron juniperinum	Engelm. ex A.Gray		Phoradendron	katajanmisteliö				
+		Platanthera elegans	Lindl.	MX.40048	Platanthera	kynttilälehdokki				
+		Polygonum paronychia	Cham. & Schltdl.	MX.38213	Polygonum	dyynitatar				
+	suku	Pseudotrillium	S.B.Farmer	MX.39999	Melanthiaceae 	pisamakolmilehdet				
+		Pseudotrillium rivale	(S.Watson) S.B.Farmer		Pseudotrillium	pisamakolmilehti				Syn: Trillium rivale S.Watson
+		Pyrola picta	Sm.	MX.38625	Pyrola	verkkotalvikki				
+		Quercus chrysolepis	Liebm.	MX.37989	Quercus	kultatammi				
+		Rudbeckia occidentalis	Nutt.	MX.39784	Rudbeckia	mustapäivänhattu				
+		Salicornia virginica	L.	MX.38204	Salicornia	virginiansuolayrtti				
+	suku	Sarcodes	Torr.	MX.38594	Ericaceae	tontunsoihdut				
+		Sarcodes sanguinea	Torr.		Sarcodes	tontunsoihtu				
+		Schoenoplectus pungens	(Vahl) Palla	MX.40248	Schoenoplectus	kuurnakaisla				
+		Sedum oregonense	(S.Watson) M.E.Peck	MX.38740	Sedum	oregoninmaksaruoho				
+		Sedum spathulifolium	Hook.	MX.38740	Sedum	lusikkamaksaruoho				
+		Sedum stenopetalum	Pursh	MX.38740	Sedum	kalliovuortenmaksaruoho				
+	suku	Smithiastrum	Morin	MX.39700	Campanulaceae	kaliforniankellot				
+		Smithiastrum prenanthoides	(Durand) Morin		Smithiastrum	nauhakaliforniankello				
+		Spergularia macrotheca	(Hornem. ex Cham. & Schltdl.) Heynh.	MX.38101	Spergularia	tahmasolmukki				
+		Toxicodendron diversilobum	(Torr. & A.Gray) Greene	MX.42829	Toxicodendron	lännenmyrkkysumakki				
+		Trifolium wormskioldii	Lehm.	MX.39036	Trifolium	liila-apila				
+		Trillium ovatum	Pursh	MX.5023440	Trillium	lännenkolmilehti				
+		Viola cuneata	S.Watson	MX.38310	Viola	silmäorvokki				
+	suku	Xerophyllum	Michx.	MX.39999	Melanthiaceae	karhunliljat	karhunheinät			
+		Xerophyllum tenax	(Pursh) Nutt.		Xerophyllum	lännenkarhunlilja	karhunheinä			
