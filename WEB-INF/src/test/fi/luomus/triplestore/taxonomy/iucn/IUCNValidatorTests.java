@@ -11,7 +11,6 @@ import org.junit.Test;
 import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -25,6 +24,7 @@ import fi.luomus.triplestore.dao.DataSourceDefinition;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAOConst;
 import fi.luomus.triplestore.dao.TriplestoreDAOImple;
+import fi.luomus.triplestore.service.TestConfig;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 
@@ -36,7 +36,7 @@ public class IUCNValidatorTests {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
+		Config config = TestConfig.getTriplestoreConfig();
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr(), true);

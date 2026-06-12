@@ -17,7 +17,6 @@ import org.junit.Test;
 import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Subject;
@@ -46,7 +45,7 @@ public class ApiServiceTests {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2.properties");
+		Config config = TestConfig.getTriplestoreConfig();
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 		dao = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr(), true);

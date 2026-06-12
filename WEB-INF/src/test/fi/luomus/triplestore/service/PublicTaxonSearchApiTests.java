@@ -11,7 +11,6 @@ import org.junit.Test;
 import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.config.ConfigReader;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.reporting.ErrorReportingToSystemErr;
 import fi.luomus.commons.taxonomy.TaxonSearch;
@@ -31,7 +30,7 @@ public class PublicTaxonSearchApiTests {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Config config = new ConfigReader("C:/apache-tomcat/app-conf/triplestore-v2-taxonomyeditor.properties");
+		Config config = TestConfig.getTaxonEditorConfig();
 		TriplestoreDAOConst.SCHEMA = config.get("LuontoDbName");
 		dataSource = DataSourceDefinition.initDataSource(config.connectionDescription());
 		triplestoreDAO = new TriplestoreDAOImple(dataSource, TriplestoreDAO.TEST_USER, new ErrorReportingToSystemErr(), true);
