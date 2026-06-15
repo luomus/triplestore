@@ -483,4 +483,22 @@ public class IUCNValidatorTests {
 				result.listErrors().toString());
 	}
 
+	@Test
+	public void test_valid_habitat_specifiers() throws Exception {
+		Model givenModel = new Model(Qname.of("Foo"));
+		Evaluation givenData = createReadyEvaluation(givenModel);
+		givenData.getModel().addStatementIfObjectGiven(Evaluation.RED_LIST_STATUS, Qname.of("MX.iucnLC"));
+
+		givenData.setPrimaryHabitat(new HabitatObject(null, Qname.of("MKV.habitatVs"), 0).addHabitatSpecificType(Qname.of("MKV.habitatSpecificTypeV")));
+		givenData.addSecondaryHabitat(new HabitatObject(null, Qname.of("MKV.habitatVs"), 0).addHabitatSpecificType(Qname.of("MKV.habitatSpecificTypeLK")));
+		givenData.addSecondaryHabitat(new HabitatObject(null, Qname.of("MKV.habitatI"), 0).addHabitatSpecificType(Qname.of("MKV.habitatSpecificTypeLK")));
+
+		ValidationResult result = validator.validate(givenData, null);
+
+		assertEquals("[" +
+				"Elinympäristön \"Vs – järvet ja lammet\" kanssa ei saa käyttää lisämäärettä \"v – vanhat metsät\"., " + 
+				"Elinympäristön \"I – Kulttuuriympäristöt\" kanssa ei saa käyttää lisämäärettä \"lk – kalattomat lammet\".]", 
+				result.listErrors().toString());
+	}
+
 }

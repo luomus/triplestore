@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
@@ -462,11 +464,45 @@ public class Validator {
 		}
 	}
 
-	private void validateHabitat(HabitatObject habitatObject, ValidationResult validationResult) {
+	private static Map<Qname, List<String>> ALLOWED_HABITATS_FOR_SPECIFIERS = initAllowed();
+
+	private static Map<Qname, List<String>> initAllowed() {
+		Map<Qname, List<String>> map = new HashMap<>();
+		map.put(Qname.of("MKV.habitatSpecificTypeV"), habitats("M", "S", "I"));
+		map.put(Qname.of("MKV.habitatSpecificTypeLU"), habitats("M", "S"));
+		map.put(Qname.of("MKV.habitatSpecificTypeH"), habitats("M"));
+		map.put(Qname.of("MKV.habitatSpecificTypeP"), habitats("M"));
+		map.put(Qname.of("MKV.habitatSpecificTypeJ"), habitats("M", "I"));
+		map.put(Qname.of("MKV.habitatSpecificTypePAK"), habitats("M", "K", "I"));
+		map.put(Qname.of("MKV.habitatSpecificTypeVAK"), habitats("M", "K"));
+		map.put(Qname.of("MKV.habitatSpecificTypeCA"), habitats("M", "V", "T", "I"));
+		map.put(Qname.of("MKV.habitatSpecificTypeRA"), habitats("K"));
+		map.put(Qname.of("MKV.habitatSpecificTypeLK"), habitats("V"));
+		map.put(Qname.of("MKV.habitatSpecificTypeKA"), habitats("K", "T"));
+		map.put(Qname.of("MKV.habitatSpecificTypeKE"), habitats("K", "T"));
+		return map;
+	}
+
+	private static List<String> habitats(String ... habitats) {
+		return Stream.of(habitats).map(h->"MKV.habitat"+h).collect(Collectors.toList());
+	}
+
+	private void validateHabitat(HabitatObject habitatObject, ValidationResult validationResult) throws Exception {
 		if (habitatObject == null) return;
 		if (habitatObject.getHabitatSpecificTypes().isEmpty()) return;
 		if (!given(habitatObject.getHabitat())) {
 			validationResult.setError("Elinympäristön lisämäärettä ei saa antaa jos varsinaista elinympäristö ei ole annettu.", null);
+			return;
+		}
+		String habitat = habitatObject.getHabitat().toString();
+		for (Qname specifier : habitatObject.getHabitatSpecificTypes()) {
+			List<String> allowedHabitats = ALLOWED_HABITATS_FOR_SPECIFIERS.get(specifier);
+			boolean foundAllowed = allowedHabitats != null && allowedHabitats.stream().anyMatch(habitat::startsWith);
+			if (!foundAllowed) {
+				String habitatLabel = getLabel(habitatObject.getHabitat().toString());
+				String specifierLabel = getLabel(specifier.toString());
+				validationResult.setError("Elinympäristön " + habitatLabel+ " kanssa ei saa käyttää lisämäärettä " + specifierLabel + ".", null);
+			}
 		}
 	}
 
