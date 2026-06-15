@@ -2,34 +2,27 @@
 <#include "iucn-macro.ftl">
 
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
-<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Käyttöohje</a> (13.2.2017 jälkeiset muutokset vielä päivittämättä)</p>
-<p><a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Elinympöristöluokkien tulkintaohje </a></p>
-<p><a href="https://laji.fi/map" target="_blank">Karttatyökaluun</a> (arviointialueiden rajat, koordinaattien selvitys, pinta-alan selvitys)</p>
+
+<ul>
+<li> <a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Vanha käyttöohje</a> (Päivitetty versio tulossa 2026) </li>
+<li> <a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Vanha elinympäristöluokkien tulkintaohje </a> </li>
+<li> Elinympäristöluokkien tulkintaohje (Päivitetty versio tulossa 2026) </li>
+<li> <a href="https://laji.fi/map" target="_blank">Laji.fi/map</a> - Arviointialueiden rajat, koordinaattien selvitys, pinta-alojen laskenta</li>
+<li>Karttatyökalu - Esiintymisalueen koko/AOO; Levinneisyysalueen koko/EOO (Tulossa 2026-7)</p>
+</ul>
 
 <@toolbox/>		
 
+<#--
 <div style="border: 1px dotted green; background-color: rgb(200,255,200); font-size: 13px; margin: 1em; padding: 0.3em;">
-	<h6>Uudistuksia 16.4.2018</h6>
+	<h6>Uudistuksia xx.xx.2026</h6>
 	<ul>
 		<li>Ladattaessa arviointeja tiedostoon "Aloittamattomat" tulevat nyt taas mukaan.</li>
 		<li>Parannettu tietojen sopivuutta Excelin kanssa ("-100" (min: tyhjä, max: 100)  ->  "-- 100" jne).</li>
 		<li>Parannettu ohjetta Excel vientiin (solujen tyypiksi Text).</li>
 	</ul>
-	<h6>Uudistuksia 27.-29.3.2018</h6>
-	<ul>
-		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia: Korjattu tämän toiminta kaikilla selaimilla myös RLI päivityksen ja kommenttejen jättämisen osalta. (27.3. "korjaus" rikkoi nämä)</li>
-	</ul>	
-	<h6>Uudistuksia 22.3.2018</h6>
-	<ul>
-		<li>Lomake varoittaa poistuttaessa jos on tallentamattomia muutoksia.</li>
-		<li>Kriteereille A3, B1, B2 ja C2 ei vaadita enää uhanalaisuuden syytä pakollisena tietona.</li>
-		<li>Muutoksen syy ei ole pakollinen jos NE-laji muuttuu muuhun luokkaan</li>
-		<li>Taksonomisen tietokannasta tieto siellä määritellystä lajin asemasta/vakiintumisesta Suomessa näkyville tallennuslomakkeella.</li>
-		<li>Korjattu lajiluettelon rajausta: Jos lajille on kopioitu vuoden 2010 tiedot mutta ei tehty muita tallennuksia, arvioinnille ei asettunut tilaksi "Aloitettu" joten lajiluettelossa rajaus aloitetuilla ei näyttänyt näitä arviointeja.</li>
-		<li>Lisätty Excel-latauksen ohjeisiin kuinka tuoda kaikki sisältö tekstinä, ettei Excel muuta lukuja päivämääriksi yms.</li>
-		<li>Excel-latauksen sarakejärjestyksiä on muutettu toivotusti. Loppuun on lisätty RLI-laskentaa varten lisää sarakkeita.</li>
-	</ul>
 </div>
+-->
 
 <table class="resourceListTable informalGroupsTable">
 	<thead>
