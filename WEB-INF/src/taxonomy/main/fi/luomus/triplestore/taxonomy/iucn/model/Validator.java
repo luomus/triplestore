@@ -466,7 +466,7 @@ public class Validator {
 		if (habitatObject == null) return;
 		if (habitatObject.getHabitatSpecificTypes().isEmpty()) return;
 		if (!given(habitatObject.getHabitat())) {
-			validationResult.setError("Elinympäristön lisämerkintää ei saa antaa jos varsinaista elinympäristö ei ole annettu.", null);
+			validationResult.setError("Elinympäristön lisämäärettä ei saa antaa jos varsinaista elinympäristö ei ole annettu.", null);
 		}
 	}
 
