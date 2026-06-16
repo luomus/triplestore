@@ -161,8 +161,12 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 	private static HabitatLabelIndendator habitatLabelIndendator = null;
 
 	protected HabitatLabelIndendator getHabitatLabelIndentaror() throws Exception {
+		return getHabitatLabelIndentaror(getTriplestoreDAO());
+	}
+	
+	public static HabitatLabelIndendator getHabitatLabelIndentaror(TriplestoreDAO dao) throws Exception {
 		if (habitatLabelIndendator == null) {
-			habitatLabelIndendator = new HabitatLabelIndendator(getTriplestoreDAO().getProperty(IucnDAO.HABITAT_PREDICATE).getRange().getValues());
+			habitatLabelIndendator = new HabitatLabelIndendator(dao.getProperty(IucnDAO.HABITAT_PREDICATE).getRange().getValues());
 		}
 		return habitatLabelIndendator;
 	}

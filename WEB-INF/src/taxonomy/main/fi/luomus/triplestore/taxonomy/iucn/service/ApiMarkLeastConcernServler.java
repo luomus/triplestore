@@ -2,6 +2,7 @@ package fi.luomus.triplestore.taxonomy.iucn.service;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import fi.luomus.commons.containers.rdf.Model;
 import fi.luomus.commons.containers.rdf.ObjectLiteral;
@@ -9,16 +10,33 @@ import fi.luomus.commons.containers.rdf.ObjectResource;
 import fi.luomus.commons.containers.rdf.Predicate;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.containers.rdf.Statement;
-import fi.luomus.commons.utils.DateUtils;
-import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
+import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.triplestore.dao.TriplestoreDAO;
+import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-least-concern/*"})
 public class ApiMarkLeastConcernServler extends ApiMarkNotEvaluatedServler {
 
 	private static final long serialVersionUID = 3567483532561265795L;
 
+	@Override
+	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		log(req);
+		String speciesQname = req.getParameter("speciesQname");
+		EditableTaxon taxon = (EditableTaxon) getTaxonomyDAO().getTaxon(Qname.of(speciesQname));
+		getTaxonomyDAO().addHabitats(taxon);
+		TriplestoreDAO dao = getTriplestoreDAO();
+		return new ResponseData().setViewName("iucn-lc-form")
+				.setData("taxon", taxon)
+				.setData("evaluationProperties", getTaxonomyDAO().getIucnDAO().getEvaluationProperties())
+				.setData("habitatObjectProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS))
+				.setData("habitatLabelIndentator", FrontpageServlet.getHabitatLabelIndentaror(dao));
+	}
+	
 	@Override
 	protected Evaluation createEvaluation(String speciesQname, int year, Qname editorQname, IucnDAO iucnDAO, HttpServletRequest req) throws Exception {
 		Evaluation evaluation = iucnDAO.createNewEvaluation();

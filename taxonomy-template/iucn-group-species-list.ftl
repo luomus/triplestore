@@ -162,19 +162,15 @@
 	<p>Ei osumia</p>
 </#if>
 
+<div id="LCForm" class="evaluationEdit">
+   ...
+</div>
+
 <div id="NAForm" class="evaluationEdit">
 	<table>
 		<@typeOfOccurrenceInFinland />
 	</table>
 	<p><button>Merkitse NA-luokkaan</button></p>
-</div>
-
-<div id="LCForm" class="evaluationEdit">
-	<p class="info">Huomaa, että kun käytät tätä pikatoimintoa, mitään tietoja ei kopioida edellisestä arvioinnista!</p>
-	<table>
-		<@iucnHabitatFields />
-	</table>
-	<p><button>Merkitse LC-luokkaan</button></td></p>
 </div>
 
 <@propertyCommentsScript />
@@ -200,6 +196,7 @@ $(function() {
 			});
 		});
 	});
+	
 	$(".markNAButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
@@ -217,37 +214,47 @@ $(function() {
 		});
 		$("#NAForm").dialog("open");
 	});
+	
 	$(".markLCButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
-		$("#LCForm").find('select').val('').trigger("chosen:updated");
-		$("#LCForm").find('button').unbind('click').on('click', function() {
-			var habitat = $("#LCForm").find('select').eq(0).val();
-			var habitatSpecificTypes = $("#LCForm").find('select').eq(1).val();
-			var req = '${baseURL}/api/iucn-mark-least-concern?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}';
-			if (habitat) {
-				req += '&habitat=' + habitat;
-			} else {
-				alert('Ensisijainen elinympäristö on ilmoitettava');
-				return;
-			}
-			if (habitatSpecificTypes) {
-				for (var i in habitatSpecificTypes) {
-					var type = habitatSpecificTypes[i];
-					if (type) {
-						req += '&habitatSpecificType=' + type;
-					} 
+		
+		$.get('${baseURL}/api/iucn-mark-least-concern', { speciesQname: speciesQname }).done(function(response) {
+			$('#LCForm').html(response);
+			$('#LCForm button').button();
+
+			$('#LCForm button').unbind('click').on('click', function() {
+				var habitat = $("#LCForm").find('select').eq(0).val();
+				var habitatSpecificTypes = $("#LCForm").find('select').eq(1).val();
+				var req = '${baseURL}/api/iucn-mark-least-concern?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}';
+				if (habitat) {
+					req += '&habitat=' + habitat;
+				} else {
+					alert('Ensisijainen elinympäristö on ilmoitettava');
+					return;
 				}
-			}
-			$.post(req, function(data) {
-				$("#LCForm").dialog("close");
-				row.fadeOut('slow', function () {
-					row.html(data);
-					row.fadeIn('slow');
+				if (habitatSpecificTypes) {
+					for (var i in habitatSpecificTypes) {
+						var type = habitatSpecificTypes[i];
+						if (type) {
+							req += '&habitatSpecificType=' + type;
+						} 
+					}
+				}
+				$.post(req, function(data) {
+					$("#LCForm").dialog("close");
+					row.fadeOut('slow', function () {
+						row.html(data);
+						row.fadeIn('slow');
+					});
 				});
 			});
+			$("#LCForm").dialog("open");
+			setTimeout(function () {
+    			$('#LCForm select').chosen();
+			}, 0);
+			
 		});
-		$("#LCForm").dialog("open");
 	});
 	
 	$("#pageSelector, #pageSizeSelector").on('change', function() {
