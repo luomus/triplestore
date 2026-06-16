@@ -105,9 +105,6 @@ public class Validator {
 		}
 
 		for (MainCriteria c : criteria) {
-			if (c.getMainCriteria().equals("E")) {
-				validationResult.setError(KRITEERIEN_TARKISTUKSET + "Kriteeriä E ei käytetä", Evaluation.CRITERIA_FOR_STATUS);
-			}
 			if (c.getMainCriteria().startsWith("B")) {
 				validateCriteriaBRequirementsForStatus(status, c, validationResult);
 			}
