@@ -65,14 +65,14 @@
 </div>
 
 <div style="float: left; margin: 2em;">
-<h6>Uusimmat kommentit</h6>
+<h6>Uusimmat viestit</h6>
 <#if remarks?has_content>
 <table class="iucnSpeciesTable" style="font-size: 80%;">
 	<tr>
 		<th>Laji</th>
 		<th>Pvm</th>
-		<th>Kommentoija</th>
-		<th>Kommentti</th>
+		<th>Henkilö</th>
+		<th>Viesti</th>
 	</tr>
 	<#list remarks?reverse as remark>
 		<tr>
@@ -84,7 +84,7 @@
 	</#list>
 </table>
 <#else>
-	<span class="info">Ei kommentteja</span>
+	<span class="info">Ei viestejä</span>
 </#if>
 </div>
 <div class="clear"></div>

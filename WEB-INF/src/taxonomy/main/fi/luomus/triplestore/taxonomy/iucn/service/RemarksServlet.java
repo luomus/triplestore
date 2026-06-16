@@ -51,7 +51,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 			evaluation = getTaxonomyDAO().getIucnDAO().createEvaluation(model);
 			container.setEvaluation(evaluation);
 			container.addRemark(target, evaluation);
-			getSession(req).setFlashSuccess("Kommentit tallennettu!");
+			getSession(req).setFlashSuccess("Viesti tallennettu!");
 		} else if (given(deleteStatementId)) {
 			if (!permissions(req, target, evaluation)) throw new IllegalAccessException();
 			int id = Integer.valueOf(deleteStatementId);
@@ -61,7 +61,7 @@ public class RemarksServlet extends EvaluationEditServlet {
 				dao.deleteStatement(id);
 				container.setEvaluation(evaluation);
 				container.removeRemark(target, id);
-				getSession(req).setFlashSuccess("Kommentti poistettu!");
+				getSession(req).setFlashSuccess("Viesti poistettu!");
 			} else {
 				getSession(req).setFlashSuccess("Ei mitään poistettavaa!");
 			}

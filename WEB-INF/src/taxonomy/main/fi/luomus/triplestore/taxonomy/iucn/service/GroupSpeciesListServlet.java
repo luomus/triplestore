@@ -686,16 +686,16 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Luokka");
 			header.add("Edellinen luokka");
 			header.add("Edell. RLI korjaus");
-			header.add("Kommentit arviosta");
+			header.add("Lisätiedot arviosta");
 			header.add("ARVIOINNIN TIEDOT ALKAVAT");
-			header.add("Arvioinnin kommentit taksonomiasta (julkinen)");
+			header.add("Arvioinnin lisätiedot taksonomiasta (julkinen)");
 			header.add("Vakinaisuus");
 			header.add("..muistiinpanot (yksityinen)");
 			header.add("Levinneisuusalueen koko");
 			header.add("..muistiinpanot (yksityinen)");
 			header.add("Esiinymisalueen koko");
 			header.add("..muistiinpanot");
-			header.add("Kommentit esiintymisestä (julkinen)");
+			header.add("Lisätiedot esiintymisestä (julkinen)");
 			for (Area area : getTaxonomyDAO().getIucnDAO().getEvaluationAreas().values()) {
 				header.add(area.getName().forLocale("fi"));
 			}

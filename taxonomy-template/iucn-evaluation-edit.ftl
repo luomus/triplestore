@@ -228,7 +228,7 @@
 </#if>
 
 <#if evaluation?? && evaluation.hasRemarks()>
-	<h5>Kommentit</h5>
+	<h5>Viestit</h5>
 	<ul>
 		<#list evaluation.remarkSatements as remark>
 			<li class="remark"><pre>${remark.objectLiteral.content?html}</pre> <#if permissions><button class="delete ui-state-error" onclick="deleteRemark(${remark.id});">X</button></#if></li>
@@ -240,11 +240,11 @@
 <form id="remarksEditForm" action="${baseURL}/iucn/remarks" method="post">
 <input type="hidden" name="evaluationId" value="${(evaluation.id)}" />
 	<div class="widgetTools ui-widget ui-corner-all">
-		<div class="ui-widget-header">Kommentit</div>
+		<div class="ui-widget-header">Viestintä</div>
 		<div class="ui-widget-content">
-			<p class="info">Tässä voi kommentoida arviointia. Arvioijat voivat halutessaan poistaa kommentit jotka on jo otettu huomioon arvioinnissa.</p>
+			<p class="info">Tässä voi viestiä arvioinnista. Arvioijat voivat halutessaan poistaa viestejä, jotka on jo otettu huomioon arvioinnissa.</p>
 			<p><textarea id="remarksField" name="MKV.remarks"></textarea></p>
-			<p><input type="submit" class="submitButton" value="Tallenna kommentti" /></p>
+			<p><input type="submit" class="submitButton" value="Tallenna viesti" /></p>
 		</div>
 	</div>
 	<hr />
@@ -484,7 +484,7 @@ $(function() {
 	$("#remarksField").on('focus', function() {
 		if (makingComment) return;
 		$("#evaluationEditForm :input").prop('disabled', true);
-		$("#evaluationEditForm").before('<p id="makingComment" class="info">Olet tekemässä kommenttia. Muutoksia arvioinnin tietoihin ei voi tallentaa yhtä aikaa. <button onclick="cancelComment();">Peruuta</button></p>');
+		$("#evaluationEditForm").before('<p id="makingComment" class="info">Olet tallentamassa viestiä. Muutoksia arvioinnin tietoihin ei voi tallentaa yhtä aikaa. <button onclick="cancelComment();">Peruuta</button></p>');
 		$("#evaluationEditForm").fadeTo(0, 0.5);
 		makingComment = true;
 	});
@@ -789,7 +789,7 @@ function getHighestStatus(statuses) {
 
 <#if evaluation??>
 function deleteRemark(statementId) {
-	if (!confirm("Poistetaanko kommentti?")) return false;
+	if (!confirm("Poistetaanko viesti?")) return false;
 	var delform = $('<form>', {
         action: '${baseURL}/iucn/remarks?delete='+statementId+'&evaluationId=${evaluation.id}',
         method: 'post'
