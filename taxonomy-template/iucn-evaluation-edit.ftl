@@ -348,7 +348,7 @@
     <@iucnMinMax "Esiintymisalueen koko" "MKV.occurrenceAreaMin" "MKV.occurrenceAreaMax" "MKV.occurrenceAreaNotes" />
 	<@iucnTextarea "MKV.occurrenceNotes" />
 	
-	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; Alueellinen uhanalaisuus vain luokille LC ja NT</span> &nbsp;&nbsp; <a href=\"${staticURL}/img/Aluellisen arvioinnin tarkastelualueet.jpg\" target=\"_staticmap\">&raquo; Alueet</a> " />
+	<@iucnSection "Esiintymisalueet ja alueellinen uhanalaisuus <span> &mdash; Täytettävä luokille NT-CR&nbsp;&nbsp; RT merkinnän voi tehdä ainoastaan valtakunnallisesti NT tai LC -luokkiin arvioiduille lajeille. Uhanalaiset lajit ovat lähtökohtaisesti alueellisesti uhanalaisia.</span> &nbsp;&nbsp; <a href=\"${staticURL}/img/Aluellisen arvioinnin tarkastelualueet.jpg\" target=\"_staticmap\">&raquo; Alueet</a> " />
 	<#list areas?keys as areaQname>
 		<@iucnOccurrence areaQname />
 	</#list>
