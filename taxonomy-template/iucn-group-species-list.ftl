@@ -183,6 +183,12 @@ window.onpageshow = function(event) {
 };
 
 $(function() {
+
+	$('#NAForm').find('select').each(function () {
+	    $(this).find('option[value="MX.typeOfOccurrenceStablePopulation"]').remove();
+    	$(this).find('option[value="MX.typeOfOccurrenceExtirpated"]').remove();
+	});
+
 	$("#NAForm, #LCForm").find('select').chosen();
 	$("#NAForm, #LCForm").dialog({width: 700, height: 400, modal: true, autoOpen: false });
 	
