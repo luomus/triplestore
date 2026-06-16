@@ -262,10 +262,39 @@
 	<div class="widgetTools ui-widget ui-corner-all">
 		<div class="ui-widget-header">Kopiointi</div>
 		<div class="ui-widget-content">
-			<p>Voit kopioida tiettyjen määriteltyjen kenttien tiedot edellisestä arvioinnista tähän arviointiin:</p>
-			<button id="copyButton">
-				Kopioi vuoden ${comparison.evaluationYear} arvioinnin tiedot
-			</button>
+			<p>Voit kopioida tiettyjen määriteltyjen kenttien tiedot edellisestä arvioinnista tähän arviointiin. 
+			   Voit valita kahdesta vaihtoehdosta: kopioidaanko elinympäristö edellisestä arvioinnista vai taksoniin päivitetystä tiedosta.</p>
+			
+			<table class="comparisonTable">
+				<tr>
+					<th>Arviointi ${comparison.evaluationYear}</th>
+					<th>${taxon.scientificName!""}</span></th>
+				</tr>
+				<tr>
+					<td>
+						<#if comparison?? && comparison.primaryHabitat??>
+							<@showHabitatPairValue comparison.primaryHabitat />
+						</#if>
+						<#if comparison??>
+							<#list comparison.secondaryHabitats as habitat>
+								<@showHabitatPairValue habitat />
+							</#list>
+						</#if>
+						<br />
+						<button id="copyButton">Kopioi vuoden ${comparison.evaluationYear} arvioinnin tiedot</button>
+					</td>
+					<td>
+						<#if taxon.primaryHabitat??>
+							<@showHabitatPairValue taxon.primaryHabitat />
+						</#if>
+						<#list taxon.secondaryHabitats as habitat>
+							<@showHabitatPairValue habitat />
+						</#list>
+						<br />
+						<button id="copyButtonTaxHab">Kopioi arvoinnin tiedot vuodelta ${comparison.evaluationYear} ja elinympäristö taksonomiasta</button>
+					</td>
+				</tr>
+			</table>
 			<span class="info">Huom: Tämän voi tehdä ainoastaan kerran ennen kuin mitään tietoja on syötetty. Alle tehdyt muutokset menetetään!</span>			
 		</div>
 	</div>
@@ -325,7 +354,7 @@
 	</#list>
 	<@iucnTextarea "MKV.occurrenceRegionsNotes" "" "MKV.occurrenceRegionsPrivateNotes" />
 
-	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span> &nbsp;&nbsp; <a href=\"${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf\" target=\"_staticmap\">&raquo; Elinympäristöluokkien tulkintaohje</a> " /> 
+	<@iucnSection "Elinympäristö <span> &mdash; Ensisijainen on täytettävä luokille LC-CR</span> &nbsp;&nbsp; <a href=\"${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf\" target=\"_staticmap\">&raquo; Elinympäristöluokkien VANHA tulkintaohje</a> (päivitys tulossa 2026) " /> 
 	
 	<@iucnHabitatFields />   
 	<@iucnTextarea "MKV.habitatGeneralNotes" />
@@ -616,14 +645,33 @@ $(function() {
     		}
     	}
     });
-        
-    $("#copyButton").on('click', function() {
-    	$(this).prop('disabled','disabled');
-    	window.location.href = '${baseURL}/iucn/species/${taxon.qname}/${selectedYear}?copy=true';
-    });
-
+	
+    $("#copyButton").on('click', function () {
+    	$(this).prop('disabled', true);
+    	postCopyAction('copy');
+	});
+	
+	$("#copyButtonTaxHab").on('click', function () {
+    	$(this).prop('disabled', true);
+    	postCopyAction('copyTaxHab');
+	});
 });
 
+function postCopyAction(paramName) {
+    const form = $('<form>', {
+        method: 'POST',
+        action: `${baseURL}/iucn/species/${taxon.qname}/${selectedYear}`
+    });
+
+    form.append($('<input>', {
+        type: 'hidden',
+        name: paramName,
+        value: 'true'
+    }));
+
+    $('body').append(form);
+    form.submit();
+}
 
 function isPositiveInteger(str) {
     var n = ~~Number(str);

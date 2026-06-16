@@ -21,7 +21,6 @@ import fi.luomus.commons.containers.rdf.RdfProperty;
 import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
-import fi.luomus.commons.taxonomy.TaxonomyDAO;
 import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
@@ -34,6 +33,7 @@ import fi.luomus.triplestore.taxonomy.iucn.model.EditHistory;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
 import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
+import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/iucn/species/*"})
 public class EvaluationEditServlet extends FrontpageServlet {
@@ -51,7 +51,6 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) return status404(res);
 
-		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 
@@ -63,20 +62,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 
 		complete(comparisonData);
 		complete(thisPeriodData);
-		if (isCopyRequest(req) && thisPeriodData == null && comparisonData != null) {
-			thisPeriodData = iucnDAO.createNewEvaluation();
-			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
 
-			Model model = thisPeriodData.getModel();
-			setModifiedInfo(req, model);
-			setTaxon(speciesQname, model);
-			setYear(year, model);
-			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
-			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
-			model.addStatement(new Statement(Predicate.of(Evaluation.STATE), ObjectResource.of(Evaluation.STATE_STARTED)));
-
-			return storeAndRedirectToGet(req, dao, taxonomyDAO, iucnDAO, target.getEvaluation(year), thisPeriodData);
-		}
 		return showView(req, res, taxonomyDAO, iucnDAO, target, comparisonData, thisPeriodData);
 	}
 
@@ -88,11 +74,14 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private boolean isCopyRequest(HttpServletRequest req) {
-		String copyParam = req.getParameter("copy");
-		return copyParam != null && copyParam.equals("true");
+		return copyParam("copy", req) || copyParam("copyTaxHab", req); 
 	}
 
-	protected ResponseData showView(HttpServletRequest req, HttpServletResponse res, TaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, EvaluationTarget target, Evaluation comparisonData, Evaluation thisPeriodData) throws Exception {
+	private boolean copyParam(String param, HttpServletRequest req) {
+		return "true".equals(req.getParameter(param));
+	}
+
+	protected ResponseData showView(HttpServletRequest req, HttpServletResponse res, ExtendedTaxonomyDAO taxonomyDAO, IucnDAO iucnDAO, EvaluationTarget target, Evaluation comparisonData, Evaluation thisPeriodData) throws Exception {
 		ResponseData responseData = super.processGet(req, res);
 
 		if (thisPeriodData != null) {
@@ -100,9 +89,12 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			responseData.setData("editHistory", editHistory);
 		}
 
+		EditableTaxon taxon = (EditableTaxon) target.getTaxon();
+		taxonomyDAO.addHabitats(taxon);
+
 		return responseData.setViewName("iucn-evaluation-edit")
 				.setData("target", target)
-				.setData("taxon", taxonomyDAO.getTaxon(Qname.of(target.getQname())))
+				.setData("taxon", taxon)
 				.setData("permissions", permissions(req, target, thisPeriodData))
 				.setData("redListIndexPermissions", permissions(req, target, null))
 				.setData("evaluation", thisPeriodData)
@@ -132,25 +124,53 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	@Override
-	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception { 
 		log(req);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) throw new IllegalArgumentException("Species qname not given.");
 
 		int year = selectedYearFailForNoneGiven(req);
 
-		String state = req.getParameter(Evaluation.STATE);
-		if (invalidState(state)) throw new IllegalArgumentException("Invalid state: " + state);
-
 		TriplestoreDAO dao = getTriplestoreDAO(req);
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		EvaluationTarget target = iucnDAO.getIUCNContainer().getTarget(speciesQname);
 
-		if (!permissions(req, target, target.getEvaluation(year))) throw new IllegalAccessException();
-
 		Evaluation comparisonData = target.getPreviousEvaluation(year);
+		Evaluation thisPeriodData = target.getEvaluation(year);
+
 		complete(comparisonData);
+		
+		if (!permissions(req, target, thisPeriodData)) throw new IllegalAccessException();
+
+		boolean doCopy = isCopyRequest(req) && thisPeriodData == null && comparisonData != null;
+		if (doCopy) {
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+			thisPeriodData = iucnDAO.createNewEvaluation();
+			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
+			if (copyParam("copyTaxHab", req)) {
+				EditableTaxon taxon = (EditableTaxon) target.getTaxon();
+				taxonomyDAO.addHabitats(taxon);
+				thisPeriodData.setPrimaryHabitat(HabitatObject.copyOf(taxon.getPrimaryHabitat()));
+				thisPeriodData.clearSecondaryHabitats();
+				for (HabitatObject habobj : taxon.getSecondaryHabitats()) {
+					thisPeriodData.addSecondaryHabitat(HabitatObject.copyOf(habobj));
+				}
+				notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu (elinympäristöt taksonomiasta)" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+
+			}
+			Model model = thisPeriodData.getModel();
+			setModifiedInfo(req, model);
+			setTaxon(speciesQname, model);
+			setYear(year, model);
+			model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
+			model.addStatement(new Statement(Predicate.of(Evaluation.STATE), ObjectResource.of(Evaluation.STATE_STARTED)));
+			return storeAndRedirectToGet(req, dao, taxonomyDAO, iucnDAO, target.getEvaluation(year), thisPeriodData);
+		}
+
+		String state = req.getParameter(Evaluation.STATE);
+		if (invalidState(state)) throw new IllegalArgumentException("Invalid state: " + state);
+
 		Evaluation givenData = buildEvaluation(req, speciesQname, year, iucnDAO.getEvaluationProperties());
 		cleanCriteriaFormats(givenData);
 

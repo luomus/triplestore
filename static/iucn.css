@@ -329,10 +329,6 @@ label {
 	min-height: 100px;
 }
 
-#copyButton {
-	margin-left: 20px;
-}
-
 .widgetTools {
   max-width: 90em;
   margin: 1em;
@@ -431,3 +427,7 @@ table.regionalEvaluationEdit {
 	color: red;
 }
 
+table.comparisonTable td, table.comparisonTable th {
+	padding: 1em;
+	border: 1px solid #777;
+}
