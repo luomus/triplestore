@@ -452,6 +452,9 @@ public class Validator {
 	private static final Set<Qname> ALLOWED_FOR_RT = 
 			Utils.set(Qname.of("MX.typeOfOccurrenceOccurs"), Qname.of("MX.typeOfOccurrenceAnthropogenic"), Qname.of("MX.typeOfOccurrenceUncertain"));
 
+	private static final Set<String> ALLOWED_FOR_NA = Utils.set(
+			"MX.typeOfOccurrenceNotEstablished", "MX.typeOfOccurrenceVagrant", "MX.typeOfOccurrenceRareVagrant", "MX.typeOfOccurrenceAnthropogenic");
+		
 	private void validateInvasive(Evaluation givenData, ValidationResult validationResult) {
 		String status = givenData.getValue(Evaluation.RED_LIST_STATUS);
 		if (!given(status)) return;
@@ -460,6 +463,11 @@ public class Validator {
 			if (!NA.equals(status)) {
 				validationResult.setError("Vieraslajille ainut sallittu luokka on NA", Evaluation.RED_LIST_STATUS);
 				validationResult.addErrorField(Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
+			}
+		}
+		if (NA.equals(status) && given(statusInFinland)) {
+			if (!ALLOWED_FOR_NA.contains(statusInFinland)) {
+				validationResult.setError("Annettu vakinaisuus/asema suomessa arvo ei ole sallittu luokalle NA", Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 			}
 		}
 	}
