@@ -48,6 +48,12 @@
 				<option value="${value.qname}" <#if prevRedListStatuses?? && prevRedListStatuses?seq_contains(value.qname)>selected="selected"</#if>>${value.label.forLocale("fi")}</option>
 			</#list>
 		</select>
+	<label>Arvioitu aiemmin</label>
+		<select name="prevEvalFilter" class="chosen" data-placeholder="Valitse">
+			<option value=""></option>
+			<option value="prev_eval_yes" <#if prevEvalFilter == "prev_eval_yes">selected="selected"</#if>>Arvioitu aiemmin</option>
+			<option value="prev_eval_no" <#if prevEvalFilter == "prev_eval_no">selected="selected"</#if>>Ei arvioitu</option>
+		</select>
 	<br />
 	<label>Taksonomisesti</label>
 		<input name="taxon" value="${taxon!""}"></input>

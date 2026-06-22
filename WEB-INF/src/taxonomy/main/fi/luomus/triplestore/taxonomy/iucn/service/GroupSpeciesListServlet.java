@@ -53,6 +53,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	private static final String STATE = "state";
 	private static final String RED_LIST_STATUS = "redListStatus";
 	private static final String PREV_RED_LIST_STATUS = "prevRedListStatus";
+	private static final String PREV_EVAL = "prevEvalFilter";
 	private static final int DEFAULT_PAGE_SIZE = 100;
 	private static final long serialVersionUID = -9070472068743470346L;
 	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
@@ -86,6 +87,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			String[] states = req.getParameterValues(STATE);
 			String[] redListStatuses = req.getParameterValues(RED_LIST_STATUS);
 			String[] prevRedListStatuses = req.getParameterValues(PREV_RED_LIST_STATUS);
+			String prevEval = req.getParameter(PREV_EVAL);
 			int selectedYear = (int) responseData.getDatamodel().get("selectedYear");
 			String orderBy = req.getParameter(ORDER_BY);
 			Integer pageSize = pageSize(req);
@@ -94,11 +96,12 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				orderBy = session.get(ORDER_BY);
 			}
 
-			if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) {
+			if (!"true".equals(clearFilters) && !given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses) && !given(prevEval)) {
 				taxon = session.get(TAXON);
 				states = (String[]) session.getObject(STATE);
 				redListStatuses = (String[]) session.getObject(RED_LIST_STATUS);
 				prevRedListStatuses = (String[]) session.getObject(PREV_RED_LIST_STATUS);
+				prevEval = session.get(PREV_EVAL);
 			}
 
 			if (pageSize == null) {
@@ -110,7 +113,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 
 			List<EvaluationTarget> filteredTargets;
 			try {
-				filteredTargets = filter(targets, states, taxon, redListStatuses, prevRedListStatuses, selectedYear);
+				filteredTargets = filter(targets, states, taxon, redListStatuses, prevRedListStatuses, prevEval, selectedYear);
 			} catch (TaxonLoadException e) {
 				filteredTargets = targets;
 				responseData.setData("filterError", "Taksonomiarajaus oli liian laaja.");
@@ -126,6 +129,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			session.setObject(STATE, states);
 			session.setObject(RED_LIST_STATUS, redListStatuses);
 			session.setObject(PREV_RED_LIST_STATUS, prevRedListStatuses);
+			session.setObject(PREV_EVAL, prevEval);
 			session.setObject(ORDER_BY, orderBy);
 			session.setObject(PAGE_SIZE, pageSize);
 
@@ -152,6 +156,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 					.setData(TAXON, taxon)
 					.setData("redListStatuses", redListStatuses)
 					.setData("prevRedListStatuses", prevRedListStatuses)
+					.setData("prevEvalFilter", prevEval)
 					.setData("permissions", hasIucnPermissions(groupQname, req))
 					.setData(ORDER_BY, orderBy)
 					.setData("evaluationProperties", getTaxonomyDAO().getIucnDAO().getEvaluationProperties())
@@ -793,9 +798,9 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			private static final long serialVersionUID = -6749180766121111373L;
 		}
 
-		private List<EvaluationTarget> filter(List<EvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, String[] prevRedListStatuses, int selectedYear) throws Exception {
+		private List<EvaluationTarget> filter(List<EvaluationTarget> targets, String[] states, String taxon, String[] redListStatuses, String[] prevRedListStatuses, String prevEval, int selectedYear) throws Exception {
 			List<EvaluationTarget> filtered = new ArrayList<>();
-			if (!given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses)) return targets;
+			if (!given(states) && !given(taxon) && !given(redListStatuses) && !given(prevRedListStatuses) && !given(prevEval)) return targets;
 
 			Set<String> taxonQnames = Collections.emptySet();
 			if (given(taxon)) {
@@ -820,6 +825,10 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 				}
 				if (given(taxon)) {
 					if (!taxonQnames.contains(target.getQname())) continue;
+				}
+				if (given(prevEval)) {
+					if ("prev_eval_yes".equals(prevEval) && prevEvaluation == null) continue;
+					if ("prev_eval_no".equals(prevEval) && prevEvaluation != null) continue;
 				}
 				filtered.add(target);
 			}
