@@ -214,6 +214,7 @@ $(function() {
         })
         .fail(function() {
             button.data('submitted', false).prop('disabled', false);
+            alert('Tallennus epäonnistui: onko jo luotu arviointi?');
         });
 	});
 	
@@ -232,6 +233,8 @@ $(function() {
 			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
 			$.post(req)
             .done(function(data) {
+                submitting = false;
+                submitButton.prop('disabled', false);
                 $("#NAForm").dialog("close");
                 row.fadeOut('slow', function () {
                     row.html(data);
@@ -241,6 +244,7 @@ $(function() {
             .fail(function() {
                 submitting = false;
                 submitButton.prop('disabled', false);
+                alert('Tallennus epäonnistui: onko jo luotu arviointi?');
             });
 		});
 		$("#NAForm").dialog("open");
@@ -282,6 +286,8 @@ $(function() {
 				}
 				$.post(req)
                 .done(function(data) {
+                    submitting = false;
+                    submitButton.prop('disabled', false);
                     $("#LCForm").dialog("close");
                     row.fadeOut('slow', function () {
                         row.html(data);
@@ -291,6 +297,7 @@ $(function() {
                 .fail(function() {
                     submitting = false;
                     submitButton.prop('disabled', false);
+                    alert('Tallennus epäonnistui: onko jo luotu arviointi?');
                 });                
 			});
 			$("#LCForm").dialog("open");

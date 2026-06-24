@@ -13,10 +13,13 @@ import fi.luomus.commons.containers.rdf.Statement;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.utils.DateUtils;
+import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.IucnDAO;
 import fi.luomus.triplestore.taxonomy.iucn.model.Container;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
+import fi.luomus.triplestore.taxonomy.iucn.model.ValidationResult;
+import fi.luomus.triplestore.taxonomy.iucn.model.Validator;
 import fi.luomus.triplestore.taxonomy.service.ApiBaseServlet;
 
 @WebServlet(urlPatterns = {"/taxonomy-editor/api/iucn-mark-not-evaluated/*"})
@@ -39,7 +42,19 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 		IucnDAO iucnDAO = taxonomyDAO.getIucnDAO();
 		Container container = iucnDAO.getIUCNContainer();
 
+		if (container.getTarget(speciesQname).getEvaluation(year) != null) {
+			getErrorReporter().report("Using fast-eval button for target that already has evaluation: " + Utils.debugS(speciesQname, year));
+			return status(422, res);
+		}
+		
 		Evaluation evaluation = createEvaluation(speciesQname, year, editor, iucnDAO, req);
+		
+		ValidationResult validationResult = new Validator(getTriplestoreDAO(), getErrorReporter()).validate(evaluation, null);
+
+		if (validationResult.hasErrors()) {
+			return status(422, res);
+		}
+		
 		getTriplestoreDAO(req).store(evaluation, null);
 		container.setEvaluation(evaluation);
 		EvaluationTarget target = container.getTarget(evaluation.getSpeciesQname());
