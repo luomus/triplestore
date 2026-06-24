@@ -4,7 +4,7 @@
 <h1>Uhanalaisuusarviointi - ${selectedYear} <#if draftYear == selectedYear>(LUONNOS)</#if></h1>
 
 <ul>
-<li> <a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">Vanha käyttöohje</a> (Päivitetty versio tulossa 2026) </li>
+<li> <a href="${staticURL}/IUCN-käyttöohje-2026.pdf" target="_blank">Käyttöohje</a> </li>
 <li> <a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Vanha elinympäristöluokkien tulkintaohje </a> </li>
 <li> Elinympäristöluokkien tulkintaohje (Päivitetty versio tulossa 2026) </li>
 <li> <a href="https://laji.fi/map" target="_blank">Laji.fi/map</a> - Arviointialueiden rajat, koordinaattien selvitys, pinta-alojen laskenta</li>

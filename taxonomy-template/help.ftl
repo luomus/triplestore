@@ -7,7 +7,7 @@
 
 <p>Here you can find instructions on how to use the Taxon Editor.</p>
 
-<p><a href="${staticURL}/IUCN-käyttöohje.pdf" target="_blank">IUCN user instructions (in Finnish)</a> are also available.</p>
+<p><a href="${staticURL}/IUCN-käyttöohje-2026.pdf" target="_blank">IUCN user instructions (in Finnish)</a> are also available.</p>
 
 <p>Questions to <em>helpdesk@laji.fi</em></p>
 
