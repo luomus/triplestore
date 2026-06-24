@@ -297,7 +297,7 @@ $(function() {
                 .fail(function() {
                     submitting = false;
                     submitButton.prop('disabled', false);
-                    alert('Tallennus epäonnistui: onko jo luotu arviointi?');
+                    alert('Tallennus epäonnistui: onko jo luotu arviointi? Virheellinen lisämääre elinympäristölle?');
                 });                
 			});
 			$("#LCForm").dialog("open");
