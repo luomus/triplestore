@@ -926,7 +926,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			try {
 				int i = Integer.valueOf(pageSize);
 				if (i < 1) return 10;
-				if (i > 5000) return 5000;
+				if (i > 500) return 500;
 				return i;
 			} catch (Exception e) {
 				return DEFAULT_PAGE_SIZE;
