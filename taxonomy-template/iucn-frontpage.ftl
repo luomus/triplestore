@@ -8,7 +8,7 @@
 <li> <a href="${staticURL}/Elinympäristöluokkien_tulkintaohje_v1_1.pdf" target="_blank">Vanha elinympäristöluokkien tulkintaohje </a> </li>
 <li> Elinympäristöluokkien tulkintaohje (Päivitetty versio tulossa 2026) </li>
 <li> <a href="https://laji.fi/map" target="_blank">Laji.fi/map</a> - Arviointialueiden rajat, koordinaattien selvitys, pinta-alojen laskenta</li>
-<li>Karttatyökalu - Esiintymisalueen koko/AOO; Levinneisyysalueen koko/EOO (Tulossa 2026-7)</p>
+<li>Karttatyökalu - Esiintymisalueen koko/AOO; Levinneisyysalueen koko/EOO (Tulossa 2026 tai 2027)</p>
 </ul>
 
 <@toolbox/>		
