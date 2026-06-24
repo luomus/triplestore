@@ -14,6 +14,7 @@
 
 <div style="float: left; margin: 2em;">
 <form action="${baseURL}/iucn/group/${group.qname}/${selectedYear}" method="get" id="filters"">
+<input type="hidden" name="search" value="true" />
 <fieldset style="max-width:600px;">
 	<legend>Järjestys</legend>
 	<select id="orderInput" name="orderBy" class="chosen">
@@ -51,8 +52,8 @@
 	<label>Arvioitu aiemmin</label>
 		<select name="prevEvalFilter" class="chosen" data-placeholder="Valitse">
 			<option value=""></option>
-			<option value="prev_eval_yes" <#if prevEvalFilter == "prev_eval_yes">selected="selected"</#if>>Arvioitu aiemmin</option>
-			<option value="prev_eval_no" <#if prevEvalFilter == "prev_eval_no">selected="selected"</#if>>Ei arvioitu</option>
+			<option value="prev_eval_yes" <#if (prevEvalFilter!"") == "prev_eval_yes">selected="selected"</#if>>Arvioitu aiemmin</option>
+			<option value="prev_eval_no" <#if (prevEvalFilter!"") == "prev_eval_no">selected="selected"</#if>>Ei arvioitu</option>
 		</select>
 	<br />
 	<label>Taksonomisesti</label>
@@ -199,30 +200,48 @@ $(function() {
 	$("#NAForm, #LCForm").dialog({width: 700, height: 400, modal: true, autoOpen: false });
 	
 	$(".markNEButton").on('click', function() {
+		var button = $(this);
+    	if (button.data('submitted')) return;
+    	button.data('submitted', true).prop('disabled', true);
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
-		$.post('${baseURL}/api/iucn-mark-not-evaluated?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}', function(data) {
-			row.fadeOut('slow', function () {
-				row.html(data);
-				row.fadeIn('slow');
-			});
-		});
+		$.post('${baseURL}/api/iucn-mark-not-evaluated?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}')
+        .done(function(data) {
+            row.fadeOut('slow', function () {
+                row.html(data);
+                row.fadeIn('slow');
+            });
+        })
+        .fail(function() {
+            button.data('submitted', false).prop('disabled', false);
+        });
 	});
 	
 	$(".markNAButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
 		$("#NAForm").find('select').val('').trigger("chosen:updated");
+		
+		var submitting = false;
+		
 		$("#NAForm").find('button').unbind('click').on('click', function() {
+			if (submitting) return;
+	        submitting = true;
+	        var submitButton = $(this).prop('disabled', true);
 			var typeOfOccurrenceInFinland = $("#NAForm").find('select').first().val();
 			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
-			$.post(req, function(data) {
-				$("#NAForm").dialog("close");
-				row.fadeOut('slow', function () {
-					row.html(data);
-					row.fadeIn('slow');
-				});
-			});
+			$.post(req)
+            .done(function(data) {
+                $("#NAForm").dialog("close");
+                row.fadeOut('slow', function () {
+                    row.html(data);
+                    row.fadeIn('slow');
+                });
+            })
+            .fail(function() {
+                submitting = false;
+                submitButton.prop('disabled', false);
+            });
 		});
 		$("#NAForm").dialog("open");
 	});
@@ -234,17 +253,25 @@ $(function() {
 		$.get('${baseURL}/api/iucn-mark-least-concern', { speciesQname: speciesQname }).done(function(response) {
 			$('#LCForm').html(response);
 			$('#LCForm button').button();
-
+			
+			var submitting = false;
+			
 			$('#LCForm button').unbind('click').on('click', function() {
+				if (submitting) return;
+	            var submitButton = $(this);
 				var habitat = $("#LCForm").find('select').eq(0).val();
 				var habitatSpecificTypes = $("#LCForm").find('select').eq(1).val();
+				
+				if (!habitat) {
+                	alert('Ensisijainen elinympäristö on ilmoitettava');
+                	return;
+            	}
+            	
+				submitting = true;
+            	submitButton.prop('disabled', true);
+            	
 				var req = '${baseURL}/api/iucn-mark-least-concern?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}';
-				if (habitat) {
-					req += '&habitat=' + habitat;
-				} else {
-					alert('Ensisijainen elinympäristö on ilmoitettava');
-					return;
-				}
+				req += '&habitat=' + habitat;
 				if (habitatSpecificTypes) {
 					for (var i in habitatSpecificTypes) {
 						var type = habitatSpecificTypes[i];
@@ -253,13 +280,18 @@ $(function() {
 						} 
 					}
 				}
-				$.post(req, function(data) {
-					$("#LCForm").dialog("close");
-					row.fadeOut('slow', function () {
-						row.html(data);
-						row.fadeIn('slow');
-					});
-				});
+				$.post(req)
+                .done(function(data) {
+                    $("#LCForm").dialog("close");
+                    row.fadeOut('slow', function () {
+                        row.html(data);
+                        row.fadeIn('slow');
+                    });
+                })
+                .fail(function() {
+                    submitting = false;
+                    submitButton.prop('disabled', false);
+                });                
 			});
 			$("#LCForm").dialog("open");
 			setTimeout(function () {
