@@ -1,7 +1,6 @@
 package fi.luomus.triplestore.taxonomy.iucn.service;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,6 +16,9 @@ import java.util.regex.Pattern;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.dhatim.fastexcel.Workbook;
+import org.dhatim.fastexcel.Worksheet;
 
 import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
@@ -167,56 +169,54 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 		}
 
 		private ResponseData doDownload(HttpServletResponse res, Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
-			List<String> rows = getDownloadRows(container, selectedYear, targets);
-			writeFileDownloadRows(res, selectedYear, rows);
+			res.setHeader("Content-disposition", "attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".xlsx");
+			res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			writeExcel(res.getOutputStream(), container, selectedYear, targets);
 			return new ResponseData().setOutputAlreadyPrinted();
 		}
 
-		protected List<String> getDownloadRows(Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
+		protected void writeExcel(OutputStream os, Container container, int selectedYear, Collection<EvaluationTarget> targets) throws Exception {
 			List<Integer> years = new ArrayList<>();
 			for (EvaluationYear e : getTaxonomyDAO().getIucnDAO().getEvaluationYears()) {
 				years.add(e.getYear());
 			}
 			Collections.reverse(years);
-			List<String> rows = new ArrayList<>(targets.size()*4);
-			rows.add(tsv(fileDownloadHeaderRow(selectedYear, years)));
-			appendDownloadDataRows(container, selectedYear, targets, years, rows);
-			return rows;
-		}
 
-		private void writeFileDownloadRows(HttpServletResponse res, int selectedYear, List<String> rows) throws IOException {
-			res.setHeader("Content-disposition","attachment; filename=IUCN_" + selectedYear + "_" + DateUtils.getFilenameDatetime() + ".tsv");
-			res.setContentType("text/tab-separated-values; charset=utf-8");
-			PrintWriter writer = res.getWriter();
-			int i = 0;
-			for (String row : rows) {
-				writer.write(row);
-				writer.write("\n");
-				if (i++ % 500 == 0) writer.flush();
-			}
-			writer.flush();
-		}
+			try (Workbook wb = new Workbook(os, "IUCN export", "1.0")) {
+				Worksheet ws = wb.newWorksheet("Evaluations");
+				int row = 0;
 
-		private void appendDownloadDataRows(Container container, int selectedYear, Collection<EvaluationTarget> targets, List<Integer> years, List<String> rows) throws Exception {
-			int i = 0;
-			for (EvaluationTarget target : targets) {
-				if (i % 1000 == 0) System.out.println(i + "/" + targets.size());
-				i++;
-				if (target.hasEvaluation(selectedYear)) {
-					Evaluation evaluation = target.getEvaluation(selectedYear);
-					if (evaluation.isIncompletelyLoaded()) {
-						container.complateLoading(evaluation);
+				List<String> header = fileDownloadHeaderRow(selectedYear, years);
+				writeRow(ws, row++, header);
+
+				int i = 0;
+				for (EvaluationTarget target : targets) {
+					if (i % 1000 == 0) System.out.println(i + "/" + targets.size());
+					i++;
+
+					Evaluation evaluation;
+					if (target.hasEvaluation(selectedYear)) {
+						evaluation = target.getEvaluation(selectedYear);
+						if (evaluation.isIncompletelyLoaded()) {
+							container.complateLoading(evaluation);
+						}
+					} else {
+						evaluation = new Evaluation(new Model(Qname.of("foo")), getIUCNProperties());
 					}
 
-					rows.add(tsv(fileDownloadDataRow(evaluation, target, years)));
-				} else {
-					rows.add(tsv(fileDownloadDataRow(new Evaluation(new Model(Qname.of("foo")), getIUCNProperties()), target, years)));
+					List<String> rowData = fileDownloadDataRow(evaluation, target, years);
+					writeRow(ws, row++, rowData);
 				}
 			}
 		}
 
-		private String tsv(List<String> data) {
-			return Utils.toTSV(data);
+		private void writeRow(Worksheet ws, int rowIndex, List<String> data) {
+			for (int col = 0; col < data.size(); col++) {
+				String value = data.get(col);
+				if (value != null) {
+					ws.value(rowIndex, col, value);
+				}
+			}
 		}
 
 		private List<String> fileDownloadDataRow(Evaluation evaluation, EvaluationTarget target, List<Integer> years) throws Exception {

@@ -62,7 +62,7 @@ public class FrontpageServlet extends TaxonomyEditorBaseServlet {
 			File folder = new File(getConfig().reportFolder());
 			folder.mkdirs();
 			for (File f : folder.listFiles()) {
-				if (f.getName().endsWith(".zip")) {
+				if (f.getName().endsWith(".xlsx")) {
 					files.add(f.getName());
 				}
 			}

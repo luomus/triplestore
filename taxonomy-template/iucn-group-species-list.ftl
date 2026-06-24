@@ -98,8 +98,7 @@
 
 
 <div id="download">
-	<button><img src="${staticURL}/img/CSV.png" alt="CSV"/>Lataa rajattujen lajien arvioinnit tiedostoon</button>
-	<a target="_blank" href="https://info.laji.fi/etusivu/laji-fi/tiedostojen-vienti-exceliin/">Lue kuinka viet tiedostot Exceliin</a>
+	<button><img src="${staticURL}/img/xls.png" alt="Excel"/>Lataa rajattujen lajien arvioinnit tiedostoon</button>
 </div>
 <div class="clear"></div>
 
