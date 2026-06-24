@@ -54,7 +54,7 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 	private static final String RED_LIST_STATUS = "redListStatus";
 	private static final String PREV_RED_LIST_STATUS = "prevRedListStatus";
 	private static final String PREV_EVAL = "prevEvalFilter";
-	private static final int DEFAULT_PAGE_SIZE = 100;
+	private static final int DEFAULT_PAGE_SIZE = 50;
 	private static final long serialVersionUID = -9070472068743470346L;
 	private static final List<String> CRITERIAS = Utils.list("A", "B", "C", "D", "E");
 
