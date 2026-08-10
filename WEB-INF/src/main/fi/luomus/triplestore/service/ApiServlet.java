@@ -250,7 +250,7 @@ public class ApiServlet extends EditorBaseServlet {
 
 	private ResponseData status400(HttpServletResponse res, IllegalArgumentException e) throws IOException {
 		res.getWriter().write(LogUtils.buildStackTrace(e, 10));
-		res.setContentType("text-plain");
+		res.setContentType("text/plain");
 		return status(400, res);
 	}
 
