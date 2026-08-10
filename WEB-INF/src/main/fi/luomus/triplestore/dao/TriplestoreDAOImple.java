@@ -183,7 +183,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(Model model) throws SQLException {
+	public void store(Model model) throws SQLException, MissingResourceException {
 		TransactionConnection con = null;
 		try {
 			con = openConnection();
@@ -195,7 +195,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private void store(Model model, TransactionConnection con) throws SQLException {
+	private void store(Model model, TransactionConnection con) throws SQLException, MissingResourceException {
 		Subject subject =  model.getSubject();
 		Model existingModel = this.get(subject);
 
@@ -253,7 +253,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 		}
 	}
 
-	private void addStatement(Statement statement, CallableStatement addStatement, Subject subject) throws SQLException {
+	private void addStatement(Statement statement, CallableStatement addStatement, Subject subject) throws SQLException, MissingResourceException {
 		int i = 2;
 		addStatement.setString(i++, statement.getPredicate().getQname());
 		if (statement.isLiteralStatement()) {
@@ -270,24 +270,24 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 			int c = addStatement.executeUpdate();
 			if (c != 1) throw new IllegalStateException("Add statement inserted " + c + " rows instead of 1.");
 		} catch (Exception e) {
-			RuntimeException missing = resolveMissingResourceException(statement, subject);
+			MissingResourceException missing = resolveMissingResourceException(statement, subject);
 			if (missing != null) throw missing;
 			throw e;
 		}
 	}
 
-	private RuntimeException resolveMissingResourceException(Statement statement, Subject subject) throws SQLException {
+	private MissingResourceException resolveMissingResourceException(Statement statement, Subject subject) throws SQLException {
 		if (!resourceExists(subject.getQname())) {
-			return new IllegalArgumentException("Subject '" + subject.getQname() + "' does not exist.");
+			return new MissingResourceException("Subject '" + subject.getQname() + "' does not exist.", subject.getQname());
 		}
 		if (!resourceExists(statement.getPredicate().getQname())) {
-			return new IllegalArgumentException("Predicate '" + statement.getPredicate().getQname() + "' does not exist.");
+			return new MissingResourceException("Predicate '" + statement.getPredicate().getQname() + "' does not exist.", statement.getPredicate().getQname());
 		}
 		if (statement.isResourceStatement() && !resourceExists(statement.getObjectResource().getQname())) {
-			return new IllegalArgumentException("Object '" + statement.getObjectResource().getQname() + "' does not exist for predicate: " + statement.getPredicate().getQname());
+			return new MissingResourceException("Object '" + statement.getObjectResource().getQname() + "' does not exist.", statement.getObjectResource().getQname());
 		}
 		if (!statement.isForDefaultContext() && !resourceExists(statement.getContext().getQname())) {
-			return new IllegalArgumentException("Context '" + statement.getContext().getQname() + "' does not exist for predicate: " + statement.getPredicate().getQname());
+			return new MissingResourceException("Context '" + statement.getContext().getQname() + "' does not exist.", statement.getContext().getQname());
 		}
 		return null;
 	}
@@ -410,7 +410,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public Taxon addTaxon(EditableTaxon taxon) throws SQLException {
+	public Taxon addTaxon(EditableTaxon taxon) throws SQLException, MissingResourceException {
 		Model model = new Model(taxon.getQname());
 		model.setType(MX_TAXON);
 
@@ -624,19 +624,19 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void delete(Subject subject, Predicate predicate) throws SQLException {
+	public void delete(Subject subject, Predicate predicate) throws SQLException, MissingResourceException {
 		delete(subject, predicate, null);
 	}
 
 	@Override
-	public void delete(Subject subject, Predicate predicate, Context context) throws SQLException {
+	public void delete(Subject subject, Predicate predicate, Context context) throws SQLException, MissingResourceException {
 		UsedAndGivenStatements used = new UsedAndGivenStatements();
 		used.addUsed(predicate, context, null);
 		store(subject, used);
 	}
 
 	@Override
-	public void store(Subject subject, UsedAndGivenStatements usedAndGivenStatements) throws SQLException {
+	public void store(Subject subject, UsedAndGivenStatements usedAndGivenStatements) throws SQLException, MissingResourceException {
 		TransactionConnection con = null;
 		PreparedStatement removePredicatesStatement = null;
 		CallableStatement addStatement= null;
@@ -674,7 +674,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void insert(Subject subject, Statement statement) throws SQLException {
+	public void insert(Subject subject, Statement statement) throws SQLException, MissingResourceException {
 		TransactionConnection con = null;
 		CallableStatement addStatement= null;
 		try {
@@ -730,7 +730,7 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	}
 
 	@Override
-	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException {
+	public void store(Qname taxonQname, Occurrence occurrence) throws SQLException, MissingResourceException {
 		Qname id = given(occurrence.getId()) ? occurrence.getId() : this.getSeqNextValAndAddResource("MO");
 		Model model = new Model(id);
 		model.setType(MO_OCCURRENCE);

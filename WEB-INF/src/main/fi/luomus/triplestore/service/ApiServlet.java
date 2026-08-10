@@ -28,6 +28,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.utils.LogUtils;
 import fi.luomus.commons.utils.Utils;
+import fi.luomus.triplestore.dao.MissingResourceException;
 import fi.luomus.triplestore.dao.TooManyResultsException;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
 import fi.luomus.triplestore.dao.TriplestoreDAO.ResultType;
@@ -215,7 +216,7 @@ public class ApiServlet extends EditorBaseServlet {
 	protected ResponseData processPut(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname qname = Qname.of(getQname(req));
 		if (!qname.isSet()) {
-			return status400(res, new IllegalArgumentException("Qname not given"));
+			return illegalArguments(new IllegalArgumentException("Qname not given"));
 		}
 		Format format = getFormat(req);
 
@@ -231,7 +232,7 @@ public class ApiServlet extends EditorBaseServlet {
 		}
 
 		if (!given(data) && !given(predicateQname)) {
-			return status400(res, new IllegalArgumentException("You must give contents in body or provide 'data' or 'predicate_qname' parameter"));
+			return illegalArguments(new IllegalArgumentException("You must give contents in body or provide 'data' or 'predicate_qname' parameter"));
 		}
 
 		TriplestoreDAO dao = getTriplestoreDAO();
@@ -242,16 +243,28 @@ public class ApiServlet extends EditorBaseServlet {
 				put(qname, predicateQname, objectResource, objectLiteral, langCode, contextQname, dao);
 			}
 		} catch (IllegalArgumentException e) {
-			return status400(res, e);
+			return illegalArguments(e);
+		} catch (MissingResourceException e) {
+			return missingResourceError(e);
 		}
 
 		return processGet(req, res);
 	}
 
-	private ResponseData status400(HttpServletResponse res, IllegalArgumentException e) throws IOException {
-		res.getWriter().write(LogUtils.buildStackTrace(e, 10));
-		res.setContentType("text/plain");
-		return status(400, res);
+	private ResponseData missingResourceError(MissingResourceException e) {
+		return new ResponseData(generateMissingResourceError(e), "application/json", 400);
+	}
+
+	private String generateMissingResourceError(MissingResourceException e) {
+		fi.luomus.commons.json.JSONObject json = new fi.luomus.commons.json.JSONObject();
+		json.setString("code", "MISSING_RESOURCE");
+		json.setString("resource", e.getResourceQname());
+		json.setString("message", e.getMessage());
+		return json.toString();
+	}
+
+	private ResponseData illegalArguments(IllegalArgumentException e) {
+		return new ResponseData(LogUtils.buildStackTrace(e, 10), "text/plain", 400);
 	}
 
 	public static void put(Qname qname, String predicateQname, String objectResource, String objectLiteral, String langCode, String contextQname, TriplestoreDAO dao) throws Exception {

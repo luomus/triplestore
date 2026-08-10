@@ -157,8 +157,9 @@ public interface TriplestoreDAO {
 	 * @param subject
 	 * @param predicate
 	 * @throws SQLException
+	 * @throws MissingResourceException
 	 */
-	void delete(Subject subject, Predicate predicate) throws SQLException;
+	void delete(Subject subject, Predicate predicate) throws SQLException, MissingResourceException;
 
 	/**
 	 * Deletes single predicates of the given resource from the given context with no language
@@ -166,8 +167,9 @@ public interface TriplestoreDAO {
 	 * @param predicate
 	 * @param context null for default context
 	 * @throws SQLException
+	 * @throws MissingResourceException
 	 */
-	void delete(Subject subject, Predicate predicate, Context context) throws SQLException;
+	void delete(Subject subject, Predicate predicate, Context context) throws SQLException, MissingResourceException;
 
 	/**
 	 * Removes used predicates from db and adds given statements.
