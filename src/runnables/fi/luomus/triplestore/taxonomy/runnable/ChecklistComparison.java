@@ -25,8 +25,8 @@ import fi.luomus.commons.utils.FileUtils;
 public class ChecklistComparison {
 
 	private static final String FOLDER = "E:/esko-local/temp/checklist";
-	private static final String PREV_YEAR = "2024";
-	private static final String LATEST_YEAR = "2025";
+	private static final String PREV_YEAR = "2025";
+	private static final String LATEST_YEAR = "2026";
 
 	private static final String TAB = "\t";
 	private static final String NEWLINE = "\n";
@@ -47,8 +47,8 @@ public class ChecklistComparison {
 	}
 
 	private static void compareChecklists() throws Exception {
-		File latest = new File(FOLDER, "2025_checklist_en.tsv");
-		File previous = new File(FOLDER, "Liite1_Appendix1_Lajiluettelo2024_Checklist2024.txt");
+		File latest = new File(FOLDER, "taxon-export.tsv");
+		File previous = new File(FOLDER, "Liite1_Appendix1_Lajiluettelo2025_Checklist2025.txt");
 
 		Comparison c = new ChecklistComparator().compare(
 				new ChecklistReader().read(latest),

@@ -220,8 +220,12 @@ $(function() {
 	$(".markNAButton").on('click', function() {
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
-		$("#NAForm").find('select').val('').trigger("chosen:updated");
-		
+		var prevStatus = row.find('.markNAButton').data('na');
+		if (prevStatus) {
+			$("#NAForm").find('select').val(prevStatus).trigger("chosen:updated");
+		} else {
+			$("#NAForm").find('select').val('').trigger("chosen:updated");
+		}
 		var submitting = false;
 		
 		$("#NAForm").find('button').unbind('click').on('click', function() {
@@ -229,6 +233,10 @@ $(function() {
 	        submitting = true;
 	        var submitButton = $(this).prop('disabled', true);
 			var typeOfOccurrenceInFinland = $("#NAForm").find('select').first().val();
+			if (!typeOfOccurrenceInFinland) {
+				alert(' Vakinaisuus/asema Suomessa on ilmoitettava');
+				return;
+			}
 			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
 			$.post(req)
             .done(function(data) {

@@ -86,7 +86,7 @@ public class Validator {
 		validateMinMaxPair(Evaluation.OCCURRENCE_AREA_MIN, Evaluation.OCCURRENCE_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair(Evaluation.DISTRIBUTION_AREA_MIN, Evaluation.DISTRIBUTION_AREA_MAX, INTEGER_COMPARATOR, givenData, validationResult);
 		validateMinMaxPair(Evaluation.INDIVIDUAL_COUNT_MIN, Evaluation.INDIVIDUAL_COUNT_MAX, INTEGER_COMPARATOR, givenData, validationResult);
-		validateMinMaxPair(Evaluation.RED_LIST_STATUS_MIN, Evaluation.RED_LIST_STATUS_MAX, IUCN_RANGE_COMPARATOR, givenData, validationResult);	
+		validateMinMaxPair(Evaluation.RED_LIST_STATUS_MIN, Evaluation.RED_LIST_STATUS_MAX, IUCN_RANGE_COMPARATOR, givenData, validationResult);
 		validateCriteriaFormat(givenData, validationResult);
 		validateEvaluationPeriodLength(givenData, validationResult);
 		validateValidCriteriaStatuses(givenData, validationResult);
@@ -446,12 +446,12 @@ public class Validator {
 		}
 	}
 
-	private static final Set<Qname> ALLOWED_FOR_RT = 
+	private static final Set<Qname> ALLOWED_FOR_RT =
 			Utils.set(Qname.of("MX.typeOfOccurrenceOccurs"), Qname.of("MX.typeOfOccurrenceAnthropogenic"), Qname.of("MX.typeOfOccurrenceUncertain"));
 
 	private static final Set<String> ALLOWED_FOR_NA = Utils.set(
 			"MX.typeOfOccurrenceNotEstablished", "MX.typeOfOccurrenceVagrant", "MX.typeOfOccurrenceRareVagrant", "MX.typeOfOccurrenceAnthropogenic");
-		
+
 	private void validateInvasive(Evaluation givenData, ValidationResult validationResult) {
 		String status = givenData.getValue(Evaluation.RED_LIST_STATUS);
 		if (!given(status)) return;
@@ -466,6 +466,9 @@ public class Validator {
 			if (!ALLOWED_FOR_NA.contains(statusInFinland)) {
 				validationResult.setError("Annettu vakinaisuus/asema suomessa arvo ei ole sallittu luokalle NA", Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 			}
+		}
+		if (NA.equals(status) && !given(statusInFinland)) {
+			validationResult.setError("Vakinaisuus/asema suomessa on annettava luokalle NA", Evaluation.TYPE_OF_OCCURRENCE_IN_FINLAND);
 		}
 	}
 
@@ -534,7 +537,7 @@ public class Validator {
 			if (s.isLiteralStatement()) {
 				int length = Utils.countOfUTF8Bytes(s.getObjectLiteral().getUnsanitazedContent());
 				if (length > 4000) {
-					String label = getLabel(properties.getProperty(s.getPredicate())); 
+					String label = getLabel(properties.getProperty(s.getPredicate()));
 					validationResult.setError("Liian pitkä teksti kentässä " + label, s.getPredicate().toString());
 				}
 			}
@@ -624,7 +627,7 @@ public class Validator {
 
 	private void validateCriteriaFormat(String value, String criteriaPostfix, ValidationResult validationResult) {
 		if (!given(value)) return;
-		CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value); 
+		CriteriaValidationResult result = CriteriaFormatValidator.forCriteria(criteriaPostfix).validate(value);
 		if (!result.isValid()) {
 			validationResult.setError(result.getErrorMessage(), "MKV.criteria"+criteriaPostfix);
 		}

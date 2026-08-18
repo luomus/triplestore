@@ -121,14 +121,16 @@
 			<span class="state notStarted">Ei aloitettu</span> 
 			<#if permissions>
 				<button class="markNEButton">NE</button>
-				<button class="markNAButton">NA</button>
 				<#if target.hasPreviousEvaluation(year)>
 					<#assign prevEvaluation = target.getPreviousEvaluation(year)>
+					<button class="markNAButton" data-na="${prevEvaluation.getValue("MKV.typeOfOccurrenceInFinland")!""}">NA</button>
 					<#if prevEvaluation.hasIucnStatus()>
 						<#if prevEvaluation.iucnStatus == "MX.iucnLC">
 							<button class="markLCButton">LC</button>
 						</#if>
 					</#if>
+				<#else>
+					<button class="markNAButton" data-na="">NA</button>
 				</#if>
 			</#if>
 		</td>
