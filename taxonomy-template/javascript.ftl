@@ -8,13 +8,6 @@ $(function() {
 		alert(text);
 	}
 	
-	$(document).not("#editTaxonDescriptions").tooltip({
-		position: {
-			 my: "left bottom", 
-			 at: "left top-7"
-		}
-	});
-			
 	$("input[type=submit], button, .button").button();
 	
 	$(".chosen").chosen({ search_contains: true, allow_single_deselect: true });
