@@ -37,7 +37,7 @@ $(function() {
   		checked: false
 	});
 	
-	$("#taxonEditHeader, #taxonTree, #editTaxon").on('click', '.taxonId, .scinameLink', function() {
+	$("#taxonTree").on('click', '.taxonId, .scinameLink', function() {
 		var value = $(this).attr('title');
 		if (!value) return false;
 		value = value.trim();
@@ -53,6 +53,7 @@ $(function() {
     	}
     	return false;
 	});
+	
 });
 
 
@@ -796,7 +797,7 @@ $(function() {
 		resizable: false,
 		left: 0,
 		top: 0,
-		height: $(document).height(),
+		height: $(window).height(),
       	width: "100%",
       	modal: true,
       	open: function() {
