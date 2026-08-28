@@ -74,7 +74,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	private boolean isCopyRequest(HttpServletRequest req) {
-		return copyParam("copy", req) || copyParam("copyTaxHab", req); 
+		return copyParam("copy", req) || copyParam("copyTaxHab", req);
 	}
 
 	private boolean copyParam(String param, HttpServletRequest req) {
@@ -124,7 +124,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	}
 
 	@Override
-	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception { 
+	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		String speciesQname = speciesQname(req);
 		if (!given(speciesQname)) throw new IllegalArgumentException("Species qname not given.");
@@ -140,12 +140,11 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		Evaluation thisPeriodData = target.getEvaluation(year);
 
 		complete(comparisonData);
-		
+
 		if (!permissions(req, target, thisPeriodData)) throw new IllegalAccessException();
 
-		boolean doCopy = isCopyRequest(req) && thisPeriodData == null && comparisonData != null;
-		if (doCopy) {
-			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+		if (doCopy(req, comparisonData, thisPeriodData)) {
+			String notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 			thisPeriodData = iucnDAO.createNewEvaluation();
 			comparisonData.copySpecifiedFieldsTo(thisPeriodData);
 			if (copyParam("copyTaxHab", req)) {
@@ -156,7 +155,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				for (HabitatObject habobj : taxon.getSecondaryHabitats()) {
 					thisPeriodData.addSecondaryHabitat(HabitatObject.copyOf(habobj));
 				}
-				notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu (elinympäristöt taksonomiasta)" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy"); 
+				notes = "Vuoden " + comparisonData.getEvaluationYear() + " tiedot kopioitu (elinympäristöt taksonomiasta)" + Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 
 			}
 			Model model = thisPeriodData.getModel();
@@ -186,6 +185,10 @@ public class EvaluationEditServlet extends FrontpageServlet {
 				.setData("errorMessage", validationResult.getErrors())
 				.setData("erroreousFields", validationResult.getErroreousFields())
 				.setData("editNotes", req.getParameter(Evaluation.EDIT_NOTES));
+	}
+
+	private boolean doCopy(HttpServletRequest req, Evaluation comparisonData, Evaluation thisPeriodData) {
+		return isCopyRequest(req) && thisPeriodData == null && comparisonData != null;
 	}
 
 	private void cleanCriteriaFormats(Evaluation givenData) {
@@ -262,7 +265,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			String parameterName = e.getKey();
 			if (!habitatPair(parameterName)) {
 				setValues(evaluation, iucnProperties, e);
-			} 
+			}
 		}
 
 		setHabitatsToEvaluation(req, evaluation);
@@ -284,7 +287,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 			String parameterName = e.getKey();
 			if (habitatPair(parameterName)) {
 				addHabitatPairParameters(habitatPairParameters, e);
-			} 
+			}
 		}
 		return parseHabitats(habitatPairParameters);
 	}
@@ -303,7 +306,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 	private static Habitats parseHabitats(Map<String, Map<String, String[]>> habitatPairParameters) {
 		// Map of
 		// MKV.primaryHabitat___0 : { MKV.habitat: [MKV.habitatMk], MKV.habitatSpecificType : [MKV.habitatSpecificTypePAK] }
-		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... } 
+		// MKV.secondaryHabitat___0: { MKV.habitat : [MKV.habitatMk] , ... }
 		// MKV.secondaryHabitat___1 : ...
 		Habitats habitats = new Habitats();
 		for (Map.Entry<String, Map<String, String[]>> e : habitatPairParameters.entrySet()) {
@@ -361,7 +364,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		if (model.hasStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname())) {
 			notes += ": " + model.getStatements(IucnDAO.EDIT_NOTES_PREDICATE.getQname()).get(0).getObjectLiteral().getContent();
 		}
-		notes += Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");  
+		notes += Evaluation.NOTE_DATE_SEPARATOR + DateUtils.getCurrentDateTime("dd.MM.yyyy");
 		model.removeAll(IucnDAO.EDIT_NOTES_PREDICATE);
 		model.addStatement(new Statement(IucnDAO.EDIT_NOTES_PREDICATE, new ObjectLiteral(notes)));
 	}
@@ -380,7 +383,7 @@ public class EvaluationEditServlet extends FrontpageServlet {
 		String evaluationId = req.getParameter(EVALUATION_ID);
 		if (given(evaluationId)) {
 			return getTaxonomyDAO().getIucnDAO().createEvaluation(evaluationId);
-		} 
+		}
 		return getTaxonomyDAO().getIucnDAO().createNewEvaluation();
 	}
 
