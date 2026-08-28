@@ -602,7 +602,49 @@
   			</tbody>
   		</table>
   <@portletFooter />
+  
+  	<#if taxon.occurrences.hasOccurrences()>
+		<@portletHeader "Reference Sequences" "" "referenceSequences multirowSection"/>
+  	<#else>
+		<@portletHeader "Reference Sequences" "initiallyClosed" "referenceSequences multirowSection"/>
+  	</#if>
+		<table id="referenceSequenceTable">
+			<thead>
+				<tr>
+					<th>DNA Sequence (FASTA)</th> 
+					<th>Locus</th>
+					<th>Specimend ID</th>
+					<th>External Sequence ID</th>
+				</tr>
+			</thead>
+			<tbody>
+				<#list taxon.referenceSequences as referenceSequence>
+					<tr><@sequenceEdit referenceSequence_index referenceSequence /></tr>
+  				</#list>
+  				<tr><@sequenceEdit taxon.referenceSequences?size /></tr>
+			</tbody>
+		</table>
+	<@portletFooter />
+	
 </div>
+
+<#macro sequenceEdit index sequence="">
+	<td><textarea class="sequenceText" name="MX.taxonReferenceSequence___${index}___sequenceText" <@checkPermissions/> ><#if sequence != "">${(sequence.sequenceText!"")?html}</#if></textarea></td>
+	<td>
+		<select class="locus" name="MX.taxonReferenceSequence___${index}___locus" <@checkPermissions/>>
+			<option value=""></option>
+			<#list referenceSequenceProperties.getProperty("MX.sequenceLocus").range.values as prop>
+				<#if sequence != "" && (sequence.locus!"") == prop.qname>
+					<option value="${prop.qname}" selected="selected">${prop.label.forLocale("en")!prop.qname}</option>
+				<#else>
+					<option value="${prop.qname}">${prop.label.forLocale("en")!prop.qname}</option>
+				</#if>
+			</#list>
+		</select>
+	</td>
+	<td><input class="specimenID" name="MX.taxonReferenceSequence___${index}___specimenID" value="<#if sequence != "">${(sequence.specimenId!"")?html}</#if>"/></td>
+	<td><input class="externalSequenceID" name="MX.taxonReferenceSequence___${index}___externalSequenceID" value="<#if sequence != "">${(sequence.externalSequenceId!"")?html}</#if>"/></td>
+</#macro>
 
 <#macro habitatEdit name habitat="">
 	<select name="${name}___MKV.habitat" <@checkPermissions/> class="chosen" data-placeholder="Select habitat">
@@ -819,13 +861,4 @@
 <div class="clear"></div>
 </#if>
 
-<script>
-$(function() {
-
-	$("textarea").not('.newPublicationInput').attr("placeholder", "In english");
-	
-	$(".helpText").tooltip();
-	
-});
-</script>
 </div>

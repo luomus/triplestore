@@ -20,6 +20,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.ReferenceSequence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
@@ -179,7 +180,7 @@ public interface TriplestoreDAO {
 	void store(Subject subject, UsedAndGivenStatements usedAndGivenStatements) throws Exception;
 
 	/**
-	 * Adds or modifies a publiction. For new publication the ID must be already set.
+	 * Adds or modifies a publication. For new publication the ID must be already set.
 	 * @param publication
 	 * @return the same publication
 	 * @throws Exception
@@ -192,13 +193,22 @@ public interface TriplestoreDAO {
 	void clearCaches();
 
 	/**
-	 * Updates occurrence information, making the neccessary deletions, updates and inserts.
+	 * Updates occurrence information, making the necessary deletions, updates and inserts.
 	 * @param existingOccurrences
 	 * @param newOccurrences
 	 * @param supportedAreas all existing occurrences for these areas are deleted
 	 * @throws Exception
 	 */
 	void store(Occurrences existingOccurrences, Occurrences newOccurrences, Set<Qname> supportedAreas) throws Exception;
+
+	/**
+	 * Updates taxon reference sequences, making necessary
+	 * @param taxonQname
+	 * @param existingSequences
+	 * @param newSequences
+	 * @throws Exception
+	 */
+	void store(Qname taxonQname, List<ReferenceSequence> existingSequences, List<ReferenceSequence> newSequences) throws Exception;
 
 	/**
 	 * Insert or update occurrence. ID of occurrence may or may not be set for insert; if not given it will be generated and set to object.

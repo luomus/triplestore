@@ -23,6 +23,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.ReferenceSequence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
@@ -258,7 +259,11 @@ public class TriplestoreDAOStub implements TriplestoreDAO {
 	@Override
 	public void validate(Model model) throws RDFValidationException {
 		// Auto-generated method stub
+	}
 
+	@Override
+	public void store(Qname taxonQname, List<ReferenceSequence> existingSequences, List<ReferenceSequence> newSequences) throws Exception {
+		// TODO Auto-generated method stub
 	}
 
 }

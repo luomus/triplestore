@@ -385,6 +385,17 @@ span.indent { display: inline-block; }
   width: 40px;
 }
 
+#referenceSequenceTable td {
+	vertical-align: top;
+}
+#referenceSequenceTable .sequenceText {
+	width: 300px;
+	height: 3em;
+}
+#referenceSequenceTable .locus {
+	width: 50px;
+}
+
 img.finnishTaxonFlag {
 	width: 17px;
 	padding-top: 4px;

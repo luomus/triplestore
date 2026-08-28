@@ -36,6 +36,7 @@ import fi.luomus.commons.http.HttpClientService;
 import fi.luomus.commons.json.JSONObject;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.ReferenceSequence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonSearch;
 import fi.luomus.commons.taxonomy.TaxonSearchDAOSQLQueryImple;
@@ -494,6 +495,47 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				occurrence.setYear(year);
 				occurrence.setSpecimenURI(specimenURI);
 				taxon.getOccurrences().setOccurrence(occurrence);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@Override
+	public void addReferenceSequences(EditableTaxon taxon) {
+		try {
+			Collection<Model> models = triplestoreDAO.getSearchDAO().search(
+					new SearchParams(1000, 0)
+					.type("MX.taxonReferenceSequence")
+					.predicate("MX.sequenceTaxonID")
+					.objectresource(taxon.getQname().toString()));
+			for (Model model : models) {
+				Qname id = q(model.getSubject());
+				String sequenceText = null;
+				Qname locus = null;
+				String specimenId = null;
+				Integer sortOrder =  1;
+				String externalId = null;
+				for (Statement s : model.getStatements()) {
+					if (s.getPredicate().getQname().equals("MX.externalSequenceID")) {
+						externalId = s.getObjectLiteral().getContent();
+					} else if (s.getPredicate().getQname().equals("MX.sequenceLocus")) {
+						locus = q(s.getObjectResource());
+					} else if (s.getPredicate().getQname().equals("MX.sequenceSpecimenID")) {
+						specimenId = s.getObjectLiteral().getContent();
+					} else if (s.getPredicate().getQname().equals("MY.sequenceText")) {
+						sequenceText = s.getObjectLiteral().getContent();
+					} else if (s.getPredicate().getQname().equals("sortOrder")) {
+						try {
+							sortOrder = Integer.valueOf(s.getObjectLiteral().getContent());
+						} catch (Exception e) {}
+					}
+				}
+				ReferenceSequence referenceSequence = new ReferenceSequence(id, sequenceText, sortOrder);
+				referenceSequence.setSpecimenId(specimenId);
+				referenceSequence.setExternalSequenceId(externalId);
+				referenceSequence.setLocus(locus);
+				taxon.addReferenceSequence(referenceSequence);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);

@@ -14,6 +14,8 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO, TaxonSearchDAO {
 
 	void addOccurrences(EditableTaxon taxon);
 
+	void addReferenceSequences(EditableTaxon taxon);
+
 	void addHabitats(EditableTaxon taxon);
 
 	IucnDAO getIucnDAO();

@@ -34,6 +34,7 @@ import fi.luomus.commons.db.connectivity.TransactionConnection;
 import fi.luomus.commons.reporting.ErrorReporter;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.ReferenceSequence;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.iucn.EndangermentObject;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
@@ -69,6 +70,13 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	private static final String MO_STATUS = "MO.status";
 	private static final String MO_TAXON = "MO.taxon";
 	private static final String MO_OCCURRENCE = "MO.occurrence";
+	private static final String MX_TAXON_REFERENCE_SEQUENCE = "MX.taxonReferenceSequence";
+	private static final String MX_EXTERNAL_SEQUENCE_ID = "MX.externalSequenceID";
+	private static final String MX_SEQUENCE_LOCUS = "MX.sequenceLocus";
+	private static final String MX_SEQUENCE_SPECIMEN_ID = "MX.sequenceSpecimenID";
+	private static final String MX_SEQUENCE_TAXON_ID = "MX.sequenceTaxonID";
+	private static final String MY_SEQUENCE_TEXT = "MY.sequenceText";
+
 	private static final String RDF_ALT = "rdf:Alt";
 	private static final String RDFS_LABEL = "rdfs:label";
 	private static final String MZ_UNIT_OF_MEASUREMENT = "MZ.unitOfMeasurement";
@@ -715,6 +723,31 @@ public class TriplestoreDAOImple implements TriplestoreDAO {
 	@Override
 	public void clearCaches() {
 		cached.invalidateAll();
+	}
+
+	@Override
+	public void store(Qname taxonQname, List<ReferenceSequence> existingSequences, List<ReferenceSequence> newSequences) throws Exception {
+		for (ReferenceSequence existing : existingSequences) {
+			delete(Subject.of(existing.getId()));
+		}
+		for (ReferenceSequence refSeq : newSequences) {
+			store(taxonQname, refSeq);
+		}
+	}
+
+	private void store(Qname taxonQname, ReferenceSequence referenceSequence) throws SQLException, MissingResourceException {
+		Qname id = given(referenceSequence.getId()) ? referenceSequence.getId() : this.getSeqNextValAndAddResource("MXRF");
+		Model model = new Model(id);
+		model.setType(MX_TAXON_REFERENCE_SEQUENCE);
+		model.addStatementIfObjectGiven(MX_SEQUENCE_TAXON_ID, taxonQname);
+		model.addStatementIfObjectGiven(MY_SEQUENCE_TEXT, referenceSequence.getSequenceText());
+		model.addStatementIfObjectGiven(MX_SEQUENCE_SPECIMEN_ID, referenceSequence.getSpecimenId());
+		model.addStatementIfObjectGiven(MX_EXTERNAL_SEQUENCE_ID, referenceSequence.getExternalSequenceId());
+		model.addStatementIfObjectGiven(MX_SEQUENCE_LOCUS, referenceSequence.getLocus());
+		model.addStatementIfObjectGiven(SORT_ORDER, s(referenceSequence.getOrder()));
+		this.validate(model);
+		this.store(model);
+		referenceSequence.setId(id);
 	}
 
 	@Override

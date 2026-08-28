@@ -100,6 +100,7 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("publications", taxonomyDAO.getPublications());
 			responseData.setData("informalGroups", taxonomyDAO.getInformalTaxonGroups());
 			responseData.setData("properties", dao.getProperties("MX.taxon"));
+			responseData.setData("referenceSequenceProperties", dao.getProperties("MX.taxonReferenceSequence"));
 			responseData.setData("occurrenceProperties", dao.getProperties("MO.occurrence"));
 			responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
 			responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());

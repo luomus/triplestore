@@ -239,4 +239,9 @@ public class TaxonomyDAOStub implements ExtendedTaxonomyDAO {
 		return null;
 	}
 
+	@Override
+	public void addReferenceSequences(EditableTaxon taxon) {
+		// Auto-generated method stub
+	}
+
 }

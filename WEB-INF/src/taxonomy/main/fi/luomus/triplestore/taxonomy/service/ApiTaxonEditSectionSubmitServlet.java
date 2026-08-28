@@ -1,6 +1,8 @@
 package fi.luomus.triplestore.taxonomy.service;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +28,7 @@ import fi.luomus.commons.containers.rdf.Subject;
 import fi.luomus.commons.services.ResponseData;
 import fi.luomus.commons.taxonomy.Occurrences;
 import fi.luomus.commons.taxonomy.Occurrences.Occurrence;
+import fi.luomus.commons.taxonomy.ReferenceSequence;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -54,6 +57,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 	private static final String MX_SCIENTIFIC_NAME = "MX.scientificName";
 	private static final Predicate SCIENTIFICNAME_PREDICATE = Predicate.of(MX_SCIENTIFIC_NAME);
 	private static final String MO_OCCURRENCE = "MO.occurrence";
+	private static final String MX_TAXON_REFERENCE_SEQUENCE = "MX.taxonReferenceSequence";
 	private static final String CONTEXT = "_CONTEXT_";
 	private static final String EN = "en";
 	private static final String SV = "sv";
@@ -76,8 +80,9 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String newOccurrenceInFinlandPublicationCitation = req.getParameter("newOccurrenceInFinlandPublicationCitation");
 		String alteredScientificName = req.getParameter("alteredScientificName");
 		String alteredAuthor = req.getParameter("alteredAuthor");
-		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req); 
+		boolean storeBiogeographicalProvinceOccurrences = storeBiogeographicalProvinceOccurrences(req);
 		boolean storeHabitats = storeHabitats(req);
+		boolean storeReferenceSequences = storeReferenceSequences(req);
 		String savedLocale = savedLocale(req);
 
 		TriplestoreDAO dao = getTriplestoreDAO(req);
@@ -86,7 +91,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		RdfProperties properties = dao.getProperties(MX_TAXON);
 		UsedAndGivenStatements usedAndGivenStatements = parseUsedAndGivenStatements(req, properties, savedLocale);
 
-		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao); 
+		boolean editingDescriptionFields = editingDescriptionFields(usedAndGivenStatements, dao);
 		if (!editingDescriptionFields) {
 			checkPermissionsToAlterTaxon(taxonQname, req);
 		}
@@ -101,7 +106,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 				Publication publication = storePublication(newOccurrenceInFinlandPublicationCitation, dao);
 				usedAndGivenStatements.addStatement(new Statement(OCCURRENCE_IN_FINLAND_PUBLICATION_PREDICATE, ObjectResource.of(publication.getQname())));
 				responseData.setData("addedOccurrenceInFinlandPublication", publication);
-			}	
+			}
 		}
 
 		EditableTaxon taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
@@ -117,6 +122,8 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			storeOccurrences(req, dao, taxon, taxonomyDAO);
 		} else if (storeHabitats) {
 			storeHabitats(req, dao, taxon);
+		} else if (storeReferenceSequences) {
+			storeReferenceSequences(req, dao, taxon, taxonomyDAO);
 		} else {
 			dao.store(Subject.of(taxonQname), usedAndGivenStatements);
 		}
@@ -128,7 +135,7 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validateDescriptions(usedAndGivenStatements.getGivenStatements());
 		} else {
 			taxon = (EditableTaxon) taxonomyDAO.getTaxon(taxonQname);
-			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);	
+			validationData = new TaxonValidator(dao, taxonomyDAO, getErrorReporter()).validate(taxon);
 		}
 
 		return responseData.setData(VALIDATION_RESULTS, validationData);
@@ -153,6 +160,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		String classes = req.getParameter("classes");
 		if (!given(classes)) return false;
 		return classes.contains("habitats");
+	}
+
+	private boolean storeReferenceSequences(HttpServletRequest req) {
+		String classes = req.getParameter("classes");
+		if (!given(classes)) return false;
+		return classes.contains("referenceSequences");
 	}
 
 	private static Set<Qname> supportedAreas = null;
@@ -230,6 +243,40 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 			}
 		}
 		dao.store(Subject.of(taxon.getQname()), statements);
+	}
+
+	private void storeReferenceSequences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
+		Map<Integer, Map<String, String>> parameters = new HashMap<>();
+		for (Map.Entry<String, String[]> e : req.getParameterMap().entrySet()) {
+			String parameterName = e.getKey();
+			if (!parameterName.startsWith(MX_TAXON_REFERENCE_SEQUENCE)) continue;
+			if (e.getValue() == null || e.getValue().length == 0 || !given(e.getValue()[0])) continue;
+
+			// MX.taxonReferenceSequence___0___sequenceText
+			// MX.taxonReferenceSequence___0___locus
+			// MX.taxonReferenceSequence___1___sequenceText
+			String[] nameparts = e.getKey().split(Pattern.quote("___"));
+			Integer index = Integer.valueOf(nameparts[1]);
+			String field = nameparts[2];
+			if (!parameters.containsKey(index)) parameters.put(index, new HashMap<>());
+			parameters.get(index).put(field, e.getValue()[0]);
+		}
+		List<ReferenceSequence> referenceSequences = new ArrayList<>();
+		for (Map.Entry<Integer, Map<String, String>> params : parameters.entrySet()) {
+			int order = params.getKey();
+			String sequenceText = params.getValue().get("sequenceText");
+			String specimenID = params.getValue().get("specimenID");
+			String externalSequenceID = params.getValue().get("externalSequenceID");
+			String locus = params.getValue().get("locus");
+			if (!given(sequenceText)) continue;
+			ReferenceSequence sequence = new ReferenceSequence(null, sequenceText, order);
+			if (given(specimenID)) sequence.setSpecimenId(specimenID);
+			if (given(externalSequenceID)) sequence.setExternalSequenceId(externalSequenceID);
+			if (given(locus)) sequence.setLocus(Qname.of(locus));
+			referenceSequences.add(sequence);
+		}
+		taxonomyDAO.addReferenceSequences(taxon);
+		dao.store(taxon.getQname(), taxon.getReferenceSequences(), referenceSequences);
 	}
 
 	private void storeOccurrences(HttpServletRequest req, TriplestoreDAO dao, EditableTaxon taxon, ExtendedTaxonomyDAO taxonomyDAO) throws Exception {
@@ -315,11 +362,12 @@ public class ApiTaxonEditSectionSubmitServlet extends ApiBaseServlet {
 		for (Entry<String, String[]> e : req.getParameterMap().entrySet()) {
 			String parameterName = e.getKey();
 			if (parameterName.startsWith(MO_OCCURRENCE)) continue;
+			if (parameterName.startsWith(MX_TAXON_REFERENCE_SEQUENCE)) continue;
 			String[] values = e.getValue();
 
 			String langcode = null;
 			if (parameterName.contains("___")) {
-				String[] parts = parameterName.split(Pattern.quote("___")); 
+				String[] parts = parameterName.split(Pattern.quote("___"));
 				parameterName = parts[0];
 				langcode = parts[1];
 			}

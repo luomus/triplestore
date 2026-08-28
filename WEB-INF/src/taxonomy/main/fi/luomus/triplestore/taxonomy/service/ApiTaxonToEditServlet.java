@@ -31,7 +31,8 @@ public class ApiTaxonToEditServlet extends ApiBaseServlet {
 
 		dao.addOccurrences(taxon);
 		dao.addHabitats(taxon);
-		
+		dao.addReferenceSequences(taxon);
+
 		boolean fullView = !taxon.isSynonym() || showFull(req);
 		return responseData.setData("taxon", taxon).setData("fullView", fullView);
 	}
