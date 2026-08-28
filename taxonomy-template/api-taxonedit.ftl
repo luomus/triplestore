@@ -1,4 +1,4 @@
-<div>
+<div id="editTaxonFocusTarget" tabindex="-1" autofocus>
 <#include "macro.ftl">
 
 <h5 id="taxonEditHeader">

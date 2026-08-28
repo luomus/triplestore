@@ -42,6 +42,10 @@ function editTaxon(e, fullEditMode) {
 }
 
 function initColumnsPortlets() {
+		
+	$(".helpText").tooltip({hide:0});
+	
+	$("textarea").not('.newPublicationInput, .sequenceText').attr("placeholder", "In English");
 	
 	$("#fixTypo").on('click', function() {
 		$("#scientificNameToolButtons, #originalNamesView").fadeOut('fast', function() {

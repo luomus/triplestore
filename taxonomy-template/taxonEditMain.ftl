@@ -41,7 +41,7 @@
 		<#include "taxonTreeContent.ftl">
 	</div>
 
-	<div id="editTaxon" class="ui-widget-content" title="Edit taxon">
+	<div id="editTaxon" class="ui-widget-content" title="Edit taxon" autofocus>
 			<div id="editTaxonContent">	
 			</div>
 	</div>
