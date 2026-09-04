@@ -30,6 +30,7 @@
 		<option value="fi" <#if langcode=="fi">selected="selected"</#if>>fi</option>
 		<option value="en" <#if langcode=="en">selected="selected"</#if>>en</option>
 		<option value="sv" <#if langcode=="sv">selected="selected"</#if>>sv</option>
+		<option value="la" <#if langcode=="la">selected="selected"</#if>>la</option>
 	</select>
 </#macro>
 
