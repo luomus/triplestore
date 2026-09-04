@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +20,6 @@ import org.apache.http.client.methods.HttpGet;
 import com.zaxxer.hikari.HikariDataSource;
 
 import fi.luomus.commons.config.Config;
-import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.InformalTaxonGroup;
 import fi.luomus.commons.containers.RedListEvaluationGroup;
 import fi.luomus.commons.containers.rdf.Model;
@@ -46,8 +44,6 @@ import fi.luomus.commons.taxonomy.TaxonomyDAOBaseImple;
 import fi.luomus.commons.taxonomy.iucn.Evaluation;
 import fi.luomus.commons.taxonomy.iucn.HabitatObject;
 import fi.luomus.commons.utils.Cached;
-import fi.luomus.commons.utils.SingleObjectCache;
-import fi.luomus.commons.utils.SingleObjectCache.CacheLoader;
 import fi.luomus.commons.utils.Utils;
 import fi.luomus.triplestore.dao.SearchParams;
 import fi.luomus.triplestore.dao.TriplestoreDAO;
@@ -641,30 +637,7 @@ public class ExtendedTaxonomyDAOImple extends TaxonomyDAOBaseImple implements Ex
 				.collect(Collectors.toList());
 	}
 
-	private final SingleObjectCache<Map<String, Area>> cachedBiogeographicalProvinces =
-			new SingleObjectCache<>(
-					new CacheLoader<Map<String, Area>>() {
-						private final Qname BIOGEOGRAPHICAL_PROVINCE = Qname.of("ML.biogeographicalProvince");
-						@Override
-						public Map<String, Area> load() {
-							try {
-								Map<String, Area> areas = new LinkedHashMap<>();
-								for (Area area : getAreas().values()) {
-									if (BIOGEOGRAPHICAL_PROVINCE.equals(area.getType())) {
-										areas.put(area.getQname().toString(), area);
-									}
-								}
-								return areas;
-							} catch (Exception e) {
-								throw triplestoreDAO.exception("Loading biogeographical provinces", e);
-							}
-						}
-					}, 7, TimeUnit.HOURS);
 
-	@Override
-	public Map<String, Area> getBiogeographicalProvinces() throws Exception {
-		return cachedBiogeographicalProvinces.get();
-	}
 
 	@Override
 	public boolean isTaxonIdUsedInDataWarehouse(Qname taxonId) {

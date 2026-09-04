@@ -1,9 +1,7 @@
 package fi.luomus.triplestore.taxonomy.dao;
 
 import java.util.List;
-import java.util.Map;
 
-import fi.luomus.commons.containers.Area;
 import fi.luomus.commons.containers.rdf.Qname;
 import fi.luomus.commons.taxonomy.Taxon;
 import fi.luomus.commons.taxonomy.TaxonSearchDAO;
@@ -38,8 +36,6 @@ public interface ExtendedTaxonomyDAO extends TaxonomyDAO, TaxonSearchDAO {
 
 	List<String> getInformalTaxonGroupRoots();
 	List<String> getIucnRedListInformalGroupRoots();
-
-	Map<String, Area> getBiogeographicalProvinces() throws Exception;
 
 	/**
 	 * Is the given taxon id used explicitly in data warehouse as a target name or taxon census target (etc)
