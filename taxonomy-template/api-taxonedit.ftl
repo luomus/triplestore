@@ -603,7 +603,7 @@
   		</table>
   <@portletFooter />
   
-  	<#if taxon.occurrences.hasOccurrences()>
+  	<#if taxon.referenceSequences?has_content>
 		<@portletHeader "Reference Sequences" "" "referenceSequences multirowSection"/>
   	<#else>
 		<@portletHeader "Reference Sequences" "initiallyClosed" "referenceSequences multirowSection"/>
