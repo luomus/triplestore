@@ -28,7 +28,8 @@
 			<label>Checklist</label> Orphan taxa
 		</#if>
 		<div style="height: 1px; font-size: 1px; display:block;">&nbsp;</div>
-		<label>ID</label> ${taxon.qname} 
+		<label>ID</label> ${taxon.qname}
+		<@labeledSelect "MX.darkTaxon" /> 
 		<@labeledSelect "MX.taxonRank" />
 
 		<div class="clear"></div>

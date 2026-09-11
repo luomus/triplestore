@@ -58,6 +58,9 @@
 			<#if taxon.hidden>
 				<span class="hiddenTaxon"></span>
 			</#if>
+			<#if taxon.darkTaxon>
+				<span class="darkTaxon"></span>
+			</#if>
 			<#if !taxon.synonym><span class="taxonRank"><#if taxon.taxonRank?has_content>[${properties.getProperty("MX.taxonRank").range.getValueFor(taxon.taxonRank).label.forLocale("en")}]</#if></span></#if> 
 			<@printScientificNameAndAuthor taxon />
 			<span class="scinameLink" title="${taxon.qname} ${taxon.scientificName!taxon.vernacularName.forLocale("en")!taxon.qname} ${taxon.scientificNameAuthorship!""}">C&P</span>
@@ -204,6 +207,25 @@
 	<label for="${cleanedName}" class="${cleanedName}Label ${class}">${property.label.forLocale(locale)!field}</label>
 </#macro>
 
+<#-- not used 
+<#macro labeledCheckbox field defaultValue="taxonValue" permissions="requireEditorPermissions" >
+	<@label field />
+	<@checkbox field defaultValue permissions />
+</#macro>
+
+<#macro checkbox field defaultValue="taxonValue" permissions="requireEditorPermissions">
+	<input type="checkbox" name="${field}" <@checkPermissions permissions />
+		<#assign cleanedName = cleanName(field)>
+		<#if defaultValue == "taxonValue">
+			<#if taxon[cleanedName]??> <#assign value = taxon[cleanedName]> <#else> <#assign value = ""> </#if>
+		<#else>
+			<#assign value = defaultValue>
+		</#if>
+		<#if value> checked </#if>
+	/>
+</#macro>
+ -->
+ 
 <#macro labeledSelect field defaultValue="taxonValue" permissions="requireEditorPermissions" >
 	<@label field />
 	<@select field defaultValue permissions />
