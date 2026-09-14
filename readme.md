@@ -261,9 +261,6 @@ Namespaces_DBurl = jdbc:mysql://
 Namespaces_DBusername = 
 Namespaces_DBpassword = 
 
-#Used for taxon images
-KotkaURL = https://kotkatest.luomus.fi
-
 #Used by luomus-commons Taxonomy DAO Base Imple
 TriplestoreURL = http://localhost:8081/triplestore
 TriplestoreUsername = 
@@ -274,6 +271,8 @@ DwURL = https://../taxon-use
 
 #Used by IUCN editor
 TaxonomyAPIURL = .. api/taxa
+MapTool_Secret = 32 bytes 
+MapTool_URL = https..
 
 ~~~
 

@@ -24,6 +24,7 @@ import fi.luomus.triplestore.service.EditorBaseServlet;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAO;
 import fi.luomus.triplestore.taxonomy.dao.ExtendedTaxonomyDAOImple;
 import fi.luomus.triplestore.taxonomy.iucn.model.Editors;
+import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationTarget;
 import fi.luomus.triplestore.taxonomy.iucn.model.EvaluationYear;
 import fi.luomus.triplestore.taxonomy.models.EditableTaxon;
 import fi.luomus.triplestore.utils.NameCleaner;
@@ -105,7 +106,6 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 			responseData.setData("habitatProperties", dao.getProperties(Evaluation.HABITAT_OBJECT_CLASS));
 			responseData.setData("biogeographicalProvinces", taxonomyDAO.getBiogeographicalProvinces());
 			responseData.setData("nameCleaner", nameCleaner);
-			responseData.setData("kotkaURL", getConfig().get("KotkaURL"));
 			responseData.setData("evaluationYears", years());
 			responseData.setData("redListStatusProperty", dao.getProperty(Predicate.of(Evaluation.RED_LIST_STATUS)));
 		}
@@ -187,11 +187,15 @@ public abstract class TaxonomyEditorBaseServlet extends EditorBaseServlet {
 		return editors.getEditors().contains(user.getQname());
 	}
 
-	protected void checkIucnPermissions(String groupQname, HttpServletRequest req) throws Exception {
-		if (!hasIucnPermissions(groupQname, req)) {
-			User user = getUser(req);
-			throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter iucn group " + groupQname);
+	protected void checkIucnPermissions(String speciesQname, HttpServletRequest req) throws Exception {
+		EvaluationTarget target = getTaxonomyDAO().getIucnDAO().getIUCNContainer().getTarget(speciesQname);
+		for (String groupQname : target.getGroups()) {
+			if (hasIucnPermissions(groupQname, req)) {
+				return;
+			}
 		}
+		User user = getUser(req);
+		throw new IllegalAccessException("Person " + user.getFullname() + " (" + user.getQname() +") does not have permissions to alter iucn target " + speciesQname);
 	}
 
 }

@@ -31,11 +31,9 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 	protected ResponseData processPost(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		log(req);
 		String speciesQname = req.getParameter("speciesQname");
-		String groupQname = req.getParameter("groupQname");
 		int year = Integer.valueOf(req.getParameter("year"));
 		if (!given(speciesQname)) return status500(res);
-		if (!given(groupQname)) return status500(res);
-		checkIucnPermissions(groupQname, req);
+		checkIucnPermissions(speciesQname, req);
 		Qname editor = getUser(req).getQname();
 
 		ExtendedTaxonomyDAO taxonomyDAO = getTaxonomyDAO();
@@ -46,15 +44,15 @@ public class ApiMarkNotEvaluatedServler extends ApiBaseServlet {
 			getErrorReporter().report("Using fast-eval button for target that already has evaluation: " + Utils.debugS(speciesQname, year));
 			return status(422, res);
 		}
-		
+
 		Evaluation evaluation = createEvaluation(speciesQname, year, editor, iucnDAO, req);
-		
+
 		ValidationResult validationResult = new Validator(getTriplestoreDAO(), getErrorReporter()).validate(evaluation, null);
 
 		if (validationResult.hasErrors()) {
 			return status(422, res);
 		}
-		
+
 		getTriplestoreDAO(req).store(evaluation, null);
 		container.setEvaluation(evaluation);
 		EvaluationTarget target = container.getTarget(evaluation.getSpeciesQname());

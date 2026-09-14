@@ -124,6 +124,12 @@
 
 <div class="clear"></div>
 
+<#if permissions && user?? && user.isIucnAdmin()>
+<div class="taxonInfo">
+	<h6>AOO/EOO laskenta</h6>
+	<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}">Karttatyökaluun</a>
+</div>
+</#if>
 
 <#if editHistory?has_content>
 	<div class="taxonInfo">

@@ -111,6 +111,7 @@
 		<th>Lahko, Heimo</th>
 		<th>Tieteellinen nimi</th>
 		<th>Suomenkielinen nimi</th>
+		<th>AOO/EOO</th>
 		<th>Tila <#if permissions>/ Pikatoiminnot</#if></th>
 		<th>Muokattu</th>
 		<th>Muokkaaja</th>
@@ -204,7 +205,7 @@ $(function() {
     	button.data('submitted', true).prop('disabled', true);
 		var row = $(this).closest('tr');
 		var speciesQname = row.attr('id');
-		$.post('${baseURL}/api/iucn-mark-not-evaluated?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}')
+		$.post('${baseURL}/api/iucn-mark-not-evaluated?speciesQname='+speciesQname+'&year=${selectedYear}')
         .done(function(data) {
             row.fadeOut('slow', function () {
                 row.html(data);
@@ -237,7 +238,7 @@ $(function() {
 				alert(' Vakinaisuus/asema Suomessa on ilmoitettava');
 				return;
 			}
-			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
+			var req = '${baseURL}/api/iucn-mark-not-applicable?speciesQname='+speciesQname+'&year=${selectedYear}&typeOfOccurrenceInFinland='+typeOfOccurrenceInFinland;
 			$.post(req)
             .done(function(data) {
                 submitting = false;
@@ -281,7 +282,7 @@ $(function() {
 				submitting = true;
             	submitButton.prop('disabled', true);
             	
-				var req = '${baseURL}/api/iucn-mark-least-concern?speciesQname='+speciesQname+'&year=${selectedYear}&groupQname=${group.qname}';
+				var req = '${baseURL}/api/iucn-mark-least-concern?speciesQname='+speciesQname+'&year=${selectedYear}';
 				req += '&habitat=' + habitat;
 				if (habitatSpecificTypes) {
 					for (var i in habitatSpecificTypes) {
