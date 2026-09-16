@@ -9,6 +9,9 @@
 	font-size: 11px;
 }
 
+.scientificName {
+	white-space: nowrap;
+}
 .speciesName {
 	font-style: italic;
 	white-space: nowrap;
