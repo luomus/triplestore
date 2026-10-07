@@ -26,18 +26,14 @@ public class MapToolRedirect extends FrontpageServlet {
 	protected ResponseData processGet(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		Qname taxonId = Qname.of(getId(req));
 		if (!given(taxonId)) return status500(res);
-		boolean localhost = "true".equals(req.getParameter("localhost"));
 
-		if (!localhost) {
-			checkIucnPermissions(taxonId.toString(), req);
-		} else {
-			if (!getUser(req).isAdmin()) throw new IllegalAccessException("Person does not have permissions to alter iucn target " + taxonId);
-		}
+		checkIucnPermissions(taxonId.toString(), req);
+
 		Qname editor = getUser(req).getQname();
 
 		TokenGenerator generator = new TokenGenerator(getConfig().get("MapTool_Secret"));
 		String token = generator.generate(taxonId, editor);
-		String baseUrl = localhost ? "http://localhost:5000" : getConfig().get("MapTool_URL");
+		String baseUrl = getConfig().get("MapTool_URL");
 
 		URIBuilder uriB = new URIBuilder(baseUrl).addParameter("token", token);
 		return redirectTo(uriB.toString());

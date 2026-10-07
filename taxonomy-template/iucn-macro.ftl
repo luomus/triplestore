@@ -91,7 +91,6 @@
 	<td>
 		<#if user.isAdmin() || user.isIucnAdmin()>
 			<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}">Karttatyökaluun</a>
-			<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}?localhost=true">localhost</a>
 		</#if>
 	</td>
 	<#if target.hasEvaluation(year)>
