@@ -48,8 +48,14 @@ public class EvaluationTarget {
 		return s;
 	}
 
+	public String getScientificNameLabel() {
+		String s = getTaxon().getScientificNameLabel();
+		if (!given(s)) return getQname();
+		return s;
+	}
+
 	public String getVernacularNameFi() {
-		return getTaxon().getVernacularName() == null ? "" : getTaxon().getVernacularName().forLocale("fi"); 
+		return getTaxon().getVernacularName() == null ? "" : getTaxon().getVernacularName().forLocale("fi");
 	}
 
 	public Taxon getTaxon() {
