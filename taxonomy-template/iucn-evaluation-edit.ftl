@@ -416,7 +416,7 @@
 		<th><label>Nykyinen LSA-status</label></th>
 		<td colspan="2">
 			<#list taxon.administrativeStatuses as adminStatus>
-				<#if adminStatus == "MX.finlex160_1997_appendix4_specialInterest" || adminStatus == "MX.finlex160_1997_appendix4">
+				<#if adminStatus == "MX.finlex160_1997_appendix4_specialInterest_2021" || adminStatus == "MX.finlex160_1997_appendix4_2021">
 					${properties.getProperty("MX.hasAdminStatus").range.getValueFor(adminStatus).label.forLocale("fi")}<br />
 				</#if>
 			</#list>
