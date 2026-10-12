@@ -89,7 +89,7 @@
 		</a>
 	</td>
 	<td>
-		<#if user.isAdmin() || user.isIucnAdmin()>
+		<#if permissions && user?? && user.isIucnAdmin()>
 			<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}">Karttatyökaluun</a>
 		</#if>
 	</td>
