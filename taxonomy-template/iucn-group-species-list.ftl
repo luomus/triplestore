@@ -111,7 +111,6 @@
 		<th>Lahko, Heimo</th>
 		<th>Tieteellinen nimi</th>
 		<th>Suomenkielinen nimi</th>
-		<th>AOO/EOO</th>
 		<th>Tila <#if permissions>/ Pikatoiminnot</#if></th>
 		<th>Muokattu</th>
 		<th>Muokkaaja</th>

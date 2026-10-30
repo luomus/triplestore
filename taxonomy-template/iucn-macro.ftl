@@ -81,17 +81,17 @@
 		<a href="${baseURL}/iucn/species/${target.qname}/${year}">
 			<span class="scientificName">${target.scientificNameLabel}</span>
 		</a>
+		<span class="maptool-button">
+			<#if permissions && user?? && user.isIucnAdmin()>
+				<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}">Karttatyökaluun</a>
+			</#if>
+		</span>
 		<span class="synonyms scientificName speciesName">${target.synonymNames}</span>
 	</td>
 	<td>
 		<a href="${baseURL}/iucn/species/${target.qname}/${year}">
 			${target.vernacularNameFi!""}
 		</a>
-	</td>
-	<td>
-		<#if permissions && user?? && user.isIucnAdmin()>
-			<a class="button" target="maptool" href="${baseURL}/iucn/maptool/${target.qname}">Karttatyökaluun</a>
-		</#if>
 	</td>
 	<#if target.hasEvaluation(year)>
 		<#assign evaluation = target.getEvaluation(year)>

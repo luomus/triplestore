@@ -97,9 +97,65 @@
   background-color: rgb(222, 233, 242);
 }
 
-.iucnSpeciesTable td:nth-child(4) {
-	min-width: 220px;
+
+.iucnSpeciesTable th, .iucnSpeciesTable td {
+  padding: 2px;
+  padding-right: 5px;
+  padding-left: 5px;
+  border: 1px solid #eee;
 }
+
+.iucnSpeciesTable tr:nth-child(even) {
+  background-color: rgb(251,251,251);
+}
+
+.iucnSpeciesTable th {
+  background-color: rgb(174,208,234);
+}
+
+.iucnSpeciesTable .scientificName:not(.synonyms) {
+	min-width: 200px;
+	display: inline-block;
+}
+
+.iucnSpeciesTable .synonyms {
+	max-width: 40em;
+	overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+}
+
+.iucnSpeciesTable .maptool-button {
+	margin-left: 1em;
+	display: inline-block;
+}
+.iucnSpeciesTable .maptool-button .ui-button-text {
+	font-size: 80%;
+}
+
+.iucnSpeciesTable tbody tr:hover > td {
+    box-shadow:
+        inset 0 1px 0 rgb(100, 130, 160),
+        inset 0 -1px 0 rgb(100, 130, 160);
+    transition: background-color 0.18s ease;
+}
+
+.iucnSpeciesTable tbody tr:hover > td:first-child {
+    box-shadow:
+        inset 5px 0 0 rgb(100, 130, 160),
+        inset 0 1px 0 rgb(100, 130, 160),
+        inset 0 -1px 0 rgb(100, 130, 160);
+}
+
+.iucnSpeciesTable tbody tr:hover > td:last-child {
+    box-shadow:
+        inset -5px 0 0 rgb(100, 130, 160),
+        inset 0 1px 0 rgb(100, 130, 160),
+        inset 0 -1px 0 rgb(100, 130, 160);
+}
+
+
 .iucnSpeciesTable td:nth-child(5),
 .iucnSpeciesTable td:nth-child(6),
 .iucnSpeciesTable td:nth-child(7)
@@ -107,20 +163,10 @@
   text-align: center;
 }
 
-.iucnSpeciesTable th, .iucnSpeciesTable td {
-  padding: 3px;
-  padding-right: 5px;
-  padding-left: 5px;
-  border: 1px solid #ddd;
-  border-bottom: 1px solid grey;
- }
- 
-.iucnSpeciesTable th {
-  background-color: rgb(174,208,234);
+.iucnSpeciesTable td:nth-child(1) {
+	padding-left: 10px;
 }
-.iucnSpeciesTable tr:nth-child(even) td {
-  background-color: #eee;
-}
+
 .iucnSpeciesTable td:nth-child(1),
 .iucnSpeciesTable td:nth-child(2) {
   min-width: 140px;
