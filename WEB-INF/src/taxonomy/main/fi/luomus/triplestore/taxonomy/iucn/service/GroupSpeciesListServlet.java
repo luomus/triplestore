@@ -307,6 +307,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			data.add(v(evaluation, "MKV.populationSizePeriodNotes"));
 			data.add(v(evaluation, "MKV.decreaseDuringPeriod"));
 			data.add(v(evaluation, "MKV.decreaseDuringPeriodNotes"));
+			data.add(v(evaluation, "MKV.numberOfOccurrenceSites"));
+			data.add(v(evaluation, "MKV.numberOfOccurrenceSitesNotes"));
 			data.add(v(evaluation, "MKV.populationVaries"));
 			data.add(v(evaluation, "MKV.populationVariesNotes"));
 			data.add(v(evaluation, "MKV.fragmentedHabitats"));
@@ -723,6 +725,8 @@ public class GroupSpeciesListServlet extends FrontpageServlet {
 			header.add("Pop.koko lopussa");
 			header.add("..muistiinpanot (yksityinen)");
 			header.add("Pop. väheneminen");
+			header.add("..muistiinpanot (yksityinen)");
+			header.add("Esiintymisp. lkm.");
 			header.add("..muistiinpanot (yksityinen)");
 			header.add("Kannanvaihtelut");
 			header.add("..muistiinpanot (yksityinen)");

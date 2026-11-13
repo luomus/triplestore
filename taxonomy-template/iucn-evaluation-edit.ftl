@@ -372,6 +372,7 @@
 	<@iucnInput "MKV.populationSizePeriodBeginning" "MKV.populationSizePeriodNotes" />
 	<@iucnInput "MKV.populationSizePeriodEnd" />
 	<@iucnInput "MKV.decreaseDuringPeriod" "MKV.decreaseDuringPeriodNotes" />
+	<@iucnInput "MKV.numberOfOccurrenceSites" "MKV.numberOfOccurrenceSitesNotes" />
 	<@iucnInput "MKV.populationVaries" "MKV.populationVariesNotes" />
 	<@iucnInput "MKV.fragmentedHabitats" "MKV.fragmentedHabitatsNotes" />
 	<@iucnInput "MKV.borderGain" "MKV.borderGainNotes" />
